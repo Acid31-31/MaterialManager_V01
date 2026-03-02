@@ -1,0 +1,96 @@
+╔════════════════════════════════════════════════════════════════╗
+║        MaterialManager V01 - PREISBERECHNUNG & LIZENZ          ║
+║                 © 2025 Alexander Hölzer                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+💰 VERFÜGBARE LIZENZEN:
+
+┌─ SINGLE (S1) ──────────────────────────────────────────────────┐
+│ 1 Arbeitsplatz                                                 │
+│ Preis: 99,00 EUR / Jahr                                        │
+│ Ideal für: Einzelnutzer, kleine Werkstätten                   │
+│ Supportzeiten: 8:00 - 17:00 Uhr                               │
+└────────────────────────────────────────────────────────────────┘
+
+┌─ MEHRPLATZ (M3) ───────────────────────────────────────────────┐
+│ 3 Arbeitsplätze                                                │
+│ Preis: 249,00 EUR / Jahr                                       │
+│ Sparersparnis: 51% pro Platz vs. Single                       │
+│ Ideal für: Kleine Teams, Büros                                 │
+│ Supportzeiten: 8:00 - 18:00 Uhr                               │
+└────────────────────────────────────────────────────────────────┘
+
+┌─ FIRMENLIZENZ (C10) ───────────────────────────────────────────┐
+│ 10 Arbeitsplätze + Premium Support                             │
+│ Preis: 699,00 EUR / Jahr                                       │
+│ Sparersparnis: 70% pro Platz vs. Single                       │
+│ Ideal für: Mittlere Unternehmen                               │
+│ Supportzeiten: 8:00 - 20:00 Uhr + Priorität                   │
+└────────────────────────────────────────────────────────────────┘
+
+┌─ ENTERPRISE (ENT) ─────────────────────────────────────────────┐
+│ Unbegrenzte Arbeitsplätze + VIP Support                        │
+│ Preis: Auf Anfrage (ab 1.499€/Jahr)                            │
+│ Ideal für: Große Organisationen                                │
+│ Supportzeiten: 24/7 + Dedicated Account Manager                │
+└────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 BEISPIELRECHNUNG:
+
+Szenario 1: Kleine Werkstatt mit 2 Mitarbeitern
+└─ 2x Single = 2 × 99 EUR = 198 EUR/Jahr
+   ODER: Mehrplatz (M3) = 249 EUR/Jahr (BESSER!)
+   💡 Empfehlung: M3 kaufen, 1 Platz für Zukunft reservieren
+
+Szenario 2: Mittelständisches Unternehmen mit 8 Personen
+└─ 8x Single = 8 × 99 EUR = 792 EUR/Jahr
+   ODER: Firmenlizenz (C10) = 699 EUR/Jahr (SPAREN!)
+   💡 Empfehlung: C10 - 93€ günstiger + Premium Support
+
+Szenario 3: Konzern mit 50+ Filialen
+└─ Benutzerdefiniertes Paket
+   💡 Kontaktieren Sie uns für Volumenlizenze & Rabatte
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WAS IST ALLES ENTHALTEN?
+
+Alle Lizenzen beinhalten:
+  ✓ Unbegrenzte Materialverwaltung
+  ✓ Netzwerk-Synchronisation
+  ✓ Automatische Backups
+  ✓ Update & Wartung
+  ✓ E-Mail Support
+  ✓ Online-Dokumentation
+  ✓ Gratisupdate auf neue Versionen
+  ✓ 30 Tage kostenlose Testversion
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎁 SPEZIALANGEBOTE:
+
+✅ ERSTE 3 MONATE: 20% RABATT auf alle Lizenzen
+✅ JAHRESVERTRAG: 2 Monate GRATIS
+✅ REFERRAL PROGRAM: 10% Provision pro vermitteltem Kunde
+✅ NONPROFIT: Spezialpreise erhältlich
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 BESTELLUNG & SUPPORT:
+
+E-Mail: hoelzer_alex@yahoo.de
+Telefon: +49 170 8339993
+Web: www.material-manager.de (in Kürze)
+
+Zahlungsarten:
+  💳 Banküberweisung
+  💳 PayPal
+  💳 Kreditkarte (Stripe)
+
+LIEFERZEIT: Sofort nach Zahlungseingang (24/7)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Vielen Dank für Ihr Interesse! 🙏

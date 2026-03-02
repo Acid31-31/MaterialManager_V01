@@ -1,0 +1,123 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    GITHUB SETUP - MaterialManager V01                        ║
+║                                                                               ║
+║                    NEUE REPOSITORY FÜR V01 ERSTELLEN                         ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+📍 SITUATION AKTUELL:
+═══════════════════════════════════════════════════════════════════════════════
+
+Alt (R03):  https://github.com/Acid31-31/MaterialManager_R03
+Neu (V01):  https://github.com/Acid31-31/MaterialManager_V01  ← MUSS ERSTELLT WERDEN!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SCHRITT 1: NEUE REPOSITORY AUF GITHUB ERSTELLEN
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Gehe zu: https://github.com/new
+2. Fülle aus:
+   
+   Repository name:        MaterialManager_V01
+   Description:            Material Manager - Vollversion V01
+   Visibility:             Private (nur für dich!)
+   Initialize with:        ❌ NICHT ankreuzen!
+                           (wir haben schon Dateien)
+   
+3. Klicke "Create repository"
+
+4. Du erhältst die URL:
+   https://github.com/Acid31-31/MaterialManager_V01.git
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SCHRITT 2: GIT IN V01-ORDNER INITIALISIEREN
+═══════════════════════════════════════════════════════════════════════════════
+
+Öffne PowerShell und führe aus:
+
+    cd D:\MaterialManager_V01_komplett
+    
+    git init
+    
+    git add .
+    
+    git commit -m "Initial commit - MaterialManager V01"
+    
+    git branch -M main
+    
+    git remote add origin https://github.com/Acid31-31/MaterialManager_V01.git
+    
+    git push -u origin main
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SCHRITT 3: GITHUB TOKEN (FALLS NÖTIG)
+═══════════════════════════════════════════════════════════════════════════════
+
+Wenn GitHub nach Passwort fragt:
+
+1. Gehe zu: https://github.com/settings/tokens
+2. Klicke "Generate new token"
+3. Wähle:
+   - Scope: repo (vollständiger Zugriff auf Repositories)
+   - Expiration: 90 days
+4. Kopiere den Token
+5. Verwende den Token statt Passwort beim git push
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SCHRITT 4: ALTE R03-REPOSITORY ARCHIVIEREN (OPTIONAL)
+═══════════════════════════════════════════════════════════════════════════════
+
+Optional: Markiere R03 als archiviert, damit klar ist, dass V01 die neue Version ist.
+
+1. Gehe zu: https://github.com/Acid31-31/MaterialManager_R03
+2. Settings > Danger Zone
+3. Klicke "Archive this repository"
+
+ABER: Tue das ERST, wenn du 100% sicher bist, dass V01 funktioniert!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+SCHRITT 5: LOKALE KONFIGURATION (IN V01-ORDNER)
+═══════════════════════════════════════════════════════════════════════════════
+
+Führe aus:
+
+    git config --local user.name "Alexander Hölzer"
+    git config --local user.email "hoelzer_alex@yahoo.de"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+FEHLERBEHANDLUNG:
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ "fatal: not a git repository"
+   → Hast du "git init" ausgeführt? Mach das!
+
+❌ "Permission denied"
+   → GitHub Token richtig? Prüfe die Credentials!
+
+❌ "fatal: refusing to merge unrelated histories"
+   → Führe aus: git pull origin main --allow-unrelated-histories
+
+
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLIST:
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Neue Repository auf GitHub erstellt
+□ git init in D:\MaterialManager_V01_komplett ausgeführt
+□ git add . and git commit ausgeführt
+□ git remote add origin... ausgeführt
+□ git push -u origin main erfolgreich
+□ Repository auf GitHub sichtbar
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FERTIG! V01 ist jetzt bei GitHub!
+
+═══════════════════════════════════════════════════════════════════════════════

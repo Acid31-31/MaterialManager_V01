@@ -1,0 +1,204 @@
+╔════════════════════════════════════════════════════════════════╗
+║  MATERIALMANAGER R03 - USB INSTALLATION PAKET                  ║
+║  Vollversion mit Lizenzierung                                  ║
+╚════════════════════════════════════════════════════════════════╝
+
+📁 ORDNERSTRUKTUR:
+
+USB_Installation/
+│
+├─ 📄 USB_INSTALL.bat          [STARTEN: Installation ausführen]
+│                                Rechtsklick → "Als Administrator"
+│
+├─ 📄 USB_README.txt            [Dokumentation für Kunden]
+│                                Öffne diesen Text!
+│
+├─ 📁 Programm/                 [Programmversion + Dateien]
+│  └─ (wird mit: Build-USBVersion.ps1 gefüllt)
+│  └─ MaterialManager_R03.exe
+│  └─ *.dll [Abhängigkeiten]
+│
+├─ 📁 Tools/                    [Nützliche Werkzeuge]
+│  ├─ GENERATE_LICENSE.bat      [Lizenzschlüssel generieren]
+│  └─ (weitere Tools)
+│
+├─ 📁 Lizenzen/                 [Lizenzinformationen speichern]
+│  └─ [Hier notieren Kundenlizenzen]
+│
+└─ 📁 Anleitung/                [Dokumentation]
+   ├─ QUICK_START.md            [5-Schritte Übersicht]
+   └─ DEPLOYMENT_ANLEITUNG.md   [Detailliert]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 SCHNELLSTART - SO FUNKTIONIERT ES:
+
+1. "Programm/" Ordner füllen:
+   → Powershell: .\Build-USBVersion.ps1 -Action Package
+   → Kopiere Inhalt in USB_Installation/Programm/
+
+2. USB-Stick vorbereiten:
+   → Gesamten USB_Installation Ordner auf USB-Stick kopieren
+   → z.B. auf: D:\ oder E:\
+
+3. Auf Zielrechner Installation:
+   → USB einstecken
+   → USB_INSTALL.bat öffnen
+   → Rechtsklick: "Als Administrator ausführen"
+   → Installation läuft automatisch
+
+4. Programm startet:
+   → Demo-Lizenz läuft 30 Tage automatisch
+   → Kein Lizenzschlüssel erforderlich
+
+5. Nach 30 Tagen:
+   → Kunde fordert Lizenz an
+   → Hardware-ID aus Programm (Hilfe → Lizenzinformationen)
+   → Tools/GENERATE_LICENSE.bat ausführen
+   → Lizenzschlüssel an Kunden senden
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 DATEI-BESCHREIBUNG:
+
+ROOT-EBENE (Für Installation):
+┌─ USB_INSTALL.bat
+│  ├─ Installation auf Zielrechner
+│  ├─ Prüft Admin-Rechte
+│  ├─ Erstellt C:\Program Files\MaterialManager_R03\
+│  ├─ Kopiert Programm + DLLs
+│  └─ Erstellt Desktop- & StartMenu-Shortcuts
+│
+└─ USB_README.txt
+   ├─ Dokumentation für Endkunden
+   ├─ Lizenzierungserklärung
+   ├─ FAQ & Support-Kontakt
+   └─ Checkliste vor Versand
+
+PROGRAMM/ (App-Dateien):
+├─ MaterialManager_R03.exe         [Hauptprogramm, selbstsigniert optional]
+├─ *.dll                            [.NET 8 Abhängigkeiten]
+└─ (andere Ressourcen)
+
+TOOLS/ (Verwaltung):
+├─ GENERATE_LICENSE.bat
+│  ├─ Lizenzschlüssel generieren
+│  ├─ Input: Hardware-ID + Kundenname
+│  ├─ Output: MM-XXXX-XXXX-XXXX-XXXX
+│  └─ Für deine Verwaltung
+│
+└─ (weitere Admin-Tools später)
+
+LIZENZEN/ (Dokumentation):
+├─ Hier kannst du notieren:
+│  ├─ Kundenname
+│  ├─ Hardware-ID
+│  ├─ Ausgegebener Lizenzschlüssel
+│  ├─ Aktivierungsdatum
+│  └─ Ablaufdatum
+
+ANLEITUNG/ (Dokumentation):
+├─ QUICK_START.md
+│  └─ 5-Schritte Übersicht für dich
+│
+└─ DEPLOYMENT_ANLEITUNG.md
+   ├─ Detaillierte Anleitung
+   ├─ Schritt-für-Schritt
+   ├─ Troubleshooting
+   └─ Fehlerbehandlung
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ WAS NOCH ZU TUN IST:
+
+1. [ ] Programm/ Ordner füllen
+       → Build-USBVersion.ps1 ausführen
+       → MaterialManager_R03.exe + alle DLLs kopieren
+
+2. [ ] Optional: Code-Signing
+       → Mit Zertifikat signieren (siehe CODE_SIGNING_GUIDE.md)
+       → Reduziert Antivirus-Warnungen
+
+3. [ ] Testen
+       → USB auf Test-PC einstecken
+       → USB_INSTALL.bat testen
+       → Demo-Lizenz testen
+
+4. [ ] Lizenzen/ Ordner verwenden
+       → Kundenlizenzen dokumentieren
+       → Lizenzschlüssel tracken
+
+5. [ ] Vor Versand
+       → Alle Dateien vorhanden?
+       → USB_INSTALL.bat getestet?
+       → README gelesen?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 LIZENZIERUNGS-ABLAUF:
+
+DEMO (Automatisch):
+└─ 30 Tage nach erstem Start
+   ├─ Keine Lizenzschlüssel
+   ├─ Keine Internetverbindung nötig
+   └─ Zähler läuft kontinuierlich
+
+VOLLVERSION (Mit Lizenzschlüssel):
+├─ Hardware-ID gebunden
+│  ├─ Eindeutig pro Rechner
+│  ├─ Kunde erhält im Programm
+│  └─ Nicht übertragbar
+│
+├─ Lizenzschlüssel-Format
+│  └─ MM-XXXX-XXXX-XXXX-XXXX
+│
+├─ Generierung
+│  ├─ Du führst: GENERATE_LICENSE.bat aus
+│  ├─ Input: Hardware-ID + Kundenname
+│  ├─ Output: Eindeutiger Schlüssel
+│  └─ Senden an Kunde
+│
+└─ Aktivierung (Kunde)
+   ├─ Programm starten
+   ├─ Menü: Lizenzierung → Aktivieren
+   ├─ Lizenzschlüssel eingeben
+   └─ Vollversion läuft unbegrenzt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 WEITERE INFOS:
+
+• QUICK_START.md
+  → Schnelle 5-Schritte Anleitung für dich
+
+• DEPLOYMENT_ANLEITUNG.md
+  → Detailliert mit Screenshots & Troubleshooting
+
+• USB_README.txt
+  → Was du an Kunden weitergibst
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STATUS:
+
+✓ Ordnerstruktur erstellt
+✓ Installer-Skript eingebunden
+✓ Dokumentation vorhanden
+✓ Lizenz-Tools eingebunden
+⏳ Programm noch einfügen (next step)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NÄCHSTER SCHRITT:
+
+Powershell öffnen, dann:
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  .\Build-USBVersion.ps1 -Action Package
+  copy USB_Distribution\* USB_Installation\Programm\ /Y /S
+
+→ USB_Installation/Programm wird dann mit .exe + DLLs gefüllt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Version 1.0.0 | MaterialManager R03 | 28.02.2025

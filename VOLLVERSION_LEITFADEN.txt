@@ -1,0 +1,470 @@
+﻿╔═══════════════════════════════════════════════════════════════════════════════╗
+║                VOLLSTÄNDIGER SCHUTZ- UND VERTRIEBS-LEITFADEN                 ║
+║                        MaterialManager R03 - Vollversion                      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+© 2025 Alexander HÃ¶lzer - Alle Rechte vorbehalten
+
+
+INHALTSVERZEICHNIS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. RECHTLICHER SCHUTZ
+   1.1 Urheberrechtsschutz
+   1.2 Lizenzsystem
+   1.3 Durchsetzung
+
+2. VERTRIEBSSTRATEGIE
+   2.1 Demo-Version (30 Tage)
+   2.2 Vollversion-Preise
+   2.3 Verkaufsprozess
+
+3. USB-INSTALLATION
+   3.1 Paket erstellen
+   3.2 Übergabe an Kunden
+   3.3 Installation beim Kunden
+
+4. LIZENZIERUNG
+   4.1 Hardware-ID abrufen
+   4.2 Lizenzschlüssel generieren
+   4.3 Aktivierung durchführen
+
+5. SUPPORT & WARTUNG
+
+
+═══════════════════════════════════════════════════════════════════════════════
+1. RECHTLICHER SCHUTZ
+═══════════════════════════════════════════════════════════════════════════════
+
+1.1 URHEBERRECHTSSCHUTZ
+──────────────────────────────────────────────────────────────────────────────
+
+✓ Automatischer Schutz:
+  • Deine Software ist automatisch urheberrechtlich geschützt ab Erstellung
+  • §§ 69a ff. UrhG (Urheberrechtsgesetz) schützt Computerprogramme
+  • Keine Registrierung erforderlich (aber empfohlen)
+
+✓ Dokumentierter Schutz:
+  • COPYRIGHT.txt - Urheberrechtshinweis in jedem Programmpaket
+  • LICENSE.txt - Rechtlich bindende Lizenzvereinbarung
+  • Copyright-Hinweise in jedem Quellcode-File
+  • Anzeige beim Programmstart
+
+✓ Zusätzliche Maßnahmen (empfohlen):
+  • Hinterlege Quellcode bei Notar oder Anwalt (Beweissicherung)
+  • Registriere ggf. Markennamen "MaterialManager" beim DPMA
+  • Dokumentiere Entwicklungshistorie (Git-Commits als Beweis)
+
+
+1.2 LIZENZSYSTEM
+──────────────────────────────────────────────────────────────────────────────
+
+✓ Technischer Kopierschutz:
+  • Hardware-ID-basierte Lizenzierung
+  • Lizenzschlüssel nur für spezifischen PC gültig
+  • Verschlüsselte Lizenzdatei (.license im AppData)
+  • Manipulationsschutz durch Hash-Verifikation
+
+✓ Demo-Version:
+  • 30 Tage volle Funktionalität
+  • Automatische Deaktivierung nach Ablauf
+  • Startdatum in versteckter Datei gespeichert
+  • Kann nicht zurückgesetzt werden (Hardware-gebunden)
+
+✓ Vollversion:
+  • Unbegrenzte Laufzeit nach Aktivierung
+  • Hardware-gebunden (kein Übertragen auf anderen PC)
+  • Bei Hardware-Wechsel: 1x pro Jahr kostenlos neuer Schlüssel
+  • Verschiedene Lizenztypen (Single, Multi, Enterprise)
+
+
+1.3 DURCHSETZUNG BEI VERSTÖSSEN
+──────────────────────────────────────────────────────────────────────────────
+
+Bei Urheberrechtsverletzungen kannst du:
+
+✓ Zivilrechtlich:
+  • Unterlassungsanspruch (§ 97 UrhG)
+  • Schadensersatz (§ 97 Abs. 2 UrhG)
+  • Vertragsstrafe (in LICENSE.txt festgelegt: bis 50.000 EUR)
+  • Lizenzgebühr nachfordern
+
+✓ Strafrechtlich:
+  • Strafanzeige bei Polizei (§ 106 UrhG)
+  • Freiheitsstrafe bis 3 Jahre oder Geldstrafe
+  • Schwerwiegend gewerbsmäßig: bis 5 Jahre
+
+✓ Vorgehen:
+  1. Dokumentiere Verstoß (Screenshots, Zeugen)
+  2. Abmahnung mit Unterlassungserklärung
+  3. Bei Weigerung: Anwalt einschalten
+  4. Ggf. einstweilige Verfügung
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. VERTRIEBSSTRATEGIE
+═══════════════════════════════════════════════════════════════════════════════
+
+2.1 DEMO-VERSION (30 TAGE)
+──────────────────────────────────────────────────────────────────────────────
+
+✓ Zweck:
+  • Kunden können Software risikofrei testen
+  • Volle Funktionalität = bessere Kaufentscheidung
+  • 30 Tage = genug Zeit für ausführlichen Test
+
+✓ Verteilung:
+  • Per E-Mail (Download-Link)
+  • Auf USB-Stick zur Weitergabe
+  • Auf deiner Website als Download
+
+✓ Ablauf beim Kunden:
+  1. Installation der Demo-Version
+  2. 30 Tage testen
+  3. Bei Ablauf: Kaufangebot mit Lizenzpreisen
+  4. Nach Kauf: Lizenzschlüssel per E-Mail
+
+
+2.2 VOLLVERSION - PREISGESTALTUNG
+──────────────────────────────────────────────────────────────────────────────
+
+EMPFOHLENE PREISE:
+
+┌──────────────────────┬──────────────────┬─────────────────────────────────┐
+│ Lizenztyp            │ Preis (netto)    │ Beschreibung                    │
+├──────────────────────┼──────────────────┼─────────────────────────────────┤
+│ Einzelplatz          │ 499,00 EUR       │ 1 Arbeitsplatz                  │
+│                      │                  │ Basis-Funktionen                │
+│                      │                  │ 12 Monate kostenloser Support   │
+├──────────────────────┼──────────────────┼─────────────────────────────────┤
+│ Mehrplatz (3 PC)     │ 1.199,00 EUR     │ 3 Arbeitsplätze                 │
+│                      │                  │ Netzwerk-Synchronisation        │
+│                      │                  │ Multi-User-Betrieb              │
+│                      │                  │ 12 Monate kostenloser Support   │
+├──────────────────────┼──────────────────┼─────────────────────────────────┤
+│ Firmenlizenz (10 PC) │ 2.990,00 EUR     │ 10 Arbeitsplätze                │
+│                      │                  │ Netzwerk-Synchronisation        │
+│                      │                  │ Multi-User-Betrieb              │
+│                      │                  │ Erweiterte Statistiken          │
+│                      │                  │ 12 Monate Premium-Support       │
+├──────────────────────┼──────────────────┼─────────────────────────────────┤
+│ Enterprise           │ Auf Anfrage      │ Unbegrenzte Arbeitsplätze       │
+│                      │                  │ Individuelle Anpassungen        │
+│                      │                  │ Dedizierter Support-Kanal       │
+│                      │                  │ On-Site-Schulung optional       │
+└──────────────────────┴──────────────────┴─────────────────────────────────┘
+
+ZUSATZLEISTUNGEN:
+
+• Support-Verlängerung:     99,00 EUR/Jahr
+• Remote-Installation:      149,00 EUR (einmalig)
+• Vor-Ort-Schulung:        399,00 EUR/Tag
+• Individuelle Anpassung:  Nach Aufwand (ab 89 EUR/Std.)
+
+
+2.3 VERKAUFSPROZESS
+──────────────────────────────────────────────────────────────────────────────
+
+SCHRITT 1: ERSTKONTAKT
+├─ Kunde interessiert sich für MaterialManager R03
+├─ Sende Demo-Version (30 Tage) per E-Mail oder USB
+└─ Gebe Kontaktdaten für Rückfragen
+
+SCHRITT 2: TESTPHASE (30 TAGE)
+├─ Kunde testet Software im Betrieb
+├─ Optional: Telefonischer Support während Testphase
+└─ 7 Tage vor Ablauf: Erinnerung per E-Mail
+
+SCHRITT 3: KAUFENTSCHEIDUNG
+├─ Kunde entscheidet sich für Vollversion
+├─ Angebot erstellen mit gewähltem Lizenztyp
+├─ Rechnung versenden (zzgl. 19% MwSt.)
+└─ Zahlungsziel: z.B. 14 Tage
+
+SCHRITT 4: AKTIVIERUNG
+├─ Nach Zahlungseingang: Kunde sendet Hardware-ID
+├─ Generiere Lizenzschlüssel mit LIZENZ_GENERATOR_INTERN.bat
+├─ Sende Lizenzschlüssel per E-Mail
+└─ Kunde aktiviert Vollversion
+
+SCHRITT 5: SUPPORT
+├─ 12 Monate kostenloser E-Mail-Support
+├─ Updates und Bugfixes kostenlos
+└─ Optional: Support-Verlängerung anbieten
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. USB-INSTALLATION
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 USB-PAKET ERSTELLEN
+──────────────────────────────────────────────────────────────────────────────
+
+1. Führe aus: Build_USB_Vollversion.bat
+
+   Das Script:
+   ✓ Kompiliert Vollversion (Self-Contained)
+   ✓ Erstellt USB-Paket-Struktur
+   ✓ Kopiert alle erforderlichen Dateien
+   ✓ Fügt Installer und Dokumentation hinzu
+
+2. Ergebnis: Ordner "USB_Package" mit:
+   
+   USB_Package/
+   ├── INSTALL_VOLLVERSION.bat      ← Installations-Script
+   ├── README_VOLLVERSION.txt       ← Anleitung für Kunden
+   ├── LICENSE.txt                  ← Lizenzbestimmungen
+   ├── COPYRIGHT.txt                ← Urheberrechtshinweis
+   ├── VERSION_INFO.txt             ← Build-Informationen
+   ├── autorun.inf                  ← Auto-Start bei USB-Einstecken
+   ├── LIZENZ_GENERATOR_INTERN.bat  ← NUR FÜR DICH! (geheim halten)
+   └── App/                         ← Alle Programmdateien
+       ├── MaterialManager_R03.exe
+       ├── *.dll (alle Dependencies)
+       └── Assets/
+
+3. Kopiere "USB_Package" auf USB-Stick (min. 500 MB)
+
+
+3.2 USB-STICK ÜBERGABE
+──────────────────────────────────────────────────────────────────────────────
+
+✓ Vorbereitung:
+  • USB-Stick mit "MaterialManager R03 - Vollversion" beschriften
+  • Optional: Aufkleber mit Logo und Kontaktdaten
+  • WICHTIG: LIZENZ_GENERATOR_INTERN.bat VOR Übergabe löschen!
+
+✓ Übergabe-Dokumente:
+  • USB-Stick mit Installation
+  • Gedruckte Anleitung (README_VOLLVERSION.txt)
+  • Rechnung / Lieferschein
+  • Optional: Visitenkarte mit Support-Kontakt
+
+
+3.3 INSTALLATION BEIM KUNDEN
+──────────────────────────────────────────────────────────────────────────────
+
+ANLEITUNG FÜR KUNDEN:
+
+1. USB-Stick einstecken
+2. Rechtsklick auf "INSTALL_VOLLVERSION.bat"
+3. "Als Administrator ausführen"
+4. Folge den Anweisungen auf dem Bildschirm
+5. Programm wird installiert nach: C:\Program Files\MaterialManager_R03
+6. Desktop-Verknüpfung wird erstellt
+
+WICHTIG:
+• Admin-Rechte erforderlich
+• Antivirus kann Warnung zeigen (ist normal bei Self-Contained Apps)
+• Windows SmartScreen: "Trotzdem ausführen" klicken
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. LIZENZIERUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 HARDWARE-ID ABRUFEN
+──────────────────────────────────────────────────────────────────────────────
+
+BEIM KUNDEN:
+
+1. Kunde startet MaterialManager R03
+2. Menü: Hilfe > Lizenz aktivieren
+3. Im Dialog wird Hardware-ID angezeigt (z.B. "A3F7B9D2E1C8F4A9")
+4. Kunde kopiert Hardware-ID
+5. Kunde sendet Hardware-ID per E-Mail an dich
+
+BEISPIEL E-MAIL VOM KUNDEN:
+────────────────────────────────────────────────────────────────────────────
+Betreff: Lizenzaktivierung - Hardware-ID
+
+Hallo,
+
+ich habe MaterialManager R03 installiert.
+Hier ist meine Hardware-ID zur Aktivierung:
+
+Hardware-ID: A3F7B9D2E1C8F4A9
+
+Mit freundlichen Grüßen
+[Kunde]
+────────────────────────────────────────────────────────────────────────────
+
+
+4.2 LIZENZSCHLÜSSEL GENERIEREN (NUR FÜR DICH!)
+──────────────────────────────────────────────────────────────────────────────
+
+WICHTIG: Lizenz-Generator NIEMALS an Kunden weitergeben!
+
+OPTION A: Mit Lizenz-Generator-Script
+──────────────────────────────────────────────────────────────────────────────
+1. Öffne LIZENZ_GENERATOR_INTERN.bat (aus deinem Backup, NICHT vom USB!)
+2. Gebe Hardware-ID des Kunden ein
+3. Wähle Lizenztyp:
+   1 = Einzelplatz (499 EUR)
+   2 = Mehrplatz 3 (1.199 EUR)
+   3 = Firmenlizenz 10 (2.990 EUR)
+   4 = Enterprise
+4. Lizenzschlüssel wird generiert (z.B. "S1A3-F7B9-D2E1-C8F4")
+5. Kopiere Lizenzschlüssel
+
+
+OPTION B: Manuell im Programm
+──────────────────────────────────────────────────────────────────────────────
+1. Starte MaterialManager_R03.exe mit Parameter:
+   MaterialManager_R03.exe --generate-license "HARDWARE_ID" 1
+   
+   Parameter 1 = Einzelplatz
+   Parameter 2 = Mehrplatz 3
+   Parameter 3 = Firmenlizenz 10
+   Parameter 4 = Enterprise
+
+2. Lizenzschlüssel wird in Console angezeigt
+
+
+WICHTIG: Dokumentiere alle vergebenen Lizenzen!
+──────────────────────────────────────────────────────────────────────────────
+Lege eine Excel-Tabelle an:
+
+Datum      | Kunde           | Hardware-ID      | Lizenzschlüssel   | Typ
+───────────┼─────────────────┼──────────────────┼───────────────────┼────────
+01.01.2025 | Firma Müller    | A3F7B9D2E1C8F4A9 | S1A3-F7B9-D2E1... | Single
+05.01.2025 | Firma Schmidt   | B4E8C3F2A9D7E6B5 | M3B4-E8C3-F2A9... | Multi3
+
+
+4.3 LIZENZSCHLÜSSEL AN KUNDEN SENDEN
+──────────────────────────────────────────────────────────────────────────────
+
+BEISPIEL E-MAIL AN KUNDEN:
+────────────────────────────────────────────────────────────────────────────
+Betreff: Ihr Lizenzschlüssel - MaterialManager R03
+
+Sehr geehrter Kunde,
+
+vielen Dank für Ihren Kauf von MaterialManager R03!
+
+Hier ist Ihr persönlicher Lizenzschlüssel:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LIZENZSCHLÜSSEL: S1A3-F7B9-D2E1-C8F4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lizenztyp: Einzelplatz
+Registriert auf: [FIRMA/NAME DES KUNDEN]
+
+
+AKTIVIERUNG:
+────────────────────────────────────────────────────────────────────────────
+1. Starten Sie MaterialManager R03
+2. Menü: Hilfe > Lizenz aktivieren
+3. Geben Sie den Lizenzschlüssel ein: S1A3-F7B9-D2E1-C8F4
+4. Geben Sie Ihren Namen/Firma ein: [FIRMA/NAME]
+5. Klicken Sie auf "Lizenz aktivieren"
+6. Fertig! Die Vollversion ist nun aktiviert.
+
+
+WICHTIG:
+• Der Lizenzschlüssel ist an Ihren PC gebunden (Hardware-ID)
+• Bei Hardware-Wechsel: Kontaktieren Sie uns für neuen Schlüssel (1x/Jahr kostenlos)
+• Bewahren Sie diese E-Mail gut auf!
+
+
+SUPPORT:
+────────────────────────────────────────────────────────────────────────────
+• E-Mail: hoelzer_alex@yahoo.de
+• Telefon: +49 170 8339993
+• Support-Zeiten: Mo-Fr 9-17 Uhr
+
+Kostenloser Support: 12 Monate ab heute
+
+
+Vielen Dank für Ihr Vertrauen!
+
+Mit freundlichen Grüßen
+Alexander HÃ¶lzer
+────────────────────────────────────────────────────────────────────────────
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. SUPPORT & WARTUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+SUPPORT-STRATEGIE
+──────────────────────────────────────────────────────────────────────────────
+
+✓ KOSTENLOSER SUPPORT (12 Monate):
+  • E-Mail-Support (Antwort binnen 48h)
+  • Fehlerbehebungen
+  • Minor-Updates (z.B. v3.1, v3.2)
+  • Sicherheitsupdates
+
+✓ KOSTENPFLICHTIGE LEISTUNGEN:
+  • Telefonischer Support: In Support-Verlängerung enthalten
+  • Remote-Hilfe: 99 EUR/Std.
+  • Vor-Ort-Service: 399 EUR/Tag + Reisekosten
+  • Individuelle Anpassungen: 89 EUR/Std.
+
+
+HARDWARE-WECHSEL
+──────────────────────────────────────────────────────────────────────────────
+
+Wenn Kunde neuen PC kauft:
+
+1. Kunde meldet Hardware-Wechsel
+2. Prüfe Kaufdatum (1x/Jahr kostenlos)
+3. Kunde sendet neue Hardware-ID
+4. Generiere neuen Lizenzschlüssel
+5. Sende neuen Lizenzschlüssel
+
+ACHTUNG: Alter Lizenzschlüssel wird ungültig!
+
+
+BACKUP-STRATEGIE
+──────────────────────────────────────────────────────────────────────────────
+
+WICHTIG: Sichere regelmäßig:
+• Alle vergebenen Lizenzen (Excel-Tabelle)
+• LIZENZ_GENERATOR_INTERN.bat (nur in deinem Backup!)
+• Quellcode (Git-Repository privat halten)
+• Kundendaten und Support-Anfragen
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ZUSAMMENFASSUNG - DEINE RECHTE
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Urheberrechtsschutz:
+  Du bist alleiniger Urheber und Rechteinhaber der Software.
+  Automatischer Schutz durch §§ 69a ff. UrhG.
+
+✓ Lizenzierung:
+  Du entscheidest, wer deine Software nutzen darf.
+  Hardware-basiertes Lizenzsystem schützt vor Raubkopien.
+
+✓ Preisgestaltung:
+  Du legst Preise fest. Empfehlung: 499 - 2.990 EUR je nach Lizenz.
+
+✓ Vertragsstrafen:
+  Bei Verstößen: Bis 50.000 EUR Vertragsstrafe (in LICENSE.txt festgelegt).
+
+✓ Durchsetzung:
+  Bei Urheberrechtsverletzung: Zivilrechtlich und strafrechtlich verfolgbar.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLISTE - VOR USB-ÜBERGABE
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Build_USB_Vollversion.bat ausgeführt
+□ USB-Package erstellt und geprüft
+□ LIZENZ_GENERATOR_INTERN.bat aus USB-Package GELÖSCHT!
+□ LICENSE.txt und COPYRIGHT.txt im Package enthalten
+□ README_VOLLVERSION.txt aktualisiert (deine Kontaktdaten!)
+□ USB-Stick beschriftet
+□ Rechnung/Angebot erstellt
+□ Kundendaten dokumentiert (für Support)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+© 2025 Alexander HÃ¶lzer - Alle Rechte vorbehalten
+Dieses Dokument ist vertraulich und nur für dich bestimmt.
+═══════════════════════════════════════════════════════════════════════════════

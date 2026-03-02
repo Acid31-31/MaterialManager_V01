@@ -1,0 +1,52 @@
+╔════════════════════════════════════════════════════════════════╗
+║          MaterialManager V01 - INSTALLATIONSANLEITUNG           ║
+║                 © 2025 Alexander Hölzer                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+📋 SCHRITT FÜR SCHRITT INSTALLATION:
+
+1️⃣  USB-STICK IN COMPUTER EINSTECKEN
+   └─ Dieser Ordner: USB_Installation
+
+2️⃣  DOPPELKLICK AUF: MaterialManager_Setup.exe
+   └─ Das Installationsprogramm startet automatisch
+
+3️⃣  FOLGEN SIE DEN ANWEISUNGEN:
+   ✅ Installationspfad wählen (Standard: C:\Program Files\MaterialManager)
+   ✅ Lizenz akzeptieren
+   ✅ Installation durchführen (~2 Minuten)
+
+4️⃣  NACH INSTALLATION:
+   ✅ Programm startet automatisch
+   ✅ Lizenzschlüssel eingeben (falls vorhanden)
+   ✅ Fertig! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  SYSTEMANFORDERUNGEN:
+   • Windows 10/11 (64-Bit)
+   • .NET 8 Runtime (wird automatisch installiert)
+   • Mindestens 500 MB freier Speicherplatz
+   • Internetverbindung (für Updates empfohlen)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ PROBLEME BEI INSTALLATION?
+
+Problem: "Windows Defender warnt vor Programm"
+Lösung: Klick auf "Weitere Informationen" → "Trotzdem ausführen"
+        (Das ist normal bei neuen Programmen)
+
+Problem: ".NET Runtime wird nicht gefunden"
+Lösung: Installer downloaded automatisch die benötigte Version
+
+Problem: "Zugriff verweigert"
+Lösung: Rechtsklick auf Setup → "Als Administrator ausführen"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 SUPPORT:
+   E-Mail: hoelzer_alex@yahoo.de
+   Telefon: +49 170 8339993
+
+Viel Spaß mit MaterialManager! 🚀

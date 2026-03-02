@@ -1,0 +1,408 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              🔑 LIZENZGENERATOR - KOMPLETTE ANLEITUNG                        ║
+║                    MaterialManager R03 - Vollversion                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+© 2025 Alexander Hölzer - Alle Rechte vorbehalten
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 INHALTSVERZEICHNIS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Überblick: Lizensierungsprozess
+2. Schritt 1: Kunde installiert Demo-Version
+3. Schritt 2: Kunde sendet Hardware-ID
+4. Schritt 3: Du generierst Lizenzschlüssel
+5. Schritt 4: Kunde aktiviert Vollversion
+6. FAQ & Troubleshooting
+
+
+═══════════════════════════════════════════════════════════════════════════════
+1. ÜBERBLICK: LIZENSIERUNGSPROZESS
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  KUNDE                              DU (HERSTELLER)                       │
+│  ────────────────────────────────────────────────────────────────────      │
+│                                                                             │
+│  1. Installiert Demo-Version                                               │
+│       ↓                                                                     │
+│  2. Testet 30 Tage                                                          │
+│       ↓                                                                     │
+│  3. Wählt "Hilfe > Lizenz aktivieren"                                      │
+│       ↓                                                                     │
+│  4. Kopiert Hardware-ID                         ← SCHRITT 1                 │
+│       ├─ Sendet per E-Mail  ─────────────────→ 5. Erhält Hardware-ID       │
+│       │                                             ↓                       │
+│       │                                         6. Startet LIZENZ_GENER... │
+│       │                                             ↓                       │
+│       │                                         7. Generiert Lizenzkey     │
+│       │                                             ↓                       │
+│       │         Sendet E-Mail mit Key ←─────── 8. Kopiert Lizenzkey        │
+│       ↓                                             └─ SCHRITT 2            │
+│  9. Gibt Lizenzkey ein                                                      │
+│  10. Klickt "Aktivieren"                                                    │
+│       ↓                                                                     │
+│  11. ✓ Vollversion freigeschaltet!                                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. SCHRITT 1: KUNDE INSTALLIERT DEMO-VERSION
+═══════════════════════════════════════════════════════════════════════════════
+
+Der Kunde erhält von dir:
+
+📦 Option A - Per E-Mail Download:
+   └─ ZIP-Datei mit MaterialManager_R03.exe
+   └─ Installationsanleitung
+   └─ Deine Kontaktdaten
+
+📦 Option B - Per USB-Stick:
+   └─ USB-Stick mit INSTALL_VOLLVERSION.bat
+   └─ Alle Dateien für Installation
+   └─ Installationsanleitung gedruckt
+   └─ Deine Visitenkarte
+
+KUNDE INSTALLIERT:
+──────────────────────────────────────────────────────────────────────────────
+
+Windows:
+1. Doppelklick auf MaterialManager_R03.exe (oder INSTALL_VOLLVERSION.bat)
+2. Installation lädt
+3. Programm startet
+4. Zeigt an: "Demo-Version (30 Tage verbleibend)"
+5. Volle Funktionalität ist freigeschaltet
+6. Kunde kann testen und nutzen
+
+Programm funktioniert 30 Tage lang VOLLSTÄNDIG!
+Nach 30 Tagen: Zeigt Dialog für Lizenzaktivierung
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. SCHRITT 2: KUNDE SENDET HARDWARE-ID
+═══════════════════════════════════════════════════════════════════════════════
+
+KUNDE MACHT:
+──────────────────────────────────────────────────────────────────────────────
+
+1. Im Programm: Menü "Hilfe" (oben rechts)
+2. Wählt: "Lizenz aktivieren"
+3. Dialog öffnet sich mit:
+   
+   ┌──────────────────────────────────────────────────┐
+   │     LIZENZAKTIVIERUNG - MaterialManager R03       │
+   │                                                  │
+   │  Hardware-ID:                                    │
+   │  ┌──────────────────────────────────────────┐   │
+   │  │ A3F7B9D2E1C8F4A9B2E5C8F1A4D7G0H3       │   │
+   │  └──────────────────────────────────────────┘   │
+   │  [📋 In Zwischenablage kopieren]                │
+   │                                                  │
+   │  Lizenzschlüssel:                                │
+   │  ┌──────────────────────────────────────────┐   │
+   │  │ ___-___-___-___                         │   │
+   │  └──────────────────────────────────────────┘   │
+   │                                                  │
+   │  Registriert auf:                                │
+   │  ┌──────────────────────────────────────────┐   │
+   │  │ [Kundenname/Firma]                       │   │
+   │  └──────────────────────────────────────────┘   │
+   │                                                  │
+   │  [✓ Lizenz aktivieren]  [❌ Abbrechen]          │
+   │                                                  │
+   └──────────────────────────────────────────────────┘
+
+4. Kunde klickt: "📋 In Zwischenablage kopieren"
+5. Hardware-ID ist kopiert (z.B. A3F7B9D2E1C8F4A9B2E5C8F1A4D7G0H3)
+6. Kunde sendet dir PER EMAIL:
+
+   ┌─────────────────────────────────────────────────┐
+   │ Betreff: Lizenzaktivierung - Hardware-ID        │
+   │                                                 │
+   │ Hallo Alexander,                                │
+   │                                                 │
+   │ ich habe MaterialManager R03 installiert.       │
+   │ Hier ist meine Hardware-ID:                     │
+   │                                                 │
+   │ A3F7B9D2E1C8F4A9B2E5C8F1A4D7G0H3              │
+   │                                                 │
+   │ Danke!                                          │
+   │ [Kundenname]                                    │
+   └─────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. SCHRITT 3: DU GENERIERST LIZENZSCHLÜSSEL
+═══════════════════════════════════════════════════════════════════════════════
+
+JA! JETZT BRAUCHST DU DEN LIZENZGENERATOR!
+
+DATEI: LIZENZ_GENERATOR_INTERN.bat
+SPEICHERORT: MaterialManager_R03/ (im Projektroot)
+WICHTIG: ⚠️  NUR FÜR DICH - NICHT AN KUNDEN WEITERGEBEN! ⚠️
+
+SO NUTZT DU IHN:
+──────────────────────────────────────────────────────────────────────────────
+
+1. Öffne den Explorer
+2. Navigiere zu: C:\...\MaterialManager_R03
+3. Doppelklick auf: LIZENZ_GENERATOR_INTERN.bat
+4. Ein schwarzes Fenster öffnet sich
+
+5. Eingabe 1 - Hardware-ID des Kunden:
+   
+   Gib Hardware-ID des Kunden ein: A3F7B9D2E1C8F4A9B2E5C8F1A4D7G0H3
+   
+   (Kopiert aus der E-Mail des Kunden)
+
+6. Eingabe 2 - Lizenztyp:
+   
+   Welcher Lizenztyp?
+   
+    [1] Einzelplatz (1 Arbeitsplatz)        = 499,00 EUR
+    [2] Mehrplatz (3 Arbeitsplätze)         = 1.199,00 EUR
+    [3] Firmenlizenz (10 Arbeitsplätze)     = 2.990,00 EUR
+    [4] Enterprise (unbegrenzt)             = Auf Anfrage
+   
+   Wähle Lizenztyp [1-4]: 1
+   
+   (Welchen Typ der Kunde kauft)
+
+7. Eingabe 3 - Kundenname:
+   
+   Kundenname/Firma: Firma Müller GmbH
+   
+   (Name des Kunden)
+
+8. GENERATOR ERSTELLT LIZENZSCHLÜSSEL:
+   
+   ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║                        ✓ LIZENZSCHLÜSSEL GENERIERT!                      ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝
+   
+   Lizenztyp:       Einzelplatz
+   Kunde:           Firma Müller GmbH
+   Hardware-ID:     A3F7B9D2E1C8F4A9B2E5C8F1A4D7G0H3
+   
+   LIZENZSCHLÜSSEL:  S1A3-F7B9-D2E1-C8F4
+   
+   ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║                           KOPIERE DIESEN SCHLÜSSEL!                      ║
+   ║                      Sende an Kunde per E-Mail oder SMS                   ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝
+
+9. Du KOPIERST den Lizenzschlüssel:
+   
+   S1A3-F7B9-D2E1-C8F4
+
+10. Doppelter Lizenzschlüssel wird in der E-Mail-Vorlage angezeigt (siehe unten)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. SCHRITT 4: KUNDE AKTIVIERT VOLLVERSION
+═══════════════════════════════════════════════════════════════════════════════
+
+DU SENDEST E-MAIL AN KUNDE:
+──────────────────────────────────────────────────────────────────────────────
+
+Betreff: Ihr Lizenzschlüssel - MaterialManager R03
+
+Sehr geehrter Herr/Frau [Kundenname],
+
+vielen Dank für Ihren Kauf von MaterialManager R03!
+
+Hier ist Ihr persönlicher Lizenzschlüssel:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LIZENZSCHLÜSSEL: S1A3-F7B9-D2E1-C8F4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lizenztyp: Einzelplatz
+Registriert auf: Firma Müller GmbH
+
+
+AKTIVIERUNG:
+────────────────────────────────────────────────────────────────────────────
+1. Starten Sie MaterialManager R03
+2. Menü: Hilfe > Lizenz aktivieren
+3. Geben Sie den Lizenzschlüssel ein: S1A3-F7B9-D2E1-C8F4
+4. Geben Sie Ihren Namen/Firma ein: Firma Müller GmbH
+5. Klicken Sie auf "✓ Lizenz aktivieren"
+6. Fertig! Die Vollversion ist nun aktiviert.
+
+
+WICHTIG:
+• Der Lizenzschlüssel ist an Ihren PC gebunden (Hardware-ID)
+• Bei Hardware-Wechsel: Kontaktieren Sie uns für neuen Schlüssel (1x/Jahr kostenlos)
+• Bewahren Sie diese E-Mail gut auf!
+
+
+SUPPORT:
+────────────────────────────────────────────────────────────────────────────
+• E-Mail: hoelzer_alex@yahoo.de
+• Telefon: +49 170 8339993
+• Support-Zeiten: Mo-Fr 9-17 Uhr
+
+Kostenloser Support: 12 Monate ab heute
+
+
+Vielen Dank für Ihr Vertrauen!
+
+Mit freundlichen Grüßen
+Alexander Hölzer
+
+────────────────────────────────────────────────────────────────────────────
+
+KUNDE AKTIVIERT:
+──────────────────────────────────────────────────────────────────────────────
+
+1. Öffnet MaterialManager R03
+2. Menü: Hilfe > Lizenz aktivieren
+3. Gibt Lizenzschlüssel ein: S1A3-F7B9-D2E1-C8F4
+4. Gibt Kundenname ein: Firma Müller GmbH
+5. Klickt: ✓ Lizenz aktivieren
+6. PING! Lizenz wird validiert
+7. ✓ Erfolg! Vollversion ist freigeschaltet
+8. Programm zeigt jetzt: "Vollversion - Registriert auf: Firma Müller GmbH"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 DOCUMENTATION - FÜHRE EINE TABELLE
+═══════════════════════════════════════════════════════════════════════════════
+
+WICHTIG: Dokumentiere ALLE vergebenen Lizenzen in einer Excel-Datei!
+
+Datum      │ Kunde           │ Hardware-ID      │ Lizenzschlüssel   │ Typ
+───────────┼─────────────────┼──────────────────┼───────────────────┼────────
+01.01.2025 │ Firma Müller    │ A3F7B9D2E1C8F4A9 │ S1A3-F7B9-D2E1... │ Single
+05.01.2025 │ Firma Schmidt   │ B4E8C3F2A9D7E6B5 │ M3B4-E8C3-F2A9... │ Multi3
+10.01.2025 │ Firma Weber     │ C5F9D4G3B0E8F7C6 │ C5F9-D4G3-B0E8... │ Company10
+
+SPEICHERE DIESE DATEI!
+Diese ist wichtig für:
+- Kundenverwaltung
+- Support (Welche Lizenz hat welcher Kunde?)
+- Einnahmen-Dokumentation
+- Vor Gericht (bei Lizenzstreitigkeiten)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+❓ FAQ & TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+F: Der Generator funktioniert nicht?
+A: 1. Prüfe: Ist LIZENZ_GENERATOR_INTERN.bat vorhanden?
+   2. Versuche: Mit Rechtsklick "Als Administrator ausführen"
+   3. Windows Defender/Antivirus kann warnen - "Trotzdem ausführen"
+
+
+F: Kunde gibt falschen Lizenzschlüssel ein?
+A: Der Schlüssel ist Hardware-gebunden!
+   - Die Hardware-ID muss EXAKT stimmen
+   - Der Schlüssel funktioniert NUR auf diesem einen PC
+   - Kunde muss Schlüssel nochmal probieren
+   - Falls immer noch falsch: Du generierst einen neuen (kostenlos)
+
+
+F: Kunde wechselt seinen PC?
+A: 1. Kunde meldet Hardware-Wechsel
+   2. Prüf: Kaufdatum
+   3. Wenn < 1 Jahr: Kostenlos neuer Schlüssel
+   4. Wenn > 1 Jahr: Hardware-Wechsel-Gebühr oder kostenpflichtig
+   5. Kunde sendet neue Hardware-ID
+   6. Du generierst neuen Schlüssel mit neuem Generator
+   7. Alter Schlüssel wird UNGÜLTIG
+
+
+F: Wie lange gilt eine Lizenz?
+A: UNBEGRENZT!
+   - Nach Aktivierung: Keine zeitliche Beschränkung
+   - 12 Monate kostenloser Support
+   - Support kann verlängert werden (99 EUR/Jahr)
+
+
+F: Kann der Kunde die Lizenz kopieren?
+A: NEIN! Das ist ILLEGAL!
+   - Hardware-ID ist eindeutig
+   - Jeder PC hat andere Hardware-ID
+   - Lizenz funktioniert NUR auf diesem PC
+   - Bei Verstoß: Strafen bis 50.000 EUR (steht in LICENSE.txt)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔒 SICHERHEIT & GEHEIMHALTUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  LIZENZ_GENERATOR_INTERN.bat:
+├─ NUR für dich bestimmt!
+├─ NICHT an Kunden weitergeben!
+├─ NICHT ins Internet hochladen!
+├─ NICHT auf Dropbox/Google Drive speichern!
+└─ Nur lokal auf deinem Rechner speichern!
+
+⚠️  GEHEIME DATEN:
+├─ Generator-Script
+├─ Lizenz-Algorithmus
+├─ Kundenliste mit Hardware-IDs
+└─ Alle Lizenzschlüssel
+
+✅ SICHER LAGERN:
+├─ Auf deinem Laptop (C:\Users\...)
+├─ Auf externem USB-Stick (mit Passwort verschlüsselt)
+├─ Backups machen!
+└─ Passwort-Manager für Lagerort-Infos
+
+
+═══════════════════════════════════════════════════════════════════════════════
+💾 BACKUP DER WICHTIGEN DATEIEN
+═══════════════════════════════════════════════════════════════════════════════
+
+Mache regelmäßig Backups von:
+
+1. LIZENZ_GENERATOR_INTERN.bat
+2. Kundenliste (Excel-Datei mit allen Lizenzen)
+3. Quellcode (Git-Repository)
+4. LICENSE.txt und COPYRIGHT.txt
+5. LicenseService.cs (Lizenz-Logik)
+
+BACKUP-PLAN:
+────────────────────────────────────────────────────────────────────────────
+
+Wöchentlich:
+  - Kundenliste-Excel auf USB-Stick kopieren
+  - Generator-Script sichern
+
+Monatlich:
+  - Ganzes Projekt als ZIP sichern
+  - In Cloud speichern (privat!)
+
+Jährlich:
+  - Quellcode bei Notar/Anwalt hinterlegen (Beweissicherung)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 CHECKLISTE - VOR ERSTEM VERKAUF
+═══════════════════════════════════════════════════════════════════════════════
+
+□ LIZENZ_GENERATOR_INTERN.bat existiert und funktioniert
+□ Kundenliste-Excel erstellt (Spalten: Datum, Kunde, Hardware-ID, Lizenzkey, Typ)
+□ LICENSE.txt gelesen und verstanden
+□ COPYRIGHT.txt im Paket
+□ Demo-Version startet ohne Fehler
+□ Lizenzaktivierungs-Dialog funktioniert
+□ E-Mail-Vorlage für Lizenz-E-Mail vorbereitet
+□ Support-Kontaktdaten aktualisiert (E-Mail, Telefon)
+□ Backup-Strategie geplant
+□ Rechtsanwalt konsultiert (optional, aber empfohlen)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+© 2025 Alexander Hölzer - Alle Rechte vorbehalten
+LIZENZGENERATOR & DOKUMENTATION - VERTRAULICH!
+
+═══════════════════════════════════════════════════════════════════════════════

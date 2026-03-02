@@ -1,0 +1,196 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🚀 KOMPLETTE USB-INSTALLATION - SCHNELLSTART                         ║
+║  Erstelle das Programm komplett für USB!                              ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+✅ NEUE DATEIEN ERSTELLT:
+
+1. USB_INSTALLATION_ERSTELLEN.bat
+   └─ Schnelle Batch-Version
+   └─ Alles automatisch!
+
+2. USB-Installation-Erstellen.ps1
+   └─ PowerShell-Version
+   └─ Mit mehr Kontrolle
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 SCHRITT 1: USB-INSTALLATION ERSTELLEN
+
+METHODE 1 (EINFACH):
+──────────────────
+
+Doppelklick auf: USB_INSTALLATION_ERSTELLEN.bat
+
+Das ist alles! Das Script macht:
+  ✅ Backup erstellen
+  ✅ Code builden (Release-Modus)
+  ✅ Alle Dateien kopieren
+  ✅ Alles verifizieren
+  ✅ Fertig!
+
+METHODE 2 (PowerShell):
+──────────────────────
+
+PowerShell öffnen:
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  .\USB-Installation-Erstellen.ps1
+
+═══════════════════════════════════════════════════════════════════════════
+
+⏱️  WIE LANGE DAUERT DAS?
+
+  Schritt 1 (Backup):      ~1 Minute
+  Schritt 2 (Cleanup):     ~30 Sekunden
+  Schritt 3 (Build):       2-5 Minuten  ← LÄNGSTE PHASE!
+  Schritt 4 (Kopieren):    ~1 Minute
+  Schritt 5 (Verifikation):~10 Sekunden
+  ─────────────────────────────────────
+  INSGESAMT:               ~5-10 Minuten
+
+═══════════════════════════════════════════════════════════════════════════
+
+📁 WAS WIRD ERSTELLT?
+
+Die USB_Installation wird so gefüllt:
+
+USB_Installation/
+│
+├─ Programm/                    ← ALLES HIER!
+│  ├─ MaterialManager_R03.exe   ✅ Hauptprogramm
+│  ├─ ClosedXML.dll            ✅ Excel-Funktionen
+│  ├─ System.*.dll             ✅ .NET Bibliotheken
+│  ├─ *.json                   ✅ Konfiguration
+│  ├─ runtimes/                ✅ Runtime-Dateien
+│  └─ ... (weitere Dateien)
+│
+├─ Anleitung/
+│  ├─ QUICK_START.md
+│  └─ DEPLOYMENT_ANLEITUNG.md
+│
+├─ Tools/
+│  └─ GENERATE_LICENSE.bat
+│
+├─ README.md
+├─ USB_README.txt
+└─ ... (weitere Dateien)
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 SCHRITT 2: AUF USB-STICK KOPIEREN
+
+Nach dem Build:
+
+1️⃣  USB-Stick einstecken
+    └─ Sollte z.B. D: sein
+
+2️⃣  Windows Explorer öffnen
+    └─ Gehe zu: C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\
+
+3️⃣  ALLES MARKIEREN
+    └─ Drücke: Ctrl+A
+
+4️⃣  KOPIEREN
+    └─ Drücke: Ctrl+C
+
+5️⃣  ZU USB-STICK GEHEN
+    └─ Double-Click auf USB-Stick (z.B. D:)
+
+6️⃣  EINFÜGEN
+    └─ Drücke: Ctrl+V
+    └─ Wartet auf Fertigstellung (~5-10 Min)
+
+7️⃣  ÜBERPRÜFEN
+    └─ USB sollte jetzt enthalten:
+       ├─ Programm/ (mit MaterialManager_R03.exe)
+       ├─ Anleitung/
+       ├─ Tools/
+       └─ README.md
+
+8️⃣  FERTIG!
+    └─ USB-Stick ist PRODUKTIONSREIF!
+
+═══════════════════════════════════════════════════════════════════════════
+
+💾 SPEICHERPLATZ
+
+Programm-Größe nach Build:
+  • MaterialManager_R03.exe:  ~40 MB
+  • DLL-Dateien:             ~100-150 MB
+  • Runtime-Dateien:         ~100-200 MB
+  • Gesamt:                  ~250-350 MB
+
+USB-Stick Anforderung:
+  • Minimum: 500 MB
+  • Empfohlen: 1000 MB (1 GB)
+
+═══════════════════════════════════════════════════════════════════════════
+
+✅ NACH DEM KOPIEREN AUF USB
+
+Der USB-Stick enthält ALLES, was der Kunde braucht:
+
+📦 KOMPLETTES PROGRAMM:
+   └─ MaterialManager_R03.exe kann sofort gestartet werden!
+   └─ Alle Abhängigkeiten sind dabei
+   └─ Läuft auf jedem Windows-PC mit .NET 8 Runtime
+
+📖 ANLEITUNG:
+   └─ QUICK_START.md für schnelle Einrichtung
+   └─ DEPLOYMENT_ANLEITUNG.md für Details
+
+🔧 TOOLS:
+   └─ GENERATE_LICENSE.bat für Lizenzschlüssel-Generierung
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 KUNDENINSTALLATION
+
+Kunde erhält USB-Stick:
+
+1. USB einstecken
+2. Doppelklick: Programm/MaterialManager_R03.exe
+3. Liest Lizenzschlüssel
+4. Programm startet!
+
+Optional:
+  • Shortcut auf Desktop erstellen
+  • Zu Autostart hinzufügen
+  • Mit GENERATE_LICENSE.bat Lizenz verlängern
+
+═══════════════════════════════════════════════════════════════════════════
+
+❓ HÄUFIGE FRAGEN
+
+F: Was ist, wenn der Build fehlt?
+A: Das Script zeigt einen Fehler und speichert ein Backup!
+   Prüfe die Buildausgabe - meist sind es einfach zu behebende Fehler.
+
+F: Kann ich das mehrfach machen?
+A: JA! Jedes Mal wird ein neues Backup erstellt.
+   Alte Backups werden automatisch gelöscht (behalte nur 10 neueste).
+
+F: Was ist, wenn ich das Programm ändere?
+A: Einfach nochmal USB_INSTALLATION_ERSTELLEN.bat starten!
+   Alles wird neu gebaut und kopiert.
+
+F: Brauche ich noch ein Installer-Programm?
+A: Das Programm läuft direkt von USB!
+   Optional: MASTER_SETUP.ps1 für ein Setup-Installer-Programm.
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 JETZT STARTEN!
+
+Öffne:
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+
+Und doppelklick auf:
+  USB_INSTALLATION_ERSTELLEN.bat
+
+ODER PowerShell:
+  .\USB-Installation-Erstellen.ps1
+
+✅ FERTIG!
+
+═════════════════════════════════════════════════════════════════════════════

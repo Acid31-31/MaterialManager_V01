@@ -1,0 +1,245 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║  📁 DATEIEN-ÜBERSICHT - MATERIALMANAGER R03                          ║
+║  Wo sind alle Dateien abgelegt?                                      ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🎯 HAUPTPFAD:
+══════════════════════════════════════════════════════════════════════════
+
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 ORDNERSTRUKTUR:
+
+MaterialManager_R03/                         [ROOT - Hauptprojekt]
+│
+├─ ⚡ MASTER SETUP (Start hier!)
+│  ├─ MASTER_SETUP.ps1                      [PowerShell - mit Admin]
+│  ├─ MASTER_SETUP.bat                      [Batch - einfach doppelklick]
+│  └─ MASTER_SETUP_VISUAL_GUIDE.md          [Visuelle Anleitung]
+│
+├─ 📚 ANLEITUNG & DOKUMENTATION
+│  ├─ ALLES_FERTIG.txt                      [Finale Zusammenfassung]
+│  ├─ ALLES_ERSTELLEN_ANLEITUNG.txt         [Schritt-für-Schritt]
+│  ├─ BUILD_INSTALLER_SCHNELLSTART.txt      [Nur die 2 Befehle]
+│  ├─ INSTALLER_READY.txt                   [Installer-Features]
+│  ├─ START_HIER.txt                        [First-Read]
+│  ├─ QUICK_START.md                        [5 Schritte]
+│  ├─ DEPLOYMENT_ANLEITUNG.md               [Detailliert]
+│  ├─ CODE_SIGNING_GUIDE.md                 [Zertifikate]
+│  └─ IMPLEMENTATION_REPORT.md              [Technischer Report]
+│
+├─ 🖥️  C# INSTALLER QUELLCODE
+│  └─ Installer_Source/
+│     ├─ MaterialManager_Installer.cs       [C# Installer GUI]
+│     ├─ MaterialManager_Installer.csproj   [.NET 8 Projekt]
+│     ├─ Build-Installer.ps1                [Build-Script]
+│     └─ README.md                          [Technische Doku]
+│
+├─ 📦 USB-INSTALLATION PAKET
+│  └─ USB_Installation/
+│     ├─ Installer.exe                      [Wird mit MASTER_SETUP erstellt]
+│     ├─ USB_INSTALL.bat                    [Backup-Installer]
+│     ├─ SETUP_PROGRAMM.bat                 [Programm-Dateien einfügen]
+│     ├─ USB_README.txt                     [Für Kunden]
+│     ├─ INDEX.txt                          [Struktur-Übersicht]
+│     ├─ README.md                          [Bedienungsanleitung]
+│     │
+│     ├─ 📁 Programm/                       [.exe + DLLs hier rein]
+│     ├─ 📁 Tools/
+│     │  └─ GENERATE_LICENSE.bat            [Lizenzschlüssel-Generator]
+│     ├─ 📁 Lizenzen/                       [Kundendokumentation]
+│     └─ 📁 Anleitung/
+│        ├─ QUICK_START.md
+│        └─ DEPLOYMENT_ANLEITUNG.md
+│
+├─ 🔐 LIZENZIERUNG & CODE-SIGNING
+│  ├─ Services/
+│  │  ├─ HardwareIdService.cs               [Hardware-ID Generator]
+│  │  ├─ LicenseKeyGenerator.cs             [Lizenzschlüssel-Logic]
+│  │  └─ LicenseService.cs                  [Lizenz-Verwaltung]
+│  │
+│  ├─ Build-USBVersion.ps1                  [USB-Build-Script]
+│  └─ (weitere Services & Code)
+│
+└─ 💾 BACKUPS
+   └─ ../Backups/
+      ├─ MaterialManager_R03_FINAL_*.zip    [Automatische Backups]
+      ├─ MaterialManager_R03_COMPLETE_*.zip
+      └─ (weitere Backups von jedem Build)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 FÜR DEN ANFANG - WELCHE DATEI ZUERST?
+
+1️⃣  LES ZUERST:
+   └─ ALLES_FERTIG.txt
+      [Finale Zusammenfassung mit allen Infos]
+
+2️⃣  DANN STARTE:
+   ├─ Doppelklick: MASTER_SETUP.bat
+   ├─ ODER PowerShell (als Admin):
+   │  .\MASTER_SETUP.ps1 -Action Full
+   └─ [In 2-5 Min ist alles fertig]
+
+3️⃣  DANN MACHE:
+   └─ cd USB_Installation
+      SETUP_PROGRAMM.bat
+      [Programm-Dateien einfügen]
+
+4️⃣  DANN VERSCHIEBE:
+   └─ Gesamten USB_Installation Ordner auf USB-Stick
+
+5️⃣  FERTIG!
+   └─ USB zu Kunde senden
+      Kunde führt Installer.exe aus
+      ✅ Installation läuft automatisch
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 ALLE NEUEN DATEIEN (seit Master Setup):
+
+ROOT-LEVEL (7 Dateien hinzugefügt):
+──────────────────────────────────
+  ✓ MASTER_SETUP.ps1                 (8.8 KB)
+  ✓ MASTER_SETUP.bat                 (1.5 KB)
+  ✓ MASTER_SETUP_VISUAL_GUIDE.md     (8.2 KB)
+  ✓ ALLES_ERSTELLEN_ANLEITUNG.txt    (12 KB)
+  ✓ ALLES_FERTIG.txt                 (18 KB)
+  ✓ BUILD_INSTALLER_SCHNELLSTART.txt (4 KB)
+  ✓ INSTALLER_READY.txt              (12 KB)
+
+INSTALLER_SOURCE/ (4 Dateien):
+────────────────────────────
+  ✓ MaterialManager_Installer.cs     (9 KB)
+  ✓ MaterialManager_Installer.csproj (1.5 KB)
+  ✓ Build-Installer.ps1              (5 KB)
+  ✓ README.md                        (8 KB)
+
+USB_INSTALLATION/ (erweitert):
+────────────────────────────
+  ✓ SETUP_PROGRAMM.bat               (2 KB)
+  ✓ README.md                        (5 KB)
+  ✓ INDEX.txt                        (3 KB)
+  (+ weitere Tools und Ordner)
+
+SERVICES/ (3 Dateien):
+──────────────────
+  ✓ HardwareIdService.cs             (2 KB)
+  ✓ LicenseKeyGenerator.cs            (3 KB)
+  ✓ LicenseService.cs                (Erweitert)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 WAS MACHT JEDE HAUPT-DATEI?
+
+MASTER_SETUP.ps1
+────────────────
+  ✓ Dauert: 2-5 Minuten
+  ✓ Prüft: Admin-Rechte, .NET 8 SDK
+  ✓ Baut: Installer.exe (dotnet build + publish)
+  ✓ Erstellt: USB-Paket, Backup
+  ✓ Zeigt: Zusammenfassung mit Pfaden
+  
+  Starten:
+  .\MASTER_SETUP.ps1 -Action Full    [Alles bauen]
+  .\MASTER_SETUP.ps1 -Action InstallerOnly
+  .\MASTER_SETUP.ps1 -Action USBOnly
+  .\MASTER_SETUP.ps1 -Action CleanBuild
+
+
+MASTER_SETUP.bat
+────────────────
+  ✓ Einfacher Wrapper um MASTER_SETUP.ps1
+  ✓ Startet PowerShell mit Admin-Rechten
+  ✓ Ideal für: Doppelklick-Start
+  
+  Starten:
+  1. Rechtsklick auf MASTER_SETUP.bat
+  2. "Als Administrator ausführen"
+
+
+ALLES_FERTIG.txt
+────────────────
+  ✓ Zusammenfassung ALLER Features
+  ✓ Alle Pfade erklärt
+  ✓ Workflow Schritt-für-Schritt
+  ✓ LESE DAS ZUERST!
+
+
+MaterialManager_Installer.cs
+──────────────────────────
+  ✓ C# Source-Code für Installer
+  ✓ Windows-Forms GUI
+  ✓ Admin-Check, Error-Handling
+  ✓ Desktop/StartMenu Shortcuts
+
+
+USB_Installation/Installer.exe
+──────────────────────────
+  ✓ Wird von MASTER_SETUP erstellt
+  ✓ Self-contained (~170 MB)
+  ✓ Keine externe .NET Installation nötig
+  ✓ Kopiert auf USB-Stick
+  ✓ Kunde doppelklickt → Installation!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💻 GIT STATUS:
+
+Repository: https://github.com/Acid31-31/MaterialManager_R03
+Branch: main
+
+Neue Dateien seit Master Setup:
+  ✓ MASTER_SETUP.ps1
+  ✓ MASTER_SETUP.bat
+  ✓ MASTER_SETUP_VISUAL_GUIDE.md
+  ✓ ALLES_ERSTELLEN_ANLEITUNG.txt
+  ✓ ALLES_FERTIG.txt
+  ✓ Installer_Source/* (4 Dateien)
+  ✓ Services/HardwareIdService.cs
+  ✓ Services/LicenseKeyGenerator.cs
+
+Status:
+  git status → Zeigt alle untracked Files
+  git add .  → Fügt alles hinzu
+  git commit -m "Add Master Setup with Professional Installer"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 QUICK START - SOFORT TESTEN:
+
+PowerShell als Admin:
+──────────────────
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  .\MASTER_SETUP.ps1 -Action Full
+
+oder:
+
+  Rechtsklick auf MASTER_SETUP.bat → "Als Administrator ausführen"
+
+Ergebnis nach 2-5 Min:
+  ✓ Installer.exe gebaut
+  ✓ USB_Installation/Installer.exe vorhanden
+  ✓ Backup erstellt
+  ✓ Zusammenfassung im Terminal
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 ZUSAMMENGEFASST:
+
+Alle Dateien sind im ROOT:
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+
+Starten:
+  1. ALLES_FERTIG.txt lesen
+  2. MASTER_SETUP.bat doppelklicken (oder .ps1 als Admin)
+  3. In 2-5 Min: Installer.exe fertig
+  4. USB_Installation auf USB kopieren
+  5. Fertig!
+
+═════════════════════════════════════════════════════════════════════════════

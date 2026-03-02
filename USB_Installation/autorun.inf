@@ -1,0 +1,6 @@
+[autorun]
+label=MaterialManager R03
+icon=MaterialManager_R03.ico
+action=Start MaterialManager
+open=START_MENU.bat
+shellexecute=START_MENU.bat

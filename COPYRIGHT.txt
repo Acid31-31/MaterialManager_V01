@@ -1,0 +1,99 @@
+﻿╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         URHEBERRECHTSHINWEIS                                  ║
+║                      MaterialManager R03 - Vollversion                        ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+© COPYRIGHT 2025 - ALLE RECHTE VORBEHALTEN
+═══════════════════════════════════════════════════════════════════════════════
+
+Software:           MaterialManager R03
+Version:            3.0.0 (Vollversion)
+Entwickler:         Alexander HÃ¶lzer
+Entwicklungszeitraum: 2024-2025
+Plattform:          Windows 10/11 (.NET 8)
+
+
+URHEBERRECHTSSCHUTZ
+═══════════════════════════════════════════════════════════════════════════════
+
+Diese Software und alle zugehörigen Komponenten sind urheberrechtlich geschützt 
+gemäß §§ 69a ff. UrhG (Urheberrechtsgesetz).
+
+GESCHÜTZTE KOMPONENTEN:
+• Quellcode (C#, XAML)
+• Benutzeroberfläche (UI/UX-Design)
+• Datenbank-Schema und Algorithmen
+• Dokumentation und Handbücher
+• Logos, Icons und grafische Elemente
+• Geschäftslogik und Berechnungsalgorithmen
+
+
+EIGENTUMSNACHWEIS
+═══════════════════════════════════════════════════════════════════════════════
+
+Erstveröffentlichung:    01.01.2025
+Registrierung:           [OPTIONAL: Registernummer beim DPMA/EUIPO]
+Entwicklungsnachweis:    Git-Repository (privat)
+                         Commit-Historie seit 2024
+
+
+MARKENHINWEIS
+═══════════════════════════════════════════════════════════════════════════════
+
+"MaterialManager" und das MaterialManager-Logo sind Marken von 
+Alexander HÃ¶lzer.
+
+Alle anderen erwähnten Produkt- und Firmennamen können Marken ihrer jeweiligen 
+Eigentümer sein.
+
+
+TECHNOLOGIEN UND LIZENZEN DRITTER
+═══════════════════════════════════════════════════════════════════════════════
+
+Diese Software verwendet folgende Open-Source-Komponenten:
+
+• .NET 8.0           (MIT-Lizenz, Microsoft Corporation)
+• ClosedXML          (MIT-Lizenz, ClosedXML Contributors)
+• QRCoder            (MIT-Lizenz, Raffael Herrmann)
+
+Alle Lizenzen Dritter sind in deren jeweiligen Lizenzdateien enthalten.
+
+
+SCHUTZ VOR UNBEFUGTER NUTZUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️ WARNUNG: Unbefugte Vervielfältigung, Verbreitung oder Modifikation dieser 
+Software ist strafbar nach § 106 UrhG und kann mit Freiheitsstrafe bis zu 
+3 Jahren oder Geldstrafe geahndet werden.
+
+VERBOTEN SIND:
+✗ Dekompilierung, Reverse Engineering
+✗ Entfernung von Urheberrechtshinweisen
+✗ Unbefugte Weitergabe oder Verleih
+✗ Öffentliche Zugänglichmachung ohne Lizenz
+✗ Kommerzielle Nutzung ohne Lizenz
+✗ Umgehung von Kopierschutzmechanismen
+
+
+LIZENZIERUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+Diese Software erfordert eine gültige Lizenz zur Nutzung.
+
+Lizenzerwerb:   hoelzer_alex@yahoo.de
+Support:        +49 170 8339993
+Website:        Auf Anfrage
+
+
+RECHTLICHE HINWEISE
+═══════════════════════════════════════════════════════════════════════════════
+
+Bei Verstößen gegen das Urheberrecht werden zivilrechtliche und strafrechtliche 
+Schritte eingeleitet.
+
+Meldung von Raubkopien: hoelzer_alex@yahoo.de
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Dieses Dokument ist rechtsgültig und Bestandteil der Software.
+═══════════════════════════════════════════════════════════════════════════════

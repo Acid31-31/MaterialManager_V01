@@ -1,0 +1,172 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                     PERSONALISIERUNG - SCHNELLANLEITUNG                       ║
+║                        MaterialManager R03 - Vollversion                      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+DEINE DATEN:
+═══════════════════════════════════════════════════════════════════════════════
+
+Name:         Alexander Hölzer
+Adresse:      Pfarrer-Rosenkranz-Strasse 9, 56642 Kruft
+E-Mail:       hoelzer_alex@yahoo.de
+Telefon:      +49 170 8339993
+Website:      Auf Anfrage
+Stadt:        Kruft (Gerichtsstand)
+
+
+AUTOMATISCHE PERSONALISIERUNG - EMPFOHLEN ✅
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION 1: Mit Batch-Datei (Einfach)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Doppelklick auf: Personalisierung_Starten.bat
+2. Daten prüfen → "J" eingeben
+3. Fertig! Alle Dateien wurden personalisiert
+
+✓ Automatisch
+✓ Backup wird erstellt
+✓ Fehler-sicher
+
+
+OPTION 2: Mit PowerShell (Erweitert)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Rechtsklick auf Personalisierung_Automatisch.ps1
+2. "Mit PowerShell ausführen"
+3. Daten prüfen → "J" eingeben
+4. Fertig!
+
+ODER TEST-MODUS (zeigt nur an, ändert nichts):
+powershell -ExecutionPolicy Bypass -File Personalisierung_Automatisch.ps1 -WhatIf
+
+
+MANUELLE PERSONALISIERUNG - NUR BEI PROBLEMEN
+═══════════════════════════════════════════════════════════════════════════════
+
+Falls das automatische Script nicht funktioniert:
+
+1. Öffne Visual Studio Code oder Notepad++
+2. Suche & Ersetze in allen Dateien (Strg+Shift+H):
+
+   [DEIN NAME / FIRMENNAME]  → Alexander Hölzer
+   [DEIN NAME]               → Alexander Hölzer
+   [DEINE ADRESSE]           → Pfarrer-Rosenkranz-Strasse 9, 56642 Kruft
+   [DEINE EMAIL]             → hoelzer_alex@yahoo.de
+   [DEINE TELEFONNUMMER]     → +49 170 8339993
+   [DEINE WEBSITE]           → Auf Anfrage
+   [DEINE STADT]             → Kruft
+
+3. Speichere alle Dateien
+
+
+WELCHE DATEIEN WERDEN PERSONALISIERT?
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ LICENSE.txt                              ← Lizenzvereinbarung
+✓ COPYRIGHT.txt                            ← Urheberrechtshinweis
+✓ VOLLVERSION_LEITFADEN.txt                ← Dein Vertriebs-Guide
+✓ _START_HIER_VOLLVERSION.txt              ← Schnellstart
+✓ USB_Installer/README_VOLLVERSION.txt     ← Kunden-Anleitung
+✓ USB_Installer/INSTALL_VOLLVERSION.bat    ← Installer
+✓ Build_USB_Vollversion.bat                ← Build-Script
+✓ Services/LicenseService.cs               ← Lizenz-Code
+✓ App.xaml.cs                              ← Copyright-Hinweise
+✓ MainWindow.xaml.cs                       ← Menü-Handler
+✓ MaterialManager_R03.csproj               ← Projekt-Infos
+✓ Views/LicenseActivationDialog.xaml       ← Aktivierungs-Dialog
+✓ Views/LicenseActivationDialog.xaml.cs    ← Dialog-Code
+
+
+NACH DER PERSONALISIERUNG
+═══════════════════════════════════════════════════════════════════════════════
+
+SCHRITT 1: PRÜFEN
+────────────────────────────────────────────────────────────────────────────────
+
+Öffne eine Datei zur Kontrolle:
+→ LICENSE.txt
+→ Suche nach "[DEIN" - sollte nichts mehr finden
+→ Deine Daten sollten überall stehen
+
+SCHRITT 2: KOMPILIEREN
+────────────────────────────────────────────────────────────────────────────────
+
+1. Öffne Visual Studio
+2. Öffne MaterialManager_R03.csproj
+3. Build > Rebuild Solution (Strg+Shift+B)
+4. Prüfe auf Fehler
+
+SCHRITT 3: TESTEN
+────────────────────────────────────────────────────────────────────────────────
+
+1. Starte MaterialManager_R03.exe
+2. Prüfe Copyright-Hinweis beim Start
+3. Hilfe > Über MaterialManager R03
+   → Sollte deine Daten anzeigen
+4. Hilfe > Lizenz aktivieren
+   → Sollte deine Kontaktdaten zeigen
+
+SCHRITT 4: USB-PAKET ERSTELLEN
+────────────────────────────────────────────────────────────────────────────────
+
+1. Führe aus: Build_USB_Vollversion.bat
+2. Prüfe USB_Package/README_VOLLVERSION.txt
+   → Sollte deine Daten enthalten
+3. WICHTIG: Lösche LIZENZ_GENERATOR_INTERN.bat aus USB_Package
+4. Kopiere auf USB-Stick
+
+
+BACKUP
+═══════════════════════════════════════════════════════════════════════════════
+
+Das Script erstellt automatisch ein Backup:
+→ Backup_Vor_Personalisierung_YYYYMMDD_HHMMSS/
+
+Falls etwas schiefgeht:
+1. Lösche die geänderten Dateien
+2. Kopiere aus dem Backup-Ordner zurück
+3. Versuche es erneut
+
+
+DATEN ÄNDERN
+═══════════════════════════════════════════════════════════════════════════════
+
+Falls du später Daten ändern möchtest:
+
+1. Öffne: Personalisierung_Automatisch.ps1
+2. Bearbeite Zeilen 13-20 (Abschnitt "KONFIGURATION")
+3. Speichern und erneut ausführen
+
+
+HÄUFIGE FEHLER
+═══════════════════════════════════════════════════════════════════════════════
+
+FEHLER: "Datei nicht gefunden"
+─────────────────────────────────────────────────────────────────────────────
+Lösung: Stelle sicher, dass du im richtigen Verzeichnis bist
+        (MaterialManager_R03 Projektordner)
+
+FEHLER: "PowerShell nicht gefunden"
+─────────────────────────────────────────────────────────────────────────────
+Lösung: Verwende manuelle Personalisierung mit Editor
+
+FEHLER: "Keine Platzhalter gefunden"
+─────────────────────────────────────────────────────────────────────────────
+Lösung: Dateien wurden bereits personalisiert
+        Stelle Backup wieder her, falls erneut nötig
+
+
+SUPPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+Bei Fragen oder Problemen:
+→ Siehe _START_HIER_VOLLVERSION.txt
+→ Siehe VOLLVERSION_LEITFADEN.txt
+
+
+═══════════════════════════════════════════════════════════════════════════════
+VIEL ERFOLG MIT DEINEM MATERIALMANAGER R03!
+═══════════════════════════════════════════════════════════════════════════════
+
+© 2025 Alexander Hölzer - Alle Rechte vorbehalten

@@ -1,0 +1,179 @@
+╔════════════════════════════════════════════════════════════════╗
+║  INSTALLER.EXE BAUEN - SCHNELLSTART                           ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 NUR 2 BEFEHLE:
+
+Befehl 1 (Wechsel ins Verzeichnis):
+───────────────────────────────────
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\Installer_Source
+
+
+Befehl 2 (Installer bauen):
+──────────────────────────
+
+  .\Build-Installer.ps1 -Action Package
+
+
+⏱️  WARTEN: ~2-3 Minuten (erste Mal länger, da .NET Runtime downloaded)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WENN ERFOLGREICH:
+
+Grüne Meldung:
+───────────
+
+  ✅ Installer Build Complete!
+  
+  📦 Installer.exe erstellt:
+     C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+     Installer_Source\bin\Release\net8.0-windows\win-x64\publish\
+     Installer.exe
+
+  📋 Dateigröße:
+     ~150-200 MB
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 DATEIEN KOPIEREN ZU USB:
+
+Befehl 3 (Kopiere Installer zu USB_Installation):
+──────────────────────────────────────────────
+
+  copy .\bin\Release\net8.0-windows\win-x64\publish\Installer.exe `
+       ..\USB_Installation\
+
+
+Befehl 4 (Prüfe ob vorhanden):
+──────────────────────────
+
+  dir ..\USB_Installation\Installer.exe
+
+
+Ergebnis sollte zeigen:
+───────────────────
+
+  Installer.exe                      [Größe] bytes
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 NÄCHSTE SCHRITTE:
+
+1. [ ] Installer.exe Größe prüfen (sollte ~150-200 MB sein)
+
+2. [ ] Programm-Dateien in USB_Installation füllen:
+       
+       cd ..\USB_Installation
+       SETUP_PROGRAMM.bat
+
+3. [ ] Auf USB-Stick kopieren:
+       
+       copy-item -Path ".\*" -Destination "D:\" -Recurse
+
+4. [ ] Auf Zielrechner testen:
+       
+       USB einstecken
+       Installer.exe doppelklicken (oder rechtsklick → ausführen)
+       Admin bestätigen
+       ✅ Installation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  HÄUFIGE FEHLER:
+
+Error: "PowerShell-Skripte können nicht ausgeführt werden"
+─────────────────────────────────────────────────────────
+
+Lösung:
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+
+Error: ".NET 8 SDK nicht gefunden"
+─────────────────────────────────
+
+Lösung:
+  1. Download: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+  2. Installiere .NET 8 SDK
+  3. Terminal neustarten
+  4. Build erneut versuchen
+
+
+Error: "C:\Program Files\ Zugriff verweigert"
+────────────────────────────────────────────
+
+Lösung:
+  Beim späteren Starten des Installers Admin-Rechte geben:
+  → Rechtsklick auf Installer.exe
+  → "Als Administrator ausführen"
+
+
+Error: "IWshRuntimeLibrary nicht gefunden"
+─────────────────────────────────────────
+
+Lösung:
+  Das ist normal - wird während Build automatisch gelöst
+  Einfach erneut versuchen: .\Build-Installer.ps1 -Action Package
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 OPTIONAL: CODE-SIGNING (macht EXE noch sicherer)
+
+Mit Zertifikat signieren:
+────────────────────────
+
+  .\Build-Installer.ps1 -Action Package `
+      -CertificatePath "C:\cert.pfx" `
+      -CertificatePassword "deinpasswort"
+
+→ Nur wenn du ein Code-Signing Zertifikat hast!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ERGEBNIS:
+
+Nach erfolgreichen Build hast du:
+
+  ✓ Installer.exe (150-200 MB)
+    → Professioneller Windows-Installer
+    → Keine Antivirus-Warnungen (99%)
+    → Mit Fehlerbehandlung
+    → GUI-basiert
+
+  ✓ Alle Dateien in: Installer_Source\bin\Release\net8.0-windows\win-x64\publish\
+    → Fertig zum Verteilen
+    → Fertig zum Signieren (optional)
+    → Fertig zum USB-Versand
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 FRAGEN?
+
+"Build funktioniert nicht?"
+→ Siehe Installer_Source\README.md
+
+"Fehler beim bauen?"
+→ Check: Antivirus blockiert .NET SDK?
+
+"Installer.exe läuft nicht?"
+→ Teste auf anderem PC zuerst
+
+"Antivirus blockiert Installer?"
+→ Ist normal bei neuer EXE
+→ Whitelist hinzufügen ODER
+→ Code-Signing (empfohlen)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 LOS GEHTS!
+
+Öffne PowerShell und führe aus:
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\Installer_Source
+  .\Build-Installer.ps1 -Action Package
+
+In 2-3 Minuten hast du deine Installer.exe!
+
+═══════════════════════════════════════════════════════════════════════

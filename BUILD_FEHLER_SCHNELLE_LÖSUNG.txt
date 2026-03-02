@@ -1,0 +1,134 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    SCHNELLE BEHEBUNG DER BUILD-FEHLER                        ║
+║                   MaterialManager R03 - Duplikate entfernen                   ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+PROBLEM-ZUSAMMENFASSUNG:
+════════════════════════════════════════════════════════════════════════════════
+
+Der Build schlägt fehl, weil folgende Dateien doppelte Definitionen enthalten:
+
+❌ MainWindow.xaml.cs           - Doppelte Properties und Methoden
+❌ App.xaml.cs                  - Doppelter OnStartup() Code
+❌ LicenseService.cs            - Doppelte Service-Methoden
+❌ LicenseActivationDialog      - Doppelte Event-Handler
+
+
+URSACHE:
+════════════════════════════════════════════════════════════════════════════════
+
+Code-Schnipsel wurden mit "edit_file" überschrieben statt aktualisiert.
+Die alten Definitionen wurden nicht entfernt, sondern doppelt eingefügt.
+
+
+SCHNELLE LÖSUNG - 3 OPTIONEN:
+════════════════════════════════════════════════════════════════════════════════
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ OPTION 1: AUTOMATISCH (EMPFOHLEN)                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+1. Öffne PowerShell als Administrator
+2. Führe aus: .\RemoveDuplicates.ps1
+3. Warte bis fertig
+4. Schließe PowerShell
+5. Visual Studio öffnen
+6. Build > Rebuild Solution
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ OPTION 2: SEMI-AUTOMATISCH                                                 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+1. Führe aus: FIX_PROJEKT_SCHNELL.bat
+2. Folge den Anweisungen
+3. Visual Studio öffnet sich automatisch
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ OPTION 3: MANUELL                                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Siehe: FEHLER_FIX_ANLEITUNG.txt
+
+
+DETAILLIERTE MANUEL ANLEITUNG (Falls Probleme):
+════════════════════════════════════════════════════════════════════════════════
+
+SCHRITT 1: Finde die Duplikate
+──────────────────────────────────────────────────────────────────────────────
+
+In Visual Studio:
+1. Öffne MainWindow.xaml.cs
+2. Drücke Ctrl+H (Find & Replace)
+3. Suche nach: "public ObservableCollection<MaterialItem> Materialien"
+4. Zähle die Treffer - sollten genau 1 sein
+5. Wenn mehr als 1: Es gibt ein Duplikat!
+
+
+SCHRITT 2: Entferne das Duplikat
+──────────────────────────────────────────────────────────────────────────────
+
+Beispiel für MainWindow.xaml.cs:
+
+❌ FALSCH (Duplikat):
+   public ObservableCollection<MaterialItem> Materialien { get; set; } = new();
+   // ... Code ...
+   public ObservableCollection<MaterialItem> Materialien { get; set; } = new();  ← LÖSCHEN!
+
+✅ RICHTIG:
+   public ObservableCollection<MaterialItem> Materialien { get; set; } = new();
+   // ... Code ...
+
+
+SCHRITT 3: Mache das bei allen Duplikaten
+──────────────────────────────────────────────────────────────────────────────
+
+Suche nach jedem Fehler aus der Error List:
+1. View > Error List
+2. Doppelklick auf Fehler → springt zur Position
+3. Prüfe ob doppelt
+4. Wenn ja: Lösche eine Kopie
+5. Speichern (Ctrl+S)
+
+
+SCHRITT 4: Rebuild
+──────────────────────────────────────────────────────────────────────────────
+
+1. Build > Clean Solution
+2. Build > Rebuild Solution
+3. Sollte jetzt fehlerfrei sein!
+
+
+BACKUP FALLS NÖTIG:
+════════════════════════════════════════════════════════════════════════════════
+
+Falls du alles versaut hast, gibt es ein Backup in:
+BACKUP_BEFORE_CLEANUP/
+
+Dateien die dort sind:
+├── MainWindow.xaml.cs.bak
+├── App.xaml.cs.bak
+├── LicenseService.cs.bak
+└── LicenseActivationDialog.xaml.cs.bak
+
+So nutzt du das Backup:
+1. Öffne BACKUP_BEFORE_CLEANUP/
+2. Kopiere die .bak Dateien
+3. Füge sie im Projekt-Root ein (überwrite)
+4. Benenne um: entferne ".bak" Endung
+5. Reload in Visual Studio
+6. Rebuild
+
+
+WENN IMMER NOCH FEHLER:
+════════════════════════════════════════════════════════════════════════════════
+
+Kontaktiere den Support:
+📧 E-Mail: hoelzer_alex@yahoo.de
+📞 Tel: +49 170 8339993
+
+
+════════════════════════════════════════════════════════════════════════════════
+© 2025 Alexander Hölzer - Alle Rechte vorbehalten
+════════════════════════════════════════════════════════════════════════════════

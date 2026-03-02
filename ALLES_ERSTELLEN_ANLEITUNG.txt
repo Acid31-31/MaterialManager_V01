@@ -1,0 +1,270 @@
+╔════════════════════════════════════════════════════════════════╗
+║  ⚡ MATERIALMANAGER R03 - COMPLETE SETUP STARTED ⚡            ║
+║  Mit Admin-Rechten - Alles wird automatisiert!                 ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 WAS WIRD GEMACHT:
+
+  ✓ Installer.exe bauen (.NET 8 selbst-contained)
+  ✓ Zu USB_Installation kopieren
+  ✓ USB-Paket Struktur prüfen
+  ✓ Gesamtes Projekt-Backup erstellen
+  ✓ Alles für Versand vorbereiten
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 SOFORT STARTEN - 2 OPTIONEN:
+
+OPTION A: PowerShell (empfohlen)
+─────────────────────────────────
+
+  1. PowerShell öffnen
+  2. Rechtsklick → "Als Administrator ausführen"
+  3. Folgende Befehle eingeben:
+
+     cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+     .\MASTER_SETUP.ps1 -Action Full
+
+  ⏱️  Dauer: 2-5 Minuten (abhängig von Rechner-Geschwindigkeit)
+
+
+OPTION B: Batch-Datei (einfach)
+────────────────────────────────
+
+  1. Explorer öffnen
+  2. Zu C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03 navigieren
+  3. MASTER_SETUP.bat RECHTSKLICK
+  4. "Als Administrator ausführen"
+
+  ✓ Batch öffnet PowerShell automatisch
+  ✓ Alles läuft im Hintergrund
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 WAS PASSIERT WÄHREND DES SETUP:
+
+[1/5] VORBEREITUNG
+  ├─ Admin-Rechte validieren ✓
+  ├─ .NET 8 SDK prüfen ✓
+  ├─ Alte Build-Dateien löschen ✓
+  └─ Verzeichnisse prüfen ✓
+
+[2/5] INSTALLER.EXE BAUEN
+  ├─ dotnet build -c Release ✓
+  ├─ dotnet publish --self-contained ✓
+  ├─ MaterialManager_Installer.exe → Installer.exe ✓
+  └─ Dateigröße: ~150-200 MB ✓
+
+[3/5] USB-PAKET VORBEREITEN
+  ├─ USB_Installation Ordner prüfen ✓
+  ├─ Installer.exe kopieren ✓
+  └─ Struktur validieren ✓
+
+[4/5] BACKUP ERSTELLEN
+  ├─ Backup-Verzeichnis erstellen ✓
+  ├─ Gesamtes Projekt komprimieren ✓
+  └─ Zip-Datei erstellen ✓
+
+[5/5] ZUSAMMENFASSUNG
+  ├─ Alle Dateien aufzählen ✓
+  ├─ Nächste Schritte anzeigen ✓
+  └─ Status: READY FOR DISTRIBUTION ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ BUILD-OPTIONS:
+
+Mit PowerShell kannst du auch Folgendes machen:
+
+  # Nur Installer.exe bauen
+  .\MASTER_SETUP.ps1 -Action InstallerOnly
+
+  # Nur USB-Paket vorbereiten
+  .\MASTER_SETUP.ps1 -Action USBOnly
+
+  # Vollständiger Clean Build (alles neu)
+  .\MASTER_SETUP.ps1 -Action CleanBuild
+
+  # Standard (Full)
+  .\MASTER_SETUP.ps1 -Action Full
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ DANACH - NÄCHSTE SCHRITTE:
+
+Nach erfolgreichem MASTER_SETUP:
+
+1. PROGRAMM-DATEIEN EINFÜGEN
+   ─────────────────────────
+   
+   cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation
+   SETUP_PROGRAMM.bat
+
+   ✓ Programm/ Ordner wird mit .exe + DLLs gefüllt
+
+
+2. AUF USB-STICK KOPIEREN
+   ──────────────────────
+   
+   USB einstecken (z.B. D:)
+   
+   copy-item -Path "C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\*" `
+             -Destination "D:\" -Recurse
+
+   ✓ Alle Dateien auf USB (Installer.exe + Programm)
+
+
+3. AUF ZIELRECHNER TESTEN
+   ──────────────────────
+   
+   USB einstecken
+   Installer.exe doppelklicken (oder rechtsklick → ausführen)
+   Admin-Abfrage bestätigen
+   
+   ✅ Installation läuft automatisch
+
+
+4. VERTEILEN
+   ──────────
+   
+   USB-Stick an Kunden senden (per Post, wenn Email zu groß)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 WAS WIRD ÜBERPRÜFT:
+
+✓ Admin-Rechte
+  → Skript kann nur mit Admin-Rechten laufen
+
+✓ .NET 8 SDK
+  → Muss installiert sein (wird mit dotnet --version geprüft)
+
+✓ Ordner-Struktur
+  → Installer_Source muss existieren
+  → USB_Installation muss existieren
+
+✓ Build-Erfolg
+  → dotnet build ohne Fehler
+  → dotnet publish ohne Fehler
+  → Installer.exe wird erstellt
+
+✓ Dateien vorhanden
+  → Installer.exe wird gefunden
+  → Korrekte Größe (~150-200 MB)
+
+✓ Backup
+  → Gesamtes Projekt wird gezippt
+  → Sicherung erstellt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ HÄUFIGE FEHLER & LÖSUNGEN:
+
+Fehler: "Admin-Rechte erforderlich"
+─────────────────────────────────
+
+Lösung:
+  Rechtsklick auf PowerShell → "Als Administrator ausführen"
+
+
+Fehler: ".NET 8 SDK nicht gefunden"
+──────────────────────────────────
+
+Lösung:
+  1. Download: https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+  2. Installiere .NET 8 SDK
+  3. Terminal neustarten
+  4. Setup erneut ausführen
+
+
+Fehler: "Build fehlgeschlagen"
+──────────────────────────────
+
+Lösung:
+  1. Antivirus kann .NET SDK blockieren - prüfen!
+  2. Internet-Verbindung prüfen (NuGet packages werden downloaded)
+  3. Speicherplatz prüfen (mindestens 500 MB frei)
+  4. Temp-Dateien löschen: Remove-Item -Path ".\bin" -Recurse -Force
+
+
+Fehler: "Installer.exe nicht gefunden"
+──────────────────────────────────────
+
+Lösung:
+  Build ist fehlgeschlagen (siehe oben)
+  oder
+  Pfad ist falsch - Datei muss in sein:
+  Installer_Source\bin\Release\net8.0-windows\win-x64\publish\Installer.exe
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 ZEITSCHÄTZUNG:
+
+Erste Mal (alles wird downloaded):
+  ├─ .NET Runtime & Pakete: 1-2 Min
+  ├─ Build: 1-2 Min
+  ├─ Publish: 1-2 Min
+  ├─ Kopieren & Backup: 1 Min
+  └─ TOTAL: 4-7 Min
+
+Zweite Mal (alles gecacht):
+  ├─ Build: 30 Sec
+  ├─ Publish: 30 Sec
+  ├─ Kopieren & Backup: 30 Sec
+  └─ TOTAL: 1-2 Min
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💾 DATEIEN DIE ERSTELLT WERDEN:
+
+Nach erfolgreicher Ausführung:
+
+  Installer.exe (150-200 MB)
+  └─ Zu finden in: USB_Installation\Installer.exe
+
+  Complete Backup (XXX MB)
+  └─ Zu finden in: ..\Backups\MaterialManager_R03_complete_YYYYMMDD_HHMMSS.zip
+
+  USB_Installation\
+  ├─ Installer.exe
+  ├─ USB_INSTALL.bat
+  ├─ USB_README.txt
+  ├─ SETUP_PROGRAMM.bat
+  ├─ Programm/ (wird gefüllt mit SETUP_PROGRAMM.bat)
+  ├─ Tools/
+  │  └─ GENERATE_LICENSE.bat
+  ├─ Lizenzen/ (für Dokumentation)
+  └─ Anleitung/
+     ├─ QUICK_START.md
+     └─ DEPLOYMENT_ANLEITUNG.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 ALLES IN EINEM ÜBERBLICK:
+
+  ❌ ALTES SYSTEM:
+     Viele manuelle Schritte
+     Batch-Installer blockiert von Antivirus
+     Fehleranfällig
+
+  ✅ NEUES SYSTEM:
+     Ein einziger MASTER_SETUP Aufruf
+     Professioneller .exe Installer
+     Automatisch, zuverlässig
+     Mit Backup
+     Ready to Ship!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 LOS GEHTS!
+
+Öffne PowerShell als Administrator und führe aus:
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  .\MASTER_SETUP.ps1 -Action Full
+
+oder einfach doppelklick:
+
+  MASTER_SETUP.bat
+
+═══════════════════════════════════════════════════════════════════════

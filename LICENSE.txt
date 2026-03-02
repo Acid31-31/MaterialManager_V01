@@ -1,0 +1,163 @@
+﻿╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    MATERIALMANAGER R03 - LIZENZVEREINBARUNG                   ║
+║                           © 2025 Alle Rechte vorbehalten                      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+URHEBERRECHTSHINWEIS
+═══════════════════════════════════════════════════════════════════════════════
+
+Dieses Softwareprodukt "MaterialManager R03" (nachfolgend "Software" genannt) ist 
+urheberrechtlich geschützt und Eigentum von:
+
+    Urheber: Alexander HÃ¶lzer
+    Adresse: Pfarrer-Rosenkranz-Strasse 9, 56642 Kruft
+    E-Mail:  hoelzer_alex@yahoo.de
+    
+Copyright © 2025. Alle Rechte vorbehalten.
+
+
+LIZENZBESTIMMUNGEN
+═══════════════════════════════════════════════════════════════════════════════
+
+1. GEWÄHRUNG DER LIZENZ
+   ----------------------
+   Diese Software wird als kommerzielle Vollversion lizenziert. Der Lizenznehmer 
+   erhält das nicht-ausschließliche, nicht-übertragbare Recht zur Nutzung der 
+   Software auf den vereinbarten Arbeitsplätzen.
+
+2. URHEBERRECHTE UND EIGENTUMSRECHTE
+   ----------------------------------
+   Die Software, einschließlich aller Kopien, Modifikationen und verbundenen 
+   Dokumentationen, bleibt Eigentum des Urhebers. Der Lizenznehmer erwirbt 
+   lediglich ein Nutzungsrecht, KEIN Eigentumsrecht an der Software.
+
+3. EINSCHRÄNKUNGEN
+   ----------------
+   Der Lizenznehmer darf NICHT:
+   
+   a) Die Software dekompilieren, zurückentwickeln (Reverse Engineering) oder 
+      den Quellcode extrahieren
+   
+   b) Die Software kopieren, verbreiten, vermieten oder verleihen
+   
+   c) Die Software modifizieren, anpassen oder abgeleitete Werke erstellen
+   
+   d) Urheberrechtshinweise, Lizenzinformationen oder Markenzeichen entfernen
+   
+   e) Die Software auf mehr Arbeitsplätzen installieren als lizenziert
+   
+   f) Die Software für kommerzielle Zwecke Dritter nutzen
+
+4. LIZENZTYPEN
+   ------------
+   
+   DEMO-VERSION (30 Tage):
+   • Kostenlose Testversion mit vollem Funktionsumfang
+   • Gültig für 30 Tage ab Erstinstallation
+   • Automatische Deaktivierung nach Ablauf
+   • Keine Weitergabe oder kommerzielle Nutzung erlaubt
+   
+   EINZELPLATZLIZENZ:
+   • Installation auf EINEM Arbeitsplatz
+   • Preis: 499,00 EUR (einmalig, zzgl. MwSt.)
+   • Lebenslange Nutzung ohne Folgekosten
+   
+   MEHRPLATZLIZENZ (3 Arbeitsplätze):
+   • Installation auf BIS ZU 3 Arbeitsplätzen
+   • Preis: 1.199,00 EUR (einmalig, zzgl. MwSt.)
+   • Lebenslange Nutzung ohne Folgekosten
+   
+   FIRMENLIZENZ (10 Arbeitsplätze):
+   • Installation auf BIS ZU 10 Arbeitsplätzen
+   • Preis: 2.990,00 EUR (einmalig, zzgl. MwSt.)
+   • Lebenslange Nutzung ohne Folgekosten
+   • Netzwerk-Synchronisation inklusive
+   
+   ENTERPRISE-LIZENZ (unbegrenzt):
+   • Unbegrenzte Arbeitsplätze innerhalb eines Unternehmens
+   • Preis: Auf Anfrage
+   • Individuelle Anpassungen möglich
+   • Premium-Support inklusive
+
+5. AKTIVIERUNG UND LIZENZSCHLÜSSEL
+   --------------------------------
+   Die Vollversion erfordert einen gültigen Lizenzschlüssel, der nach Zahlungseingang 
+   bereitgestellt wird. Der Lizenzschlüssel ist:
+   
+   • Arbeitsplatz-gebunden (Hardware-ID)
+   • Nicht übertragbar
+   • Nur für den Lizenznehmer gültig
+   • Bei Hardware-Wechsel kostenlos ersetzbar (1x pro Jahr)
+
+6. SUPPORT UND UPDATES
+   --------------------
+   
+   KOSTENLOSER SUPPORT (12 Monate):
+   • E-Mail-Support innerhalb von 48 Stunden
+   • Fehlerbehebungen und Sicherheitsupdates
+   • Kostenlose Programm-Updates (Minor-Versionen)
+   
+   ERWEITERTE UPDATES:
+   • Major-Updates (z.B. v4.0): 30% Rabatt auf Neupreis
+   • Support-Verlängerung: 99,00 EUR/Jahr (optional)
+
+7. GEWÄHRLEISTUNG UND HAFTUNG
+   ---------------------------
+   Die Software wird "WIE BESEHEN" bereitgestellt. Der Urheber übernimmt keine 
+   Gewähr für:
+   
+   • Fehlerfreiheit oder ununterbrochenen Betrieb
+   • Eignung für einen bestimmten Zweck
+   • Datenverlust oder Schäden durch Softwarefehler
+   
+   Die Haftung ist auf den Kaufpreis der Lizenz beschränkt.
+
+8. DATENSCHUTZ
+   ------------
+   Die Software speichert:
+   
+   • Lokale Datenbanken (materialien.json)
+   • Lizenzinformationen (license.dat)
+   • Hardware-ID (zur Lizenzvalidierung)
+   
+   Es werden KEINE Daten an Dritte weitergegeben. Netzwerk-Synchronisation 
+   erfolgt nur innerhalb Ihres lokalen Netzwerks.
+
+9. VERTRAGSDAUER UND KÜNDIGUNG
+   ----------------------------
+   Die Lizenz ist unbefristet und endet bei:
+   
+   • Verstoß gegen Lizenzbestimmungen
+   • Schriftlicher Verzicht des Lizenznehmers
+   
+   Bei Vertragsende ist die Software vollständig zu deinstallieren und alle 
+   Kopien zu vernichten.
+
+10. RECHTSVERFOLGUNG
+    -----------------
+    Bei Verstößen gegen diese Lizenzvereinbarung behält sich der Urheber vor:
+    
+    • Vertragsstrafe von bis zu 50.000 EUR je Verstoß
+    • Zivilrechtliche Schadensersatzforderungen
+    • Strafrechtliche Verfolgung bei Softwarepiraterie
+    • Einstweilige Verfügungen zur Nutzungsunterlassung
+
+11. GERICHTSSTAND UND ANWENDBARES RECHT
+    ------------------------------------
+    Es gilt deutsches Recht. Gerichtsstand ist Kruft.
+
+
+KONTAKT FÜR LIZENZERWERB
+═══════════════════════════════════════════════════════════════════════════════
+
+Urheber:     Alexander HÃ¶lzer
+Adresse:     Pfarrer-Rosenkranz-Strasse 9, 56642 Kruft
+Telefon:     +49 170 8339993
+E-Mail:      hoelzer_alex@yahoo.de
+Website:     Auf Anfrage
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Durch Installation und Nutzung der Software erklären Sie sich mit diesen 
+Lizenzbedingungen einverstanden.
+═══════════════════════════════════════════════════════════════════════════════

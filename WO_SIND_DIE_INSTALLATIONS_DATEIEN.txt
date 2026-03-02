@@ -1,0 +1,247 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🔴 WICHTIG: INSTALLATION DATEIEN MÜSSEN ERST ERSTELLT WERDEN!        ║
+║  Hier ist die SCHRITT-FÜR-SCHRITT ANLEITUNG                          ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+📍 DEINE SITUATION:
+
+USB_Installation Ordner EXISTIERT:
+  ✅ C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\
+  
+ABER: Programm-Ordner ist LEER:
+  ❌ USB_Installation\Programm\ (LEER!)
+
+WAS DU BRAUCHST:
+  ✅ MaterialManager_R03.exe
+  ✅ Alle DLL-Dateien
+  ✅ Alles in: USB_Installation\Programm\
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 LÖSUNG: 3 EINFACHE SCHRITTE!
+
+SCHRITT 1: Starte das Installer-Script
+───────────────────────────────────────
+
+Öffne Windows Explorer:
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+
+Doppelklick auf:
+  USB_INSTALLATION_ERSTELLEN.bat
+
+oder PowerShell:
+  .\USB-Installation-Erstellen.ps1
+
+⏳ WARTET ~5-10 MINUTEN!
+
+Das Script macht AUTOMATISCH:
+  ✅ Build erstellen (Release-Modus)
+  ✅ MaterialManager_R03.exe
+  ✅ Alle DLL-Dateien kopieren
+  ✅ Alles in USB_Installation\Programm\
+  ✅ Verifikation durchführen
+
+SCHRITT 2: Prüfe ob Dateien da sind
+────────────────────────────────────
+
+Explorer öffnen:
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\Programm\
+
+Du solltest sehen:
+  ✅ MaterialManager_R03.exe      (~40 MB)
+  ✅ ClosedXML.dll               
+  ✅ System.*.dll (100+ Dateien)  (~100-150 MB)
+  ✅ runtimes\                    
+  ✅ ... (weitere Dateien)
+
+WENN ALLES DA IST → SCHRITT 3!
+
+SCHRITT 3: Auf USB kopieren
+────────────────────────────
+
+A) USB-Stick einstecken (z.B. D:)
+
+B) Explorer öffnen:
+   C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\
+
+C) ALLES markieren:
+   Ctrl+A
+
+D) KOPIEREN:
+   Ctrl+C
+
+E) Zu USB-Stick gehen:
+   (z.B. D:\)
+
+F) EINFÜGEN:
+   Ctrl+V
+   ⏳ Wartet 5-10 Minuten
+
+G) ✅ FERTIG!
+   USB hat ALLES!
+
+═══════════════════════════════════════════════════════════════════════════
+
+📁 NACH SCHRITT 1 SIEHT ES SO AUS:
+
+USB_Installation/
+├─ Programm/                      ✅ JETZT GEFÜLLT!
+│  ├─ MaterialManager_R03.exe    ✅ Hauptprogramm
+│  ├─ ClosedXML.dll              ✅ Excel
+│  ├─ System.*.dll               ✅ 100+ DLL
+│  ├─ runtimes/                  ✅ Runtime
+│  └─ ... (weitere Dateien)
+│
+├─ Anleitung/
+│  ├─ QUICK_START.md
+│  └─ DEPLOYMENT_ANLEITUNG.md
+│
+├─ Tools/
+│  └─ GENERATE_LICENSE.bat
+│
+├─ Lizenzen/
+│  └─ (für Kundenlizenzen)
+│
+├─ README.md
+└─ USB_README.txt
+
+═══════════════════════════════════════════════════════════════════════════
+
+👥 FÜR MEHRERE PCs - ZWEI OPTIONEN:
+
+OPTION 1: Normale Installation (EINFACH)
+─────────────────────────────────────────
+
+1. USB_Installation\ komplett auf USB kopieren
+   ✅ Dann auf jedem PC:
+   ✅ Explorer: USB\Programm\MaterialManager_R03.exe doppelklicken
+   ✅ LÄUFT SOFORT!
+
+OPTION 2: Mit EXE-Installer (PROFESSIONELL)
+────────────────────────────────────────────
+
+1. Starte: Build-Multi-PC-Installer.ps1
+   .\Build-Multi-PC-Installer.ps1
+
+2. Installiere InnoSetup (kostenlos)
+   https://jrsoftware.org/isdl.php
+
+3. Doppelklick: MaterialManager_Installer.iss
+   Klick: "Compile"
+
+4. ✅ MaterialManager_R03_Installer.exe wird erstellt!
+
+5. Kopiere EXE zu USB
+
+6. Auf jedem PC: EXE doppelklicken → Installation läuft automatisch!
+
+═══════════════════════════════════════════════════════════════════════════
+
+⚠️  WICHTIG - REIHENFOLGE:
+
+1️⃣  ERST: USB_INSTALLATION_ERSTELLEN.bat starten
+    (Erstellt die Dateien!)
+
+2️⃣  DANN: Auf USB kopieren
+
+3️⃣  DANN: Zu Kunden versenden
+
+FALSCH:
+  ❌ USB_Installation auf USB kopieren BEVOR Build fertig
+  ❌ Programm-Ordner ist dann leer!
+
+═══════════════════════════════════════════════════════════════════════════
+
+📊 ÜBERSICHT:
+
+DATEIEN JETZT:
+  USB_Installation\ = 60 KB (nur Ordnerstruktur)
+  Programm\ = LEER ❌
+
+DATEIEN NACH SCHRITT 1:
+  USB_Installation\ = 250-350 MB ✅
+  Programm\ = 250-350 MB ✅ GEFÜLLT!
+
+DANN AUF USB:
+  USB = 250-350 MB (komplettes Programm) ✅
+
+DANN AUF KUNDEN-PC:
+  C:\Program Files\MaterialManager_R03\ = 250-350 MB ✅
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 KONKRETE BEFEHLE ZUM KOPIEREN:
+
+Option 1: Windows Explorer (EINFACH)
+────────────────────────────────────
+
+1. Windows + E (Explorer öffnen)
+
+2. Adresse eingeben:
+   C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation
+
+3. Ctrl+A (alles markieren)
+
+4. Ctrl+C (kopieren)
+
+5. USB-Stick öffnen
+
+6. Ctrl+V (einfügen)
+
+7. WARTEN (~5-10 Min) ⏳
+
+8. ✅ FERTIG!
+
+Option 2: PowerShell (SCHNELL)
+──────────────────────────────
+
+Öffne PowerShell:
+
+  $USB_Path = "D:\"  # Änder D: zu deinem USB-Laufwerk!
+  $Source = "C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation"
+  
+  Copy-Item -Path "$Source\*" -Destination $USB_Path -Recurse -Force
+  
+  Write-Host "✅ FERTIG!"
+
+═══════════════════════════════════════════════════════════════════════════
+
+✅ SCHRITT-FÜR-SCHRITT ZUSAMMENFASSUNG:
+
+SCHRITT 1: Build & Installation Dateien erstellen
+  ⏱️  Zeit: 5-10 Minuten
+  📍 Datei: USB_INSTALLATION_ERSTELLEN.bat (oder .ps1)
+  ✅ Ergebnis: USB_Installation\Programm\ wird GEFÜLLT!
+
+SCHRITT 2: Auf USB kopieren
+  ⏱️  Zeit: 5-10 Minuten
+  📍 Quelle: USB_Installation\
+  📍 Ziel: USB-Stick
+  ✅ Ergebnis: USB hat ALLES!
+
+SCHRITT 3: Auf anderen PCs installieren
+  ⏱️  Zeit: 2-5 Minuten pro PC
+  📍 Auf jedem PC: USB\Programm\MaterialManager_R03.exe doppelklicken
+  ✅ Ergebnis: Programm LÄUFT!
+
+ODER mit EXE-Installer:
+  ⏱️  Zeit: 1-2 Minuten Setup + 2-5 Min Installation
+  📍 EXE: MaterialManager_R03_Installer.exe
+  ✅ Ergebnis: Professionelle Installation!
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 JETZT STARTEN!
+
+Windows Explorer öffnen:
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\
+
+Doppelklick auf:
+  USB_INSTALLATION_ERSTELLEN.bat
+
+ODER PowerShell:
+  .\USB-Installation-Erstellen.ps1
+
+✅ Dann AUTOMATISCH alles erstellt!
+
+═════════════════════════════════════════════════════════════════════════════

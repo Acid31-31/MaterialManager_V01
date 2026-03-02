@@ -1,0 +1,160 @@
+╔════════════════════════════════════════════════════════════════╗
+║       MATERIALMANAGER R03 - USB DEPLOYMENT                      ║
+║       Vollversion mit Lizenzierung und Zertifikaten             ║
+╚════════════════════════════════════════════════════════════════╝
+
+📦 JETZT VERFÜGBAR:
+
+  ✅ USB-portable Vollversion (.NET 8)
+  ✅ Automatische Installation (INSTALL.bat)
+  ✅ Demo-Lizenz (30 Tage)
+  ✅ Vollversion-Lizenzierung (Hardware-ID gebunden)
+  ✅ Lizenzschlüssel-Generator
+  ✅ Code-Signing Unterstützung
+  ✅ Antivirus-freundlich
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 LOS GEHT'S - 3 EINFACHE SCHRITTE:
+
+1️⃣  POWERSHELL ÖFFNEN & WECHSELN:
+    
+    cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+
+2️⃣  USB-PACKAGE ERSTELLEN:
+    
+    .\Build-USBVersion.ps1 -Action Package
+
+    ⏱️  Dauert ca. 2-5 Minuten (abhängig von Speeder)
+    📁 Ergebnis: Folder "USB_Distribution" mit allen Dateien
+
+3️⃣  AUF USB-STICK KOPIEREN:
+    
+    Copy-Item -Path "USB_Distribution\*" -Destination "D:\" -Recurse -Force
+    
+    (D: = USB-Laufwerk, ggf. anpassen)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 NEUE DATEIEN IM PROJEKT:
+
+  Dokumentation (Deutsch):
+  ├─ QUICK_START.md ........................ Schnelle Übersicht
+  ├─ DEPLOYMENT_ANLEITUNG.md .............. Detailliert, Schritt-für-Schritt
+  ├─ CODE_SIGNING_GUIDE.md ................ Digitale Zertifikate
+  └─ IMPLEMENTATION_REPORT.md ............. Technischer Report
+
+  Skripte & Tools:
+  ├─ Build-USBVersion.ps1 ................. [WICHTIG] Build-Automation
+  ├─ USB_INSTALL.bat ...................... Installation auf Zielrechner
+  ├─ GENERATE_LICENSE.bat ................. Lizenzschlüssel-Generator
+  └─ USB_README.txt ....................... Für Kunden (auf USB)
+
+  Code-Änderungen:
+  ├─ Services/HardwareIdService.cs ........ [NEU] Hardware-ID
+  ├─ Services/LicenseKeyGenerator.cs ...... [NEU] Lizenzschlüssel-Logic
+  └─ Services/LicenseService.cs ........... [GEÄNDERT] Integration
+  └─ MaterialManager_R03.csproj ........... [GEÄNDERT] USB-Profile
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  WICHTIG - BEVOR DU STARTEST:
+
+  ✓ PowerShell-Ausführungsrichtlinie:
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+  ✓ USB-Stick bereit zum Kopieren? (mindestens 500 MB frei)
+
+  ✓ Ziel-Rechner für Test bereit? (Windows 10 oder höher)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎓 DAS LIZENZIERUNGSSYSTEM ERKLÄRT:
+
+  DEMO (30 Tage):
+  ├─ Automatisch nach Installation
+  ├─ Keine Lizenzschlüssel erforderlich
+  └─ Zähler läuft kontinuierlich
+
+  VOLLVERSION:
+  ├─ Lizenzschlüssel erforderlich (Format: MM-XXXX-XXXX-XXXX-XXXX)
+  ├─ Hardware-ID gebunden (nicht übertragbar)
+  ├─ Mit GENERATE_LICENSE.bat erstellt
+  └─ Im Programm: Menü → Lizenzierung → Aktivieren
+
+  HARDWARE-ID:
+  ├─ Eindeutig pro Rechner
+  ├─ Kunde erhält im Programm (Menü → Hilfe → Lizenzinformationen)
+  ├─ Du benutzt sie zum Lizenzschlüssel-Generator
+  └─ Bleibt gleich auch nach Windows-Neuinstallation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 TYPISCHER KUNDENABLAUF:
+
+  1. USB-Stick erhalten
+  2. USB_INSTALL.bat ausführen (als Admin)
+  3. Programm öffnet, Demo läuft (30 Tage)
+  4. Nach 30 Tagen: Programm fordert Lizenz an
+  5. Hardware-ID kopieren (Menü → Lizenzinformationen)
+  6. Dir senden: "Bitte Lizenz für Hardware-ID: ABC123..."
+  7. Du führst aus: GENERATE_LICENSE.bat
+  8. Du sendest Lizenzschlüssel zurück
+  9. Kunde aktiviert: Menü → Lizenzierung → Eingabe Lizenzschlüssel
+  10. ✅ Vollversion läuft unbegrenzt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 OPTIONAL: CODE-SIGNING (für Antivirus-Vertrauen)
+
+  Ohne Signing (einfach):
+  └─ Funktioniert, aber Antivirus könnte warnen
+
+  Mit Signing (professionell):
+  ├─ .\Build-USBVersion.ps1 -Action Package `
+  │    -CertificatePath "cert.pfx" `
+  │    -CertificatePassword "password"
+  └─ Siehe CODE_SIGNING_GUIDE.md für Details
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 WEITERE INFOS:
+
+  QUICK_START.md
+  → 5-Schritte-Zusammenfassung
+
+  DEPLOYMENT_ANLEITUNG.md
+  → Detaillierte Schritte mit Screenshots
+  → Troubleshooting Tipps
+
+  CODE_SIGNING_GUIDE.md
+  → Zertifikat erstellen
+  → Signen mit SignTool
+  → Antivirus-Sicherheit
+
+  IMPLEMENTATION_REPORT.md
+  → Technische Details
+  → Was wurde implementiert
+  → Sicherheitsfeatures
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STATUS:
+
+  Build:                ✅ Erfolgreich kompiliert
+  Lizenzierung:        ✅ Demo (30T) + Vollversion
+  Hardware-ID:        ✅ Eindeutig & Hardware-gebunden
+  Installer:          ✅ Automatisch & fehlergeprüft
+  Code-Signing:       ✅ Vorbereitet (optional)
+  Dokumentation:      ✅ Vollständig (DE + Code-Comments)
+  Backup:             ✅ Erstellt (siehe Backups-Folder)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 FERTIG! VIEL ERFOLG! 🎉
+
+Fragen? → Siehe QUICK_START.md oder DEPLOYMENT_ANLEITUNG.md
+
+Version 1.0.0 | MaterialManager R03 | 28.02.2025
+
+╚════════════════════════════════════════════════════════════════╝

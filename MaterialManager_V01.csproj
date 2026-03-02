@@ -1,0 +1,98 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>MaterialManager_V01</AssemblyName>
+    <RootNamespace>MaterialManager_V01</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+
+    <!-- App-Informationen (reduziert SmartScreen-Warnungen) -->
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Product>MaterialManager V01</Product>
+    <Company>MaterialManager</Company>
+    <Description>Materialverwaltung für Blechlager - Vollversion mit Lizenzierung</Description>
+    <Copyright>Copyright © 2025 MaterialManager</Copyright>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+
+    <!-- Self-Contained Settings für USB-Distribution -->
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    
+    <!-- Code-Signing Vorbereitung -->
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <!-- USB Publication Profile -->
+  <PropertyGroup Condition="'$(PublishProfile)' == 'USBVersion'">
+    <PublishDir>.\USB_Package\</PublishDir>
+    <StripSymbols>true</StripSymbols>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Demo\README_DEMO.txt" />
+    <Content Include="bin\DEMO_Email_Vorlage.txt" />
+    <Content Include="bin\INSTALLATION_ANLEITUNG_USB.txt" />
+    <Content Include="bin\PAKET_UEBERSICHT.txt" />
+    <Content Include="bin\USB_Version\KONKURRENZ_VERGLEICH.txt" />
+    <Content Include="bin\USB_Version\PAKET_UEBERSICHT.txt" />
+    <Content Include="bin\USB_Version\PREIS_KALKULATION_10_MITARBEITER.txt" />
+    <Content Include="bin\USB_Version\README_INSTALLATION.txt" />
+    <Content Include="bin\USB_Version\USB_INSTALLATION.txt" />
+    <Content Include="bin\USB_Version\WERT_ANALYSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".github\copilot-instructions.md" />
+    <None Include="bin\USB_Version\autorun.inf" />
+    <None Include="bin\USB_Version\START.bat" />
+    <None Include="USB_Installation_Helper\USB_Installation_Helper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ResteAuswahlDialog.xaml" />
+    <Compile Update="Views\ResteAuswahlDialog.xaml.cs">
+      <DependentUpon>ResteAuswahlDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Update="Views\ResteReservierungDialog.xaml" />
+    <Compile Update="Views\ResteReservierungDialog.xaml.cs">
+      <DependentUpon>ResteReservierungDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Update="Views\NetzwerkEinstellungenDialog.xaml" />
+    <Compile Update="Views\NetzwerkEinstellungenDialog.xaml.cs">
+      <DependentUpon>NetzwerkEinstellungenDialog.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

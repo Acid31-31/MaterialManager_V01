@@ -1,0 +1,16 @@
+[18:34:49.968] MainWindow() Constructor gestartet
+[18:34:50.484] InitializeComponent() OK
+[18:34:50.485] DataContext gesetzt
+[18:34:50.487] Titel gesetzt: MaterialManager V01 - Demo-Version - Noch 27 Tage verbleibend
+Ablaufdatum: 28.03.2026
+[18:34:50.487] Event-Handler registriert
+[18:34:50.488] LoadAutosave() OK
+[18:34:50.492] UpdateStats() OK
+[18:34:50.495] BackupService gestartet
+[18:34:50.495] SavePath: D:\MaterialManager_V01_komplett\USB_Installation\MaterialManager_Multi\Excell\materialbestand.xlsx
+[18:34:50.503] AutoSync initialisiert
+[18:34:50.504] User registriert
+[18:34:50.504] Timer gestartet
+[18:34:50.504] MainWindow() Constructor erfolgreich beendet
+[18:34:50.858] MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!
+[18:34:53.475] MainWindow wird geschlossen

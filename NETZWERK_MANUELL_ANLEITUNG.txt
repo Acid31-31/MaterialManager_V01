@@ -1,0 +1,219 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🔴 NETZWERK-SERVER FUNKTIONIERT NICHT - MANUELLE LÖSUNG              ║
+║  SCHRITT-FÜR-SCHRITT (OHNE SCRIPTS!)                                 ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🎯 EINFACHE MANUELLE METHODE (5 MINUTEN):
+
+SCHRITT 1: Ordner erstellen
+──────────────────────────
+
+1. Windows Explorer öffnen
+2. Rechtsklick auf C:\ oder Desktop
+3. Neuer Ordner
+4. Name: MaterialManager_TestShare
+5. ENTER
+
+✅ Ordner ist erstellt!
+
+SCHRITT 2: Als Netzwerk-Freigabe freigeben
+───────────────────────────────────────────
+
+1. Rechtsklick auf: MaterialManager_TestShare
+2. Freigeben für → Erweiterte Freigabeoptionen
+3. Im Fenster:
+   ✅ Kontrollkästchen "Diesen Ordner freigeben" anklicken
+4. Button "Berechtigungen"
+5. "Jeder" → "Ändern" ✓
+6. APPLY
+7. OK
+
+✅ Ordner ist jetzt freigegeben!
+
+SCHRITT 3: Im Programm konfigurieren
+─────────────────────────────────────
+
+1. Starte Programm:
+   dotnet run
+
+2. Im Programm:
+   Einstellungen (oder Menu) → Netzwerk-Einstellungen
+
+3. Aktiviere: ✓ "Netzwerk-Modus"
+
+4. Pfad eingeben:
+   \\localhost\MaterialManager_TestShare
+   
+   ODER (wenn localhost nicht funktioniert):
+   \\DEIN-COMPUTERNAME\MaterialManager_TestShare
+   
+   (DEIN-COMPUTERNAME siehst du in den Windows-Einstellungen)
+
+5. Button "Test" oder "Verbinden"
+   
+   ✅ WENN "Erfolgreich verbunden" → PERFEKT!
+   ❌ WENN Fehler → siehe FEHLERBEHANDLUNG unten
+
+6. Speichern
+
+✅ Programm ist konfiguriert!
+
+SCHRITT 4: Multi-User Test
+──────────────────────────
+
+Terminal 1:
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  dotnet run
+
+Terminal 2:
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  dotnet run
+
+BEIDE FENSTER:
+  1. Gehe zu Einstellungen → Netzwerk
+  2. Gebe Pfad ein: \\localhost\MaterialManager_TestShare
+  3. Klick "Test"
+  4. ✅ "Erfolgreich verbunden"?
+
+TEST:
+  Fenster 1: Neue Material hinzufügen → Speichern
+  Fenster 2: Reload/Neu laden
+  ✅ Material sichtbar in Fenster 2?
+
+════════════════════════════════════════════════════════════════════════════
+
+❌ FEHLERBEHANDLUNG:
+
+FEHLER: "Pfad nicht erreichbar" / "Zugriff verweigert"
+─────────────────────────────────────────────────────
+
+Lösung 1: Berechtigungen prüfen
+  1. Ordner → Rechtsklick → Eigenschaften
+  2. Reiter "Sicherheit"
+  3. "Bearbeiten"
+  4. "Jeder" auswählen
+  5. Häkchen: Ändern ✓
+  6. APPLY + OK
+
+Lösung 2: Firewall prüfen
+  1. Windows + X → Windows Defender Firewall
+  2. "Netzwerk-Erkennung aktivieren"
+  3. "Datei- und Druckerfreigabe aktivieren"
+
+Lösung 3: Antivirus prüfen
+  1. Antivirus temporär deaktivieren
+  2. Nochmal versuchen
+  3. Falls funktioniert: Antivirus konfigurieren
+
+FEHLER: "Computername nicht gefunden"
+─────────────────────────────────────
+
+Problem: \\DEIN-COMPUTERNAME\... funktioniert nicht
+
+Lösung:
+  1. Öffne CMD
+  2. Tippe: hostname
+  3. Merke dir den Namen
+  4. Im Programm probiere:
+     \\(der-name-von-oben)\MaterialManager_TestShare
+
+FEHLER: "Localhost funktioniert nicht"
+──────────────────────────────────────
+
+Problem: \\localhost\MaterialManager_TestShare funktioniert nicht
+
+Lösung 1: Warte 10 Sekunden nach Freigabe
+  (Windows braucht Zeit)
+
+Lösung 2: Starte Programm neu
+  (Netzwerk-Cache löschen)
+
+Lösung 3: Nutze IP-Adresse
+  1. Öffne CMD: ipconfig
+  2. Finde "IPv4-Adresse"
+  3. Probiere:
+     \\192.168.x.x\MaterialManager_TestShare
+
+FEHLER: "Lock-Datei-Fehler"
+───────────────────────────
+
+Problem: Datei ist gesperrt / Lock funktioniert nicht
+
+Lösung:
+  1. Ordner öffnen: C:\MaterialManager_TestShare
+  2. Lösche die Datei ".lock" (versteckte Datei!)
+  3. Programm neustarten
+  4. Versuche erneut
+
+════════════════════════════════════════════════════════════════════════════
+
+🎯 ALTERNATIVE: Nur lokales Testing (ohne Netzwerk)
+
+Wenn Netzwerk-Freigabe nicht funktioniert, teste lokal:
+
+1. Im Programm:
+   Einstellungen → Netzwerk → DEAKTIVIEREN
+   (nutze nur lokale Dateien)
+
+2. Öffne Programm 2x TROTZDEM
+   (beide als separate Instanzen)
+
+3. Speichere in Fenster 1
+
+4. In Fenster 2: Öffne die Datei manuell
+
+Das testet wenigstens die Datei-Logik!
+
+════════════════════════════════════════════════════════════════════════════
+
+💡 TIPPS:
+
+1. Benutze "localhost" statt Computername
+   (funktioniert auf jedem PC)
+
+2. Warte nach Freigabe-Erstellung 5-10 Sekunden
+   (Windows initialisiert alles)
+
+3. Wenn es nicht funktioniert → Programm neustarten
+   (Netzwerk-Cache wird geleert)
+
+4. Für zwei PCs im Netzwerk:
+   PC A: Freigabe erstellen
+   PC B: \\PC_A_NAME\MaterialManager_TestShare
+
+════════════════════════════════════════════════════════════════════════════
+
+✅ WENN ALLES FUNKTIONIERT:
+
+Du siehst:
+  ✅ Ordner freigegeben
+  ✅ Programm sieht Pfad
+  ✅ "Test" zeigt "Erfolgreich"
+  ✅ Zwei Fenster teilen Daten
+  ✅ Lock-System funktioniert
+
+FERTIG! 🎉
+
+════════════════════════════════════════════════════════════════════════════
+
+SCHNELLE CHECKLISTE:
+
+□ Ordner erstellt: C:\MaterialManager_TestShare
+□ Freigegeben (\\localhost\MaterialManager_TestShare)
+□ Berechtigungen: Jeder = Ändern
+□ Programm gestartet (2x)
+□ Netzwerk-Pfad eingegeben
+□ Test-Button: "Erfolgreich"
+□ Material in Fenster 1 hinzufügt
+□ Fenster 2 Reload → Material sichtbar
+
+════════════════════════════════════════════════════════════════════════════
+
+BRAUCHST DU WEITERE HILFE?
+
+Sag mir:
+  1. Welcher Fehler genau?
+  2. Bei welchem Schritt stoppt es?
+  3. Was zeigt das Fenster?
+
+Dann helfe ich dir weiter! 🚀

@@ -1,0 +1,414 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║                  📦 MATERIALMANAGER R03                               ║
+║                  Professional Material Management Software             ║
+║                                                                        ║
+║                        USER GUIDE & PRESENTATION                      ║
+║                            Version 1.0.0                              ║
+║                                                                        ║
+║                    © 2025 MaterialManager. All Rights Reserved.        ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════════════════
+
+1.  INTRODUCTION
+2.  SYSTEM REQUIREMENTS
+3.  INSTALLATION GUIDE
+4.  FIRST STEPS
+5.  NETWORK CONFIGURATION
+6.  FEATURES & FUNCTIONS
+7.  TROUBLESHOOTING
+8.  SUPPORT & LICENSE
+9.  QUICK REFERENCE
+
+
+═══════════════════════════════════════════════════════════════════════════
+1. INTRODUCTION
+═══════════════════════════════════════════════════════════════════════════
+
+What is MaterialManager R03?
+──────────────────────────
+
+MaterialManager R03 is a professional software solution for managing 
+material inventory in steel warehouses. It is designed for teams that 
+need to work with shared material databases across multiple workstations.
+
+Key Benefits:
+  ✅ Real-time Inventory Management
+  ✅ Multi-user Network Support
+  ✅ Automatic Data Synchronization
+  ✅ Complete Audit Logging
+  ✅ Excel Export Functionality
+  ✅ User License Management
+  ✅ Professional Reporting Tools
+
+Ideal For:
+  • Manufacturing Companies
+  • Metal Processing Workshops
+  • Inventory Management Teams
+  • Distributed Warehouse Operations
+
+
+═══════════════════════════════════════════════════════════════════════════
+2. SYSTEM REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════════
+
+Minimum Requirements:
+─────────────────────
+  Operating System:     Windows 10 or Windows 11 (64-bit)
+  Processor:           Intel/AMD Pentium 4 or equivalent
+  RAM:                 2 GB minimum (4 GB recommended)
+  Hard Disk Space:     500 MB free space
+  Network:             LAN for network operation (optional)
+
+Recommended Configuration:
+──────────────────────────
+  Operating System:     Windows 11 Professional
+  Processor:           Intel i7 or equivalent
+  RAM:                 8 GB or more
+  Hard Disk:           SSD (500 MB minimum)
+  Network:             Gigabit Ethernet
+
+
+═══════════════════════════════════════════════════════════════════════════
+3. INSTALLATION GUIDE
+═══════════════════════════════════════════════════════════════════════════
+
+Step-by-Step Installation:
+──────────────────────────
+
+STEP 1: Insert USB Drive
+  1. Connect the USB stick to your computer
+  2. Wait for Windows to recognize it
+  3. Note the drive letter (e.g., D:\)
+
+STEP 2: Run the Installer
+  1. Open File Explorer
+  2. Navigate to USB: MaterialManager_R03_Installer.exe
+  3. Double-click the installer
+  4. Windows may show a security warning → Click "Run anyway"
+
+STEP 3: Installation Process
+  1. Select installation language (Deutsch / English)
+  2. Accept license terms
+  3. Choose installation path (default: C:\Program Files\)
+  4. Click "Install"
+  5. Wait for installation to complete (~2-3 minutes)
+
+STEP 4: Complete Installation
+  1. Click "Finish"
+  2. Program starts automatically
+  3. Create admin user account
+  4. Enter license key (provided separately)
+  5. Installation complete ✅
+
+Default Installation Path:
+  C:\Program Files\MaterialManager_R03\
+
+
+═══════════════════════════════════════════════════════════════════════════
+4. FIRST STEPS
+═══════════════════════════════════════════════════════════════════════════
+
+Initial Configuration:
+──────────────────────
+
+After first launch, MaterialManager will guide you through setup:
+
+1. CREATE MATERIALS CATALOG
+   • Define material types (steel, aluminum, etc.)
+   • Set standard dimensions
+   • Configure storage locations
+
+2. IMPORT EXISTING DATA
+   • Import from Excel (if available)
+   • Manual entry of current inventory
+   • Bulk operations supported
+
+3. ADD USERS
+   • Create user accounts for team members
+   • Assign roles and permissions
+   • Configure access levels
+
+4. SETUP NETWORK (OPTIONAL)
+   • Configure shared folder
+   • Set user permissions
+   • Test network connectivity
+
+5. PERFORM INITIAL INVENTORY
+   • Count physical materials
+   • Enter data into system
+   • Reconcile with expectations
+
+
+═══════════════════════════════════════════════════════════════════════════
+5. NETWORK CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════
+
+Multi-User Setup:
+─────────────────
+
+MaterialManager supports multiple users working simultaneously. 
+This requires a shared network folder.
+
+Configuration Steps:
+
+STEP 1: Create Shared Folder
+  1. Create folder: C:\MaterialManager_Share\
+  2. Right-click → Properties → Share
+  3. Set permissions: Everyone = Full Access
+  4. Note the share path: \\localhost\MaterialManager_Share\
+
+STEP 2: Configure in MaterialManager
+  1. In program: Settings → Network
+  2. Enable network mode ✓
+  3. Enter share path
+  4. Click "Test Connection"
+  5. Should show "Connection successful"
+
+STEP 3: Multi-User Testing
+  1. Start program on first computer
+  2. Start program on second computer
+  3. Both connect to same network folder
+  4. Changes are synchronized in real-time
+
+Network Requirements:
+  • Stable LAN connection
+  • SMB file sharing enabled
+  • All computers on same network
+  • Sufficient disk space on server (1+ GB)
+
+
+═══════════════════════════════════════════════════════════════════════════
+6. FEATURES & FUNCTIONS
+═══════════════════════════════════════════════════════════════════════════
+
+Main Features:
+──────────────
+
+📊 INVENTORY MANAGEMENT
+  • Real-time inventory tracking
+  • Automatic stock calculations
+  • Location-based storage
+  • Barcode support
+
+🔗 NETWORK OPERATION
+  • Multi-user support
+  • File locking mechanism
+  • Automatic synchronization
+  • Conflict resolution
+
+💾 DATA MANAGEMENT
+  • Automatic backups
+  • Version history
+  • Import/Export (Excel)
+  • Archive functionality
+
+📈 REPORTING
+  • Pre-made reports
+  • Custom report builder
+  • Excel export
+  • PDF generation
+
+🔐 SECURITY
+  • User authentication
+  • Role-based access control
+  • Complete audit logging
+  • License key verification
+
+⚙️ CONFIGURATION
+  • Customizable workflows
+  • Custom fields
+  • User preferences
+  • Integration options
+
+
+═══════════════════════════════════════════════════════════════════════════
+7. TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════
+
+Common Issues & Solutions:
+──────────────────────────
+
+ISSUE: Installation fails with "Access Denied"
+──────────────────────────────────────────────
+SOLUTION:
+  1. Run installer as Administrator
+  2. Right-click → "Run as Administrator"
+  3. Disable antivirus temporarily
+  4. Ensure 500 MB free disk space
+  5. Retry installation
+
+ISSUE: Program crashes on startup
+─────────────────────────────────
+SOLUTION:
+  1. Uninstall completely
+  2. Delete C:\Users\[User]\AppData\Local\MaterialManager_R03\
+  3. Restart computer
+  4. Reinstall from USB
+
+ISSUE: Network connection not working
+────────────────────────────────────
+SOLUTION:
+  1. Verify network folder exists and is shared
+  2. Test path manually: Start → Run → \\localhost\MaterialManager_Share\
+  3. Check permissions: Everyone = Change
+  4. Disable Windows Firewall temporarily
+  5. Verify SMB is enabled (Windows Features)
+  6. Restart program
+
+ISSUE: File is locked / Cannot save
+───────────────────────────────────
+SOLUTION:
+  1. Ensure only one user is editing material
+  2. Check lock file exists: .lock
+  3. Delete .lock file if stuck
+  4. Restart program
+  5. Try again
+
+ISSUE: License key not accepted
+───────────────────────────────
+SOLUTION:
+  1. Verify key is correct (check for typos)
+  2. Ensure internet connection is active
+  3. Check license hasn't expired
+  4. Try re-entering key without spaces
+  5. Contact support with license details
+
+
+═══════════════════════════════════════════════════════════════════════════
+8. SUPPORT & LICENSE
+═══════════════════════════════════════════════════════════════════════════
+
+License Types:
+───────────────
+
+BASIC LICENSE
+  • Up to 5 users
+  • Standard features
+  • Email support
+  • Annual subscription
+
+PROFESSIONAL LICENSE  
+  • Up to 20 users
+  • All features
+  • Phone support
+  • 1-year updates included
+
+ENTERPRISE LICENSE
+  • Unlimited users
+  • Custom features
+  • Dedicated support
+  • Custom integrations
+
+Support Channels:
+─────────────────
+  Email:    support@materialmanager.de
+  Phone:    +49 (0) 123 456789
+  Website:  www.materialmanager.de
+  Hours:    Monday - Friday, 9:00 - 17:00 CET
+
+Response Times:
+  • Critical issues: Same day
+  • Important issues: Within 24 hours
+  • General inquiries: Within 48 hours
+
+Documentation:
+  • USB stick: Anleitung/ folder
+  • Website: www.materialmanager.de/docs/
+  • In-program: Help menu
+
+
+═══════════════════════════════════════════════════════════════════════════
+9. QUICK REFERENCE
+═══════════════════════════════════════════════════════════════════════════
+
+Keyboard Shortcuts:
+───────────────────
+  Ctrl+N        New material
+  Ctrl+S        Save
+  Ctrl+O        Open material
+  Ctrl+E        Export to Excel
+  Ctrl+P        Print
+  F1            Help
+  F5            Refresh/Reload
+
+File Locations:
+───────────────
+  Program:        C:\Program Files\MaterialManager_R03\
+  Data (local):   C:\Users\[User]\AppData\Local\MaterialManager_R03\
+  Data (network): \\Server\MaterialManager_Share\
+  Backups:        [Data folder]\Backups\
+  Logs:           [Data folder]\Logs\
+
+Important Files:
+────────────────
+  materialbestand.xlsx   Main database file
+  .lock                  Active session lock
+  config.json            Configuration settings
+  license.key            License information
+
+Uninstallation:
+───────────────
+  1. Settings → Apps & Features
+  2. Search: MaterialManager R03
+  3. Click uninstall
+  4. Choose: Keep/Remove data
+  5. Confirm uninstall
+  
+  Optional: Delete remaining data
+  C:\Users\[User]\AppData\Local\MaterialManager_R03\
+
+
+═══════════════════════════════════════════════════════════════════════════
+10. GETTING STARTED CHECKLIST
+═══════════════════════════════════════════════════════════════════════════
+
+Initial Setup:
+──────────────
+  □ Computer meets system requirements
+  □ Installed MaterialManager R03
+  □ Created admin account
+  □ Entered license key
+  □ Created material categories
+
+First Operations:
+──────────────────
+  □ Added warehouse locations
+  □ Imported initial inventory
+  □ Created user accounts
+  □ Trained team members
+  □ Performed test transactions
+
+Network Setup (if needed):
+────────────────────────
+  □ Created shared folder
+  □ Configured network path
+  □ Tested connectivity
+  □ Verified permissions
+  □ Multi-user test successful
+
+Backup & Security:
+──────────────────
+  □ Enabled automatic backups
+  □ Configured backup location
+  □ Tested backup recovery
+  □ Set up audit logging
+  □ Reviewed security settings
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+For more information, visit: www.materialmanager.de
+For support, contact: support@materialmanager.de
+
+Thank you for choosing MaterialManager R03!
+
+Version 1.0.0
+© 2025 MaterialManager. All rights reserved.
+
+═══════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,171 @@
+╔════════════════════════════════════════════════════════════════╗
+║    MaterialManager V01 - EXCEL SYNCHRONISATION ANLEITUNG       ║
+║                 © 2025 Alexander Hölzer                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+✅ SOFORT-SYNCHRONISATION AKTIVIERT!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 WIE ES JETZT FUNKTIONIERT:
+
+PROGRAMM → EXCEL:
+   ✅ Material hinzufügen: SOFORT sichtbar im Programm
+   ✅ Speichern: Im Hintergrund (max. 6 Sek)
+   ✅ Excel-Update: Automatisch nach Speichern
+   ⚠️ Excel zeigt NICHT automatisch → MANUELL F5 drücken!
+
+EXCEL → PROGRAMM:
+   ✅ In Excel ändern & speichern
+   ✅ Programm lädt automatisch (2-6 Sek)
+   ✅ INTELLIGENT MERGE: Keine Daten gehen verloren!
+   ✅ Titel zeigt: "🔄 Synchronisiert HH:MM:SS"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚡ PERFORMANCE-VERBESSERUNGEN:
+
+• UI-Updates: INSTANT (0ms Verzögerung)
+• Speichern: Asynchron im Hintergrund
+• Thread-Safe: Lock verhindert Datenverlust
+• Intelligenter Merge: Nur geänderte Daten werden aktualisiert
+• Auto-Retry: 30 Versuche á 200ms bei File-Lock
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 BESTE PRAKTIKEN - MULTI-PC SETUP:
+
+SCENARIO 1: PC1 Programm + PC2 Excel (Netzwerk)
+   
+   PC1 (Programm):
+   ✅ Änderungen erscheinen SOFORT
+   ✅ Speichert automatisch in Netzwerk-Datei
+   
+   PC2 (Excel - GEÖFFNET):
+   ⚠️ Drücke F5 zum Aktualisieren!
+   ⚠️ Beim Speichern: Keine Daten gehen verloren (Merge!)
+   ⚠️ Programm lädt automatisch in 2-6 Sek
+
+SCENARIO 2: PC1 Programm + PC2 Programm (Netzwerk)
+   ✅ OPTIMAL: Beide PCs synchronisieren automatisch!
+   ✅ Änderungen erscheinen innerhalb 2-6 Sekunden
+   ✅ Keine manuelle Aktion nötig
+   ✅ Intelligenter Merge verhindert Datenverlust
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 INTELLIGENTER MERGE-ALGORITHMUS:
+
+Statt ALLES zu ersetzen (alte Version), macht das Programm jetzt:
+
+1. VERGLEICH anhand Restnummer
+2. NEUE Items → Werden hinzugefügt
+3. GEÄNDERTE Items → Werden aktualisiert
+4. GELÖSCHTE Items (nicht mehr in Excel) → Werden entfernt
+5. EIGENE ÄNDERUNGEN → Werden NICHT überschrieben!
+
+Beispiel:
+   PC1: Fügt Material "R-001" hinzu → Speichert
+   PC2: Ändert Material "R-002" → Speichert
+   
+   Ergebnis: BEIDE Änderungen bleiben erhalten! ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ WICHTIGE LIMITATIONEN:
+
+❌ EXCEL KANN NICHT automatisch aktualisieren:
+   → Das ist eine Excel-Einschränkung
+   → LÖSUNG: Drücke F5 oder schließe/öffne Excel neu
+   → BESSER: Nutze nur das Programm für Bearbeitung!
+
+❌ GLEICHZEITIGE BEARBEITUNG des GLEICHEN Materials:
+   → Letzte Speicherung gewinnt
+   → LÖSUNG: Kommuniziere im Team wer was bearbeitet
+   → Nutze "👥 Online Jetzt" um zu sehen wer arbeitet
+
+❌ EXCEL OFFEN = FILE LOCK bis zu 6 Sekunden:
+   → Programm wartet automatisch
+   → TEMP-Datei wird bei Timeout erstellt
+   → Nach Excel-Schließen: Normal weiter speichern
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 EMPFOHLENES SETUP:
+
+FÜR OPTIMALE PERFORMANCE:
+   
+   Option A) NUR PROGRAMM NUTZEN
+   ✅ Alle PCs nutzen das Programm
+   ✅ Excel nur für Backup/Export öffnen
+   ✅ Perfekte Auto-Sync ohne Probleme
+   
+   Option B) PROGRAMM + EXCEL READ-ONLY
+   ✅ Programm für Bearbeitung
+   ✅ Excel für Ansicht/Reporting (Read-Only!)
+   ✅ F5 in Excel zum Refresh
+   
+   Option C) GEMISCHT (weniger optimal)
+   ⚠️ Programm auf PC1, Excel-Bearbeitung auf PC2
+   ⚠️ Excel muss F5 drücken
+   ⚠️ Mögliche Konflikte bei gleichzeitiger Bearbeitung
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 PROBLEMLÖSUNG:
+
+Problem: "Neues Material erscheint nicht sofort"
+Lösung: ✅ BEHOBEN! Jetzt instant (0ms)
+
+Problem: "Excel zeigt keine Änderungen"
+Lösung: 1. Drücke F5 in Excel
+        2. Oder: Excel schließen & neu öffnen
+        3. Excel KANN NICHT automatisch aktualisieren!
+
+Problem: "Materialien verschwinden beim Speichern"
+Lösung: ✅ BEHOBEN! Intelligenter Merge verhindert Datenverlust
+
+Problem: "Programm lädt zu langsam"
+Lösung: ✅ BEHOBEN! 500ms Debounce + 30 Retry-Versuche
+
+Problem: "TEMP-Datei wurde erstellt"
+Lösung: Excel war länger als 6 Sek offen
+        → Excel schließen
+        → Programm speichert automatisch normal weiter
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ TECHNISCHE DETAILS (v1.1 - OPTIMIERT):
+
+• UI-Updates: INSTANT (0ms Verzögerung) ✅ NEU!
+• Speichern: Asynchron im Hintergrund ✅ NEU!
+• Thread-Safe Lock: Verhindert Race Conditions ✅ NEU!
+• Intelligenter Merge: Nur Deltas aktualisieren ✅ NEU!
+• FileWatcher Debounce: 500ms
+• AutoSync Intervall: 2 Sekunden
+• Retry bei Lock: 30x á 200ms = 6 Sek max
+• FileShare.ReadWrite: Parallel-safe Import
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 VERGLEICH ALT vs. NEU:
+
+ALT (v1.0):
+❌ Material hinzufügen → 20 Sekunden Wartezeit
+❌ Excel-Änderungen → Alle Daten überschrieben
+❌ Speichern blockiert UI
+
+NEU (v1.1):
+✅ Material hinzufügen → INSTANT angezeigt
+✅ Excel-Änderungen → Intelligenter Merge
+✅ Speichern im Hintergrund (UI bleibt flüssig)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 SUPPORT:
+   E-Mail: hoelzer_alex@yahoo.de
+   Telefon: +49 170 8339993
+
+🔗 DATEI-PFAD:
+   Standard: %APPDATA%\MaterialManager\MaterialDB.xlsx
+   Netzwerk: Menü → Netzwerk → Einstellungen

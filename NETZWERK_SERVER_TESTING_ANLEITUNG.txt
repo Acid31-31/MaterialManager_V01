@@ -1,0 +1,269 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🖥️  NETZWERK-SERVER FÜR TESTING EINRICHTEN                            ║
+║  Lokaler Test-Server für MaterialManager_R03                          ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🎯 WAS DU BRAUCHST:
+
+Dein Programm nutzt:
+  ✅ Netzwerk-Freigaben (File-Sharing)
+  ✅ Excel-Dateien (materialbestand.xlsx)
+  ✅ Lokales Locking System
+  ✅ Multi-User Support
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 EINFACHE LÖSUNG (3 SCHRITTE):
+
+SCHRITT 1: Erstelle eine Netzwerk-Freigabe (Share)
+──────────────────────────────────────────────────
+
+A) Neuen Ordner erstellen:
+   C:\MaterialManager_TestShare\
+
+B) Rechtsklick → Eigenschaften → Freigabe
+   
+   ODER im Explorer:
+   
+   1. Neuer Ordner: MaterialManager_TestShare
+   2. Rechtsklick → Erweiterte Freigabeoptionen
+   3. "Diesen Ordner freigeben" ✓
+   4. Berechtigungen:
+      - Jeder: ÄNDERN
+   5. Anwenden
+
+C) Freigabe-Pfad:
+   \\localhost\MaterialManager_TestShare\
+   ODER
+   \\DEIN-PC-NAME\MaterialManager_TestShare\
+
+SCHRITT 2: Programm konfigurieren
+──────────────────────────────────
+
+Im Programm:
+  1. Einstellungen öffnen
+  2. Netzwerk-Einstellungen
+  3. Aktivieren: ✓
+  4. Pfad eingeben:
+     \\localhost\MaterialManager_TestShare\
+  5. Test-Button klicken
+  6. ✅ "Erfolgreich verbunden"
+
+SCHRITT 3: Mit 2 Programm-Instanzen testen
+───────────────────────────────────────────
+
+Terminal 1:
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  dotnet run
+
+Terminal 2:
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  dotnet run
+
+Beide Fenster:
+  1. Öffne Material
+  2. Ändere in Fenster 1
+  3. Fenster 2 sieht die Änderungen! ✅
+
+═══════════════════════════════════════════════════════════════════════════
+
+📍 LOKALE NETZWERK-FREIGABE ERSTELLEN (Windows 10/11):
+
+METHODE 1: Explorer (Einfach)
+────────────────────────────
+
+1. Rechtsklick auf Ordner
+2. Freigeben für → Bestimmte Personen
+3. Wähle "Alle" oder "Jeder"
+4. Berechtigungen: ÄNDERN
+5. Freigeben
+
+METHODE 2: PowerShell (Schnell)
+──────────────────────────────
+
+PowerShell als Admin:
+
+  New-Item -Path "C:\MaterialManager_TestShare" -ItemType Directory -Force
+  
+  New-SmbShare -Name "MaterialManager_TestShare" `
+    -Path "C:\MaterialManager_TestShare" `
+    -FullAccess "Everyone"
+  
+  # Prüfe:
+  Get-SmbShare | grep MaterialManager
+  
+  ✅ Share ist aktiv!
+
+═══════════════════════════════════════════════════════════════════════════
+
+🧪 TEST-SZENARIOS:
+
+TEST 1: Multi-User Änderungen
+────────────────────────────
+
+1. Öffne Programm 2x (zwei Fenster)
+
+2. Fenster 1:
+   Material hinzufügen → Speichern
+
+3. Fenster 2:
+   Reload/Neu laden
+   
+   ✅ Neue Materialien sichtbar?
+
+TEST 2: File-Locking
+───────────────────
+
+1. Fenster 1:
+   Material bearbeiten → NICHT speichern
+
+2. Fenster 2:
+   Versuche Material zu speichern
+   
+   ✅ Lock-Fehler erscheint?
+
+TEST 3: Netzwerk-Fehler
+──────────────────────
+
+1. Netzwerk-Share trennen:
+   Rechtsklick Share → Getrennt
+
+2. Fenster 1:
+   Versuche zu speichern
+   
+   ✅ Fehler-Meldung?
+   
+3. Wieder verbinden
+   ✅ Auto-Reconnect?
+
+═══════════════════════════════════════════════════════════════════════════
+
+💾 DATEISTRUKTUR IM SHARE:
+
+MaterialManager_TestShare\
+├─ materialbestand.xlsx      (Hauptdatei)
+├─ .lock                      (Lock-Datei)
+└─ backups\                   (Backups)
+   ├─ materialbestand_20250226.xlsx
+   └─ ...
+
+═══════════════════════════════════════════════════════════════════════════
+
+🔧 WENN FREIGABE NICHT FUNKTIONIERT:
+
+Problem: "Zugriff verweigert"
+Lösung:
+  1. Admin-Rechte?
+  2. Firewall-Einstellung?
+  3. Berechtigungen prüfen:
+     Rechtsklick → Sicherheit → Bearbeiten
+
+Problem: "Pfad nicht erreichbar"
+Lösung:
+  1. Share existiert wirklich?
+     net share (in CMD)
+  2. Firewall blockiert?
+     Windows Defender → Einstellungen → Firewall
+     → "Netzwerk-Erkennung" aktivieren
+  3. SMB aktivieren:
+     Systemsteuerung → Windows-Features
+     → "SMB 1.0/CIFS-Dateifreigabe" ✓
+
+Problem: "Lock-Datei funktioniert nicht"
+Lösung:
+  1. Antivirus blockiert Datei?
+  2. Manuelle Lock-Datei löschen:
+     C:\MaterialManager_TestShare\.lock (löschen)
+  3. Programm neustarten
+
+═══════════════════════════════════════════════════════════════════════════
+
+📊 EMPFOHLENE TEST-SETUPS:
+
+SETUP 1: Lokale Simulation (Einfach)
+───────────────────────────────────
+
+PC: Dein Laptop
+Share: C:\MaterialManager_TestShare\
+  ↓
+  Fenster 1 + Fenster 2 öffnen
+  ↓
+  Multi-User Test lokal ✅
+
+SETUP 2: Zwei PCs im gleichen Netzwerk (Realistisch)
+──────────────────────────────────────────────────
+
+PC 1 (Server):
+  Share: \\PC1\MaterialManager_TestShare\
+
+PC 2 (Client):
+  Connect: \\PC1\MaterialManager_TestShare\
+  
+  ↓
+  Echtes Netzwerk-Test ✅
+
+SETUP 3: Virtual Machine (Sicher)
+─────────────────────────────────
+
+VM (VirtualBox/Hyper-V):
+  Windows 10/11 mit Programm
+  
+Host (Dein PC):
+  Share: C:\MaterialManager_TestShare\
+  
+  ↓
+  Vollständiger Network-Stack Test ✅
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 SCHRITT-FÜR-SCHRITT ANLEITUNG:
+
+[1] Erstelle Share (5 Min)
+   PowerShell:
+   New-Item -Path "C:\MaterialManager_TestShare" -ItemType Directory -Force
+   New-SmbShare -Name "MaterialManager_TestShare" -Path "C:\MaterialManager_TestShare" -FullAccess "Everyone"
+
+[2] Programm konfigurieren (2 Min)
+   Im Programm:
+   Einstellungen → Netzwerk
+   Pfad: \\localhost\MaterialManager_TestShare
+   Speichern
+
+[3] Test Material erstellen (5 Min)
+   Programm:
+   Material → Neu
+   Name: "Test Material"
+   Speichern
+
+[4] Zwei Fenster öffnen (5 Min)
+   Terminal 1: dotnet run
+   Terminal 2: dotnet run
+   
+   Beide Fenster starten
+
+[5] Multi-User Test (10 Min)
+   Fenster 1: Ändere Material
+   Fenster 2: Reload
+   ✅ Änderungen sichtbar?
+
+═══════════════════════════════════════════════════════════════════════════
+
+✅ ZUSAMMENFASSUNG:
+
+WAS DU JETZT MACHST:
+
+1. Share erstellen: C:\MaterialManager_TestShare\
+2. Freigeben: \\localhost\MaterialManager_TestShare\
+3. Im Programm aktivieren
+4. Zwei Fenster öffnen
+5. Multi-User Test durchführen
+
+RESULT:
+  ✅ Netzwerk-Funktion getestet
+  ✅ File-Locking getestet
+  ✅ Multi-User Szenarien getestet
+  ✅ Alles funktioniert!
+
+═════════════════════════════════════════════════════════════════════════════
+
+Brauchst du noch SQL-Server oder API-Server? Sag mir was!

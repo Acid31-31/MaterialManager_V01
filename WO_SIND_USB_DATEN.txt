@@ -1,0 +1,337 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  📦 WO SIND ALLE USB-DATEN? - KOMPLETTE ÜBERSICHT                    ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🎯 USB-INSTALLATION HAUPTPFAD:
+══════════════════════════════════════════════════════════════════════════
+
+  C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 KOMPLETTE ORDNERSTRUKTUR:
+
+USB_Installation/                          [ROOT - Alles für USB hier!]
+│
+├─ 📋 ROOT-LEVEL DATEIEN (7 Dateien)
+│  ├─ INDEX.txt                            [Struktur-Übersicht]
+│  ├─ README.md                            [Deutsche Anleitung]
+│  ├─ USB_INSTALL.bat                      [Backup-Installer (falls nötig)]
+│  ├─ USB_README.txt                       [Für Kunden]
+│  ├─ SETUP_PROGRAMM.bat                   [Programm-Dateien einfügen ←]
+│  ├─ Installer.exe                        [← WIRD MIT MASTER_SETUP ERSTELLT!]
+│  └─ (weitere optional: LICENSE.txt)
+│
+├─ 📁 Programm/                            [← HAUPTPROGRAMM HIER REIN!]
+│  ├─ MaterialManager_R03.exe              [← Mit SETUP_PROGRAMM.bat kopieren]
+│  ├─ *.dll                                [← Alle Abhängigkeiten]
+│  └─ (alle Ressourcen-Dateien)
+│
+├─ 📁 Tools/                               [Verwaltungstools]
+│  ├─ GENERATE_LICENSE.bat                 [Lizenzschlüssel-Generator]
+│  └─ (weitere Admin-Tools)
+│
+├─ 📁 Lizenzen/                            [Dokumentation der Kundenlizenzen]
+│  ├─ (Hier kannst du Kundenlizenzen notieren)
+│  ├─ Beispiel: Kunde_XYZ.txt
+│  └─ (Template für Lizenz-Tracking)
+│
+└─ 📁 Anleitung/                           [Dokumentation für Kunden]
+   ├─ QUICK_START.md                       [5-Schritte Anleitung]
+   ├─ DEPLOYMENT_ANLEITUNG.md              [Detailliert mit Troubleshooting]
+   └─ (weitere Dokumentation)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 DETAILÜBERSICHT - WAS IST WO?
+
+🔴 NOCH FEHLEND (wird mit MASTER_SETUP erstellt):
+──────────────────────────────────────────────
+
+  USB_Installation/
+  └─ Installer.exe                         [← BUILD IST NÖTIG!]
+     Größe: ~170 MB
+     Quelle: Installer_Source\bin\Release\...publish\Installer.exe
+     Ziel: USB_Installation\Installer.exe (wird kopiert)
+
+🟢 SCHON VORHANDEN - ROOT-LEVEL (5 Dateien):
+──────────────────────────────────────────
+
+  USB_Installation/
+  │
+  ├─ INDEX.txt                             [3 KB]
+  │  └─ Erklärung aller Ordner und Dateien
+  │
+  ├─ README.md                             [5 KB]
+  │  └─ Deutsche Anleitung & Workflow
+  │
+  ├─ USB_INSTALL.bat                       [2.5 KB]
+  │  └─ Backup-Installer (falls nötig)
+  │     Funktion: Installiert von USB
+  │     Nutzen: Wenn Installer.exe nicht startet
+  │
+  ├─ USB_README.txt                        [3 KB]
+  │  └─ Dokumentation für KUNDEN
+  │     Inhalt: Lizenzierung, Installation, Support
+  │     Weitergabe: Auf USB für Kunden
+  │
+  └─ SETUP_PROGRAMM.bat                    [2 KB]
+     └─ Programm-Dateien einfügen
+        Was macht es: Kopiert MaterialManager_R03.exe + DLLs
+        Quelle: ..\USB_Distribution\*
+        Ziel: USB_Installation\Programm\
+        Wann nutzen: Nach Build-Prozess
+
+🟢 ORDNER - ANLEITUNG (2 Dateien):
+──────────────────────────────────
+
+  USB_Installation\Anleitung\
+  │
+  ├─ QUICK_START.md                        [5 KB]
+  │  └─ 5-Schritte Übersicht für dich
+  │     1. USB-Paket erstellen
+  │     2. Auf USB kopieren
+  │     3. Testen
+  │     4. Versenden
+  │     5. Support
+  │
+  └─ DEPLOYMENT_ANLEITUNG.md               [15 KB]
+     └─ Detaillierte Schritt-für-Schritt
+        Phase 1: Vorbereitung
+        Phase 2: Build
+        Phase 3: USB-Stick
+        Phase 4: Installation (Test)
+        Phase 5: Lizenzschlüssel
+        Phase 6: Troubleshooting
+
+🟢 ORDNER - TOOLS (1 Datei):
+────────────────────────
+
+  USB_Installation\Tools\
+  │
+  └─ GENERATE_LICENSE.bat                  [2.5 KB]
+     └─ Lizenzschlüssel-Generator
+        Input: Hardware-ID + Kundenname
+        Output: MM-XXXX-XXXX-XXXX-XXXX
+        Wann nutzen: Nach 30 Tagen (Demo läuft ab)
+
+⚪ ORDNER - LIZENZEN (Leer, für Dokumentation):
+──────────────────────────────────────────
+
+  USB_Installation\Lizenzen\
+  │
+  └─ (Hier notierst du Kundenlizenzen)
+     Beispiel-Template:
+     ┌────────────────────────────────────┐
+     │ Kunde: Acme Corporation            │
+     │ Hardware-ID: ABC123XYZ...          │
+     │ Lizenzschlüssel: MM-A1B2-C3D4...   │
+     │ Aktivierungsdatum: 28.02.2026      │
+     │ Ablauf: 28.02.2027                 │
+     └────────────────────────────────────┘
+
+🟡 ORDNER - PROGRAMM (Wird gefüllt!):
+──────────────────────────────────
+
+  USB_Installation\Programm\
+  │
+  ├─ MaterialManager_R03.exe               [← WIRD KOPIERT]
+  │  Größe: ~35 MB
+  │  Quelle: USB_Distribution\MaterialManager_R03.exe
+  │  Ziel: USB_Installation\Programm\
+  │  Wie: SETUP_PROGRAMM.bat ausführen
+  │
+  ├─ *.dll                                 [← WERDEN KOPIERT]
+  │  Beispiele:
+  │  ├─ ClosedXML.dll
+  │  ├─ System.*.dll (viele)
+  │  ├─ netstandard.dll
+  │  └─ (alle .NET 8 Abhängigkeiten)
+  │  Gesamtgröße: ~100-150 MB
+  │  Quelle: USB_Distribution\*
+  │  Ziel: USB_Installation\Programm\
+  │
+  └─ (weitere Ressourcen)
+     ├─ app.ico
+     ├─ logo.png
+     └─ (andere Assets)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 PROZESS - WIE WERDEN DATEN HIER HINGESTECKT?
+
+Schritt 1: MASTER_SETUP ausführen
+─────────────────────────────────
+  .\MASTER_SETUP.ps1 -Action Full
+  
+  Ergebnis:
+  ├─ Installer.exe wird gebaut (Installer_Source)
+  └─ Installer.exe wird kopiert → USB_Installation\Installer.exe
+
+
+Schritt 2: SETUP_PROGRAMM.bat ausführen
+────────────────────────────────────────
+  cd USB_Installation
+  SETUP_PROGRAMM.bat
+  
+  Ergebnis:
+  ├─ MaterialManager_R03.exe wird kopiert
+  │  Quelle: ..\USB_Distribution\MaterialManager_R03.exe
+  │  Ziel: USB_Installation\Programm\
+  │
+  └─ *.dll werden kopiert (rekursiv)
+     Quelle: ..\USB_Distribution\*
+     Ziel: USB_Installation\Programm\
+
+
+Schritt 3: USB-Stick vorbereiten
+──────────────────────────────────
+  copy-item -Path "USB_Installation\*" `
+            -Destination "D:\" -Recurse
+  
+  Ergebnis:
+  USB-Stick enthält:
+  ├─ Installer.exe               (170 MB)
+  ├─ Programm/
+  │  ├─ MaterialManager_R03.exe
+  │  └─ *.dll                    (150 MB)
+  ├─ Tools/
+  │  └─ GENERATE_LICENSE.bat
+  ├─ Anleitung/
+  │  ├─ QUICK_START.md
+  │  └─ DEPLOYMENT_ANLEITUNG.md
+  ├─ Lizenzen/
+  ├─ USB_README.txt
+  └─ (weitere Dateien)
+  
+  Total Größe: ~350-400 MB
+
+
+Schritt 4: Kunde erhält USB
+────────────────────────────
+  Kunde:
+  1. USB einstecken
+  2. Installer.exe doppelklicken
+  3. Admin-Abfrage bestätigen
+  4. Installation läuft ✓
+
+
+Schritt 5: Nach 30 Tagen - Lizenz
+──────────────────────────────────
+  Kunde:
+  1. Hardware-ID kopieren (Menü → Lizenzinformationen)
+  2. Email an dich senden
+  
+  Du:
+  1. GENERATE_LICENSE.bat ausführen
+  2. Hardware-ID eingeben
+  3. Kundenname eingeben
+  4. Lizenzschlüssel erhalten
+  5. Zurück an Kunde senden
+  
+  Kunde:
+  1. Lizenzschlüssel eingeben (Menü → Lizenzierung)
+  2. Vollversion läuft ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 GRÖSSEN-ÜBERSICHT:
+
+Dateigrößen im USB_Installation/:
+
+  INDEX.txt                       3 KB
+  README.md                       5 KB
+  USB_INSTALL.bat                 2.5 KB
+  USB_README.txt                  3 KB
+  SETUP_PROGRAMM.bat              2 KB
+  ─────────────────────────────────────
+  ROOT-LEVEL TOTAL:              ~15 KB
+
+  Anleitung/
+  ├─ QUICK_START.md              5 KB
+  └─ DEPLOYMENT_ANLEITUNG.md     15 KB
+  ─────────────────────────────────────
+  ANLEITUNG TOTAL:               ~20 KB
+
+  Tools/
+  └─ GENERATE_LICENSE.bat        2.5 KB
+  ─────────────────────────────────────
+  TOOLS TOTAL:                   ~2.5 KB
+
+  Programm/                    [WIRD GEFÜLLT]
+  ├─ MaterialManager_R03.exe     ~35 MB
+  ├─ *.dll (Abhängigkeiten)     ~100 MB
+  └─ Ressourcen                  ~5 MB
+  ─────────────────────────────────────
+  PROGRAMM TOTAL:              ~140 MB
+
+  Installer.exe              [WIRD ERSTELLT]
+  └─ Self-contained             ~170 MB
+  ─────────────────────────────────────
+  INSTALLER TOTAL:             ~170 MB
+
+  Lizenzen/                      [Leer, für deine Notizen]
+  ─────────────────────────────────────
+  LIZENZEN TOTAL:                ~0 KB
+
+  ═════════════════════════════════════════════════════════
+  GESAMTGRÖSSE (mit allem):      ~330 MB
+  USB-STICK ERFORDERLICH:        ~500 MB (empfohlen)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ CHECKLISTE - WAS MUSS NOCH GEMACHT WERDEN?
+
+[ ] 1. MASTER_SETUP ausführen
+      → Installer.exe wird gebaut & kopiert nach USB_Installation\
+
+[ ] 2. SETUP_PROGRAMM.bat ausführen
+      → MaterialManager_R03.exe + *.dll kopiert nach USB_Installation\Programm\
+
+[ ] 3. USB-Stick formatieren
+      → Mindestens 500 MB Speicher
+
+[ ] 4. Auf USB-Stick kopieren
+      → copy-item "USB_Installation\*" -Destination "D:\" -Recurse
+
+[ ] 5. Testen auf Test-PC
+      → Installer.exe ausführen → Installation prüfen
+
+[ ] 6. Demo testen
+      → Programm starten → 30 Tage sollten verfügbar sein
+
+[ ] 7. Versenden
+      → USB an Kunde per Post/Paket
+
+[ ] 8. Support bereit
+      → GENERATE_LICENSE.bat bereit halten
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 ZUSAMMENGEFASST:
+
+Alle USB-Daten sind in DIESEM ORDNER:
+  📁 C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation\
+
+Was ist JETZT schon da:
+  ✓ Anleitung/ (Dokumentation)
+  ✓ Tools/ (GENERATE_LICENSE.bat)
+  ✓ Lizenzen/ (leer, für Notizen)
+  ✓ Programm/ (leer, wird gefüllt)
+  ✓ 5 ROOT-Dateien (.txt, .bat, .md)
+
+Was fehlt NOCH:
+  ✗ Installer.exe (wird mit MASTER_SETUP erstellt)
+  ✗ Programm-Dateien (werden mit SETUP_PROGRAMM.bat kopiert)
+
+NÄCHSTE SCHRITTE:
+  1. .\MASTER_SETUP.ps1 -Action Full
+     → Installer.exe wird gebaut
+  
+  2. cd USB_Installation
+     SETUP_PROGRAMM.bat
+     → Programm-Dateien werden kopiert
+  
+  3. Alles ist bereit für USB-Stick!
+
+═════════════════════════════════════════════════════════════════════════════

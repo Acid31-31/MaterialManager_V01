@@ -1,0 +1,89 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    SCHNELLE FIX - ANLEITUNG                                   ║
+║              Behebe die doppelten Definitionen Fehler                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+PROBLEM:
+════════════════════════════════════════════════════════════════════════════════
+Der Compiler findet doppelte Definitionen in mehreren Dateien.
+Das passiert, weil Code-Schnipsel überschrieben wurden statt aktualisiert.
+
+
+LÖSUNG - SCHRITT FÜR SCHRITT:
+════════════════════════════════════════════════════════════════════════════════
+
+SCHRITT 1: PROJEKT SCHLIESSEN UND BEREINIGEN
+─────────────────────────────────────────────────────────────────────────────
+
+1. Schließe Visual Studio (Datei > Beenden)
+2. Öffne Windows Explorer
+3. Gehe zum Projekt-Ordner: C:\...\MaterialManager_R03
+4. Lösche folgende Ordner komplett:
+   □ bin/          (rechtsklick > Löschen)
+   □ obj/          (rechtsklick > Löschen)
+5. Lösche Datei:
+   □ MaterialManager_R03.sln.DotSettings (versteckt)
+
+SCHRITT 2: VISUAL STUDIO ÖFFNEN
+─────────────────────────────────────────────────────────────────────────────
+
+1. Öffne MaterialManager_R03.sln in Visual Studio
+2. Warte, bis alles geladen ist (Status-Leiste unten)
+3. Oben sollte kein "Loading..." mehr stehen
+
+SCHRITT 3: PROJEKT BEREINIGEN
+─────────────────────────────────────────────────────────────────────────────
+
+In Visual Studio:
+1. Gehe zu: Build > Clean Solution
+   • Wartet auf "Build completed" in Fenster unten
+2. Gehe zu: Build > Rebuild Solution
+   • Das wird 2-3 Minuten dauern
+   • Ignoriere Warnungen (nur Fehler sind wichtig)
+
+SCHRITT 4: FEHLER ÜBERPRÜFEN
+─────────────────────────────────────────────────────────────────────────────
+
+Nach Rebuild sollten ALLE Fehler weg sein.
+
+Falls noch Fehler vorhanden:
+1. Sieh dir die Error List an (View > Error List)
+2. Doppelklick auf Fehler > springt zu Position
+3. Manuell prüfen ob Code doppelt ist
+4. Wenn doppelt: Lösche eine Kopie
+
+
+WENN ES IMMER NOCH NICHT FUNKTIONIERT:
+════════════════════════════════════════════════════════════════════════════════
+
+Plan B - Nutzung des Backup-Scripts:
+
+1. Öffne: BACKUP_BEFORE_CLEANUP/ Ordner
+2. Kopiere die .bak Dateien zurück:
+   - MainWindow.xaml.cs.bak → MainWindow.xaml.cs
+   - App.xaml.cs.bak → App.xaml.cs
+   - etc.
+
+3. Ersetze *.bak Dateien mit Originalversion
+4. Rebuild
+
+
+WENN NICHTS HILFT:
+════════════════════════════════════════════════════════════════════════════════
+
+Nutze PowerShell Script zum automatischen Fix:
+
+1. Öffne PowerShell als Administrator
+2. Führe aus: .\RemoveDuplicates.ps1
+3. Warte bis fertig
+4. Rebuild in Visual Studio
+
+
+════════════════════════════════════════════════════════════════════════════════
+
+KONTAKT BEI PROBLEMEN:
+Wenn Fehler persistieren:
+📧 E-Mail: hoelzer_alex@yahoo.de
+📞 Tel: +49 170 8339993
+
+════════════════════════════════════════════════════════════════════════════════

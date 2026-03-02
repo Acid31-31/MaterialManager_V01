@@ -1,0 +1,69 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🚨 INSTALLATION FEHLGESCHLAGEN - SCHNELLE LÖSUNG                    ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+❌ FEHLER:
+  "FEHLER: USB_Distribution nicht gefunden!"
+
+✅ LÖSUNG IN 60 SEKUNDEN:
+
+  Kopiere GENAU folgende 3 Befehle in PowerShell (als Admin):
+
+  ───────────────────────────────────────────────────────────────
+  
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  
+  .\Build-USBVersion.ps1 -Action Package
+  
+  ───────────────────────────────────────────────────────────────
+
+  ⏱️  Warte bis der Build fertig ist (2-5 Min)
+
+  Dann:
+  
+  ───────────────────────────────────────────────────────────────
+  
+  cd USB_Installation
+  
+  SETUP_PROGRAMM.bat
+  
+  ───────────────────────────────────────────────────────────────
+
+  ✅ FERTIG!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WAS WAR DAS PROBLEM?
+
+  Du hast direkt SETUP_PROGRAMM.bat ausgeführt.
+  Aber vorher musste Build-USBVersion.ps1 laufen!
+
+  FALSCH:
+    ❌ SETUP_PROGRAMM.bat
+       → USB_Distribution nicht vorhanden!
+       → FEHLER!
+
+  RICHTIG:
+    ✅ Build-USBVersion.ps1 -Action Package
+       → USB_Distribution wird erstellt
+    ✅ SETUP_PROGRAMM.bat
+       → Dateien werden kopiert
+       → ERFOLG!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DIE RICHTIGE REIHENFOLGE:
+
+  [1] MASTER_SETUP.ps1 -Action Full
+      → Installer.exe wird gebaut
+
+  [2] Build-USBVersion.ps1 -Action Package
+      → Programm-Paket wird erstellt
+
+  [3] SETUP_PROGRAMM.bat
+      → Dateien werden kopiert
+
+  [4] USB-Stick kopieren
+      → Fertig!
+
+═════════════════════════════════════════════════════════════════════════════

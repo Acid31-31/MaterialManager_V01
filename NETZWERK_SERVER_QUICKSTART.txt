@@ -1,0 +1,86 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  🚀 NETZWERK-SERVER - SCHNELLSTART                                     ║
+║  1 Script + 2 Klicks = Alles funktioniert!                            ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+⚡ SUPER SCHNELL (3 MINUTEN):
+
+SCHRITT 1: PowerShell als Admin öffnen
+   Windows + X → PowerShell (Admin)
+
+SCHRITT 2: Zu deinem Projekt gehen
+   cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+
+SCHRITT 3: Script starten
+   .\Setup-NetzwerkServer.ps1
+
+SCHRITT 4: Fertig! ✅
+   Share ist erstellt!
+
+═══════════════════════════════════════════════════════════════════════════
+
+📝 WAS DAS SCRIPT MACHT:
+
+✅ Erstellt Ordner: C:\MaterialManager_TestShare\
+✅ Erstellt Share: \\localhost\MaterialManager_TestShare\
+✅ Setzt Berechtigungen
+✅ Testet Verbindung
+✅ Zeigt Zusammenfassung
+
+═══════════════════════════════════════════════════════════════════════════
+
+🧪 NACH DEM SETUP - PROGRAMM TESTEN:
+
+TERMINAL 1:
+   cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+   dotnet run
+
+TERMINAL 2:
+   cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+   dotnet run
+
+PROGRAMM KONFIGURIEREN (beide Fenster):
+   1. Einstellungen öffnen
+   2. "Netzwerk" suchen
+   3. Aktivieren: ✓
+   4. Pfad: \\localhost\MaterialManager_TestShare
+   5. Test-Button: "Erfolgreich verbunden" ✅
+   6. Speichern
+
+MULTI-USER TEST:
+   Fenster 1:
+      Material → Neu
+      Name: "Test"
+      Speichern
+   
+   Fenster 2:
+      Reload/Neu laden
+      ✅ Sieht "Test" Material!
+
+═══════════════════════════════════════════════════════════════════════════
+
+❌ WENN FEHLER KOMMT:
+
+"Administrator-Rechte erforderlich"
+  → Öffne PowerShell als Admin (nicht nur als User)
+  → Windows-Taste + X → PowerShell (Admin)
+
+"Share already exists"
+  → Script entfernt alte Share automatisch
+  → Oder: .\Setup-NetzwerkServer.ps1 -Remove
+
+"Path not accessible"
+  → Warte 5-10 Sekunden nach Script
+  → Windows braucht Zeit zum Aktivieren
+  → Dann Programm neu starten
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 FERTIG? DANN:
+
+1. ✅ Netzwerk-Server ist aktiv
+2. ✅ Share ist erreichbar
+3. ✅ Programm kann testen
+4. ✅ Multi-User Scenarios funktionieren
+
+VIEL ERFOLG BEIM TESTEN! 🚀

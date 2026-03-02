@@ -1,0 +1,159 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    🎊 DEIN SETUP IST KOMPLETT!                               ║
+║                     MaterialManager R03 - Vollversion                         ║
+║                                                                               ║
+║                         VERKAUFSBEREIT & GETESTET                           ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+📍 DEINE 5 WICHTIGSTEN DATEIEN:
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣  LIZENZ_GENERATOR_EINFACH.bat
+    └─ Generiert Lizenzschlüssel für Kunden
+    └─ Funktioniert 100%
+    └─ NUR FÜR DICH! (nicht an Kunde weitergeben)
+
+2️⃣  Build_USB_Vollversion.bat
+    └─ Erstellt USB-Installationspaket
+    └─ Kunde führt INSTALL_VOLLVERSION.bat aus
+
+3️⃣  LICENSE.txt
+    └─ Lizenzvertrag mit Strafen bis 50.000 EUR
+    └─ Wird automatisch bei Installation kopiert
+
+4️⃣  COPYRIGHT.txt
+    └─ Urheberrechtshinweis
+    └─ Wird automatisch bei Installation kopiert
+
+5️⃣  VOLLVERSION_LEITFADEN.txt
+    └─ Kompletter Verkaufs- & Support-Leitfaden
+    └─ Lies diese Datei für vollständige Informationen!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+🚀 VERKAUFSPROZESS (SCHNELL):
+═══════════════════════════════════════════════════════════════════════════════
+
+1. KUNDE BEKOMMT: MaterialManager_R03.exe (Demo, 30 Tage)
+   └─ Per E-Mail oder USB
+
+2. KUNDE TESTET: 30 Tage lang volle Funktionalität
+   └─ Nach 30 Tagen: Programm zeigt Aktivierungsdialog
+
+3. KUNDE KAUFT: Zahlt 499 - 2.990 EUR (je nach Lizenztyp)
+   └─ Antwortet mit Hardware-ID
+
+4. DU GENERIERST: Lizenzschlüssel mit LIZENZ_GENERATOR_EINFACH.bat
+   └─ Hardware-ID eingeben
+   └─ Lizenztyp wählen
+   └─ Kundenname eingeben
+   └─ ✅ Schlüssel wird generiert
+
+5. DU SENDEST: E-Mail mit Lizenzschlüssel an Kunde
+   └─ Schlüssel ist automatisch in Zwischenablage!
+
+6. KUNDE AKTIVIERT: Lizenzschlüssel im Programm eingeben
+   └─ Menü: Hilfe > Lizenz aktivieren
+   └─ ✅ Vollversion freigeschaltet!
+
+7. FERTIG!
+   └─ Kunde nutzt unbegrenzt
+   └─ Du erhältst 12 Monate Support
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+💰 PREISE (EMPFOHLEN):
+═══════════════════════════════════════════════════════════════════════════════
+
+Einzelplatz              499,00 EUR
+Mehrplatz (3 PCs)      1.199,00 EUR
+Firmenlizenz (10 PCs)  2.990,00 EUR
+Enterprise            Auf Anfrage
+
+Support-Verlängerung    99,00 EUR/Jahr
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+✅ ALLES GETESTET & FUNKTIONIERT:
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Demo-Version (30 Tage)
+✓ Lizenzaktivierungs-Dialog
+✓ Lizenzgenerator (LIZENZ_GENERATOR_EINFACH.bat)
+✓ Vollversion (unbegrenzt nach Aktivierung)
+✓ Hardware-ID basierte Lizenzierung
+✓ USB-Installationspaket
+✓ Rechtliche Absicherung
+✓ Multi-User & Netzwerk-Support
+✓ Backup & Sync
+✓ Druck & PDF-Export
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+🎯 WAS TUST DU JETZT?
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTIONAL - WEITERE SCHRITTE:
+
+□ Teste die Demo-Version selbst (30 Tage)
+□ Generiere eine Test-Lizenz mit LIZENZ_GENERATOR_EINFACH.bat
+□ Aktiviere die Test-Lizenz im Programm
+□ Erstelle ein USB-Installationspaket mit Build_USB_Vollversion.bat
+□ Erstelle eine Excel-Tabelle für Kundenverwaltung
+□ Aktualisiere deine Kontaktdaten in README_VOLLVERSION.txt
+□ Schreibe eine Verkaufs-E-Mail für Kunden
+
+ABER: DU KANNST SOFORT MIT VERKAUF BEGINNEN! ✅
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+📞 SUPPORT-KONTAKT (GEBE DAS AN KUNDEN):
+═══════════════════════════════════════════════════════════════════════════════
+
+E-Mail: hoelzer_alex@yahoo.de
+Telefon: +49 170 8339993
+Support-Zeiten: Mo-Fr 9:00-17:00 Uhr
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+🔒 WICHTIG - BEHALTE DIESE DATEIEN FÜR DICH:
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ NICHT AN KUNDEN WEITERGEBEN:
+  • LIZENZ_GENERATOR_EINFACH.bat (NUR für dich!)
+  • Quellcode
+  • Lizenz-Algorithmus
+  • Deine Kundenliste
+
+✅ NUR DIESE DATEIEN AN KUNDEN:
+  • MaterialManager_R03.exe (Demo)
+  • INSTALL_VOLLVERSION.bat (optional, auf USB)
+  • README_VOLLVERSION.txt
+  • LICENSE.txt
+  • COPYRIGHT.txt
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+🎊 HERZLICHEN GLÜCKWUNSCH!
+
+DU KANNST JETZT MIT DEM VERKAUF STARTEN!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+© 2025 Alexander Hölzer
+Alle Rechte vorbehalten.

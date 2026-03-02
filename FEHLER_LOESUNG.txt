@@ -1,0 +1,226 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║  ❌ FEHLER: USB_Distribution nicht gefunden!                          ║
+║  LÖSUNG: Build-USBVersion.ps1 ausführen                              ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🔴 DAS IST DER FEHLER:
+
+  "❌ FEHLER: USB_Distribution nicht gefunden!"
+  
+  Das passiert, weil:
+  ├─ Das USB_Distribution Verzeichnis nicht existiert
+  ├─ SETUP_PROGRAMM.bat nach diesem Ordner sucht
+  └─ Aber es wurde noch nicht erstellt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ LÖSUNG - 3 SCHRITTE:
+
+Schritt 1: Build-USBVersion.ps1 ausführen
+──────────────────────────────────────────
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  
+  .\Build-USBVersion.ps1 -Action Package
+
+  Was macht das:
+  ├─ Baut das Programm (Release-Config)
+  ├─ Erstellt USB_Distribution Verzeichnis
+  ├─ Kopiert MaterialManager_R03.exe dort hin
+  ├─ Kopiert alle DLL-Abhängigkeiten
+  └─ Erstellt ein sauberes USB-Paket
+
+
+Schritt 2: USB_Distribution prüfen
+───────────────────────────────────
+
+  Nach dem Build sollte existieren:
+  
+  📁 USB_Distribution/
+  ├─ MaterialManager_R03.exe      (~35 MB)
+  ├─ *.dll                         (~100-150 MB)
+  └─ (weitere Ressourcen)
+  
+  Größe sollte ~150-200 MB sein
+
+
+Schritt 3: SETUP_PROGRAMM.bat ausführen
+─────────────────────────────────────────
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03\USB_Installation
+  
+  SETUP_PROGRAMM.bat
+  
+  Was macht das:
+  ├─ Kopiert MaterialManager_R03.exe von USB_Distribution
+  ├─ Kopiert alle *.dll Dateien
+  ├─ Ziel: USB_Installation\Programm\
+  ├─ Erstellt die komplette USB-Struktur
+  └─ ✅ Installation bereit!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 DER KOMPLETTE WORKFLOW:
+
+┌────────────────────────────────────────────────────────────┐
+│ 1. MASTER_SETUP.ps1 -Action Full                           │
+│    └─ Baut Installer.exe                                   │
+│       ✓ Installer_Source\bin\...\Installer.exe            │
+│       ✓ USB_Installation\Installer.exe                    │
+├────────────────────────────────────────────────────────────┤
+│ 2. Build-USBVersion.ps1 -Action Package                    │
+│    └─ Baut USB-Paket mit Programm-Dateien                  │
+│       ✓ USB_Distribution\MaterialManager_R03.exe           │
+│       ✓ USB_Distribution\*.dll                             │
+│       ✓ USB_Distribution\(Ressourcen)                      │
+├────────────────────────────────────────────────────────────┤
+│ 3. SETUP_PROGRAMM.bat (von USB_Installation Ordner)        │
+│    └─ Kopiert Programm-Dateien in USB_Installation        │
+│       ✓ USB_Installation\Programm\MaterialManager_R03.exe  │
+│       ✓ USB_Installation\Programm\*.dll                    │
+│       ✓ Fertig!                                            │
+├────────────────────────────────────────────────────────────┤
+│ 4. Auf USB-Stick kopieren                                  │
+│    └─ copy-item "USB_Installation\*" -Destination "D:\"   │
+│       ✓ USB bereit!                                        │
+└────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 SCHNELLSTART - ALLE BEFEHLE NACHEINANDER:
+
+PowerShell öffnen (als Administrator!) und eingeben:
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  
+  # 1. Falls noch nicht gemacht: MASTER_SETUP
+  .\MASTER_SETUP.ps1 -Action Full
+  
+  # 2. USB-Paket erstellen (DAS FEHLT!)
+  .\Build-USBVersion.ps1 -Action Package
+  
+  # 3. In USB_Installation wechseln
+  cd USB_Installation
+  
+  # 4. Programm-Dateien kopieren
+  SETUP_PROGRAMM.bat
+  
+  # Fertig! ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ WAS IST Build-USBVersion.ps1?
+
+Das ist ein eigenständiges Build-Script das:
+
+  ✓ MaterialManager_R03 Release baut
+  ✓ USB_Distribution Verzeichnis erstellt
+  ✓ Alle Dateien dort hin kopiert
+  ✓ Ein sauberes USB-Paket erstellt
+  ✓ Größe optimiert
+
+Unterschied zu MASTER_SETUP:
+  ├─ MASTER_SETUP: Baut Installer.exe
+  └─ Build-USBVersion: Baut Programm-Paket für USB
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 WARUM DER FEHLER?
+
+Die Reihenfolge war falsch:
+
+  ❌ FALSCH:
+     1. SETUP_PROGRAMM.bat direkt ausführen
+        └─ USB_Distribution nicht vorhanden!
+
+  ✅ RICHTIG:
+     1. MASTER_SETUP.ps1 -Action Full    (Installer)
+     2. Build-USBVersion.ps1 -Action Package  (Programm-Paket)
+     3. SETUP_PROGRAMM.bat               (Kopieren)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ CHECKLISTE - SO WIRD ES GEMACHT:
+
+  [ ] 1. PowerShell öffnen (als Admin!)
+  [ ] 2. cd MaterialManager_R03
+  [ ] 3. .\MASTER_SETUP.ps1 -Action Full
+        ⏱️  Warte auf "SETUP ABGESCHLOSSEN ✅"
+  [ ] 4. .\Build-USBVersion.ps1 -Action Package
+        ⏱️  Warte auf erfolgreiche Meldung
+  [ ] 5. Prüfe: dir USB_Distribution
+        ✓ MaterialManager_R03.exe sollte dort sein
+  [ ] 6. cd USB_Installation
+  [ ] 7. SETUP_PROGRAMM.bat
+        ⏱️  Warte bis fertig
+  [ ] 8. Prüfe: dir Programm
+        ✓ MaterialManager_R03.exe & *.dll sollten dort sein
+  [ ] 9. ✅ USB bereit zum Versand!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 DER FEHLER IN DEUTSCH:
+
+  Schritt: SETUP_PROGRAMM.bat ausführen
+  Fehler: USB_Distribution nicht gefunden!
+  Grund: Build-USBVersion.ps1 wurde nicht ausgeführt
+  Lösung: Build-USBVersion.ps1 -Action Package ausführen
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 NEUE ANLEITUNG - SCHRITT FÜR SCHRITT:
+
+  INSTALLATION WIRD SO GEMACHT:
+
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 1: VORBEREITUNG                                    │
+  ├──────────────────────────────────────────────────────────┤
+  │ 1. PowerShell öffnen (Rechtsklick → Administrator)       │
+  │ 2. cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03 │
+  └──────────────────────────────────────────────────────────┘
+         ↓
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 2: INSTALLER BAUEN                                 │
+  ├──────────────────────────────────────────────────────────┤
+  │ .\MASTER_SETUP.ps1 -Action Full                          │
+  │ Ergebnis: Installer.exe wird gebaut (~170 MB)            │
+  └──────────────────────────────────────────────────────────┘
+         ↓
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 3: PROGRAMM-PAKET BAUEN  ← DAS WAR DER FEHLER!    │
+  ├──────────────────────────────────────────────────────────┤
+  │ .\Build-USBVersion.ps1 -Action Package                   │
+  │ Ergebnis: USB_Distribution wird erstellt                 │
+  └──────────────────────────────────────────────────────────┘
+         ↓
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 4: IN USB_Installation WECHSELN                    │
+  ├──────────────────────────────────────────────────────────┤
+  │ cd USB_Installation                                      │
+  └──────────────────────────────────────────────────────────┘
+         ↓
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 5: PROGRAMM-DATEIEN KOPIEREN                       │
+  ├──────────────────────────────────────────────────────────┤
+  │ SETUP_PROGRAMM.bat                                       │
+  │ Ergebnis: Programm\ Ordner wird gefüllt                  │
+  └──────────────────────────────────────────────────────────┘
+         ↓
+  ┌──────────────────────────────────────────────────────────┐
+  │ Phase 6: AUF USB-STICK KOPIEREN                          │
+  ├──────────────────────────────────────────────────────────┤
+  │ copy-item -Path ".\*" -Destination "D:\" -Recurse        │
+  │ Ergebnis: USB bereit!                                    │
+  └──────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 JETZT - FEHLENDER BEFEHL AUSFÜHREN:
+
+  cd C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R03
+  
+  .\Build-USBVersion.ps1 -Action Package
+
+Das wars! Dann läuft SETUP_PROGRAMM.bat auch!
+
+═════════════════════════════════════════════════════════════════════════════

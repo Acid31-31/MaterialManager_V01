@@ -1,0 +1,123 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                  ⚙️  R02 PRÜFUNG - WICHTIGE FEATURES                         ║
+║                        Welche Dateien sind wichtig?                           ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+📍 ZIEL: Überprüfe, ob es in R02 wichtige Features gibt, die in R03 fehlen!
+
+Häufig sind solche Dinge in älteren Versionen:
+✓ Services (Geschäftslogik)
+✓ Models (Datenstrukturen)
+✓ Konverter & Helper
+✓ Bug-Fixes & Workarounds
+✓ Spezielle Funktionen
+
+
+═══════════════════════════════════════════════════════════════════════════════
+PRÜFLISTE - VERGLEICHE R02 MIT R03:
+═══════════════════════════════════════════════════════════════════════════════
+
+📂 Services:
+  └─ C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R02\Services\
+
+  Prüfe auf diese Dateien:
+  □ ReservierteResteService.cs
+    → Gibt es auch in R03? □ JA □ NEIN
+    → Falls NEIN: Brauchst du es? □ JA □ NEIN
+    
+  □ UpdateManager.cs
+    → Gibt es auch in R03? □ JA □ NEIN
+    → Falls NEIN: Brauchst du es? □ JA □ NEIN
+    
+  □ Andere Services die es in R02 gibt aber nicht in R03?
+    □ JA: __________________ (Name eintragen)
+    □ NEIN
+
+
+📂 Models:
+  └─ C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R02\Models\
+
+  Prüfe auf diese Dateien:
+  □ Gibt es Models in R02 die nicht in R03 sind?
+    □ JA: __________________ (Name eintragen)
+    □ NEIN
+
+
+📂 Converters:
+  └─ C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R02\Converters\
+
+  Prüfe auf diese Dateien:
+  □ HasAuftragNrConverter.cs (sichtbar in offenem Kontext)
+    → Gibt es auch in R03? □ JA □ NEIN
+    → Falls NEIN: Brauchst du es? □ JA □ NEIN
+    
+  □ Andere Converter die nur in R02 existieren?
+    □ JA: __________________ (Name eintragen)
+    □ NEIN
+
+
+📂 Updates / Versionsgeschichte:
+  └─ C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R02\Updates\
+
+  Prüfe auf:
+  □ VERSIONS_HISTORY.txt
+    → Wichtige Änderungen dokumentiert?
+    □ JA: Kopiere nach V01!
+    □ NEIN
+    
+  □ v2.0.0/ Ordner (alte Updates)
+    → Brauchst du diese? □ JA □ NEIN
+
+
+═══════════════════════════════════════════════════════════════════════════════
+HANDLUNG - WENN "JA" BEI WICHTIGER DATEI:
+═══════════════════════════════════════════════════════════════════════════════
+
+Falls du wichtige Dateien aus R02 gefunden hast:
+
+1. Kopiere die Datei in V01:
+   cp "C:\Users\hoelz.WIN-G2OC48399EJ\MaterialManager_R02\Services\[DATEI].cs" `
+      "D:\MaterialManager_V01_komplett\Services\[DATEI].cs"
+
+2. Ändere den Namespace von R02 zu V01:
+   Replace: namespace MaterialManager_R02
+   With:    namespace MaterialManager_V01
+
+3. Prüfe auf Abhängigkeiten:
+   - Welche anderen Dateien nutzt diese Datei?
+   - Müssen diese auch aktualisiert werden?
+
+4. Teste, ob die Datei in V01 funktioniert!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLISTE FÜR DICH:
+═══════════════════════════════════════════════════════════════════════════════
+
+VOR KOPIEREN:
+□ Habe ich R02 gründlich überprüft?
+□ Gibt es wichtige Services/Models die ich vergessen könnte?
+□ Sind alle Abhängigkeiten klar?
+
+NACH KOPIEREN:
+□ Wichtige R02-Dateien kopiert?
+□ Namespaces geändert (R02 → V01)?
+□ Build noch erfolgreich?
+□ Demo-Funktionalität erhalten?
+
+
+═══════════════════════════════════════════════════════════════════════════════
+EMPFEHLUNG:
+═══════════════════════════════════════════════════════════════════════════════
+
+Falls du UNSICHER bist, ob etwas wichtig ist:
+
+→ Mach ERST das Kopieren und Umbenennen (COPY_TO_V01.ps1 + RENAME_TO_V01.ps1)
+
+→ DANN Testiere, ob alles funktioniert
+
+→ Wenn etwas fehlt, kopiere es aus R02 nach!
+
+Das ist sicherer als zu viel auf einmal zu kopieren!
+
+═══════════════════════════════════════════════════════════════════════════════

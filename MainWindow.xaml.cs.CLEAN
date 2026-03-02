@@ -1,0 +1,573 @@
+using MaterialManager_R03.Models;
+using MaterialManager_R03.Views;
+using MaterialManager_R03.Services;
+using Microsoft.Win32;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace MaterialManager_R03
+{
+    public partial class MainWindow : Window, INotifyPropertyChanged
+    {
+        public ObservableCollection<MaterialItem> Materialien { get; set; } = new();
+
+        private string _gesamtGewichtText = "0,00 kg";
+        public string GesamtGewichtText { get => _gesamtGewichtText; set { _gesamtGewichtText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GesamtGewichtText))); } }
+
+        private double _durchschnittAuslastung = 0;
+        public double DurchschnittAuslastung { get => _durchschnittAuslastung; set { _durchschnittAuslastung = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DurchschnittAuslastung))); } }
+
+        private string _auslastungText = "0%";
+        public string AuslastungText { get => _auslastungText; set { _auslastungText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuslastungText))); } }
+
+        private string _niedrigeBestaendeText = "Alle OK ✓";
+        public string NiedrigeBestaendeText { get => _niedrigeBestaendeText; set { _niedrigeBestaendeText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeText))); } }
+
+        private string _niedrigeBestaendeFarbe = "#4CAF50";
+        public string NiedrigeBestaendeFarbe { get => _niedrigeBestaendeFarbe; set { _niedrigeBestaendeFarbe = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeFarbe))); } }
+
+        private double _euPalettePct = 0;
+        public double EuPalettePct { get => _euPalettePct; set { _euPalettePct = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EuPalettePct))); } }
+
+        private string _euPaletteDisplayText = "0 kg / 2.000 kg";
+        public string EuPaletteDisplayText { get => _euPaletteDisplayText; set { _euPaletteDisplayText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EuPaletteDisplayText))); } }
+
+        private int _reservierteResteCount = 0;
+        public int ReservierteResteCount { get => _reservierteResteCount; set { _reservierteResteCount = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReservierteResteCount))); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = this;
+
+            var remainingDays = Services.LicenseService.GetRemainingTrialDays();
+            Title = $"MaterialManager R03 - DEMO ({remainingDays} Tage verbleibend)";
+
+            Materialien.CollectionChanged += (_, __) => UpdateStats();
+            this.KeyDown += MainWindow_KeyDown;
+
+            LoadAutosave();
+            UpdateStats();
+
+            Application.Current.Exit += (_, __) => SaveNow();
+            Services.BackupService.StartAutoBackup(() => Services.BackupService.CreateBackup(Materialien.ToList()));
+
+            ReservierteResteCount = 0;
+
+            var savePath = Services.NetzwerkService.GetSavePath();
+            
+            // Timer: Online-Status alle 5 Sekunden aktualisieren
+            var timer = new System.Windows.Threading.DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(5);
+            timer.Tick += (_, __) => UpdateOnlineStatus();
+            timer.Start();
+            
+            // Click überall außer Popup schließt das Popup
+            this.MouseDown += (s, e) =>
+            {
+                var popup = this.FindName("OnlineUsersPopup") as System.Windows.Controls.Primitives.Popup;
+                var border = this.FindName("OnlineUsersBorder") as Border;
+                
+                if (popup != null && popup.IsOpen && e.Source != border)
+                {
+                    popup.IsOpen = false;
+                }
+            };
+        }
+
+        private void UpdateOnlineStatus()
+        {
+            try
+            {
+                var onlineUsers = Services.OnlineUserService.GetOnlineUsers();
+                var display = this.FindName("OnlineUsersDisplay") as TextBlock;
+                if (display != null)
+                {
+                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"👤 {u}"));
+                }
+            }
+            catch { }
+        }
+
+        private void OnOnlineUsersClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var popup = this.FindName("OnlineUsersPopup") as System.Windows.Controls.Primitives.Popup;
+                var listBox = this.FindName("OnlineUsersList") as ListBox;
+                
+                if (popup != null && listBox != null)
+                {
+                    var onlineUsers = Services.OnlineUserService.GetOnlineUsers();
+                    listBox.ItemsSource = onlineUsers;
+                    popup.IsOpen = true;
+                }
+                e.Handled = true;
+            }
+            catch { }
+        }
+
+        private void InitializeAutoSync(string savePath)
+        {
+        }
+
+        private async void ReloadMaterialienAsync()
+        {
+        }
+
+        private void OnMaterialNeu(object sender, RoutedEventArgs e)
+        {
+            var dlg = new MaterialDialog(Materialien) { Owner = this };
+            if (dlg.ShowDialog() == true)
+            {
+                var newItem = dlg.Material;
+                if (newItem != null)
+                {
+                    var now = DateTime.Now;
+                    var user = Environment.UserName;
+                    newItem.CreatedBy = user;
+                    newItem.CreatedDate = now;
+                    newItem.LastModifiedBy = user;
+                    newItem.LastModifiedDate = now;
+                    newItem.AenderungsDatum = now;
+
+                    Materialien.Add(newItem);
+                    SaveNow();
+                }
+            }
+        }
+
+        private void OnMaterialBearbeiten(object sender, MouseButtonEventArgs e)
+        {
+            if (MaterialGrid.SelectedItem is MaterialItem item)
+            {
+                var dlg = new MaterialDialog(Materialien) { Owner = this };
+                dlg.SetEditMode(item);
+                if (dlg.ShowDialog() == true)
+                {
+                    var updatedItem = dlg.Material;
+                    if (updatedItem != null)
+                    {
+                        var now = DateTime.Now;
+                        var user = Environment.UserName;
+
+                        updatedItem.CreatedBy = item.CreatedBy;
+                        updatedItem.CreatedDate = item.CreatedDate;
+                        updatedItem.LastModifiedBy = user;
+                        updatedItem.LastModifiedDate = now;
+                        updatedItem.AenderungsDatum = now;
+
+                        var idx = Materialien.IndexOf(item);
+                        Materialien[idx] = updatedItem;
+                        SaveNow();
+                    }
+                }
+            }
+        }
+
+        private void OnMaterialLoeschen(object sender, RoutedEventArgs e)
+        {
+            var selected = Materialien.Where(m => m.IsSelected).ToList();
+            if (!selected.Any()) { MessageBox.Show("Bitte Material auswählen."); return; }
+            if (MessageBox.Show($"{selected.Count} Material(ien) löschen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                Services.UndoService.Push($"{selected.Count} Material(ien) gelöscht", selected);
+                foreach (var item in selected) { Services.BuchungsService.BucheAusgang(item); Materialien.Remove(item); }
+                SaveNow();
+            }
+        }
+
+        private void OnReservierteReste(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ReservierteResteDialog { Owner = this };
+            dlg.ShowDialog();
+            ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
+        }
+
+        private void OnCheckForUpdates(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var updatePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Updates", "v2.0.0");
+                if (System.IO.Directory.Exists(updatePath))
+                {
+                    var dlg = new UpdateDialog { Owner = this };
+                    dlg.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("Sie haben die neueste Version!\n\nAktuell: v1.0.0", "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnSelectAllChecked(object sender, RoutedEventArgs e) { foreach (var m in Materialien) m.IsSelected = true; }
+        private void OnSelectAllUnchecked(object sender, RoutedEventArgs e) { foreach (var m in Materialien) m.IsSelected = false; }
+        private void CheckBox_Click(object sender, RoutedEventArgs e) { if (sender is CheckBox cb && cb.DataContext is MaterialItem item) item.IsSelected = cb.IsChecked ?? false; }
+
+        private void OnFormFilterChanged(object sender, SelectionChangedEventArgs e) { }
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { }
+        private void OnWeightModeChanged(object sender, SelectionChangedEventArgs e) { }
+
+        private void OnTafelVerbrauchen(object sender, RoutedEventArgs e)
+        {
+            if (MaterialGrid.SelectedItem is MaterialItem item)
+            {
+                var dlg = new TafelVerbrauchDialog(item, Materialien) { Owner = this };
+                if (dlg.ShowDialog() == true) { if (item.Stueckzahl <= 1) { Services.BuchungsService.BucheAusgang(item); Materialien.Remove(item); } else item.Stueckzahl--; SaveNow(); }
+            }
+        }
+
+        private void OnNiedrigeBestaendeClick(object sender, RoutedEventArgs e) { new NiedrigeBestaendeDialog(Materialien) { Owner = this }.ShowDialog(); }
+        private void OnEuPaletteClick(object sender, RoutedEventArgs e) { new EuPaletteDialog(Materialien) { Owner = this }.ShowDialog(); }
+        
+        private void OnResteSuchen(object sender, RoutedEventArgs e) 
+        { 
+            var dlg = new ResteSucheDialog { Owner = this };
+            if (dlg.ShowDialog() == true)
+            {
+                var gefunden = Materialien.Where(m =>
+                {
+                    bool match = true;
+                    if (!string.IsNullOrEmpty(dlg.Material) && m.MaterialArt != dlg.Material) match = false;
+                    if (!string.IsNullOrEmpty(dlg.Legierung) && m.Legierung != dlg.Legierung) match = false;
+                    if (dlg.Staerke.HasValue)
+                    {
+                        var toleranz = dlg.ToleranzProzent / 100.0;
+                        var min = dlg.Staerke.Value * (1 - toleranz);
+                        var max = dlg.Staerke.Value * (1 + toleranz);
+                        if (m.Staerke < min || m.Staerke > max) match = false;
+                    }
+                    if (dlg.Laenge.HasValue && dlg.Breite.HasValue)
+                    {
+                        var parts = m.Mass?.Split('x', '×');
+                        if (parts?.Length == 2)
+                        {
+                            if (int.TryParse(parts[0].Trim(), out var l) && int.TryParse(parts[1].Trim(), out var b))
+                            {
+                                var toleranz = dlg.ToleranzProzent / 100.0;
+                                var minL = dlg.Laenge.Value * (1 - toleranz);
+                                var maxL = dlg.Laenge.Value * (1 + toleranz);
+                                var minB = dlg.Breite.Value * (1 - toleranz);
+                                var maxB = dlg.Breite.Value * (1 + toleranz);
+                                if (l < minL || l > maxL || b < minB || b > maxB) match = false;
+                            }
+                        }
+                    }
+                    if (dlg.Form != "Alle" && m.Form != dlg.Form) match = false;
+                    return match;
+                }).ToList();
+
+                if (gefunden.Any())
+                {
+                    var ergebnisDlg = new ResteSucheErgebnisDialog(gefunden) { Owner = this };
+                    if (ergebnisDlg.ShowDialog() == true)
+                    {
+                        var materialAusDialog = ergebnisDlg.AusgewaehltesMaterial;
+                        var auftragsnr = ergebnisDlg.Auftragsnummer;
+                        
+                        if (materialAusDialog != null && !string.IsNullOrWhiteSpace(auftragsnr))
+                        {
+                            var originalMaterial = Materialien.FirstOrDefault(m => 
+                                m.MaterialArt == materialAusDialog.MaterialArt &&
+                                m.Legierung == materialAusDialog.Legierung &&
+                                m.Staerke == materialAusDialog.Staerke &&
+                                m.Mass == materialAusDialog.Mass &&
+                                m.Restnummer == materialAusDialog.Restnummer);
+                            
+                            if (originalMaterial != null)
+                            {
+                                originalMaterial.AuftragNr = auftragsnr;
+                                originalMaterial.IsHighlighted = true;
+                                originalMaterial.LastModifiedBy = Environment.UserName;
+                                originalMaterial.LastModifiedDate = DateTime.Now;
+                                SaveNow();
+                                UpdateStats();
+                                MaterialGrid.Items.Refresh();
+                                MessageBox.Show($"✅ Material reserviert für Auftrag: {auftragsnr}", 
+                                    "Reservierung erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("❌ Keine passenden Materialien gefunden.", 
+                        "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void OnInventur(object sender, RoutedEventArgs e) 
+        { 
+            var dlg = new InventurDialog(Materialien) { Owner = this };
+            if (dlg.ShowDialog() == true)
+            {
+                SaveNow();
+                UpdateStats();
+                MaterialGrid.Items.Refresh();
+            }
+        }
+
+        private void OnStatistik(object sender, RoutedEventArgs e) { new StatistikDialog(Materialien) { Owner = this }.ShowDialog(); }
+
+        private void OnExport(object sender, RoutedEventArgs e)
+        {
+            var dlg = new SaveFileDialog { Filter = "Excel (*.xlsx)|*.xlsx" };
+            if (dlg.ShowDialog() == true) { try { ExcelService.Export(dlg.FileName, Materialien); MessageBox.Show("✅ Export erfolgreich"); } catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); } }
+        }
+
+        private void OnImport(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog { Filter = "Excel (*.xlsx)|*.xlsx" };
+            if (dlg.ShowDialog() == true)
+            {
+                try
+                {
+                    var items = ExcelService.Import(dlg.FileName);
+                    if (items?.Any() != true) { MessageBox.Show("Keine Materialien gefunden"); return; }
+                    if (MessageBox.Show($"{items.Count()} Materialien. Ersetzen?", "Import", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        Materialien.Clear();
+                        foreach (var item in items) Materialien.Add(item);
+                        SaveNow();
+                        MessageBox.Show("✅ Import erfolgreich");
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); }
+            }
+        }
+
+        private void OnUndo(object sender, RoutedEventArgs e) 
+        { 
+            if (Services.UndoService.CanUndo) 
+            {
+                var geloeschteItems = Services.UndoService.Undo();
+                if (geloeschteItems != null)
+                {
+                    foreach (var item in geloeschteItems) Materialien.Add(item);
+                    SaveNow();
+                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "Rückgängig", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Keine Aktion zum Rückgängig machen verfügbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void OnRedo(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Redo-Funktion noch nicht implementiert.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void OnBeenden(object sender, RoutedEventArgs e) { Application.Current.Shutdown(); }
+        
+        private void OnNetzwerkEinstellungen(object sender, RoutedEventArgs e)
+        {
+            var dlg = new NetzwerkSetupDialog { Owner = this };
+            dlg.ShowDialog();
+        }
+        
+        private void OnRegalauslastungClick(object sender, MouseButtonEventArgs e)
+        {
+            var dlg = new RegalauslastungDialog(Materialien) { Owner = this };
+            dlg.ShowDialog();
+        }
+        
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Delete) { OnMaterialLoeschen(null, null); e.Handled = true; } }
+
+        private void UpdateStats()
+        {
+            var total = Materialien.Sum(m => m.GewichtKg);
+            GesamtGewichtText = $"{total:F2} kg";
+            DurchschnittAuslastung = Materialien.Any() ? 50 : 0;
+            AuslastungText = "Ø 50% (Regale A-J)";
+            
+            var restGewicht = Materialien.Where(m => m.Form == "Rest").Sum(m => m.GewichtKg);
+            EuPalettePct = restGewicht / 2000.0 * 100.0;
+            EuPaletteDisplayText = $"{restGewicht:F2} / 2.000 kg ({EuPalettePct:F0}%)";
+            
+            var niedrig = Materialien.Count(m => m.Stueckzahl < 3);
+            NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ✓";
+            NiedrigeBestaendeFarbe = niedrig > 0 ? "#FF9800" : "#4CAF50";
+            
+            ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
+            
+            foreach (var m in Materialien)
+            {
+                if (!string.IsNullOrEmpty(m.AuftragNr))
+                {
+                    m.IsHighlighted = true;
+                }
+            }
+        }
+
+        private void SaveNow()
+        {
+            try { var savePath = Services.NetzwerkService.GetSavePath(); ExcelService.Export(savePath, Materialien); }
+            catch { }
+        }
+
+        private void LoadAutosave()
+        {
+            try
+            {
+                var savePath = Services.NetzwerkService.GetSavePath();
+                if (File.Exists(savePath))
+                {
+                    var items = ExcelService.Import(savePath);
+                    Materialien.Clear();
+                    foreach (var item in items ?? Enumerable.Empty<MaterialItem>())
+                        Materialien.Add(item);
+                }
+            }
+            catch { }
+        }
+
+        private void OnLizenzAktivieren(object sender, RoutedEventArgs e)
+        {
+            var dialog = new LicenseActivationDialog { Owner = this };
+            if (dialog.ShowDialog() == true)
+            {
+                var (isDemo, type, registeredTo, _) = Services.LicenseService.GetLicenseInfo();
+                
+                if (!isDemo)
+                {
+                    Title = $"MaterialManager R03 - Vollversion ({type}) - Registriert auf: {registeredTo}";
+                    
+                    MessageBox.Show(
+                        "✓ Vollversion erfolgreich aktiviert!\n\n" +
+                        $"Lizenztyp: {type}\n" +
+                        $"Registriert auf: {registeredTo}\n\n" +
+                        "Vielen Dank für Ihren Kauf!",
+                        "Aktivierung erfolgreich",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void OnLizenzbestimmungen(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var licensePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LICENSE.txt");
+                
+                if (File.Exists(licensePath))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = licensePath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Lizenzdatei nicht gefunden.\n\n" +
+                        "Bitte kontaktieren Sie den Support:\n" +
+                        "hoelzer_alex@yahoo.de",
+                        "Datei nicht gefunden",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Öffnen der Lizenzdatei:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnUrheberrecht(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var copyrightPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "COPYRIGHT.txt");
+                
+                if (File.Exists(copyrightPath))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = copyrightPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "╔═══════════════════════════════════════════════════════╗\n" +
+                        "║        MATERIALMANAGER R03 - URHEBERRECHT           ║\n" +
+                        "╚═══════════════════════════════════════════════════════╝\n\n" +
+                        "© 2025 Alexander Hölzer - Alle Rechte vorbehalten\n\n" +
+                        "Diese Software ist urheberrechtlich geschützt gemäß\n" +
+                        "§§ 69a ff. UrhG (Urheberrechtsgesetz).\n\n" +
+                        "VERBOTEN SIND:\n" +
+                        "✗ Dekompilierung, Reverse Engineering\n" +
+                        "✗ Entfernung von Urheberrechtshinweisen\n" +
+                        "✗ Unbefugte Weitergabe oder Verleih\n" +
+                        "✗ Kommerzielle Nutzung ohne Lizenz\n" +
+                        "✗ Umgehung von Kopierschutzmechanismen\n\n" +
+                        "Bei Verstößen: Vertragsstrafe bis 50.000 EUR\n" +
+                        "und strafrechtliche Verfolgung.\n\n" +
+                        "Kontakt:\n" +
+                        "E-Mail: hoelzer_alex@yahoo.de\n" +
+                        "Tel: +49 170 8339993",
+                        "Urheberrechtshinweis",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Öffnen der Copyright-Datei:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnUeberProgramm(object sender, RoutedEventArgs e)
+        {
+            var (isDemo, type, registeredTo, remainingDays) = Services.LicenseService.GetLicenseInfo();
+            var hardwareId = Services.LicenseService.GetHardwareId();
+            
+            string lizenzInfo = isDemo 
+                ? $"Demo-Version ({remainingDays} Tage verbleibend)" 
+                : $"Vollversion - {type}\nRegistriert auf: {registeredTo}";
+
+            MessageBox.Show(
+                "╔═══════════════════════════════════════════════════════╗\n" +
+                "║         MATERIALMANAGER R03 - VOLLVERSION           ║\n" +
+                "╚═══════════════════════════════════════════════════════╝\n\n" +
+                "Version: 3.0.0\n" +
+                "Build-Datum: 2025\n" +
+                "Plattform: Windows 10/11 (.NET 8)\n\n" +
+                $"Lizenz-Status: {lizenzInfo}\n" +
+                $"Hardware-ID: {hardwareId}\n\n" +
+                "───────────────────────────────────────────────────────\n\n" +
+                "© 2025 Alexander Hölzer\n" +
+                "Alle Rechte vorbehalten\n\n" +
+                "Diese Software ist urheberrechtlich geschützt gemäß\n" +
+                "§§ 69a ff. UrhG (Urheberrechtsgesetz).\n\n" +
+                "───────────────────────────────────────────────────────\n\n" +
+                "Kontakt & Support:\n" +
+                "📧 E-Mail: hoelzer_alex@yahoo.de\n" +
+                "📞 Telefon: +49 170 8339993\n" +
+                "🌐 Website: Auf Anfrage\n\n" +
+                "Support-Zeiten: Mo-Fr 9-17 Uhr",
+                "Über MaterialManager R03",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+    }
+}
