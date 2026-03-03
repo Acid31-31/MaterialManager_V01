@@ -94,3 +94,9 @@ Backups/
 *.log
 USB_Installation/**/startup_log.txt
 USB_Installation/**/startup_*.txt
+
+# Additional explicit ignores (requested)
+**/bin/
+**/obj/
+*.Backup.tmp
+*.csproj.Backup.tmp

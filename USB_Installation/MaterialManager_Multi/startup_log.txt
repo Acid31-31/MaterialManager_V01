@@ -1,7 +1,0 @@
-
-
-=== START 01.03.2026 18:34:49 ===
-App.OnStartup() gestartet
-Lizenz gültig
-Verbleibende Tage: 27
-App.OnStartup() erfolgreich beendet
