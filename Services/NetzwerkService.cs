@@ -30,17 +30,29 @@ namespace MaterialManager_V01.Services
             if (IsNetzwerkModus)
                 return Path.Combine(_config.NetzwerkPfad, "materialbestand.xlsx");
 
-            // ✅ EINFACH: Speichere im Ordner "Excell" im Projekt-Root!
-            var projectDir = AppDomain.CurrentDomain.BaseDirectory;
-            var excellDir = Path.Combine(projectDir, "Excell");
-            
-            // Erstelle Ordner wenn nicht vorhanden
-            if (!Directory.Exists(excellDir))
+            var dataDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "MaterialManager_V01",
+                "Data");
+
+            if (!Directory.Exists(dataDir))
+                Directory.CreateDirectory(dataDir);
+
+            var targetPath = Path.Combine(dataDir, "materialbestand.xlsx");
+
+            // Sanfte Migration: alte lokale Datei aus Installationsordner kopieren (nicht verschieben/löschen)
+            try
             {
-                Directory.CreateDirectory(excellDir);
+                if (!File.Exists(targetPath))
+                {
+                    var legacyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Excell", "materialbestand.xlsx");
+                    if (File.Exists(legacyPath))
+                        File.Copy(legacyPath, targetPath, overwrite: false);
+                }
             }
-            
-            return Path.Combine(excellDir, "materialbestand.xlsx");
+            catch { }
+
+            return targetPath;
         }
 
         public static string GetLockFile()

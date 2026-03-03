@@ -100,3 +100,8 @@ USB_Installation/**/startup_*.txt
 **/obj/
 *.Backup.tmp
 *.csproj.Backup.tmp
+
+# Track release automation scripts
+!Tools/
+!Tools/Release/
+!Tools/Release/*.ps1

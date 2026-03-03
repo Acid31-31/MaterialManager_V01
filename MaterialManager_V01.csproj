@@ -15,6 +15,7 @@
     <Version>1.0.0</Version>
     <FileVersion>1.0.0.0</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
     <Product>MaterialManager V01</Product>
     <Company>MaterialManager</Company>
     <Description>Materialverwaltung für Blechlager - Vollversion mit Lizenzierung</Description>
@@ -62,6 +63,7 @@
     <None Include=".github\copilot-instructions.md" />
     <None Include="bin\USB_Version\autorun.inf" />
     <None Include="bin\USB_Version\START.bat" />
+    <None Include="Installer_Source\MaterialManager_Setup.vdproj" />
     <None Include="MaterialManager.sln" />
     <None Include="Tools\LicenseGenerator.csproj" />
     <None Include="USB_Installation_Helper\USB_Installation_Helper.csproj" />

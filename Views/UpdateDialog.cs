@@ -12,12 +12,19 @@ namespace MaterialManager_V01.Views
     {
         private readonly UpdateCheckResult _updateInfo;
         private readonly string _uiUpdateLogPath;
+        private System.Threading.CancellationTokenSource? _cts;
 
         private string _versionInfo = "Aktuell: v1.0.0 → Neu: v1.0.0";
         public string VersionInfo { get => _versionInfo; set { _versionInfo = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VersionInfo))); } }
 
         private string _changelog = "Kein Changelog verfügbar.";
         public string Changelog { get => _changelog; set { _changelog = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Changelog))); } }
+
+        private int _downloadProgress;
+        public int DownloadProgress { get => _downloadProgress; set { _downloadProgress = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DownloadProgress))); } }
+
+        private string _downloadStatus = "Bereit.";
+        public string DownloadStatus { get => _downloadStatus; set { _downloadStatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DownloadStatus))); } }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -45,54 +52,57 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                AppendUiLog("Update-Installation gestartet.");
-
                 if (sender is FrameworkElement fe)
                     fe.IsEnabled = false;
 
                 Mouse.OverrideCursor = Cursors.Wait;
+                DownloadProgress = 0;
+                DownloadStatus = "MSI wird heruntergeladen...";
 
-                var prepared = await GitHubUpdateService.PrepareUpdateAsync(_updateInfo, AppDomain.CurrentDomain.BaseDirectory);
-                if (!string.IsNullOrWhiteSpace(prepared.LogPath))
-                    AppendUiLog($"Service-Log: {prepared.LogPath}");
+                _cts = new System.Threading.CancellationTokenSource();
+                var progress = new Progress<int>(p =>
+                {
+                    DownloadProgress = p;
+                    DownloadStatus = $"Download: {p}%";
+                });
 
+                var prepared = await GitHubUpdateService.DownloadMsiAsync(_updateInfo, progress, _cts.Token);
                 if (!string.IsNullOrWhiteSpace(prepared.ErrorMessage))
                 {
-                    AppendUiLog($"FEHLER: {prepared.ErrorMessage}");
-                    MessageBox.Show($"Update konnte nicht vorbereitet werden:\n{prepared.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Update fehlgeschlagen:\n{prepared.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if (prepared.RunExecutableDirectly && !string.IsNullOrWhiteSpace(prepared.InstallerExecutablePath))
+                if (string.IsNullOrWhiteSpace(prepared.MsiPath) || !File.Exists(prepared.MsiPath))
                 {
-                    AppendUiLog($"Starte Installer-EXE: {prepared.InstallerExecutablePath}");
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = prepared.InstallerExecutablePath,
-                        UseShellExecute = true
-                    });
-
-                    Application.Current.Shutdown();
+                    MessageBox.Show("MSI-Datei wurde nicht gefunden.", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(prepared.UpdateScriptPath))
+                var msiLog = Path.Combine(Path.GetTempPath(), "MaterialManager_msi_install.log");
+                var args = $"/i \"{prepared.MsiPath}\" /passive /norestart /l*v \"{msiLog}\"";
+
+                var confirm = MessageBox.Show(
+                    "Das Update wird jetzt gestartet.\nDie Anwendung wird geschlossen.\n\nWeiter?",
+                    "MSI-Update",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (confirm != MessageBoxResult.Yes)
+                    return;
+
+                Process.Start(new ProcessStartInfo
                 {
-                    AppendUiLog($"Starte Update-Skript: {prepared.UpdateScriptPath}");
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/c \"{prepared.UpdateScriptPath}\"",
-                        UseShellExecute = true,
-                        CreateNoWindow = false
-                    });
+                    FileName = "msiexec.exe",
+                    Arguments = args,
+                    UseShellExecute = true
+                });
 
-                    Application.Current.Shutdown();
-                    return;
-                }
+                DownloadStatus = "MSI gestartet. Anwendung wird geschlossen...";
+                AppendUiLog($"MSI gestartet: {prepared.MsiPath}");
+                AppendUiLog($"MSI-Log: {msiLog}");
 
-                AppendUiLog("Kein installierbares Update gefunden.");
-                MessageBox.Show("Kein installierbares Update gefunden.", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Application.Current.Shutdown();
             }
             catch (Exception ex)
             {
@@ -104,6 +114,8 @@ namespace MaterialManager_V01.Views
                 Mouse.OverrideCursor = null;
                 if (sender is FrameworkElement fe)
                     fe.IsEnabled = true;
+                _cts?.Dispose();
+                _cts = null;
             }
         }
 
@@ -119,6 +131,29 @@ namespace MaterialManager_V01.Views
             catch { }
         }
 
-        private void OnSpaeter(object sender, RoutedEventArgs e) => Close();
+        private void OnOpenRelease(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var url = _updateInfo.ReleasePageUrl;
+                if (string.IsNullOrWhiteSpace(url))
+                {
+                    MessageBox.Show("Keine Release-URL verfügbar.", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Öffnen:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnSpaeter(object sender, RoutedEventArgs e)
+        {
+            _cts?.Cancel();
+            Close();
+        }
     }
 }

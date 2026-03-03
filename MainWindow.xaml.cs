@@ -123,6 +123,7 @@ namespace MaterialManager_V01
                 this.Loaded += (s, e) =>
                 {
                     Log("MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!");
+                    _ = CheckForUpdatesOnStartupAsync();
                 };
                 
                 // ✅ Cleanup beim Beenden
@@ -397,26 +398,29 @@ namespace MaterialManager_V01
             try
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-
                 var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show(
-                        $"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Prüfung",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!result.IsUpdateAvailable)
                 {
+                    MessageBox.Show($"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(result.MsiDownloadUrl))
+                {
                     MessageBox.Show(
-                        $"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
+                        $"Neue Version {result.LatestVersion} gefunden, aber kein MSI-Asset in der Release.",
                         "Update-Prüfung",
                         MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                        MessageBoxImage.Warning);
                     return;
                 }
 
@@ -901,6 +905,32 @@ namespace MaterialManager_V01
             if (saveDialog.ShowDialog() == true)
             {
                 Services.PrintService.ExportToCSV(saveDialog.FileName, Materialien);
+            }
+        }
+
+        // ✅ AUTO-UPDATE PRÜFUNG BEIM START
+        private async System.Threading.Tasks.Task CheckForUpdatesOnStartupAsync()
+        {
+            try
+            {
+                if (!Services.GitHubUpdateService.ShouldRunAutoCheckToday())
+                    return;
+
+                Services.GitHubUpdateService.MarkAutoCheckedNow();
+
+                var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.MsiDownloadUrl))
+                    return;
+
+                Dispatcher.Invoke(() =>
+                {
+                    var dlg = new UpdateDialog(result) { Owner = this };
+                    dlg.ShowDialog();
+                });
+            }
+            catch
+            {
+                // Start darf durch Update-Check nie blockiert werden
             }
         }
 
