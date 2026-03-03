@@ -392,24 +392,44 @@ namespace MaterialManager_V01
             ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
         }
 
-        private void OnCheckForUpdates(object sender, RoutedEventArgs e)
+        private async void OnCheckForUpdates(object sender, RoutedEventArgs e)
         {
             try
             {
-                var updatePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Updates", "v2.0.0");
-                if (System.IO.Directory.Exists(updatePath))
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
+
+                if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    var dlg = new UpdateDialog { Owner = this };
-                    dlg.ShowDialog();
+                    MessageBox.Show(
+                        $"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Prüfung",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
                 }
-                else
+
+                if (!result.IsUpdateAvailable)
                 {
-                    MessageBox.Show("Sie haben die neueste Version!\n\nAktuell: v1.0.0", "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(
+                        $"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Prüfung",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
                 }
+
+                var dlg = new UpdateDialog(result) { Owner = this };
+                dlg.ShowDialog();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 

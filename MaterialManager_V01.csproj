@@ -62,6 +62,8 @@
     <None Include=".github\copilot-instructions.md" />
     <None Include="bin\USB_Version\autorun.inf" />
     <None Include="bin\USB_Version\START.bat" />
+    <None Include="MaterialManager.sln" />
+    <None Include="Tools\LicenseGenerator.csproj" />
     <None Include="USB_Installation_Helper\USB_Installation_Helper.csproj" />
   </ItemGroup>
 
@@ -93,6 +95,24 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Tools\**">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <Compile Remove="Tools\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Backups\**\*.cs" />
+    <Compile Remove="BACKUP_*\**\*.cs" />
+    <Page Remove="Backups\**\*.xaml" />
+    <Page Remove="BACKUP_*\**\*.xaml" />
+    <EmbeddedResource Remove="Backups\**\*" />
+    <EmbeddedResource Remove="BACKUP_*\**\*" />
+    <None Include="Backups\**\*" />
+    <None Include="BACKUP_*\**\*" />
   </ItemGroup>
 
 </Project>

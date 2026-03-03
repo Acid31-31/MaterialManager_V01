@@ -208,7 +208,7 @@
                     <Button Content="↶" Click="OnUndo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Rückgängig (Ctrl+Z)"/>
                     <Button Content="↷" Click="OnRedo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Wiederherstellen (Ctrl+Y)"/>
                     <Separator Background="#555" Width="1" Margin="5,0"/>
-                    <Button Content="🔄" Click="OnCheckForUpdates" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Daten aktualisieren"/>
+                    <Button Content="🔄" Click="OnCheckForUpdates" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Nach Programm-Updates suchen"/>
                 </StackPanel>
                 
                 <DockPanel Grid.Column="2" VerticalAlignment="Center">

@@ -85,3 +85,12 @@ LicenseKeys/
 # Temporäre Excel-Dateien
 ~$*.xlsx
 ~$*.xls
+
+# Explicit safety ignores for local artifacts
+BACKUP_*/
+Backups/
+*.zip
+*.tmp
+*.log
+USB_Installation/**/startup_log.txt
+USB_Installation/**/startup_*.txt

@@ -1,125 +1,116 @@
 @echo off
-setlocal enabledelayedexpansion
-title LIZENZGENERATOR - MaterialManager R03
+setlocal DisableDelayedExpansion
+chcp 65001 >nul
+title Lizenzgenerator - MaterialManager V01
 color 0B
-chcp 65001 >nul 2>&1
 
 cls
 echo.
 echo ======================================================================
-echo         LIZENZGENERATOR - MaterialManager R03 Vollversion
+echo                LIZENZGENERATOR - MaterialManager V01
+echo ======================================================================
+echo.
+echo VERFUEGBARE LIZENZTYPEN UND PREISE:
+echo.
+echo   1^) Single ^(S1^)        - 1 Arbeitsplatz                - 99,00 EUR/Jahr
+echo   2^) Mehrplatz ^(M3^)     - 3 Arbeitsplaetze             - 249,00 EUR/Jahr
+echo   3^) Firmenlizenz ^(C10^) - 10 Arbeitsplaetze + Support  - 699,00 EUR/Jahr
+echo   4^) Enterprise ^(ENT^)   - Unbegrenzt + Premium Support - Auf Anfrage
+echo.
 echo ======================================================================
 echo.
 
-set /p HWID="Hardware-ID eingeben: "
-if "!HWID!"=="" (
-    echo FEHLER: Hardware-ID erforderlich!
-    pause
-    exit /b 1
+set /p CHOICE=Lizenztyp waehlen (1-4): 
+if "%CHOICE%"=="1" (
+  set "TYPE=Single (S1)"
+  set "PRICE=99,00 EUR/Jahr"
+) else if "%CHOICE%"=="2" (
+  set "TYPE=Mehrplatz (M3)"
+  set "PRICE=249,00 EUR/Jahr"
+) else if "%CHOICE%"=="3" (
+  set "TYPE=Firmenlizenz (C10)"
+  set "PRICE=699,00 EUR/Jahr"
+) else if "%CHOICE%"=="4" (
+  set "TYPE=Enterprise (ENT)"
+  set "PRICE=Auf Anfrage"
+) else (
+  echo FEHLER: Ungueltige Auswahl.
+  pause
+  exit /b 1
 )
 
 echo.
-echo Lizenztyp:
-echo  1 = Einzelplatz (499 EUR)
-echo  2 = Mehrplatz (1199 EUR)
-echo  3 = Firmenlizenz (2990 EUR)
-echo  4 = Enterprise (Auf Anfrage)
-echo.
-
-set /p CHOICE="Auswahl (1-4): "
-
-if "!CHOICE!"=="1" set TYPE=Einzelplatz
-if "!CHOICE!"=="2" set TYPE=Mehrplatz
-if "!CHOICE!"=="3" set TYPE=Firmenlizenz
-if "!CHOICE!"=="4" set TYPE=Enterprise
-
-if not defined TYPE (
-    echo FEHLER: Ungueltige Auswahl!
-    pause
-    exit /b 1
-)
-
-set /p CUSTOMER="Kundenname: "
-if "!CUSTOMER!"=="" (
-    echo FEHLER: Kundenname erforderlich!
-    pause
-    exit /b 1
+set /p HWID=Hardware-ID des Kunden: 
+if "%HWID%"=="" (
+  echo FEHLER: Hardware-ID erforderlich.
+  pause
+  exit /b 1
 )
 
 echo.
-echo Generiere Schluessel...
+set /p CUSTOMER=Kunde/Firma: 
+if "%CUSTOMER%"=="" (
+  echo FEHLER: Kunde/Firma erforderlich.
+  pause
+  exit /b 1
+)
+
+echo.
+set /p YEARS=Lizenzlaufzeit in Jahren [Standard 1]: 
+if "%YEARS%"=="" set "YEARS=1"
+
+echo %YEARS%| findstr /r "^[1-9][0-9]*$" >nul
+if errorlevel 1 (
+  echo FEHLER: Laufzeit muss eine ganze Zahl groesser 0 sein.
+  pause
+  exit /b 1
+)
+
+echo.
+echo Generiere Lizenzschluessel...
 echo.
 
-REM Erstelle temporaere Datei mit den Daten
-echo !HWID!-!CHOICE!-!CUSTOMER! > TEMP_LICENSE_DATA.txt
+if not exist "%~dp0Tools\LicenseGenerator.csproj" (
+  echo FEHLER: %~dp0Tools\LicenseGenerator.csproj nicht gefunden.
+  pause
+  exit /b 1
+)
 
-REM Generiere SHA256-Hash
-for /f "delims=" %%A in ('certutil -hashfile TEMP_LICENSE_DATA.txt SHA256 ^| find /i /v "certutil" ^| find /i /v "SHA256"') do set FULLHASH=%%A
-
-REM Entferne Leerzeichen aus dem Hash
-set HASH=!FULLHASH: =!
-
-REM Formatiere als Lizenzschluessel
-set KEY=!HASH:~0,4!-!HASH:~4,4!-!HASH:~8,4!-!HASH:~12,4!
-
-REM Loesche temporaere Datei
-del TEMP_LICENSE_DATA.txt
-
-if "!KEY!"=="" (
-    echo FEHLER: Konnte Lizenzschluessel nicht erstellen!
-    pause
-    exit /b 1
+dotnet run --project "%~dp0Tools\LicenseGenerator.csproj" "%HWID%" "%CUSTOMER%" %YEARS%
+if errorlevel 1 (
+  echo.
+  echo FEHLER: Lizenzschluessel konnte nicht erstellt werden.
+  pause
+  exit /b 1
 )
 
 cls
 echo.
 echo ======================================================================
-echo                OKAY, LIZENZSCHLUESSEL ERSTELLT
+echo                      KUNDEN-INFORMATION (V01)
 echo ======================================================================
 echo.
-echo Typ:       !TYPE!
-echo Kunde:     !CUSTOMER!
-echo Hardware:  !HWID!
+echo Produkt:            MaterialManager V01
+echo Lizenztyp:          %TYPE%
+echo Preis:              %PRICE%
+echo Laufzeit:           %YEARS% Jahr^(e^)
+echo Kunde/Firma:        %CUSTOMER%
+echo Hardware-ID:        %HWID%
 echo.
-echo LIZENZSCHLUESSEL:
+echo HINWEIS: Der Lizenzschluessel wurde oben angezeigt und in die
+echo Zwischenablage kopiert.
 echo.
-echo                     !KEY!
-echo.
-echo ======================================================================
-echo                   KOPIERE DIESEN SCHLUESSEL!
-echo ======================================================================
-echo.
-
-echo EMAIL AN KUNDEN:
-echo.
-echo Betreff: Ihr Lizenzschluessel - MaterialManager R03
-echo.
-echo Lieber Kunde,
-echo.
-echo Vielen Dank fuer Ihren Kauf!
-echo.
-echo Ihr Lizenzschluessel: !KEY!
-echo Typ: !TYPE!
-echo Registriert auf: !CUSTOMER!
-echo.
-echo Aktivierung:
-echo 1. MaterialManager R03 starten
+echo ----------------------------------------------------------------------
+echo AKTIVIERUNG FUER DEN KUNDEN:
+echo 1. MaterialManager V01 starten
 echo 2. Hilfe ^> Lizenz aktivieren
-echo 3. Schluessel: !KEY!
-echo 4. Name: !CUSTOMER!
-echo 5. Klick auf "Aktivieren"
-echo 6. FERTIG!
+echo 3. Lizenzschluessel einfuegen
+echo 4. Exakt denselben Namen/Firma eingeben: %CUSTOMER%
+echo 5. Auf "Lizenz aktivieren" klicken
+echo ----------------------------------------------------------------------
 echo.
-echo Support: hoelzer_alex@yahoo.de
-echo.
-
-echo.
-echo EXCEL-DOKUMENTATION:
-echo %date% ^| !CUSTOMER! ^| !HWID! ^| !KEY! ^| !TYPE!
-echo.
-
-REM Kopiere in Clipboard
-echo !KEY! | clip
-echo [OK] Schluessel in Zwischenablage kopiert!
+echo DOKU-ZEILE:
+echo %date% ^| %time% ^| %CUSTOMER% ^| %HWID% ^| %TYPE% ^| %PRICE% ^| %YEARS% Jahr^(e^)
 echo.
 pause
+exit /b 0

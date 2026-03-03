@@ -38,17 +38,42 @@ namespace MaterialManager_V01.Services
         }
 
         /// <summary>
-        /// Validiert einen Lizenzschlüssel
+        /// Validiert einen Lizenzschlüssel mit Fehlertoleranz für Zeitunterschiede
         /// </summary>
         public static bool ValidateLicenseKey(string licenseKey, string hardwareId, string registeredTo)
         {
             try
             {
-                var expectedKey = GenerateLicenseKey(hardwareId, registeredTo);
-                return licenseKey == expectedKey;
+                var normalizedInput = (licenseKey ?? string.Empty).Trim().ToUpperInvariant();
+
+                // Unterstützung für 1-10 Jahre Laufzeit + kleiner Tagespuffer
+                for (int years = 1; years <= 10; years++)
+                {
+                    for (int dayOffset = -2; dayOffset <= 0; dayOffset++)
+                    {
+                        var expiryDate = DateTime.Now.AddDays(dayOffset).AddYears(years).ToString("yyyyMMdd");
+                        var data = $"{hardwareId}|{registeredTo}|{expiryDate}|{MasterSecret}";
+
+                        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(MasterSecret));
+                        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
+                        var hashString = Convert.ToBase64String(hash)
+                            .Replace("+", "")
+                            .Replace("/", "")
+                            .Replace("=", "")
+                            .Substring(0, 16)
+                            .ToUpperInvariant();
+
+                        var candidate = $"MM-{hashString.Substring(0, 4)}-{hashString.Substring(4, 4)}-{hashString.Substring(8, 4)}-{hashString.Substring(12, 4)}";
+                        if (string.Equals(normalizedInput, candidate, StringComparison.OrdinalIgnoreCase))
+                            return true;
+                    }
+                }
+
+                return false;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[ValidateLicenseKey] Exception: {ex.Message}");
                 return false;
             }
         }

@@ -119,7 +119,7 @@
                                        FontWeight="Bold" 
                                        Foreground="White"
                                        Margin="0,0,0,10"/>
-                            <TextBlock Text="Format: XXXX-XXXX-XXXX-XXXX" 
+                            <TextBlock Text="Format: MM-XXXX-XXXX-XXXX-XXXX" 
                                        Foreground="#AAA" 
                                        FontSize="12"
                                        Margin="0,0,0,8"/>
@@ -131,7 +131,7 @@
                                      FontSize="14"
                                      BorderBrush="#333"
                                      BorderThickness="1"
-                                     MaxLength="19"
+                                     MaxLength="22"
                                      TextChanged="OnLicenseKeyChanged"/>
                         </StackPanel>
                     </Border>
@@ -158,7 +158,8 @@
                                      FontSize="13"
                                      BorderBrush="#333"
                                      BorderThickness="1"
-                                     MaxLength="100"/>
+                                     MaxLength="100"
+                                     TextChanged="OnRegisteredToChanged"/>
                         </StackPanel>
                     </Border>
 

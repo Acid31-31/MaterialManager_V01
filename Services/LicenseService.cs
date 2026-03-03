@@ -141,32 +141,51 @@ namespace MaterialManager_V01.Services
             if (string.IsNullOrWhiteSpace(licenseKey) || string.IsNullOrWhiteSpace(registeredTo))
                 return false;
 
-            var hardwareId = GetHardwareId();
-            var expected = GenerateLicenseKey(hardwareId, registeredTo.Trim());
+            try
+            {
+                var hardwareId = GetHardwareId();
+                
+                if (!LicenseKeyGenerator.ValidateLicenseKey(licenseKey, hardwareId, registeredTo.Trim()))
+                {
+                    System.Diagnostics.Debug.WriteLine("[License] FEHLER: Lizenzschlüssel ungültig!");
+                    System.Diagnostics.Debug.WriteLine($"[License] Hardware-ID: {hardwareId}");
+                    System.Diagnostics.Debug.WriteLine($"[License] Registered To: {registeredTo}");
+                    System.Diagnostics.Debug.WriteLine($"[License] Input Key: {licenseKey}");
+                    return false;
+                }
 
-            if (!string.Equals(licenseKey.Trim(), expected, StringComparison.OrdinalIgnoreCase))
+                var info = LoadLicenseInfo() ?? new LicenseInfo();
+                info.IsFullLicense = true;
+                info.LicenseKey = licenseKey.Trim();
+                info.RegisteredTo = registeredTo.Trim();
+                info.HardwareId = hardwareId;
+                if (string.IsNullOrWhiteSpace(info.FirstStartDate))
+                    info.FirstStartDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                info.Hash = ComputeHash(info.FirstStartDate);
+
+                if (!SaveLicenseInfo(info))
+                {
+                    System.Diagnostics.Debug.WriteLine("[License] FEHLER: Lizenzdatei konnte nicht gespeichert werden.");
+                    return false;
+                }
+
+                // Zusätzliche Verifikation
+                var verify = LoadLicenseInfo();
+                if (verify == null || !verify.IsFullLicense || string.IsNullOrWhiteSpace(verify.RegisteredTo))
+                {
+                    System.Diagnostics.Debug.WriteLine("[License] FEHLER: Lizenzdatei-Verifikation fehlgeschlagen.");
+                    return false;
+                }
+
+                System.Diagnostics.Debug.WriteLine("[License] ✓ Lizenz erfolgreich aktiviert!");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[License] Exception: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[License] StackTrace: {ex.StackTrace}");
                 return false;
-
-            var info = LoadLicenseInfo() ?? new LicenseInfo();
-            info.IsFullLicense = true;
-            info.LicenseKey = licenseKey.Trim();
-            info.RegisteredTo = registeredTo.Trim();
-            info.HardwareId = hardwareId;
-            if (string.IsNullOrWhiteSpace(info.FirstStartDate))
-                info.FirstStartDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            info.Hash = ComputeHash(info.FirstStartDate);
-            SaveLicenseInfo(info);
-            return true;
-        }
-
-        private static string GenerateLicenseKey(string hardwareId, string registeredTo)
-        {
-            var input = $"{hardwareId}-{registeredTo}-{LicenseSecret}";
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(input);
-            var hash = sha256.ComputeHash(bytes);
-            var hex = BitConverter.ToString(hash).Replace("-", "").ToUpperInvariant();
-            return $"{hex.Substring(0, 4)}-{hex.Substring(4, 4)}-{hex.Substring(8, 4)}-{hex.Substring(12, 4)}";
+            }
         }
 
         private static void CreateTrialLicense()
@@ -182,7 +201,7 @@ namespace MaterialManager_V01.Services
                     Hash = hash
                 };
 
-                SaveLicenseInfo(licenseInfo);
+                _ = SaveLicenseInfo(licenseInfo);
             }
             catch { }
         }
@@ -203,7 +222,7 @@ namespace MaterialManager_V01.Services
             }
         }
 
-        private static void SaveLicenseInfo(LicenseInfo info)
+        private static bool SaveLicenseInfo(LicenseInfo info)
         {
             try
             {
@@ -214,11 +233,23 @@ namespace MaterialManager_V01.Services
                 var json = JsonSerializer.Serialize(info);
                 File.WriteAllText(LicenseFile, json);
 
-                // Datei verstecken
-                var fileInfo = new FileInfo(LicenseFile);
-                fileInfo.Attributes = FileAttributes.Hidden | FileAttributes.System;
+                // Datei verstecken (falls erlaubt)
+                try
+                {
+                    var fileInfo = new FileInfo(LicenseFile);
+                    fileInfo.Attributes = FileAttributes.Hidden | FileAttributes.System;
+                }
+                catch
+                {
+                    // Nicht kritisch für Funktion
+                }
+
+                return true;
             }
-            catch { }
+            catch
+            {
+                return false;
+            }
         }
 
         private static string ComputeHash(string input)
