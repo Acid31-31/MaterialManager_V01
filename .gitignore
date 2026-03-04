@@ -105,3 +105,9 @@ USB_Installation/**/startup_*.txt
 !Tools/
 !Tools/Release/
 !Tools/Release/*.ps1
+
+# MSI/Release artifacts
+/dist/
+*.msi
+Installer_Source/**/Release/*.msi
+Installer_Source/**/Debug/*.msi

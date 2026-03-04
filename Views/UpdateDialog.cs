@@ -57,7 +57,7 @@ namespace MaterialManager_V01.Views
 
                 Mouse.OverrideCursor = Cursors.Wait;
                 DownloadProgress = 0;
-                DownloadStatus = "MSI wird heruntergeladen...";
+                DownloadStatus = "Update wird vorbereitet...";
 
                 _cts = new System.Threading.CancellationTokenSource();
                 var progress = new Progress<int>(p =>
@@ -66,42 +66,60 @@ namespace MaterialManager_V01.Views
                     DownloadStatus = $"Download: {p}%";
                 });
 
-                var prepared = await GitHubUpdateService.DownloadMsiAsync(_updateInfo, progress, _cts.Token);
+                var prepared = await GitHubUpdateService.PrepareUpdateAsync(_updateInfo, progress, _cts.Token);
                 if (!string.IsNullOrWhiteSpace(prepared.ErrorMessage))
                 {
                     MessageBox.Show($"Update fehlgeschlagen:\n{prepared.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(prepared.MsiPath) || !File.Exists(prepared.MsiPath))
+                if (string.IsNullOrWhiteSpace(prepared.InstallerExecutablePath) || !File.Exists(prepared.InstallerExecutablePath))
                 {
-                    MessageBox.Show("MSI-Datei wurde nicht gefunden.", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Kein installierbares Update gefunden.", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var msiLog = Path.Combine(Path.GetTempPath(), "MaterialManager_msi_install.log");
-                var args = $"/i \"{prepared.MsiPath}\" /passive /norestart /l*v \"{msiLog}\"";
+                var installerPath = prepared.InstallerExecutablePath;
 
                 var confirm = MessageBox.Show(
                     "Das Update wird jetzt gestartet.\nDie Anwendung wird geschlossen.\n\nWeiter?",
-                    "MSI-Update",
+                    "Update",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Information);
 
                 if (confirm != MessageBoxResult.Yes)
                     return;
 
-                Process.Start(new ProcessStartInfo
+                if (installerPath.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
                 {
-                    FileName = "msiexec.exe",
-                    Arguments = args,
-                    UseShellExecute = true
-                });
+                    var msiLog = Path.Combine(Path.GetTempPath(), "MaterialManager_msi_install.log");
+                    var args = $"/i \"{installerPath}\" /passive /norestart /l*v \"{msiLog}\"";
 
-                DownloadStatus = "MSI gestartet. Anwendung wird geschlossen...";
-                AppendUiLog($"MSI gestartet: {prepared.MsiPath}");
-                AppendUiLog($"MSI-Log: {msiLog}");
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "msiexec.exe",
+                        Arguments = args,
+                        UseShellExecute = true
+                    });
 
+                    AppendUiLog($"MSI gestartet: {installerPath}");
+                    AppendUiLog($"MSI-Log: {msiLog}");
+                }
+                else
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = installerPath,
+                        UseShellExecute = true
+                    });
+
+                    AppendUiLog($"Installer gestartet: {installerPath}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(prepared.LogPath))
+                    AppendUiLog($"Prepare-Log: {prepared.LogPath}");
+
+                DownloadStatus = "Installer gestartet. Anwendung wird geschlossen...";
                 Application.Current.Shutdown();
             }
             catch (Exception ex)

@@ -42,14 +42,14 @@
     "CustomAction" = "3:0"
     "DetectNewerInstalledVersion" = "11:TRUE"
     "InstallAllUsers" = "11:TRUE"
-    "ProductCode" = "8:{7E2A6B72-8D4A-4E15-90C3-75E15A2C9AA1}"
-    "PackageCode" = "8:{A9E52D13-5B9F-4AC3-9C4A-2CC4E7A62031}"
+    "ProductCode" = "8:{8F3B7B83-9E5B-4F26-A1D4-86F26B3D0BB2}"
+    "PackageCode" = "8:{B1F63E24-6C0G-5BD4-0D5B-3DD5F8B73142}"
     "UpgradeCode" = "8:{7D64C1C4-AAB7-4DA8-96EE-8E6B88C9F6A8}"
     "Manufacturer" = "8:MaterialManager"
     "ProductName" = "8:MaterialManager V01"
-    "ProductVersion" = "8:1.0.0"
+    "ProductVersion" = "8:1.0.1"
     "RemovePreviousVersions" = "11:TRUE"
     "ARPCONTACT" = "8:hoelzer_alex@yahoo.de"
-    "ARPCOMMENTS" = "8:MaterialManager V01 MSI Installer"
+    "ARPCOMMENTS" = "8:MaterialManager V01 MSI Installer v1.0.1"
     }
 }

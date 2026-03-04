@@ -414,10 +414,10 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(result.MsiDownloadUrl))
+                if (string.IsNullOrWhiteSpace(result.DownloadUrl))
                 {
                     MessageBox.Show(
-                        $"Neue Version {result.LatestVersion} gefunden, aber kein MSI-Asset in der Release.",
+                        $"Neue Version {result.LatestVersion} gefunden, aber kein Update-Asset (.msi/.exe/.zip) in der Release.",
                         "Update-Prüfung",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
@@ -919,7 +919,7 @@ namespace MaterialManager_V01
                 Services.GitHubUpdateService.MarkAutoCheckedNow();
 
                 var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
-                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.MsiDownloadUrl))
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
                     return;
 
                 Dispatcher.Invoke(() =>

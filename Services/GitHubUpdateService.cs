@@ -1,6 +1,9 @@
 using System;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading;
@@ -27,12 +30,16 @@ namespace MaterialManager_V01.Services
                 using var response = await Http.GetAsync(LatestReleaseApi);
                 if (!response.IsSuccessStatusCode)
                 {
+                    var msg = $"GitHub-API Fehler: {(int)response.StatusCode}";
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                        msg = "Kein GitHub Release vorhanden. Bitte erst ein Release veröffentlichen.";
+
                     return new UpdateCheckResult
                     {
                         CurrentVersion = current,
                         LatestVersion = current,
                         IsUpdateAvailable = false,
-                        ErrorMessage = $"GitHub-API Fehler: {(int)response.StatusCode}"
+                        ErrorMessage = msg
                     };
                 }
 
@@ -52,26 +59,61 @@ namespace MaterialManager_V01.Services
                     ? htmlProp.GetString()
                     : null;
 
+                string? selectedUrl = null;
+                string? selectedName = null;
+                string? selectedType = null;
                 string? msiUrl = null;
-                string? msiName = null;
 
                 if (root.TryGetProperty("assets", out var assetsProp) && assetsProp.ValueKind == JsonValueKind.Array)
                 {
+                    string? exeUrl = null; string? exeName = null;
+                    string? zipUrl = null; string? zipName = null;
+
                     foreach (var asset in assetsProp.EnumerateArray())
                     {
                         var name = asset.TryGetProperty("name", out var n) ? (n.GetString() ?? string.Empty) : string.Empty;
                         var url = asset.TryGetProperty("browser_download_url", out var u) ? u.GetString() : null;
+                        if (string.IsNullOrWhiteSpace(url))
+                            continue;
 
-                        if (name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(url))
+                        if (name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
                         {
-                            msiUrl = url;
-                            msiName = name;
-                            break;
+                            msiUrl ??= url;
+                            selectedUrl ??= url;
+                            selectedName ??= name;
+                            selectedType ??= "msi";
                         }
+                        else if (name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            exeUrl ??= url;
+                            exeName ??= name;
+                        }
+                        else if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                        {
+                            zipUrl ??= url;
+                            zipName ??= name;
+                        }
+                    }
+
+                    if (selectedUrl == null && exeUrl != null)
+                    {
+                        selectedUrl = exeUrl;
+                        selectedName = exeName;
+                        selectedType = "exe";
+                    }
+                    if (selectedUrl == null && zipUrl != null)
+                    {
+                        selectedUrl = zipUrl;
+                        selectedName = zipName;
+                        selectedType = "zip";
                     }
                 }
 
                 var updateAvailable = ParseVersion(tag) > ParseVersion(current);
+
+                var assetError = selectedUrl == null
+                    ? "Kein MSI/EXE/ZIP Asset im Release gefunden."
+                    : null;
 
                 return new UpdateCheckResult
                 {
@@ -79,9 +121,12 @@ namespace MaterialManager_V01.Services
                     LatestVersion = tag,
                     Changelog = string.IsNullOrWhiteSpace(body) ? "Kein Changelog verfügbar." : body,
                     MsiDownloadUrl = msiUrl,
-                    MsiAssetName = msiName,
+                    DownloadUrl = selectedUrl,
+                    AssetName = selectedName,
+                    AssetType = selectedType,
                     ReleasePageUrl = htmlUrl,
-                    IsUpdateAvailable = updateAvailable
+                    IsUpdateAvailable = updateAvailable,
+                    ErrorMessage = assetError
                 };
             }
             catch (Exception ex)
@@ -130,13 +175,13 @@ namespace MaterialManager_V01.Services
             catch { }
         }
 
-        public static async Task<PreparedUpdateResult> DownloadMsiAsync(
+        public static async Task<PreparedUpdateResult> PrepareUpdateAsync(
             UpdateCheckResult updateInfo,
             IProgress<int>? progress,
             CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(updateInfo.MsiDownloadUrl))
-                return new PreparedUpdateResult { ErrorMessage = "Kein MSI-Asset in der Release gefunden." };
+            if (string.IsNullOrWhiteSpace(updateInfo.DownloadUrl))
+                return new PreparedUpdateResult { ErrorMessage = "Kein geeignetes Release-Asset gefunden." };
 
             try
             {
@@ -144,19 +189,19 @@ namespace MaterialManager_V01.Services
                 var targetDir = Path.Combine(Path.GetTempPath(), "MaterialManager_Update", versionFolder);
                 Directory.CreateDirectory(targetDir);
 
-                var fileName = string.IsNullOrWhiteSpace(updateInfo.MsiAssetName)
-                    ? $"MaterialManager_{versionFolder}.msi"
-                    : updateInfo.MsiAssetName;
+                var fileName = string.IsNullOrWhiteSpace(updateInfo.AssetName)
+                    ? $"MaterialManager_{versionFolder}.{updateInfo.AssetType ?? "bin"}"
+                    : updateInfo.AssetName;
 
-                var msiPath = Path.Combine(targetDir, fileName);
-                var logPath = Path.Combine(targetDir, "msi_update.log");
+                var downloadedFile = Path.Combine(targetDir, fileName);
+                var logPath = Path.Combine(targetDir, "prepare_update.log");
 
-                using var response = await Http.GetAsync(updateInfo.MsiDownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                using var response = await Http.GetAsync(updateInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
                 var total = response.Content.Headers.ContentLength;
                 await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
-                await using var target = File.Create(msiPath);
+                await using var target = File.Create(downloadedFile);
 
                 var buffer = new byte[81920];
                 long readTotal = 0;
@@ -173,11 +218,45 @@ namespace MaterialManager_V01.Services
                     }
                 }
 
-                File.AppendAllText(logPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] MSI heruntergeladen: {msiPath}{Environment.NewLine}");
+                File.AppendAllText(logPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Download: {downloadedFile}{Environment.NewLine}");
+
+                if (downloadedFile.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
+                {
+                    return new PreparedUpdateResult
+                    {
+                        InstallerExecutablePath = downloadedFile,
+                        RunExecutableDirectly = true,
+                        LogPath = logPath
+                    };
+                }
+
+                if (downloadedFile.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    return new PreparedUpdateResult
+                    {
+                        InstallerExecutablePath = downloadedFile,
+                        RunExecutableDirectly = true,
+                        LogPath = logPath
+                    };
+                }
+
+                if (downloadedFile.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    var extractDir = Path.Combine(targetDir, "extracted");
+                    ZipFile.ExtractToDirectory(downloadedFile, extractDir, true);
+                    File.AppendAllText(logPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ZIP entpackt: {extractDir}{Environment.NewLine}");
+
+                    return new PreparedUpdateResult
+                    {
+                        ExtractedFolderPath = extractDir,
+                        RunExecutableDirectly = false,
+                        LogPath = logPath
+                    };
+                }
 
                 return new PreparedUpdateResult
                 {
-                    MsiPath = msiPath,
+                    ErrorMessage = "Unbekanntes Asset-Format.",
                     LogPath = logPath
                 };
             }
@@ -196,6 +275,13 @@ namespace MaterialManager_V01.Services
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(120) };
             client.DefaultRequestHeaders.UserAgent.ParseAdd("MaterialManager_V01-MSI-Updater/1.0");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
+
+            var token = Environment.GetEnvironmentVariable("MATERIALMANAGER_GITHUB_TOKEN");
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             return client;
         }
 
@@ -222,14 +308,18 @@ namespace MaterialManager_V01.Services
         public bool IsUpdateAvailable { get; init; }
         public string Changelog { get; init; } = "";
         public string? MsiDownloadUrl { get; init; }
-        public string? MsiAssetName { get; init; }
+        public string? DownloadUrl { get; init; }
+        public string? AssetName { get; init; }
+        public string? AssetType { get; init; }
         public string? ReleasePageUrl { get; init; }
         public string? ErrorMessage { get; init; }
     }
 
     public sealed class PreparedUpdateResult
     {
-        public string? MsiPath { get; init; }
+        public string? InstallerExecutablePath { get; init; }
+        public string? ExtractedFolderPath { get; init; }
+        public bool RunExecutableDirectly { get; init; }
         public string? LogPath { get; init; }
         public string? ErrorMessage { get; init; }
     }
