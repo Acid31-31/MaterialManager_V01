@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>MaterialManager_V01</AssemblyName>
+    <RootNamespace>MaterialManagerInstaller</RootNamespace>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <StartupObject>MaterialManagerInstaller.App</StartupObject>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <!-- App-Informationen -->
+    <Version>1.0.6</Version>
+    <FileVersion>1.0.6.0</FileVersion>
+    <AssemblyVersion>1.0.6.0</AssemblyVersion>
+    <InformationalVersion>1.0.6</InformationalVersion>
+    <Product>MaterialManager V01 Installer</Product>
+    <Company>Hölzer</Company>
+    <Description>Installer für MaterialManager V01 - Professionelle Material- und Bestandsverwaltung</Description>
+    <Copyright>Copyright © 2025 Hölzer</Copyright>
+
+    <!-- Self-Contained für Distribution -->
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishSingleFile>true</PublishSingleFile>
+    <!-- Suppress CA1416: Windows-only APIs are expected in this Windows installer -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>
