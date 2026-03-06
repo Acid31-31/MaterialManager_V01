@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <!-- ============================================================
+       MaterialManager_V01 - WIX Installer Configuration
+       Version: 1.0.6.0
+       Manufacturer: Hölzer
+       ============================================================ -->
+
+  <Product Id="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+           Name="MaterialManager_V01"
+           Language="1031"
+           Version="1.0.6.0"
+           Manufacturer="Hölzer"
+           UpgradeCode="{B2C3D4E5-F6A7-8901-BCDE-F12345678901}">
+
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Description="MaterialManager V01 - Materialverwaltung für Blechlager"
+             Comments="Copyright (c) 2026 Hölzer. Alle Rechte vorbehalten."
+             Manufacturer="Hölzer"
+             Languages="1031"
+             SummaryCodepage="1252" />
+
+    <!-- Compressed media for single-EXE output -->
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Application icon (green M) -->
+    <Icon Id="AppIcon.ico" SourceFile="..\Assets\app.ico" />
+
+    <!-- Add/Remove Programs properties -->
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+    <Property Id="ARPHELPLINK" Value="mailto:info@hoelzer.de" />
+    <Property Id="ARPURLINFOABOUT" Value="mailto:info@hoelzer.de" />
+    <Property Id="ARPCONTACT" Value="info@hoelzer.de" />
+    <Property Id="ARPCOMMENTS" Value="Materialverwaltung für Blechlager - Vollversion 1.0.6.0" />
+
+    <!-- Upgrade / uninstall of older versions -->
+    <MajorUpgrade DowngradeErrorMessage="Eine neuere Version von MaterialManager_V01 ist bereits installiert." />
+
+    <!-- License agreement dialog -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+
+    <!-- UI banner and dialog images (optional placeholders) -->
+    <WixVariable Id="WixUIBannerBmp"    Overridable="yes" Value="Banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp"    Overridable="yes" Value="Dialog.bmp" />
+
+    <!-- Install location property (user can change in wizard) -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- UI: WixUI_InstallDir gives a directory picker + license page -->
+    <UIRef Id="WixUI_InstallDir" />
+
+    <!-- ============================================================
+         DIRECTORY STRUCTURE
+         ============================================================ -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <!-- C:\Program Files\ -->
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="MaterialManager_V01">
+          <!-- All program files are placed here by component groups below -->
+        </Directory>
+      </Directory>
+
+      <!-- Desktop -->
+      <Directory Id="DesktopFolder" Name="Desktop" />
+
+      <!-- Start Menu Programs -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="MaterialManager_V01" />
+      </Directory>
+
+    </Directory>
+
+    <!-- ============================================================
+         FEATURES
+         ============================================================ -->
+    <Feature Id="ProductFeature"
+             Title="MaterialManager_V01"
+             Description="Vollständige Installation von MaterialManager V01"
+             Level="1"
+             ConfigurableDirectory="INSTALLFOLDER"
+             AllowAdvertise="no"
+             InstallDefault="local">
+
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="DesktopShortcutComponent" />
+      <ComponentRef Id="StartMenuShortcutComponent" />
+
+    </Feature>
+
+    <!-- ============================================================
+         COMPONENT GROUP: Main application files
+         ============================================================ -->
+    <Fragment>
+      <!-- NOTE: SourceDir is supplied at compile time via candle.exe -dSourceDir=<path>
+           or resolved automatically by build-installer.ps1.
+           For a full install, use Heat.exe to harvest all files from SourceDir:
+             heat dir $(var.SourceDir) -cg ProductComponents -gg -scom -sreg -sfrag -srd -dr INSTALLFOLDER
+      -->
+      <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+        <!-- Primary EXE (KeyPath drives the component) -->
+        <Component Id="MainExecutable" Guid="{C3D4E5F6-A7B8-9012-CDEF-123456789012}">
+          <File Id="MaterialManager_V01_exe"
+                Source="$(var.SourceDir)\MaterialManager_V01.exe"
+                KeyPath="yes"
+                Checksum="yes" />
+        </Component>
+
+        <!-- Main DLL (self-contained publish produces a split EXE+DLL) -->
+        <Component Id="AppDllComponent" Guid="{D4E5F6A7-B8C9-0123-DEF0-234567890123}">
+          <File Id="MaterialManager_V01_dll"
+                Source="$(var.SourceDir)\MaterialManager_V01.dll"
+                KeyPath="yes" />
+        </Component>
+
+      </ComponentGroup>
+    </Fragment>
+
+    <!-- ============================================================
+         COMPONENT: Desktop Shortcut
+         ============================================================ -->
+    <Fragment>
+      <DirectoryRef Id="DesktopFolder">
+        <Component Id="DesktopShortcutComponent"
+                   Guid="{E5F6A7B8-C9D0-1234-EF01-345678901234}">
+          <Shortcut Id="DesktopShortcut"
+                    Name="MaterialManager_V01"
+                    Description="Materialverwaltung für Blechlager - Vollversion"
+                    Target="[INSTALLFOLDER]MaterialManager_V01.exe"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="AppIcon.ico"
+                    IconIndex="0" />
+          <RemoveFolder Id="RemoveDesktopShortcut"
+                        Directory="DesktopFolder"
+                        On="uninstall" />
+          <RegistryValue Root="HKCU"
+                         Key="Software\Hölzer\MaterialManager_V01"
+                         Name="DesktopShortcut"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes" />
+        </Component>
+      </DirectoryRef>
+    </Fragment>
+
+    <!-- ============================================================
+         COMPONENT: Start Menu Shortcuts
+         ============================================================ -->
+    <Fragment>
+      <DirectoryRef Id="ApplicationProgramsFolder">
+        <Component Id="StartMenuShortcutComponent"
+                   Guid="{F6A7B8C9-D0E1-2345-F012-456789012345}">
+
+          <!-- Main application shortcut -->
+          <Shortcut Id="StartMenuShortcut"
+                    Name="MaterialManager_V01"
+                    Description="Materialverwaltung für Blechlager - Vollversion"
+                    Target="[INSTALLFOLDER]MaterialManager_V01.exe"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="AppIcon.ico"
+                    IconIndex="0" />
+
+          <!-- Uninstall shortcut -->
+          <Shortcut Id="UninstallShortcut"
+                    Name="MaterialManager_V01 deinstallieren"
+                    Description="MaterialManager_V01 vom System entfernen"
+                    Target="[System64Folder]msiexec.exe"
+                    Arguments="/x [ProductCode]" />
+
+          <RemoveFolder Id="RemoveApplicationProgramsFolder"
+                        Directory="ApplicationProgramsFolder"
+                        On="uninstall" />
+          <RemoveFolder Id="CleanUpApplicationProgramsFolder"
+                        Directory="ApplicationProgramsFolder"
+                        On="uninstall" />
+
+          <RegistryValue Root="HKCU"
+                         Key="Software\Hölzer\MaterialManager_V01"
+                         Name="StartMenuShortcut"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes" />
+        </Component>
+      </DirectoryRef>
+    </Fragment>
+
+  </Product>
+</Wix>
