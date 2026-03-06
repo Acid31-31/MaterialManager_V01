@@ -1,0 +1,19 @@
+{
+  "ProductName": "MaterialManager_V01",
+  "Version": "1.0.6.0",
+  "Manufacturer": "Hölzer",
+  "InstallPath": "C:\\Program Files\\MaterialManager_V01\\",
+  "DesktopShortcut": true,
+  "StartMenuShortcut": true,
+  "SupportEmail": "info@hoelzer.de",
+  "SupportDuration": "12 Monate",
+  "ProductCode": "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}",
+  "UpgradeCode": "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}",
+  "Language": "1031",
+  "Codepage": "1252",
+  "WixToolsetMinVersion": "3.11",
+  "OutputFileName": "MaterialManager_V01_Setup.msi",
+  "IconFile": "..\\Assets\\app.ico",
+  "LicenseFile": "License.rtf",
+  "BackupRoot": "C:\\Backups"
+}
