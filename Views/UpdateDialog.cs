@@ -97,18 +97,26 @@ namespace MaterialManager_V01.Views
                 if (!IsSignedAndTrusted(installerPath, out var trustInfo))
                 {
                     AppendUiLog($"Signaturprüfung fehlgeschlagen: {trustInfo}");
-                    MessageBox.Show(
-                        "Das Update ist nicht vertrauenswürdig signiert und wurde aus Sicherheitsgründen blockiert.\n\n" +
-                        "Bitte nur signierte Releases (OV/EV) verwenden oder den Herausgeber zentral vertrauen.\n\n" +
-                        $"Details: {trustInfo}",
-                        "Update blockiert",
-                        MessageBoxButton.OK,
+                    var proceedUntrusted = MessageBox.Show(
+                        "Die Update-Datei ist nicht vertrauenswürdig signiert.\n\n" +
+                        "Aus Sicherheitsgründen wird eine signierte Version empfohlen.\n\n" +
+                        "Trotzdem fortfahren?",
+                        "Warnung: Unsigniertes/Untrusted Update",
+                        MessageBoxButton.YesNo,
                         MessageBoxImage.Warning);
-                    DownloadStatus = "Update blockiert (Signatur nicht vertrauenswürdig).";
-                    return;
-                }
 
-                AppendUiLog($"Signaturprüfung OK: {trustInfo}");
+                    if (proceedUntrusted != MessageBoxResult.Yes)
+                    {
+                        DownloadStatus = "Abgebrochen (Signaturwarnung).";
+                        return;
+                    }
+
+                    AppendUiLog("Benutzer hat Fortfahren trotz Signaturwarnung bestätigt.");
+                }
+                else
+                {
+                    AppendUiLog($"Signaturprüfung OK: {trustInfo}");
+                }
 
                 var confirm = MessageBox.Show(
                     "Das Update wird jetzt gestartet.\nDie Anwendung wird geschlossen.\n\nWeiter?",
