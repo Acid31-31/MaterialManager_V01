@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Input;
 using MaterialManager_V01.Services;
@@ -91,6 +93,22 @@ namespace MaterialManager_V01.Views
                 }
 
                 var installerPath = prepared.InstallerExecutablePath;
+
+                if (!IsSignedAndTrusted(installerPath, out var trustInfo))
+                {
+                    AppendUiLog($"Signaturprüfung fehlgeschlagen: {trustInfo}");
+                    MessageBox.Show(
+                        "Das Update ist nicht vertrauenswürdig signiert und wurde aus Sicherheitsgründen blockiert.\n\n" +
+                        "Bitte nur signierte Releases (OV/EV) verwenden oder den Herausgeber zentral vertrauen.\n\n" +
+                        $"Details: {trustInfo}",
+                        "Update blockiert",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    DownloadStatus = "Update blockiert (Signatur nicht vertrauenswürdig).";
+                    return;
+                }
+
+                AppendUiLog($"Signaturprüfung OK: {trustInfo}");
 
                 var confirm = MessageBox.Show(
                     "Das Update wird jetzt gestartet.\nDie Anwendung wird geschlossen.\n\nWeiter?",
@@ -211,6 +229,35 @@ namespace MaterialManager_V01.Views
         {
             _cts?.Cancel();
             Close();
+        }
+
+        private static bool IsSignedAndTrusted(string filePath, out string details)
+        {
+            try
+            {
+                var signer = X509Certificate.CreateFromSignedFile(filePath);
+                var signerCert = new X509Certificate2(signer);
+
+                using var chain = new X509Chain();
+                chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+
+                var trusted = chain.Build(signerCert);
+                if (trusted)
+                {
+                    details = $"Signiert von '{signerCert.Subject}'";
+                    return true;
+                }
+
+                var chainErrors = string.Join("; ", chain.ChainStatus.Select(s => s.StatusInformation?.Trim()).Where(s => !string.IsNullOrWhiteSpace(s)));
+                details = $"Signiert von '{signerCert.Subject}', aber Kette nicht vertrauenswürdig. {chainErrors}";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                details = $"Keine gültige Signatur erkannt ({ex.Message})";
+                return false;
+            }
         }
     }
 }
