@@ -200,21 +200,23 @@ namespace MaterialManager_V01.Services
                 response.EnsureSuccessStatusCode();
 
                 var total = response.Content.Headers.ContentLength;
-                await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
-                await using var target = File.Create(downloadedFile);
 
-                var buffer = new byte[81920];
-                long readTotal = 0;
-                int read;
-                while ((read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+                await using (var source = await response.Content.ReadAsStreamAsync(cancellationToken))
+                await using (var target = File.Create(downloadedFile))
                 {
-                    await target.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-                    readTotal += read;
-
-                    if (total.HasValue && total.Value > 0)
+                    var buffer = new byte[81920];
+                    long readTotal = 0;
+                    int read;
+                    while ((read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
                     {
-                        var pct = (int)Math.Round((readTotal * 100.0) / total.Value);
-                        progress?.Report(Math.Clamp(pct, 0, 100));
+                        await target.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                        readTotal += read;
+
+                        if (total.HasValue && total.Value > 0)
+                        {
+                            var pct = (int)Math.Round((readTotal * 100.0) / total.Value);
+                            progress?.Report(Math.Clamp(pct, 0, 100));
+                        }
                     }
                 }
 

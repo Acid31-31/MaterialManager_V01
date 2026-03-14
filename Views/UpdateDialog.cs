@@ -12,6 +12,7 @@ namespace MaterialManager_V01.Views
     {
         private readonly UpdateCheckResult _updateInfo;
         private readonly string _uiUpdateLogPath;
+        private readonly bool _autoStartInstall;
         private System.Threading.CancellationTokenSource? _cts;
 
         private string _versionInfo = "Aktuell: v1.0.0 → Neu: v1.0.0";
@@ -28,16 +29,26 @@ namespace MaterialManager_V01.Views
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public UpdateDialog(UpdateCheckResult updateInfo)
+        public UpdateDialog(UpdateCheckResult updateInfo, bool autoStartInstall = false)
         {
             InitializeComponent();
             DataContext = this;
             _updateInfo = updateInfo;
+            _autoStartInstall = autoStartInstall;
             _uiUpdateLogPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "MaterialManager_V01",
                 "update_ui.log");
             LoadUpdateInfo();
+
+            if (_autoStartInstall)
+            {
+                Loaded += async (_, __) =>
+                {
+                    await System.Threading.Tasks.Task.Delay(200);
+                    OnInstallieren(null!, new RoutedEventArgs());
+                };
+            }
         }
 
         private void LoadUpdateInfo()
@@ -90,12 +101,14 @@ namespace MaterialManager_V01.Views
                 if (confirm != MessageBoxResult.Yes)
                     return;
 
+                Process? startedProcess;
+
                 if (installerPath.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
                 {
                     var msiLog = Path.Combine(Path.GetTempPath(), "MaterialManager_msi_install.log");
                     var args = $"/i \"{installerPath}\" /passive /norestart /l*v \"{msiLog}\"";
 
-                    Process.Start(new ProcessStartInfo
+                    startedProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = "msiexec.exe",
                         Arguments = args,
@@ -107,7 +120,7 @@ namespace MaterialManager_V01.Views
                 }
                 else
                 {
-                    Process.Start(new ProcessStartInfo
+                    startedProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = installerPath,
                         UseShellExecute = true
@@ -119,7 +132,33 @@ namespace MaterialManager_V01.Views
                 if (!string.IsNullOrWhiteSpace(prepared.LogPath))
                     AppendUiLog($"Prepare-Log: {prepared.LogPath}");
 
-                DownloadStatus = "Installer gestartet. Anwendung wird geschlossen...";
+                await System.Threading.Tasks.Task.Delay(1200);
+
+                if (startedProcess == null)
+                {
+                    AppendUiLog("Installer konnte nicht gestartet werden (Process.Start gab null zurück).");
+                    MessageBox.Show(
+                        "Update konnte nicht gestartet werden.\n\nBitte über 'Release im Browser' manuell installieren.",
+                        "Update",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    DownloadStatus = "Installer konnte nicht gestartet werden.";
+                    return;
+                }
+
+                if (startedProcess.HasExited)
+                {
+                    AppendUiLog($"Installer ist sofort beendet (ExitCode={startedProcess.ExitCode}).");
+                    MessageBox.Show(
+                        "Der Installer wurde gestartet, aber sofort beendet.\n\nBitte über 'Release im Browser' manuell installieren.",
+                        "Update",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    DownloadStatus = "Installer wurde beendet.";
+                    return;
+                }
+
+                DownloadStatus = "Installer läuft. Anwendung wird geschlossen...";
                 Application.Current.Shutdown();
             }
             catch (Exception ex)

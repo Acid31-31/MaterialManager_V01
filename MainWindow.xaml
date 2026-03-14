@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
-        Title="MaterialManager V01" Height="800" Width="1600" Background="#0B0B0B">
+        Title="MaterialManager V01" Height="800" Width="1600" Background="#0B0B0B"
+        WindowState="Maximized">
     <Window.Resources>
         <conv:PercentToBrushConverter x:Key="PctToBrush"/>
         
