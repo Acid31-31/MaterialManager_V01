@@ -99,6 +99,7 @@ namespace MaterialManager_V01.Views
                 }
 
                 var installerPath = prepared.InstallerExecutablePath;
+                var isUpdateInstaller = string.Equals(Path.GetFileName(installerPath), "UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase);
 
                 if (!IsSignedAndTrusted(installerPath, out var trustInfo))
                 {
@@ -155,6 +156,9 @@ namespace MaterialManager_V01.Views
                     startedProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = installerPath,
+                        Arguments = isUpdateInstaller
+                            ? $"--target \"{AppDomain.CurrentDomain.BaseDirectory}\" --waitpid {Process.GetCurrentProcess().Id}"
+                            : string.Empty,
                         UseShellExecute = true
                     });
 
@@ -180,14 +184,21 @@ namespace MaterialManager_V01.Views
 
                 if (startedProcess.HasExited)
                 {
-                    AppendUiLog($"Installer ist sofort beendet (ExitCode={startedProcess.ExitCode}).");
-                    MessageBox.Show(
-                        "Der Installer wurde gestartet, aber sofort beendet.\n\nBitte über 'Release im Browser' manuell installieren.",
-                        "Update",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    DownloadStatus = "Installer wurde beendet.";
-                    return;
+                    if (isUpdateInstaller && startedProcess.ExitCode == 0)
+                    {
+                        AppendUiLog("Update-Installer wurde erfolgreich gestartet und beendet.");
+                    }
+                    else
+                    {
+                        AppendUiLog($"Installer ist sofort beendet (ExitCode={startedProcess.ExitCode}).");
+                        MessageBox.Show(
+                            "Der Installer wurde gestartet, aber sofort beendet.\n\nBitte über 'Release im Browser' manuell installieren.",
+                            "Update",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        DownloadStatus = "Installer wurde beendet.";
+                        return;
+                    }
                 }
 
                 DownloadStatus = "Installer läuft. Anwendung wird geschlossen...";

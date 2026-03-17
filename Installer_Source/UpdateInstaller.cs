@@ -1,0 +1,127 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Reflection;
+using System.Threading;
+using System.Windows.Forms;
+
+internal static class Program
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+
+        try
+        {
+            var options = UpdateInstallerOptions.Parse(args);
+            if (string.IsNullOrWhiteSpace(options.TargetDirectory))
+                throw new InvalidOperationException("Kein Zielpfad übergeben.");
+
+            if (!Directory.Exists(options.TargetDirectory))
+                throw new DirectoryNotFoundException($"Zielpfad nicht gefunden: {options.TargetDirectory}");
+
+            if (options.WaitProcessId > 0)
+                WaitForProcessExit(options.WaitProcessId, TimeSpan.FromMinutes(2));
+
+            var tempRoot = Path.Combine(Path.GetTempPath(), "MaterialManager_UpdateInstaller", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+            Directory.CreateDirectory(tempRoot);
+
+            var zipPath = Path.Combine(tempRoot, "payload.zip");
+            using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.zip"))
+            {
+                if (resource == null)
+                    throw new InvalidOperationException("Update-Payload nicht gefunden.");
+
+                using var file = File.Create(zipPath);
+                resource.CopyTo(file);
+            }
+
+            var extractDir = Path.Combine(tempRoot, "payload");
+            ZipFile.ExtractToDirectory(zipPath, extractDir, true);
+            CopyDirectory(extractDir, options.TargetDirectory);
+
+            var targetExe = Path.Combine(options.TargetDirectory, "MaterialManager_V01.exe");
+            if (File.Exists(targetExe))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = targetExe,
+                    WorkingDirectory = options.TargetDirectory,
+                    UseShellExecute = true
+                });
+            }
+
+            Thread.Sleep(2000);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "Update konnte nicht installiert werden:\n\n" + ex.Message,
+                "MaterialManager Update",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            Environment.Exit(1);
+        }
+    }
+
+    private static void WaitForProcessExit(int processId, TimeSpan timeout)
+    {
+        try
+        {
+            var process = Process.GetProcessById(processId);
+            process.WaitForExit((int)timeout.TotalMilliseconds);
+        }
+        catch
+        {
+        }
+    }
+
+    private static void CopyDirectory(string sourceDir, string destinationDir)
+    {
+        foreach (var directory in Directory.GetDirectories(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            var relative = Path.GetRelativePath(sourceDir, directory);
+            Directory.CreateDirectory(Path.Combine(destinationDir, relative));
+        }
+
+        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            var relative = Path.GetRelativePath(sourceDir, file);
+            var destinationFile = Path.Combine(destinationDir, relative);
+            var destinationParent = Path.GetDirectoryName(destinationFile);
+            if (!string.IsNullOrWhiteSpace(destinationParent))
+                Directory.CreateDirectory(destinationParent);
+
+            File.Copy(file, destinationFile, true);
+        }
+    }
+
+    private sealed class UpdateInstallerOptions
+    {
+        public string TargetDirectory { get; private set; } = string.Empty;
+        public int WaitProcessId { get; private set; }
+
+        public static UpdateInstallerOptions Parse(string[] args)
+        {
+            var options = new UpdateInstallerOptions();
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                var current = args[i];
+                if (string.Equals(current, "--target", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    options.TargetDirectory = args[++i];
+                }
+                else if (string.Equals(current, "--waitpid", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length && int.TryParse(args[++i], out var pid))
+                {
+                    options.WaitProcessId = pid;
+                }
+            }
+
+            return options;
+        }
+    }
+}
