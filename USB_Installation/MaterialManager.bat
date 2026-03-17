@@ -4,6 +4,10 @@ REM MaterialManager 1.0.x - Direkter Launcher
 REM Einfach nur: MaterialManager_V01.exe starten
 REM =====================================================================
 
+setlocal
+set "SCRIPT_DIR=%~dp0"
+set "USB_APP_DIR=%SCRIPT_DIR%MaterialManager"
+
 color 0A
 cls
 
@@ -13,26 +17,18 @@ echo   MaterialManager 1.0.x - Starter
 echo =====================================================================
 echo.
 
-REM Versuche MaterialManager zu finden
-if exist "USB_Installation\MaterialManager\MaterialManager_V01.exe" (
+if exist "%USB_APP_DIR%\MaterialManager_V01.exe" (
     echo   Starte MaterialManager (USB-Version)...
     echo.
-    cd /d "USB_Installation\MaterialManager"
+    cd /d "%USB_APP_DIR%"
     start "" MaterialManager_V01.exe
     exit /b 0
 )
 
-if exist "MaterialManager\MaterialManager_V01.exe" (
-    echo   Starte MaterialManager (Lokale Version)...
-    echo.
-    cd /d "MaterialManager"
-    start "" MaterialManager_V01.exe
-    exit /b 0
-)
-
-if exist "MaterialManager_V01.exe" (
+if exist "%SCRIPT_DIR%MaterialManager_V01.exe" (
     echo   Starte MaterialManager...
     echo.
+    cd /d "%SCRIPT_DIR%"
     start "" MaterialManager_V01.exe
     exit /b 0
 )
@@ -41,8 +37,7 @@ REM Wenn nicht gefunden - Fehler
 echo   FEHLER: MaterialManager_V01.exe nicht gefunden!
 echo.
 echo   Bitte prüfe:
-echo   - USB_Installation\MaterialManager\MaterialManager_V01.exe
-echo   - Oder: MaterialManager\MaterialManager_V01.exe
+echo   - %USB_APP_DIR%\MaterialManager_V01.exe
 echo.
 pause
 exit /b 1
