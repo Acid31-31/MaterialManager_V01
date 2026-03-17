@@ -5,6 +5,8 @@ REM Mit Desktop-Verknüpfung
 REM =====================================================================
 
 setlocal enabledelayedexpansion
+set "SCRIPT_DIR=%~dp0"
+set "SOURCE_DIR=%SCRIPT_DIR%MaterialManager"
 
 color 0A
 cls
@@ -28,8 +30,9 @@ if %errorlevel% neq 0 (
 )
 
 echo   [1/4] Prüfe Programm-Dateien...
-if not exist "USB_Installation\MaterialManager\MaterialManager_V01.exe" (
+if not exist "%SOURCE_DIR%\MaterialManager_V01.exe" (
     echo   FEHLER: MaterialManager_V01.exe nicht gefunden!
+    echo   Erwartet unter: %SOURCE_DIR%
     pause
     exit /b 1
 )
@@ -42,7 +45,7 @@ if exist "C:\Program Files\MaterialManager" (
     rmdir /s /q "C:\Program Files\MaterialManager" 2>nul
 )
 mkdir "C:\Program Files\MaterialManager"
-xcopy "USB_Installation\MaterialManager\*" "C:\Program Files\MaterialManager" /E /I /Y >nul
+xcopy "%SOURCE_DIR%\*" "C:\Program Files\MaterialManager" /E /I /Y >nul
 if %errorlevel% neq 0 (
     echo   FEHLER beim Kopieren!
     pause
@@ -62,8 +65,7 @@ $Shortcut = $WshShell.CreateShortcut($ShortcutPath); ^
 $Shortcut.TargetPath = $SourceFilePath; ^
 $Shortcut.WorkingDirectory = 'C:\Program Files\MaterialManager'; ^
 $Shortcut.Description = 'MaterialManager 1.0.x'; ^
-$Shortcut.Save()
-" 2>nul
+$Shortcut.Save()"
 
 if exist "%USERPROFILE%\Desktop\MaterialManager.lnk" (
     echo   OK: Verknüpfung auf Desktop erstellt
