@@ -2,9 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 internal static class Program
 {
@@ -18,13 +20,18 @@ internal static class Program
         {
             var options = UpdateInstallerOptions.Parse(args);
             if (string.IsNullOrWhiteSpace(options.TargetDirectory))
-                throw new InvalidOperationException("Kein Zielpfad übergeben.");
+                options.TargetDirectory = ResolveTargetDirectory();
+
+            if (string.IsNullOrWhiteSpace(options.TargetDirectory))
+                throw new InvalidOperationException("Kein Zielpfad übergeben oder gefunden.");
 
             if (!Directory.Exists(options.TargetDirectory))
                 throw new DirectoryNotFoundException($"Zielpfad nicht gefunden: {options.TargetDirectory}");
 
             if (options.WaitProcessId > 0)
                 WaitForProcessExit(options.WaitProcessId, TimeSpan.FromMinutes(2));
+            else
+                WaitForKnownMaterialManagerProcesses(TimeSpan.FromMinutes(2));
 
             var tempRoot = Path.Combine(Path.GetTempPath(), "MaterialManager_UpdateInstaller", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
             Directory.CreateDirectory(tempRoot);
@@ -79,6 +86,76 @@ internal static class Program
         }
     }
 
+    private static void WaitForKnownMaterialManagerProcesses(TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow.Add(timeout);
+        while (DateTime.UtcNow < deadline)
+        {
+            var running = Process.GetProcessesByName("MaterialManager_V01");
+            if (running.Length == 0)
+                return;
+
+            Thread.Sleep(500);
+        }
+    }
+
+    private static string ResolveTargetDirectory()
+    {
+        var fromRegistry = ReadInstallLocationFromRegistry();
+        if (!string.IsNullOrWhiteSpace(fromRegistry))
+            return fromRegistry;
+
+        var candidates = new[]
+        {
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager_V01"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager_V01"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager")
+        };
+
+        return candidates.FirstOrDefault(IsValidInstallDirectory) ?? string.Empty;
+    }
+
+    private static string ReadInstallLocationFromRegistry()
+    {
+        var keys = new[]
+        {
+            @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01",
+            @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01"
+        };
+
+        foreach (var key in keys)
+        {
+            foreach (var view in new[] { RegistryView.Registry64, RegistryView.Registry32 })
+            {
+                foreach (var hive in new[] { RegistryHive.LocalMachine, RegistryHive.CurrentUser })
+                {
+                    try
+                    {
+                        using var baseKey = RegistryKey.OpenBaseKey(hive, view);
+                        using var subKey = baseKey.OpenSubKey(key);
+                        var installLocation = subKey?.GetValue("InstallLocation") as string;
+                        if (!string.IsNullOrWhiteSpace(installLocation) && IsValidInstallDirectory(installLocation))
+                            return installLocation;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsValidInstallDirectory(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+            return false;
+
+        return File.Exists(Path.Combine(path, "MaterialManager_V01.exe"));
+    }
+
     private static void CopyDirectory(string sourceDir, string destinationDir)
     {
         foreach (var directory in Directory.GetDirectories(sourceDir, "*", SearchOption.AllDirectories))
@@ -101,7 +178,7 @@ internal static class Program
 
     private sealed class UpdateInstallerOptions
     {
-        public string TargetDirectory { get; private set; } = string.Empty;
+        public string TargetDirectory { get; set; } = string.Empty;
         public int WaitProcessId { get; private set; }
 
         public static UpdateInstallerOptions Parse(string[] args)
