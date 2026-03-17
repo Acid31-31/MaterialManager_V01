@@ -66,7 +66,7 @@ namespace MaterialManager_V01.Services
 
                 if (root.TryGetProperty("assets", out var assetsProp) && assetsProp.ValueKind == JsonValueKind.Array)
                 {
-                    string? exeUrl = null; string? exeName = null;
+                    string? updateInstallerUrl = null; string? updateInstallerName = null;
                     string? zipUrl = null; string? zipName = null;
 
                     foreach (var asset in assetsProp.EnumerateArray())
@@ -76,17 +76,14 @@ namespace MaterialManager_V01.Services
                         if (string.IsNullOrWhiteSpace(url))
                             continue;
 
-                        if (name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
+                        if (name.Equals("UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            updateInstallerUrl ??= url;
+                            updateInstallerName ??= name;
+                        }
+                        else if (name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
                         {
                             msiUrl ??= url;
-                            selectedUrl ??= url;
-                            selectedName ??= name;
-                            selectedType ??= "msi";
-                        }
-                        else if (name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            exeUrl ??= url;
-                            exeName ??= name;
                         }
                         else if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                         {
@@ -95,13 +92,19 @@ namespace MaterialManager_V01.Services
                         }
                     }
 
-                    if (selectedUrl == null && exeUrl != null)
+                    if (updateInstallerUrl != null)
                     {
-                        selectedUrl = exeUrl;
-                        selectedName = exeName;
-                        selectedType = "exe";
+                        selectedUrl = updateInstallerUrl;
+                        selectedName = updateInstallerName;
+                        selectedType = "update-exe";
                     }
-                    if (selectedUrl == null && zipUrl != null)
+                    else if (msiUrl != null)
+                    {
+                        selectedUrl = msiUrl;
+                        selectedName = Path.GetFileName(msiUrl);
+                        selectedType = "msi";
+                    }
+                    else if (zipUrl != null)
                     {
                         selectedUrl = zipUrl;
                         selectedName = zipName;
@@ -112,7 +115,7 @@ namespace MaterialManager_V01.Services
                 var updateAvailable = ParseVersion(tag) > ParseVersion(current);
 
                 var assetError = selectedUrl == null
-                    ? "Kein MSI/EXE/ZIP Asset im Release gefunden."
+                    ? "Kein UpdateInstaller/MSI/ZIP Asset im Release gefunden."
                     : null;
 
                 return new UpdateCheckResult
