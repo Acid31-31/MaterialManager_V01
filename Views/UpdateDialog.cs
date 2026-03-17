@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,11 @@ namespace MaterialManager_V01.Views
 {
     public partial class UpdateDialog : Window, INotifyPropertyChanged
     {
+        private static readonly HashSet<string> AllowedSignerThumbprints = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "7C7BA253CDF3E80EF732EC1E4027BAEF32FCF8A7"
+        };
+
         private readonly UpdateCheckResult _updateInfo;
         private readonly string _uiUpdateLogPath;
         private readonly bool _autoStartInstall;
@@ -245,6 +251,12 @@ namespace MaterialManager_V01.Views
             {
                 var signer = X509Certificate.CreateFromSignedFile(filePath);
                 var signerCert = new X509Certificate2(signer);
+
+                if (AllowedSignerThumbprints.Contains(signerCert.Thumbprint))
+                {
+                    details = $"Signiert von freigegebenem Zertifikat '{signerCert.Subject}' ({signerCert.Thumbprint})";
+                    return true;
+                }
 
                 using var chain = new X509Chain();
                 chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
