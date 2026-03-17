@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -24,6 +25,12 @@ internal static class Program
 
             if (string.IsNullOrWhiteSpace(options.TargetDirectory))
                 throw new InvalidOperationException("Kein Zielpfad übergeben oder gefunden.");
+
+            if (RequiresElevation(options.TargetDirectory) && !IsRunningAsAdministrator())
+            {
+                RelaunchElevated(args, options.TargetDirectory, options.WaitProcessId);
+                return;
+            }
 
             if (!Directory.Exists(options.TargetDirectory))
                 throw new DirectoryNotFoundException($"Zielpfad nicht gefunden: {options.TargetDirectory}");
@@ -72,6 +79,58 @@ internal static class Program
                 MessageBoxIcon.Error);
             Environment.Exit(1);
         }
+    }
+
+    private static bool IsRunningAsAdministrator()
+    {
+        using var identity = WindowsIdentity.GetCurrent();
+        var principal = new WindowsPrincipal(identity);
+        return principal.IsInRole(WindowsBuiltInRole.Administrator);
+    }
+
+    private static bool RequiresElevation(string targetDirectory)
+    {
+        var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+        var programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+        return targetDirectory.StartsWith(programFiles, StringComparison.OrdinalIgnoreCase)
+            || (!string.IsNullOrWhiteSpace(programFilesX86) && targetDirectory.StartsWith(programFilesX86, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static void RelaunchElevated(string[] originalArgs, string targetDirectory, int waitProcessId)
+    {
+        var finalArgs = originalArgs.ToList();
+        if (!finalArgs.Any(a => string.Equals(a, "--target", StringComparison.OrdinalIgnoreCase)))
+        {
+            finalArgs.Add("--target");
+            finalArgs.Add(targetDirectory);
+        }
+
+        if (waitProcessId > 0 && !finalArgs.Any(a => string.Equals(a, "--waitpid", StringComparison.OrdinalIgnoreCase)))
+        {
+            finalArgs.Add("--waitpid");
+            finalArgs.Add(waitProcessId.ToString());
+        }
+
+        var argumentString = string.Join(" ", finalArgs.Select(QuoteArgument));
+        var currentExe = Environment.ProcessPath ?? throw new InvalidOperationException("Installer-Pfad konnte nicht ermittelt werden.");
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = currentExe,
+            Arguments = argumentString,
+            UseShellExecute = true,
+            Verb = "runas"
+        });
+    }
+
+    private static string QuoteArgument(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return "\"\"";
+        return value.Contains(' ') || value.Contains('"')
+            ? "\"" + value.Replace("\"", "\\\"") + "\""
+            : value;
     }
 
     private static void WaitForProcessExit(int processId, TimeSpan timeout)
