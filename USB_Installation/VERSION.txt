@@ -1,0 +1,4 @@
+MaterialManager 1.0.x
+Erstellt: 05.03.2026 19:36:24
+Größe: 184.75 MB
+Version: Release Self-Contained

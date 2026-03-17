@@ -1,0 +1,154 @@
+================================================================================
+                    MATERIALMANAGER V01 - VERSION 1.0.7
+                          RELEASE NOTES
+================================================================================
+
+📅 Datum: 06. März 2026
+👤 Hersteller: Alexander Hoelzer
+📧 Support: info@hoelzer.de | hoelzer_alex@yahoo.de
+
+================================================================================
+🎉 NEUE FEATURES & VERBESSERUNGEN
+================================================================================
+
+✅ PROFESSIONELLER INSTALLER & DEINSTALLER
+   - Moderner GUI-Installer mit 5 Schritten
+   - Vollständige EULA (Lizenzvereinbarung) gemäß deutschem Recht
+   - Automatische Desktop-Verknüpfung
+   - Auto-Start-Option nach Installation
+   - Deinstaller mit Option zum Behalten der Benutzerdaten
+   - Registry-Eintrag für "Programme & Features"
+
+✅ KEINE ADMIN-RECHTE MEHR NÖTIG
+   - App startet ohne Administrator-Rechte
+   - Alle Daten werden in %APPDATA% gespeichert
+   - Manifest korrekt konfiguriert (asInvoker)
+   - PathService für zentrale Pfadverwaltung
+
+✅ VOLLSTÄNDIGE LIZENZVEREINBARUNG
+   - Rechtlich korrekte EULA nach deutschem Recht
+   - Urheberrecht, Gewährleistung, Haftung
+   - DSGVO-konform
+   - Widerrufsrecht für Verbraucher
+   - Vollständige Kontaktdaten
+
+✅ DATENSPEICHERUNG OPTIMIERT
+   - Alle Daten in: C:\Users\[USER]\AppData\Local\MaterialManager_V01\
+   - Datenbank: materialbestand.xlsx
+   - Backups: MaterialManager_V01\Backups\
+   - Logs: startup_*.txt, update_ui.log
+   - Lizenz: license.dat
+   - Keine Dateien mehr in C:\Program Files\ (kein Admin nötig!)
+
+================================================================================
+🔧 TECHNISCHE VERBESSERUNGEN
+================================================================================
+
+✅ Services/PathService.cs (NEU)
+   - Zentrale Verwaltung aller Dateipfade
+   - DataDirectory, DatabasePath, LogPath, BackupDirectory
+   - Automatische Verzeichniserstellung
+   - Kein BaseDirectory mehr (kein C:\Program Files\ schreiben)
+
+✅ App.xaml.cs
+   - Log-Dateien jetzt in APPDATA statt Program Files
+   - Verwendet PathService.LogPath
+
+✅ MainWindow.xaml.cs
+   - Startup-Logs in APPDATA
+   - Verwendet PathService.DataDirectory
+
+✅ Installer (INSTALL_GUI.ps1)
+   - Vollständig neu geschrieben
+   - Feste Fenster-Größe (900x650px)
+   - Buttons garantiert sichtbar
+   - Auto-Start nach Installation
+   - Deinstaller-Erstellung
+   - Registry-Eintrag
+
+✅ app.manifest (NEU)
+   - requestedExecutionLevel = asInvoker
+   - Keine Admin-Rechte erforderlich
+   - DPI-Awareness aktiviert
+
+================================================================================
+📋 INSTALLATION & VERWENDUNG
+================================================================================
+
+INSTALLATION:
+1. Rechtsklick auf INSTALL.bat → "Als Administrator ausführen"
+2. Installer folgen (5 Schritte)
+3. Lizenzvereinbarung akzeptieren
+4. Installationspfad wählen (Standard: C:\Program Files\MaterialManager_V01)
+5. Installation abschließen
+6. Optional: App sofort starten
+
+NACH INSTALLATION:
+- Desktop-Verknüpfung verfügbar
+- Programm über Systemsteuerung → Programme & Features deinstallierbar
+- KEINE Admin-Rechte mehr nötig zum Starten!
+
+DEINSTALLATION:
+- Systemsteuerung → Programme & Features → MaterialManager V01 → Deinstallieren
+- ODER: C:\Program Files\MaterialManager_V01\UNINSTALL.bat
+
+================================================================================
+🔒 LIZENZIERUNG
+================================================================================
+
+- 30 Tage Demo-Version (automatisch)
+- Vollversion durch Lizenzschlüssel
+- Hardware-gebunden (1 Lizenz = 1 PC)
+- Kontakt: info@hoelzer.de für Lizenzschlüssel
+
+================================================================================
+📦 SYSTEM-ANFORDERUNGEN
+================================================================================
+
+✅ Windows 10 oder Windows 11 (64-Bit)
+✅ 500 MB freier Speicher
+✅ 2 GB RAM empfohlen
+✅ .NET 8 Runtime (bereits enthalten!)
+✅ Bildschirmauflösung mind. 1280x720
+
+================================================================================
+🐛 BEKANNTE PROBLEME & LÖSUNGEN
+================================================================================
+
+KEIN PROBLEM BEKANNT - ALLES FUNKTIONIERT! ✅
+
+Falls Probleme auftreten:
+- Log-Dateien prüfen: %LOCALAPPDATA%\MaterialManager_V01\startup_*.txt
+- Support kontaktieren: info@hoelzer.de
+- Vollständige Anschrift: Alexander Hölzer, Pfarrer-Rosenkranz-Str. 9, 56642 Kruft
+
+================================================================================
+📞 SUPPORT & KONTAKT
+================================================================================
+
+Alexander Hölzer
+Pfarrer-Rosenkranz-Str. 9
+56642 Kruft
+Deutschland
+
+E-Mail: info@hoelzer.de
+Privat: hoelzer_alex@yahoo.de
+
+Support-Zeiten: Montag - Freitag, 09:00 - 17:00 Uhr
+
+================================================================================
+🎯 NÄCHSTE SCHRITTE
+================================================================================
+
+Version 1.0.8 (geplant):
+- Automatische Online-Updates
+- Cloud-Sync für Netzwerk-Modus
+- PDF-Export für Materiallisten
+- Erweiterte Statistiken
+
+================================================================================
+
+Vielen Dank für die Nutzung von MaterialManager V01!
+Bei Fragen oder Anregungen: info@hoelzer.de
+
+© 2026 Alexander Hölzer - Alle Rechte vorbehalten

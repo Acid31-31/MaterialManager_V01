@@ -1,0 +1,247 @@
+================================================================================
+  MATERIALMANAGER 1.0.x - KOMPLETTE INSTALLATIONSANLEITUNG (MEHRERE PCs)
+================================================================================
+
+Datum dieser Anleitung: 05.03.2026
+Version: 1.0.x
+Status: AKTUELL UND GÜLTIG
+
+================================================================================
+1. ÜBERBLICK
+================================================================================
+
+MaterialManager kann auf MEHREREN PCs installiert werden:
+
+✓ METHODE A: Direkt auf lokalen PC (wenn Programm vorhanden)
+✓ METHODE B: Von USB-Stick auf beliebig viele PCs
+✓ METHODE C: Über Netzwerk (für Unternehmens-Umgebung)
+✓ METHODE D: Automatisierte Multi-PC Deployment
+
+
+================================================================================
+2. METHODE A - DIREKT AUF DIESEM PC (LOKAL)
+================================================================================
+
+Voraussetzung:
+  - Programm-Dateien sind im Ordner vorhanden
+  - Oder: USB-Stick mit MaterialManager ist angesteckt
+
+SCHRITTE:
+
+1. PowerShell öffnen (Administrator)
+   Kommando: .\Install_MultiPC.ps1 -Interactive
+
+2. Menü wählen:
+   Option [1] = Auf DIESEM PC installieren
+
+3. Programm startet automatisch
+
+4. Installation abschließen:
+   - Lizenzschlüssel eingeben (falls verlangt)
+   - Einstellungen konfigurieren
+   - Fertig!
+
+Dauer: 2-5 Minuten
+
+
+================================================================================
+3. METHODE B - VON USB-STICK (EMPFOHLEN FÜR MEHRERE PCs)
+================================================================================
+
+SCHRITT 1: USB-PAKET VORBEREITEN (einmalig, auf Quell-PC)
+───────────────────────────────────────────────────────
+
+1. Diesen Ordner öffnen:
+   D:\MaterialManager_V01_komplett\USB_Installation\
+
+2. Gesamten USB_Installation Ordner KOPIEREN
+
+3. USB-Stick (min. 250 MB) formatieren (NTFS empfohlen)
+
+4. USB_Installation Ordner VOLLSTÄNDIG auf USB kopieren
+
+5. Fertig! USB-Stick ist einsatzbereit.
+
+STRUKTUR AUF USB:
+
+USB_Installation/
+├── MaterialManager/
+│   ├── MaterialManager_V01.exe          ← HAUPTPROGRAMM
+│   ├── [Alle .NET Runtime Dateien]
+│   └── [Weitere Abhängigkeiten]
+├── START_MaterialManager.bat            ← KLICK ZUM STARTEN!
+├── README.txt
+└── VERSION.txt
+
+
+SCHRITT 2: AUF ZIEL-PCs INSTALLIEREN (beliebig viele)
+──────────────────────────────────────────────────────
+
+Auf JEDEM PC:
+
+1. USB-Stick einstecken
+
+2. Doppelklick auf: START_MaterialManager.bat
+
+3. Programm startet automatisch
+
+4. Installation durchführen:
+   - Lizenzschlüssel eingeben
+   - Einstellungen wählen
+   - FERTIG!
+
+Dauer pro PC: 3-5 Minuten
+
+
+VORTEILE:
+  ✓ Keine Internetverbindung nötig
+  ✓ .NET Runtime ist bereits enthalten
+  ✓ Schnelle Installation auf mehreren PCs hintereinander
+  ✓ USB-Stick beliebig oft wiederverwendbar
+
+
+================================================================================
+4. METHODE C - NETZWERK-INSTALLATION (FÜR IT-PROFIS)
+================================================================================
+
+Für Unternehmens-Umgebung mit Domäne/AD:
+
+1. Netzwerk-Freigabe erstellen:
+   \\SERVER\MaterialManager\USB_Installation\
+
+2. Per PSEXEC oder GPO verteilen:
+   psexec \\[PC-NAME] -s cmd /c "\\SERVER\MaterialManager\USB_Installation\START_MaterialManager.bat"
+
+3. Oder per Batch auf allen PCs gleichzeitig:
+   for /f %i in (pc_list.txt) do psexec \\%i -s cmd /c "\\SERVER\MaterialManager\..."
+
+
+================================================================================
+5. SYSTEMANFORDERUNGEN
+================================================================================
+
+HARDWARE:
+  ✓ Windows 10 / Windows 11 (64-bit)
+  ✓ Mindestens 500 MB freier Speicher
+  ✓ Moderne CPU (Intel/AMD, 2015+)
+  ✓ 2 GB RAM empfohlen
+
+SOFTWARE:
+  ✓ .NET 8 Runtime (wird mitgeliefert - NICHT SEPARAT INSTALLIEREN!)
+  ✓ Windows Defender / Antivirus kann Installation verlangsamen
+
+BERECHTIGUNGEN:
+  ✓ Administrator-Rechte für Installation meist erforderlich
+  ⚠ Für Netzwerk-Admin: entsprechende Domänen-Rechte
+
+
+================================================================================
+6. INSTALLATION VERIFIZIEREN
+================================================================================
+
+Nach Installation:
+
+1. Doppelklick auf:
+   C:\Program Files\MaterialManager\MaterialManager_V01.exe
+   (oder wo installiert wurde)
+
+2. Programm-Fenster sollte öffnen mit:
+   - Version: 1.0.x
+   - Aktuelle Systemeinstellungen
+   - Keine Fehlermeldungen
+
+3. Lizenzschlüssel prüfen:
+   Programm → Einstellungen → Lizenz
+   Status sollte: AKTIV / GÜLTIG
+
+
+================================================================================
+7. TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "Windows hat dieses Programm nicht erkannt"
+LÖSUNG: 
+  - Rechtsklick → Eigenschaften → Kompatibilität
+  - Oder: direkter Admin-Start probieren
+
+
+PROBLEM: ".NET Runtime nicht gefunden"
+LÖSUNG:
+  - USB_Installation ist unvollständig
+  - USB-Paket erneut von Quelle kopieren
+
+
+PROBLEM: "Lizenzschlüssel ungültig"
+LÖSUNG:
+  - Korrekte Hardware-ID prüfen (Programm → Einstellungen)
+  - Mit Admin kontaktieren für neuen Schlüssel
+
+
+PROBLEM: Installation friert ein
+LÖSUNG:
+  - Warten Sie 5 Minuten (Antivirus scannt)
+  - Administrator-Rechte prüfen
+  - Neustart versuchen
+
+
+================================================================================
+8. UPDATES UND PATCHES
+================================================================================
+
+Neue Versionen verfügbar?
+
+1. Neue USB_Installation vom Admin holen
+
+2. USB_Installation Ordner aktualisieren
+
+3. Auf allen PCs neu installieren ODER Update starten
+
+⚠ Wichtig: Vor Update immer Daten sichern!
+
+
+================================================================================
+9. LIZENZIERUNG FÜR MEHRERE PCs
+================================================================================
+
+LIZENZSCHLÜSSEL:
+  - 1 Schlüssel = 1 PC
+  - Bei Mehrfach-Installation: Ein Schlüssel pro PC erforderlich
+  - Hardware-ID (eindeutig pro PC) wird automatisch ermittelt
+
+NEUEN SCHLÜSSEL BEKOMMEN:
+  - Admin kontaktieren
+  - Hardware-ID vom neuen PC vorzeigen
+  - Neuer Schlüssel wird generiert
+
+
+================================================================================
+10. QUICK-REFERENCE CHECKLISTE
+================================================================================
+
+[ ] USB-Stick (min. 250 MB) vorhanden?
+[ ] MaterialManager 1.0.x (aktuell) heruntergeladen?
+[ ] USB_Installation Ordner vollständig kopiert?
+[ ] Ziel-PCs haben Windows 10/11 64-bit?
+[ ] Ziel-PCs haben Admin-Rechte verfügbar?
+[ ] Genug Zeit für Installation eingeplant (5 min/PC)?
+[ ] Lizenzschlüssel pro PC vorhanden?
+[ ] Backup der Systemeinstellungen gemacht?
+
+READY? Los geht's! ✓
+
+
+================================================================================
+KONTAKT & SUPPORT
+================================================================================
+
+Bei Fragen zur Installation:
+  → Install_MultiPC.ps1 -Interactive
+
+Bei Problemen:
+  → Siehe TROUBLESHOOTING Sektion oben
+  → Log-Dateien prüfen: %APPDATA%\MaterialManager\logs\
+
+Letzte Aktualisierung dieser Anleitung: 05.03.2026 19:35 Uhr
+Version: 1.0.x
+
+================================================================================

@@ -1,0 +1,42 @@
+================================================================================
+                      MATERIALMANAGER V01 - VERSION
+================================================================================
+
+v1.0.7 - 06.03.2026
+===================
+✅ NEUE FEATURES:
+   - Professioneller GUI-Installer mit 5 Schritten
+   - Vollständige EULA (Lizenzvereinbarung) nach deutschem Recht
+   - Deinstaller mit Registry-Eintrag
+   - Auto-Start nach Installation
+   - KEINE Admin-Rechte mehr nötig!
+   - Datenspeicherung in APPDATA (kein C:\Program Files\ mehr)
+
+🔧 TECHNISCH:
+   - Services/PathService.cs (NEU)
+   - app.manifest (asInvoker)
+   - App.xaml.cs & MainWindow.xaml.cs: APPDATA-Logs
+   - Installer komplett überarbeitet
+
+================================================================================
+
+v1.0.6 - 05.03.2026
+===================
+- Lizenzierungssystem
+- Hardware-ID-basierte Aktivierung
+- 30 Tage Demo-Version
+- Vollversion-Aktivierung
+
+v1.0.5 - 04.03.2026
+===================
+- Material-Verwaltung
+- Reste-Reservierung
+- EU-Palette & Tafelregal
+- Excel-Import/Export
+
+v1.0.0 - 01.03.2026
+===================
+- Erste Version
+- Grundfunktionen
+
+================================================================================

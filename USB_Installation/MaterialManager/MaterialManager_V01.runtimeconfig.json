@@ -4,15 +4,14 @@
     "includedFrameworks": [
       {
         "name": "Microsoft.NETCore.App",
-        "version": "8.0.25"
+        "version": "8.0.24"
       },
       {
         "name": "Microsoft.WindowsDesktop.App",
-        "version": "8.0.25"
+        "version": "8.0.24"
       }
     ],
     "configProperties": {
-      "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
       "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false
     }
   }
