@@ -1,16 +1,9 @@
-╔════════════════════════════════════════════════════════════════╗ 
-║          MaterialManager V01 - USB INSTALLATION                ║ 
-║                 © 2025 Alexander Hölzer                        ║ 
-╚════════════════════════════════════════════════════════════════╝ 
- 
-🚀 SCHNELLSTART: 
-   1. Doppelklick auf: START_MaterialManager.bat 
-   2. Oder: MaterialManager\MaterialManager_V01.exe direkt starten 
- 
-📖 DOKUMENTATION: 
-   - INSTALLATIONSANLEITUNG.txt 
-   - PREISBERECHNUNG.txt 
- 
-📞 SUPPORT: 
-   E-Mail: hoelzer_alex@yahoo.de 
-   Telefon: +49 170 8339993 
+# MaterialManager 1.0.x USB Installation
+
+Erstellt: 05.03.2026 19:36:23
+Version: 1.0.x
+Status: Fresh Build
+
+## Start
+
+Doppelklick: START_MaterialManager.bat
