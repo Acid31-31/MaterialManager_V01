@@ -99,20 +99,19 @@ internal static class Program
 
     private static void RelaunchElevated(string[] originalArgs, string targetDirectory, int waitProcessId)
     {
-        var finalArgs = originalArgs.ToList();
-        if (!finalArgs.Any(a => string.Equals(a, "--target", StringComparison.OrdinalIgnoreCase)))
+        var argumentParts = new List<string>
         {
-            finalArgs.Add("--target");
-            finalArgs.Add(targetDirectory);
+            "--target",
+            QuoteArgument(targetDirectory)
+        };
+
+        if (waitProcessId > 0)
+        {
+            argumentParts.Add("--waitpid");
+            argumentParts.Add(waitProcessId.ToString());
         }
 
-        if (waitProcessId > 0 && !finalArgs.Any(a => string.Equals(a, "--waitpid", StringComparison.OrdinalIgnoreCase)))
-        {
-            finalArgs.Add("--waitpid");
-            finalArgs.Add(waitProcessId.ToString());
-        }
-
-        var argumentString = string.Join(" ", finalArgs.Select(QuoteArgument));
+        var argumentString = string.Join(" ", argumentParts);
         var currentExe = Environment.ProcessPath ?? throw new InvalidOperationException("Installer-Pfad konnte nicht ermittelt werden.");
 
         Process.Start(new ProcessStartInfo
@@ -128,8 +127,9 @@ internal static class Program
     {
         if (string.IsNullOrEmpty(value))
             return "\"\"";
+
         return value.Contains(' ') || value.Contains('"')
-            ? "\"" + value.Replace("\"", "\\\"") + "\""
+            ? "\"" + value.Replace("\"", "\"\"") + "\""
             : value;
     }
 
