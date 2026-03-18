@@ -160,6 +160,10 @@ internal static class Program
 
     private static string ResolveTargetDirectory()
     {
+        var fromRunningProcess = ReadInstallLocationFromRunningProcess();
+        if (!string.IsNullOrWhiteSpace(fromRunningProcess))
+            return fromRunningProcess;
+
         var fromRegistry = ReadInstallLocationFromRegistry();
         if (!string.IsNullOrWhiteSpace(fromRegistry))
             return fromRegistry;
@@ -173,6 +177,31 @@ internal static class Program
         };
 
         return candidates.FirstOrDefault(IsValidInstallDirectory) ?? string.Empty;
+    }
+
+    private static string ReadInstallLocationFromRunningProcess()
+    {
+        try
+        {
+            foreach (var process in Process.GetProcessesByName("MaterialManager_V01"))
+            {
+                try
+                {
+                    var exePath = process.MainModule?.FileName;
+                    var directory = string.IsNullOrWhiteSpace(exePath) ? string.Empty : Path.GetDirectoryName(exePath) ?? string.Empty;
+                    if (IsValidInstallDirectory(directory))
+                        return directory;
+                }
+                catch
+                {
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
     }
 
     private static string ReadInstallLocationFromRegistry()
