@@ -153,11 +153,13 @@ namespace MaterialManager_V01.Views
                 }
                 else
                 {
+                    var updateTargetDirectory = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
                     startedProcess = Process.Start(new ProcessStartInfo
                     {
                         FileName = installerPath,
                         Arguments = isUpdateInstaller
-                            ? $"--target \"{AppDomain.CurrentDomain.BaseDirectory}\" --waitpid {Process.GetCurrentProcess().Id}"
+                            ? $"--target \"{updateTargetDirectory}\" --waitpid {Process.GetCurrentProcess().Id}"
                             : string.Empty,
                         UseShellExecute = true
                     });
