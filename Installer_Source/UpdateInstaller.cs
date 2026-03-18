@@ -133,6 +133,25 @@ internal static class Program
             : value;
     }
 
+    private static string SanitizeTargetDirectory(string value, UpdateInstallerOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var sanitized = value.Trim().Trim('"');
+        var waitPidMarker = sanitized.IndexOf(" --waitpid ", StringComparison.OrdinalIgnoreCase);
+        if (waitPidMarker >= 0)
+        {
+            var waitPidValue = sanitized[(waitPidMarker + " --waitpid ".Length)..].Trim().Trim('"');
+            if (options.WaitProcessId <= 0 && int.TryParse(waitPidValue, out var parsedPid))
+                options.WaitProcessId = parsedPid;
+
+            sanitized = sanitized[..waitPidMarker].TrimEnd();
+        }
+
+        return sanitized.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+    }
+
     private static void WaitForProcessExit(int processId, TimeSpan timeout)
     {
         try
@@ -267,7 +286,7 @@ internal static class Program
     private sealed class UpdateInstallerOptions
     {
         public string TargetDirectory { get; set; } = string.Empty;
-        public int WaitProcessId { get; private set; }
+        public int WaitProcessId { get; set; }
 
         public static UpdateInstallerOptions Parse(string[] args)
         {
@@ -278,7 +297,7 @@ internal static class Program
                 var current = args[i];
                 if (string.Equals(current, "--target", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
                 {
-                    options.TargetDirectory = args[++i];
+                    options.TargetDirectory = SanitizeTargetDirectory(args[++i], options);
                 }
                 else if (string.Equals(current, "--waitpid", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length && int.TryParse(args[++i], out var pid))
                 {
@@ -286,6 +305,7 @@ internal static class Program
                 }
             }
 
+            options.TargetDirectory = SanitizeTargetDirectory(options.TargetDirectory, options);
             return options;
         }
     }
