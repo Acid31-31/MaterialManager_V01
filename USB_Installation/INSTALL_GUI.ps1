@@ -1,5 +1,5 @@
 # ============================================
-# MaterialManager V01 - GUI Installer v1.0.7
+# MaterialManager V01 - GUI Installer
 # ============================================
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -12,6 +12,55 @@ $Script:CurrentStep = 1
 $Script:TotalSteps = 6
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:SourcePath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Script:VersionApiUrl = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest"
+$Script:FallbackVersion = "1.0.7"
+
+function Get-NormalizedVersion {
+    param([string]$Value)
+
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        return $Script:FallbackVersion
+    }
+
+    $match = [regex]::Match($Value, '\d+(\.\d+){0,3}')
+    if ($match.Success) {
+        return $match.Value
+    }
+
+    return $Script:FallbackVersion
+}
+
+function Get-PackageVersion {
+    $packageExe = Join-Path $Script:SourcePath 'MaterialManager\MaterialManager_V01.exe'
+    if (Test-Path $packageExe) {
+        try {
+            $versionInfo = (Get-Item $packageExe).VersionInfo
+            if (-not [string]::IsNullOrWhiteSpace($versionInfo.ProductVersion)) {
+                return Get-NormalizedVersion $versionInfo.ProductVersion
+            }
+            if (-not [string]::IsNullOrWhiteSpace($versionInfo.FileVersion)) {
+                return Get-NormalizedVersion $versionInfo.FileVersion
+            }
+        } catch { }
+    }
+
+    return $Script:FallbackVersion
+}
+
+$Script:PackageVersion = Get-PackageVersion
+
+function Get-LatestOnlineVersion {
+    try {
+        $response = Invoke-RestMethod -Uri $Script:VersionApiUrl -Headers @{ 'User-Agent' = 'MaterialManager-V01-Installer'; 'Accept' = 'application/vnd.github+json' } -TimeoutSec 8
+        if ($response -and $response.tag_name) {
+            return Get-NormalizedVersion $response.tag_name
+        }
+    } catch { }
+
+    return $Script:PackageVersion
+}
+
+$Script:LatestOnlineVersion = Get-LatestOnlineVersion
 
 # ============================================
 # FORMULAR - FESTE GROESSE 1000x750 (vergroessert!)
@@ -122,7 +171,8 @@ function Show-WelcomeScreen {
     $welcomeLabel.Text = @"
 Willkommen beim MaterialManager V01 Installer!
 
-Version: 1.0.7
+Online aktuellste Version: $($Script:LatestOnlineVersion)
+Paket-Version dieses Installers: $($Script:PackageVersion)
 Hersteller: Alexander Hoelzer
 Copyright (c) 2026
 
@@ -273,7 +323,7 @@ function Show-LicenseScreen {
     $licenseBox.Text = @"
 ================================================================================
         END-USER LICENSE AGREEMENT (EULA) - LIZENZVEREINBARUNG
-                    MaterialManager V01 Version 1.0.7
+                 MaterialManager V01 Paket-Version $($Script:PackageVersion)
 ================================================================================
 
 COPYRIGHT (c) 2026 Alexander Hoelzer. Alle Rechte vorbehalten.
@@ -511,7 +561,7 @@ exit
             }
             
             Set-ItemProperty -Path $regPath -Name "DisplayName" -Value "MaterialManager V01" -Type String
-            Set-ItemProperty -Path $regPath -Name "DisplayVersion" -Value "1.0.7" -Type String
+            Set-ItemProperty -Path $regPath -Name "DisplayVersion" -Value $Script:PackageVersion -Type String
             Set-ItemProperty -Path $regPath -Name "Publisher" -Value "Alexander Hoelzer" -Type String
             Set-ItemProperty -Path $regPath -Name "InstallLocation" -Value $Script:InstallPath -Type String
             Set-ItemProperty -Path $regPath -Name "UninstallString" -Value "`"$Script:InstallPath\UNINSTALL.bat`"" -Type String
