@@ -110,6 +110,8 @@
     <Compile Remove="_ARCHIVE_TO_REVIEW\**\*.cs" />
     <Compile Remove="Backup*\**\*.cs" />
     <Compile Remove="Installer_Source\UpdateInstaller.cs" />
+    <Compile Remove="Installer_Source\obj\**\*.cs" />
+    <Compile Remove="Installer_Source\bin\**\*.cs" />
     <Compile Remove="Tools\LicenseGenerator.cs" />
     <Compile Remove="Tools\obj\**\*.cs" />
     <Compile Remove="Tools\bin\**\*.cs" />
@@ -119,6 +121,8 @@
     <ApplicationDefinition Remove="Backup*\**\*.xaml" />
     <None Remove="_ARCHIVE_TO_REVIEW\**\*.*" />
     <None Remove="Backup*\**\*.*" />
+    <None Remove="Installer_Source\obj\**\*.*" />
+    <None Remove="Installer_Source\bin\**\*.*" />
   </ItemGroup>
 
 </Project>
