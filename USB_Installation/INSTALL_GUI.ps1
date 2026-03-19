@@ -13,7 +13,7 @@ $Script:TotalSteps = 6
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:SourcePath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Script:VersionApiUrl = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest"
-$Script:FallbackVersion = "1.0.23"
+$Script:FallbackVersion = "1.0.25"
 
 function Get-NormalizedVersion {
     param([string]$Value)
@@ -61,21 +61,75 @@ function Get-LatestOnlineVersion {
 }
 
 $Script:LatestOnlineVersion = Get-LatestOnlineVersion
+$Script:DesignWidth = 1000
+$Script:DesignHeight = 750
+$workingArea = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
+$Script:formWidth = [int][Math]::Min($Script:DesignWidth, [Math]::Max(880, $workingArea.Width - 40))
+$Script:formHeight = [int][Math]::Min($Script:DesignHeight, [Math]::Max(650, $workingArea.Height - 40))
+$Script:scaleX = $Script:formWidth / [double]$Script:DesignWidth
+$Script:scaleY = $Script:formHeight / [double]$Script:DesignHeight
+
+function Set-ControlResponsiveLayout {
+    param([System.Windows.Forms.Control]$Control)
+
+    if ($null -eq $Control) { return }
+
+    $meta = $Control.Tag
+    if (-not ($meta -is [pscustomobject] -and $meta.ResponsiveMarker -eq $true)) {
+        $meta = [pscustomobject]@{
+            ResponsiveMarker = $true
+            Left = $Control.Left
+            Top = $Control.Top
+            Width = $Control.Width
+            Height = $Control.Height
+            FontName = if ($Control.Font) { $Control.Font.FontFamily.Name } else { $null }
+            FontSize = if ($Control.Font) { $Control.Font.Size } else { 0 }
+            FontStyle = if ($Control.Font) { [int]$Control.Font.Style } else { 0 }
+        }
+        $Control.Tag = $meta
+    }
+
+    $Control.Left = [int][Math]::Round($meta.Left * $Script:scaleX)
+    $Control.Top = [int][Math]::Round($meta.Top * $Script:scaleY)
+    $Control.Width = [int][Math]::Round($meta.Width * $Script:scaleX)
+    $Control.Height = [int][Math]::Round($meta.Height * $Script:scaleY)
+
+    if ($meta.FontName -and $meta.FontSize -gt 0) {
+        $scaledFontSize = [float][Math]::Max(8, [Math]::Round($meta.FontSize * [Math]::Min($Script:scaleX, $Script:scaleY), 1))
+        if ($null -eq $Control.Font -or [Math]::Abs($Control.Font.Size - $scaledFontSize) -gt 0.1) {
+            $Control.Font = New-Object System.Drawing.Font($meta.FontName, $scaledFontSize, [System.Drawing.FontStyle]$meta.FontStyle)
+        }
+    }
+
+    if ($Control -is [System.Windows.Forms.ScrollableControl]) {
+        $Control.AutoScroll = $true
+    }
+
+    foreach ($child in $Control.Controls) {
+        Set-ControlResponsiveLayout $child
+    }
+}
+
+function Apply-ResponsiveLayout {
+    $form.ClientSize = New-Object System.Drawing.Size($Script:formWidth, $Script:formHeight)
+    $contentPanel.AutoScroll = $true
+
+    foreach ($control in $form.Controls) {
+        Set-ControlResponsiveLayout $control
+    }
+}
 
 # ============================================
 # FORMULAR - FESTE GROESSE 1000x750 (vergroessert!)
 # ============================================
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'MaterialManager V01 - Installation'
-$form.ClientSize = New-Object System.Drawing.Size(1000, 750)
+$form.ClientSize = New-Object System.Drawing.Size($Script:formWidth, $Script:formHeight)
 $form.StartPosition = 'CenterScreen'
 $form.BackColor = [System.Drawing.Color]::FromArgb(20, 20, 20)
 $form.FormBorderStyle = 'FixedDialog'
 $form.MaximizeBox = $false
-
-# ✅ FIX: Verwende FESTE Integer-Werte statt Properties
-$Script:formWidth = 1000
-$Script:formHeight = 750
+$form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
 
 # ============================================
 # HEADER - FESTE WERTE (kein $formWidth mehr!)
@@ -186,10 +240,11 @@ Klicken Sie auf 'Weiter' um fortzufahren.
     $welcomeLabel.Font = New-Object System.Drawing.Font('Segoe UI', 14)
     $welcomeLabel.ForeColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
     $welcomeLabel.Location = New-Object System.Drawing.Point(60, 80)
-    $welcomeLabel.Size = New-Object System.Drawing.Size(880, 320)  # ✅ 1000-120=880, 480-160=320
+    $welcomeLabel.Size = New-Object System.Drawing.Size(880, 320)
     $contentPanel.Controls.Add($welcomeLabel)
     
     $backButton.Enabled = $false
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -302,6 +357,7 @@ RABATT: 10% bei Bestellung innerhalb 7 Tagen! (Code: DEMO2026)
     $contentPanel.Controls.Add($hinweisLabel)
     
     $backButton.Enabled = $true
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -396,6 +452,7 @@ Stand: Maerz 2026
     $contentPanel.Controls.Add($Script:acceptCheckbox)
     
     $backButton.Enabled = $true
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -451,6 +508,7 @@ function Show-PathScreen {
     $Script:desktopCheckbox.Location = New-Object System.Drawing.Point(40, 180)
     $Script:desktopCheckbox.Size = New-Object System.Drawing.Size(600, 35)
     $contentPanel.Controls.Add($Script:desktopCheckbox)
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -477,6 +535,7 @@ function Show-InstallScreen {
     $installProgress.Size = New-Object System.Drawing.Size(920, 35)  # ✅ 1000-80=920
     $installProgress.Style = 'Continuous'
     $contentPanel.Controls.Add($installProgress)
+    Apply-ResponsiveLayout
     
     try {
         $sourceDir = "$Script:SourcePath\MaterialManager"
@@ -621,6 +680,7 @@ Sie koennen das Programm ueber die Desktop-Verknuepfung starten.
     
     $nextButton.Text = 'Fertig'
     $nextButton.Enabled = $true
+    Apply-ResponsiveLayout
 }
 
 # ============================================

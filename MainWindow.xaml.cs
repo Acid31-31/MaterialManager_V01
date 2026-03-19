@@ -16,8 +16,16 @@ namespace MaterialManager_V01
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private const double DefaultWindowWidth = 1600;
+        private const double DefaultWindowHeight = 800;
+        private const double MinimumResponsiveWidth = 640;
+        private const double MinimumResponsiveHeight = 480;
+
         public ObservableCollection<MaterialItem> Materialien { get; set; } = new();
         private DateTime _lastSaveUtc;
+        private readonly System.Windows.Threading.DispatcherTimer _updateCheckTimer = new();
+        private bool _isUpdateCheckRunning;
+        private string? _lastPromptedVersion;
 
         private string _gesamtGewichtText = "0,00 kg";
         public string GesamtGewichtText { get => _gesamtGewichtText; set { _gesamtGewichtText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GesamtGewichtText))); } }
@@ -28,7 +36,7 @@ namespace MaterialManager_V01
         private string _auslastungText = "0%";
         public string AuslastungText { get => _auslastungText; set { _auslastungText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuslastungText))); } }
 
-        private string _niedrigeBestaendeText = "Alle OK ‚úì";
+        private string _niedrigeBestaendeText = "Alle OK ‘£Ù";
         public string NiedrigeBestaendeText { get => _niedrigeBestaendeText; set { _niedrigeBestaendeText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeText))); } }
 
         private string _niedrigeBestaendeFarbe = "#4CAF50";
@@ -47,11 +55,11 @@ namespace MaterialManager_V01
 
         public MainWindow()
         {
-            // ‚úÖ ROBUSTES LOGGING: Erstelle nur wenn nicht existiert, dann StreamWriter verwenden
+            // ‘£‡ ROBUSTES LOGGING in APPDATA (nicht C:\Program Files!)
             StreamWriter logWriter = null;
             try
             {
-                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"startup_{Environment.UserName}_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+                var logPath = Path.Combine(Services.PathService.DataDirectory, $"startup_{Environment.UserName}_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 logWriter = new StreamWriter(logPath, append: true) { AutoFlush = true };
                 
                 void Log(string message)
@@ -122,11 +130,13 @@ namespace MaterialManager_V01
                 
                 this.Loaded += (s, e) =>
                 {
-                    Log("MainWindow.Loaded Event ausgel√∂st - Fenster ist sichtbar!");
+                    Log("MainWindow.Loaded Event ausgel+¬st - Fenster ist sichtbar!");
+                    ApplyResponsiveWindowLayout();
                     _ = CheckForUpdatesOnStartupAsync();
+                    StartPeriodicUpdateChecks();
                 };
                 
-                // ‚úÖ Cleanup beim Beenden
+                // ‘£‡ Cleanup beim Beenden
                 this.Closed += (s, e) =>
                 {
                     Log("MainWindow wird geschlossen");
@@ -150,7 +160,29 @@ namespace MaterialManager_V01
             }
         }
 
-        // ‚úÖ UPDATE ONLINE-STATUS alle 5 Sekunden
+        private void ApplyResponsiveWindowLayout()
+        {
+            var workArea = SystemParameters.WorkArea;
+            MaxWidth = workArea.Width;
+            MaxHeight = workArea.Height;
+
+            var targetWidth = Math.Min(DefaultWindowWidth, workArea.Width);
+            var targetHeight = Math.Min(DefaultWindowHeight, workArea.Height);
+
+            if (workArea.Width < DefaultWindowWidth || workArea.Height < DefaultWindowHeight)
+            {
+                WindowState = WindowState.Normal;
+                Width = Math.Min(workArea.Width, Math.Max(MinimumResponsiveWidth, targetWidth));
+                Height = Math.Min(workArea.Height, Math.Max(MinimumResponsiveHeight, targetHeight));
+                Left = workArea.Left + Math.Max(0, (workArea.Width - Width) / 2);
+                Top = workArea.Top + Math.Max(0, (workArea.Height - Height) / 2);
+                return;
+            }
+
+            WindowState = WindowState.Maximized;
+        }
+
+        // ‘£‡ UPDATE ONLINE-STATUS alle 5 Sekunden
         private void UpdateOnlineStatus()
         {
             try
@@ -159,13 +191,13 @@ namespace MaterialManager_V01
                 var display = this.FindName("OnlineUsersDisplay") as TextBlock;
                 if (display != null)
                 {
-                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"üë§ {u}"));
+                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"≠ÉÊÒ {u}"));
                 }
             }
             catch { }
         }
 
-        // ‚úÖ CLICK auf Online-Users: Popup anzeigen
+        // ‘£‡ CLICK auf Online-Users: Popup anzeigen
         private void OnOnlineUsersClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -195,7 +227,7 @@ namespace MaterialManager_V01
                 
                 Services.FileWatcherService.OnFileChanged += (path) => 
                 {
-                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] √Ñnderung erkannt: {path}");
+                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] +‰nderung erkannt: {path}");
                     ReloadMaterialienAsync();
                 };
                 System.Diagnostics.Debug.WriteLine($"[InitializeAutoSync] FileWatcher Event registriert");
@@ -230,7 +262,7 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                // ‚úÖ VERBESSERT: K√ºrzere Window f√ºr lokale Saves (500ms f√ºr sicheres Debouncing)
+                // ‘£‡ VERBESSERT: K++rzere Window f++r lokale Saves (500ms f++r sicheres Debouncing)
                 bool isLocalSave = (DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds < 500;
                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] isLocalSave: {isLocalSave}, Zeit: {(DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds}ms");
                 
@@ -240,9 +272,9 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe √Ñnderung erkannt!");
+                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe +‰nderung erkannt!");
                 
-                // ‚úÖ Versuche bis zu 30x zu laden
+                // ‘£‡ Versuche bis zu 30x zu laden
                 for (var attempt = 0; attempt < 30; attempt++)
                 {
                     try
@@ -258,7 +290,7 @@ namespace MaterialManager_V01
                             {
                                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] INTELLIGENTER MERGE startet...");
                                 
-                                // ‚úÖ INTELLIGENT MERGE: Aktualisiere/F√ºge hinzu statt alles zu ersetzen
+                                // ‘£‡ INTELLIGENT MERGE: Aktualisiere/F++ge hinzu statt alles zu ersetzen
                                 var currentRestNummern = Materialien.Where(m => !string.IsNullOrEmpty(m.Restnummer))
                                     .Select(m => m.Restnummer)
                                     .ToHashSet();
@@ -267,7 +299,7 @@ namespace MaterialManager_V01
                                     .Select(m => m.Restnummer)
                                     .ToHashSet();
 
-                                // 1. Entferne gel√∂schte Items (existieren nicht mehr in Excel)
+                                // 1. Entferne gel+¬schte Items (existieren nicht mehr in Excel)
                                 var toRemove = Materialien.Where(m => 
                                     !string.IsNullOrEmpty(m.Restnummer) && 
                                     !externalRestNummern.Contains(m.Restnummer)
@@ -275,7 +307,7 @@ namespace MaterialManager_V01
                                 
                                 foreach (var item in toRemove)
                                 {
-                                    System.Diagnostics.Debug.WriteLine($"[MERGE] Entferne gel√∂schtes: {item.Restnummer}");
+                                    System.Diagnostics.Debug.WriteLine($"[MERGE] Entferne gel+¬schtes: {item.Restnummer}");
                                     Materialien.Remove(item);
                                 }
 
@@ -296,8 +328,8 @@ namespace MaterialManager_V01
                                         }
                                         else
                                         {
-                                            // 3. F√ºge neue Items hinzu
-                                            System.Diagnostics.Debug.WriteLine($"[MERGE] Neu hinzuf√ºgen: {externalItem.Restnummer}");
+                                            // 3. F++ge neue Items hinzu
+                                            System.Diagnostics.Debug.WriteLine($"[MERGE] Neu hinzuf++gen: {externalItem.Restnummer}");
                                             Materialien.Add(externalItem);
                                         }
                                     }
@@ -305,8 +337,8 @@ namespace MaterialManager_V01
                                 
                                 UpdateStats();
                                 
-                                // ‚úÖ VISUELLES FEEDBACK
-                                Title = $"MaterialManager V01 - üîÑ Synchronisiert {DateTime.Now:HH:mm:ss}";
+                                // ‘£‡ VISUELLES FEEDBACK
+                                Title = $"MaterialManager V01 - ≠Éˆ‰ Synchronisiert {DateTime.Now:HH:mm:ss}";
                                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] MERGE FERTIG!");
                             });
                             
@@ -334,11 +366,11 @@ namespace MaterialManager_V01
             var dlg = new MaterialDialog(Materialien) { Owner = this };
             if (dlg.ShowDialog() == true) 
             { 
-                // ‚úÖ SOFORT zur UI hinzuf√ºgen (keine Verz√∂gerung!)
+                // ‘£‡ SOFORT zur UI hinzuf++gen (keine Verz+¬gerung!)
                 Materialien.Add(dlg.Material);
                 UpdateStats();
                 
-                // ‚úÖ DANN asynchron speichern (blockiert UI nicht)
+                // ‘£‡ DANN asynchron speichern (blockiert UI nicht)
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -354,11 +386,11 @@ namespace MaterialManager_V01
                     var idx = Materialien.IndexOf(item);
                     if (idx >= 0 && idx < Materialien.Count)
                     {
-                        // ‚úÖ SOFORT in UI aktualisieren
+                        // ‘£‡ SOFORT in UI aktualisieren
                         Materialien[idx] = dlg.Material;
                         UpdateStats();
                         
-                        // ‚úÖ DANN asynchron speichern
+                        // ‘£‡ DANN asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -368,12 +400,12 @@ namespace MaterialManager_V01
         private void OnMaterialLoeschen(object sender, RoutedEventArgs e)
         {
             var selected = Materialien.Where(m => m.IsSelected).ToList();
-            if (!selected.Any()) { MessageBox.Show("Bitte Material ausw√§hlen."); return; }
-            if (MessageBox.Show($"{selected.Count} Material(ien) l√∂schen?", "Best√§tigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (!selected.Any()) { MessageBox.Show("Bitte Material ausw+Òhlen."); return; }
+            if (MessageBox.Show($"{selected.Count} Material(ien) l+¬schen?", "Best+Òtigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Services.UndoService.Push($"{selected.Count} Material(ien) gel√∂scht", selected);
+                Services.UndoService.Push($"{selected.Count} Material(ien) gel+¬scht", selected);
                 
-                // ‚úÖ SOFORT aus UI entfernen
+                // ‘£‡ SOFORT aus UI entfernen
                 foreach (var item in selected) 
                 { 
                     Services.BuchungsService.BucheAusgang(item); 
@@ -381,7 +413,7 @@ namespace MaterialManager_V01
                 }
                 UpdateStats();
                 
-                // ‚úÖ DANN asynchron speichern
+                // ‘£‡ DANN asynchron speichern
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -402,15 +434,15 @@ namespace MaterialManager_V01
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Pr√ºfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Pr√ºfung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Pr++fung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Pr++fung", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!result.IsUpdateAvailable)
                 {
                     MessageBox.Show($"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Pr√ºfung", MessageBoxButton.OK, MessageBoxImage.Information);
+                        "Update-Pr++fung", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -418,7 +450,7 @@ namespace MaterialManager_V01
                 {
                     MessageBox.Show(
                         $"Neue Version {result.LatestVersion} gefunden, aber kein Update-Asset (.msi/.exe/.zip) in der Release.",
-                        "Update-Pr√ºfung",
+                        "Update-Pr++fung",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
@@ -429,7 +461,7 @@ namespace MaterialManager_V01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler bei Update-Pr√ºfung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler bei Update-Pr++fung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -484,7 +516,7 @@ namespace MaterialManager_V01
                 var dlg = new TafelVerbrauchDialog(item, Materialien) { Owner = this };
                 if (dlg.ShowDialog() == true) 
                 { 
-                    // ‚úÖ SOFORT UI aktualisieren
+                    // ‘£‡ SOFORT UI aktualisieren
                     if (item.Stueckzahl <= 1) 
                     { 
                         Services.BuchungsService.BucheAusgang(item); 
@@ -496,7 +528,7 @@ namespace MaterialManager_V01
                     }
                     UpdateStats();
                     
-                    // ‚úÖ Asynchron speichern
+                    // ‘£‡ Asynchron speichern
                     System.Threading.Tasks.Task.Run(() => SaveNow());
                 }
             }
@@ -514,11 +546,11 @@ namespace MaterialManager_V01
                     var idx = Materialien.IndexOf(dlg.MaterialZumBearbeiten);
                     if (idx >= 0)
                     {
-                        // ‚úÖ SOFORT aktualisieren
+                        // ‘£‡ SOFORT aktualisieren
                         Materialien[idx] = editDlg.Material;
                         UpdateStats();
                         
-                        // ‚úÖ Asynchron speichern
+                        // ‘£‡ Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -531,10 +563,10 @@ namespace MaterialManager_V01
             dlg.ShowDialog();
             if (dlg.HasChanges)
             {
-                // ‚úÖ SOFORT Stats aktualisieren
+                // ‘£‡ SOFORT Stats aktualisieren
                 UpdateStats();
                 
-                // ‚úÖ Asynchron speichern
+                // ‘£‡ Asynchron speichern
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -548,15 +580,15 @@ namespace MaterialManager_V01
                 {
                     bool match = true;
 
-                    // Material pr√ºfen
+                    // Material pr++fen
                     if (!string.IsNullOrEmpty(dlg.Material) && m.MaterialArt != dlg.Material)
                         match = false;
 
-                    // Legierung pr√ºfen
+                    // Legierung pr++fen
                     if (!string.IsNullOrEmpty(dlg.Legierung) && m.Legierung != dlg.Legierung)
                         match = false;
 
-                    // St√§rke mit Toleranz pr√ºfen
+                    // St+Òrke mit Toleranz pr++fen
                     if (dlg.Staerke.HasValue)
                     {
                         var toleranz = dlg.ToleranzProzent / 100.0;
@@ -566,10 +598,10 @@ namespace MaterialManager_V01
                             match = false;
                     }
 
-                    // Ma√üe mit Toleranz pr√ºfen
+                    // Ma+Ée mit Toleranz pr++fen
                     if (dlg.Laenge.HasValue && dlg.Breite.HasValue)
                     {
-                        var parts = m.Mass?.Split('x', '√ó');
+                        var parts = m.Mass?.Split('x', '◊');
                         if (parts?.Length == 2)
                         {
                             if (int.TryParse(parts[0].Trim(), out var l) && int.TryParse(parts[1].Trim(), out var b))
@@ -586,25 +618,25 @@ namespace MaterialManager_V01
                         }
                     }
 
-                    // Form pr√ºfen
+                    // Form pr++fen
                     if (dlg.Form != "Alle" && m.Form != dlg.Form)
                         match = false;
 
                     return match;
                 }).ToList();
 
-                // Markiere gefundene Materialien GR√úN
+                // Markiere gefundene Materialien GR+£N
                 foreach (var m in Materialien)
                     m.IsHighlighted = gefunden.Contains(m);
 
                 if (!gefunden.Any())
                 {
-                    MessageBox.Show("‚ùå Keine passenden Materialien gefunden.",
+                    MessageBox.Show("‘ÿÓ Keine passenden Materialien gefunden.",
                         "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                MessageBox.Show($"‚úÖ {gefunden.Count} passende(s) Material(ien) gefunden!  \n\nDie Materialien sind GR√úN markiert.",
+                MessageBox.Show($"‘£‡ {gefunden.Count} passende(s) Material(ien) gefunden!  \n\nDie Materialien sind GR+£N markiert.",
                     "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
@@ -619,13 +651,13 @@ namespace MaterialManager_V01
                     {
                         var user = Environment.UserName;
                         
-                        // ‚úÖ SOFORT in UI aktualisieren
+                        // ‘£‡ SOFORT in UI aktualisieren
                         auswahlDlg.SelectedMaterial.AuftragNr = auftragNr.Trim();
                         auswahlDlg.SelectedMaterial.GeaendertVon = user;
                         auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
                         UpdateStats();
                         
-                        // ‚úÖ Asynchron speichern
+                        // ‘£‡ Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -637,7 +669,7 @@ namespace MaterialManager_V01
         private void OnExport(object sender, RoutedEventArgs e)
         {
             var dlg = new SaveFileDialog { Filter = "Excel (*.xlsx)|*.xlsx" };
-            if (dlg.ShowDialog() == true) { try { ExcelService.Export(dlg.FileName, Materialien); MessageBox.Show("‚úÖ Export erfolgreich"); } catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); } }
+            if (dlg.ShowDialog() == true) { try { ExcelService.Export(dlg.FileName, Materialien); MessageBox.Show("‘£‡ Export erfolgreich"); } catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); } }
         }
 
         private void OnImport(object sender, RoutedEventArgs e)
@@ -651,15 +683,15 @@ namespace MaterialManager_V01
                     if (items?.Any() != true) { MessageBox.Show("Keine Materialien gefunden"); return; }
                     if (MessageBox.Show($"{items.Count()} Materialien. Ersetzen?", "Import", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-                        // ‚úÖ SOFORT UI aktualisieren
+                        // ‘£‡ SOFORT UI aktualisieren
                         Materialien.Clear();
                         foreach (var item in items) Materialien.Add(item);
                         UpdateStats();
                         
-                        // ‚úÖ Asynchron speichern
+                        // ‘£‡ Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                         
-                        MessageBox.Show("‚úÖ Import erfolgreich");
+                        MessageBox.Show("‘£‡ Import erfolgreich");
                     }
                 }
                 catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); }
@@ -673,28 +705,28 @@ namespace MaterialManager_V01
                 var geloeschteItems = Services.UndoService.Undo();
                 if (geloeschteItems != null)
                 {
-                    // ‚úÖ SOFORT in UI wiederherstellen
+                    // ‘£‡ SOFORT in UI wiederherstellen
                     foreach (var item in geloeschteItems)
                     {
                         Materialien.Add(item);
                     }
                     UpdateStats();
                     
-                    // ‚úÖ Asynchron speichern
+                    // ‘£‡ Asynchron speichern
                     System.Threading.Tasks.Task.Run(() => SaveNow());
                     
-                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "R√ºckg√§ngig", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "R++ckg+Òngig", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Keine Aktion zum R√ºckg√§ngig machen verf√ºgbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Keine Aktion zum R++ckg+Òngig machen verf++gbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         
         private void OnRedo(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Redo-Funktion ist nicht verf√ºgbar.\n\nVerwendet Ctrl+Z oder Alt+Pfeil Links zum R√ºckg√§ngigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Redo-Funktion ist nicht verf++gbar.\n\nVerwendet Ctrl+Z oder Alt+Pfeil Links zum R++ckg+Òngigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnUeber(object sender, RoutedEventArgs e) { MessageBox.Show("MaterialManager V01 v1.0\n.NET 8.0 | WPF\n\nMit Reservierungs-Funktion"); }
@@ -702,7 +734,7 @@ namespace MaterialManager_V01
         
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            // ‚úÖ DELETE - Material l√∂schen
+            // ‘£‡ DELETE - Material l+¬schen
             if (e.Key == Key.Delete)
             {
                 OnMaterialLoeschen(null, null);
@@ -710,7 +742,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ‚úÖ CTRL+Z - Undo (Zur√ºck)
+            // ‘£‡ CTRL+Z - Undo (Zur++ck)
             if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnUndo(null, null);
@@ -718,7 +750,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ‚úÖ CTRL+Y - Redo (Vorw√§rts)
+            // ‘£‡ CTRL+Y - Redo (Vorw+Òrts)
             if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnRedo(null, null);
@@ -726,7 +758,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ‚úÖ ALT+LINKS - Browser-√§hnliche Zur√ºck-Navigation
+            // ‘£‡ ALT+LINKS - Browser-+Òhnliche Zur++ck-Navigation
             if (e.Key == Key.Left && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnUndo(null, null);
@@ -734,7 +766,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ‚úÖ ALT+RECHTS - Browser-√§hnliche Vorw√§rts-Navigation
+            // ‘£‡ ALT+RECHTS - Browser-+Òhnliche Vorw+Òrts-Navigation
             if (e.Key == Key.Right && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnRedo(null, null);
@@ -748,14 +780,14 @@ namespace MaterialManager_V01
             var total = Materialien.Sum(m => m.GewichtKg);
             GesamtGewichtText = $"{total:F2} kg";
             DurchschnittAuslastung = Materialien.Any() ? 50 : 0;
-            AuslastungText = "√ò 50% (Regale A-J)";
+            AuslastungText = "+ˇ 50% (Regale A-J)";
             
             var restGewicht = Materialien.Where(m => m.Form == "Rest").Sum(m => m.GewichtKg);
             EuPalettePct = restGewicht / 2000.0 * 100.0;
             EuPaletteDisplayText = $"{restGewicht:F2} / 2.000 kg ({EuPalettePct:F0}%)";
             
             var niedrig = Materialien.Count(m => (m.Form == "GF" || m.Form == "MF" || m.Form == "KF") && m.Stueckzahl <= 3);
-            NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ‚úì";
+            NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ‘£Ù";
             NiedrigeBestaendeFarbe = niedrig > 0 ? "#FF9800" : "#4CAF50";
             
             ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
@@ -765,7 +797,7 @@ namespace MaterialManager_V01
         
         private void SaveNow()
         {
-            // ‚úÖ Thread-Safe: Nur ein Speichervorgang gleichzeitig
+            // ‘£‡ Thread-Safe: Nur ein Speichervorgang gleichzeitig
             lock (_saveLock)
             {
                 try
@@ -781,7 +813,7 @@ namespace MaterialManager_V01
                     
                     System.Diagnostics.Debug.WriteLine($"[SaveNow] Speichere zu: {savePath}");
                     
-                    // ‚úÖ Erstelle Snapshot der aktuellen Daten (Thread-Safe)
+                    // ‘£‡ Erstelle Snapshot der aktuellen Daten (Thread-Safe)
                     var snapshot = Materialien.ToList();
                     ExcelService.Export(savePath, snapshot);
                     
@@ -802,7 +834,7 @@ namespace MaterialManager_V01
                 var savePath = Services.NetzwerkService.GetSavePath();
                 System.Diagnostics.Debug.WriteLine($"[LoadAutosave] Versuche zu laden: {savePath}");
                 
-                // Wenn Datei nicht existiert ‚Üí Nicht laden, einfach leer starten
+                // Wenn Datei nicht existiert ‘Â∆ Nicht laden, einfach leer starten
                 if (!File.Exists(savePath))
                 {
                     System.Diagnostics.Debug.WriteLine($"[LoadAutosave] Datei existiert NICHT - starte mit leerer Liste");
@@ -815,7 +847,7 @@ namespace MaterialManager_V01
                 foreach (var item in items ?? Enumerable.Empty<MaterialItem>())
                     Materialien.Add(item);
                 
-                // ‚úÖ Registriere dass wir gerade geladen haben
+                // ‘£‡ Registriere dass wir gerade geladen haben
                 Services.ReloadService.RegisterLoad(savePath);
                 
                 System.Diagnostics.Debug.WriteLine($"[LoadAutosave] FERTIG! {Materialien.Count} Materialien geladen");
@@ -856,7 +888,7 @@ namespace MaterialManager_V01
             }
         }
 
-        // ‚úÖ PRINT & EXPORT FUNKTIONEN
+        // ‘£‡ PRINT & EXPORT FUNKTIONEN
         private void OnPrintMaterialList(object sender, RoutedEventArgs e)
         {
             if (!Materialien.Any())
@@ -908,30 +940,89 @@ namespace MaterialManager_V01
             }
         }
 
-        // ‚úÖ AUTO-UPDATE PR√úFUNG BEIM START
+        // ‘£‡ AUTO-UPDATE PR+£FUNG BEIM START
         private async System.Threading.Tasks.Task CheckForUpdatesOnStartupAsync()
+        {
+            await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(5));
+            await CheckForUpdatesAndMaybePromptAsync("startup");
+        }
+
+        private void StartPeriodicUpdateChecks()
+        {
+            _updateCheckTimer.Interval = TimeSpan.FromMinutes(2);
+            _updateCheckTimer.Tick += async (_, __) => await CheckForUpdatesAndMaybePromptAsync("timer");
+            _updateCheckTimer.Start();
+            AppendUpdateUiLog("Periodischer Update-Check gestartet (alle 2 Minuten).");
+        }
+
+        private async System.Threading.Tasks.Task CheckForUpdatesAndMaybePromptAsync(string source)
+        {
+            if (_isUpdateCheckRunning)
+                return;
+
+            _isUpdateCheckRunning = true;
+            try
+            {
+                var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
+                AppendUpdateUiLog($"Update-Check ({source}) | Current={result.CurrentVersion} | Latest={result.LatestVersion} | DownloadUrl={result.DownloadUrl ?? "-"}");
+
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
+                {
+                    AppendUpdateUiLog($"Popup shown=no | source={source} | reason=no-update-or-no-download-url");
+                    return;
+                }
+
+                if (_lastPromptedVersion == result.LatestVersion)
+                {
+                    AppendUpdateUiLog($"Popup shown=no | source={source} | reason=already-prompted-{result.LatestVersion}");
+                    return;
+                }
+
+                _lastPromptedVersion = result.LatestVersion;
+
+                var decision = MessageBox.Show(
+                    $"Neue Version {result.LatestVersion} verf++gbar. Jetzt installieren?",
+                    "Update verf++gbar",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Sp+Òter")}");
+
+                if (decision == MessageBoxResult.Yes)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var dlg = new UpdateDialog(result) { Owner = this };
+                        dlg.ShowDialog();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendUpdateUiLog($"Update-Check Fehler ({source}): {ex.Message}");
+            }
+            finally
+            {
+                _isUpdateCheckRunning = false;
+            }
+        }
+
+        private void AppendUpdateUiLog(string message)
         {
             try
             {
-                if (!Services.GitHubUpdateService.ShouldRunAutoCheckToday())
-                    return;
+                var path = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "MaterialManager_V01",
+                    "update_ui.log");
 
-                Services.GitHubUpdateService.MarkAutoCheckedNow();
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
 
-                var result = await Services.GitHubUpdateService.CheckForUpdatesAsync();
-                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
-                    return;
-
-                Dispatcher.Invoke(() =>
-                {
-                    var dlg = new UpdateDialog(result) { Owner = this };
-                    dlg.ShowDialog();
-                });
+                File.AppendAllText(path, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}{Environment.NewLine}");
             }
-            catch
-            {
-                // Start darf durch Update-Check nie blockiert werden
-            }
+            catch { }
         }
 
     }

@@ -1,5 +1,5 @@
 # ============================================
-# MaterialManager V01 - GUI Deinstaller v1.0.7
+# MaterialManager V01 - GUI Deinstaller v1.0.25
 # ============================================
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -12,6 +12,63 @@ $Script:CurrentStep = 1
 $Script:TotalSteps = 4
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:UserDataPath = "$env:LOCALAPPDATA\MaterialManager_V01"
+$Script:DesignWidth = 1000
+$Script:DesignHeight = 750
+$workingArea = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
+$Script:formWidth = [int][Math]::Min($Script:DesignWidth, [Math]::Max(880, $workingArea.Width - 40))
+$Script:formHeight = [int][Math]::Min($Script:DesignHeight, [Math]::Max(650, $workingArea.Height - 40))
+$Script:scaleX = $Script:formWidth / [double]$Script:DesignWidth
+$Script:scaleY = $Script:formHeight / [double]$Script:DesignHeight
+
+function Set-ControlResponsiveLayout {
+    param([System.Windows.Forms.Control]$Control)
+
+    if ($null -eq $Control) { return }
+
+    $meta = $Control.Tag
+    if (-not ($meta -is [pscustomobject] -and $meta.ResponsiveMarker -eq $true)) {
+        $meta = [pscustomobject]@{
+            ResponsiveMarker = $true
+            Left = $Control.Left
+            Top = $Control.Top
+            Width = $Control.Width
+            Height = $Control.Height
+            FontName = if ($Control.Font) { $Control.Font.FontFamily.Name } else { $null }
+            FontSize = if ($Control.Font) { $Control.Font.Size } else { 0 }
+            FontStyle = if ($Control.Font) { [int]$Control.Font.Style } else { 0 }
+        }
+        $Control.Tag = $meta
+    }
+
+    $Control.Left = [int][Math]::Round($meta.Left * $Script:scaleX)
+    $Control.Top = [int][Math]::Round($meta.Top * $Script:scaleY)
+    $Control.Width = [int][Math]::Round($meta.Width * $Script:scaleX)
+    $Control.Height = [int][Math]::Round($meta.Height * $Script:scaleY)
+
+    if ($meta.FontName -and $meta.FontSize -gt 0) {
+        $scaledFontSize = [float][Math]::Max(8, [Math]::Round($meta.FontSize * [Math]::Min($Script:scaleX, $Script:scaleY), 1))
+        if ($null -eq $Control.Font -or [Math]::Abs($Control.Font.Size - $scaledFontSize) -gt 0.1) {
+            $Control.Font = New-Object System.Drawing.Font($meta.FontName, $scaledFontSize, [System.Drawing.FontStyle]$meta.FontStyle)
+        }
+    }
+
+    if ($Control -is [System.Windows.Forms.ScrollableControl]) {
+        $Control.AutoScroll = $true
+    }
+
+    foreach ($child in $Control.Controls) {
+        Set-ControlResponsiveLayout $child
+    }
+}
+
+function Apply-ResponsiveLayout {
+    $form.ClientSize = New-Object System.Drawing.Size($Script:formWidth, $Script:formHeight)
+    $contentPanel.AutoScroll = $true
+
+    foreach ($control in $form.Controls) {
+        Set-ControlResponsiveLayout $control
+    }
+}
 
 # ============================================
 # ADMIN-CHECK
@@ -32,11 +89,12 @@ if (-not $isAdmin) {
 # ============================================
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'MaterialManager V01 - Deinstallation'
-$form.ClientSize = New-Object System.Drawing.Size(1000, 750)
+$form.ClientSize = New-Object System.Drawing.Size($Script:formWidth, $Script:formHeight)
 $form.StartPosition = 'CenterScreen'
 $form.BackColor = [System.Drawing.Color]::FromArgb(20, 20, 20)
 $form.FormBorderStyle = 'FixedDialog'
 $form.MaximizeBox = $false
+$form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
 
 $Script:formWidth = 1000
 $Script:formHeight = 750
@@ -157,6 +215,7 @@ Klicken Sie auf 'Weiter' um fortzufahren.
     $contentPanel.Controls.Add($welcomeLabel)
     
     $backButton.Enabled = $false
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -238,6 +297,7 @@ function Show-OptionsScreen {
     $contentPanel.Controls.Add($userDataInfo)
     
     $backButton.Enabled = $true
+    Apply-ResponsiveLayout
 }
 
 # ============================================
@@ -273,6 +333,7 @@ function Show-UninstallScreen {
     $logBox.ForeColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
     $logBox.Font = New-Object System.Drawing.Font('Consolas', 9)
     $contentPanel.Controls.Add($logBox)
+    Apply-ResponsiveLayout
     
     function Add-Log {
         param([string]$message)
@@ -391,6 +452,7 @@ Folgende Komponenten wurden entfernt:
     
     $nextButton.Text = 'Fertig'
     $nextButton.Enabled = $true
+    Apply-ResponsiveLayout
 }
 
 # ============================================

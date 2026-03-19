@@ -9,6 +9,11 @@ namespace MaterialManager_V01.Views
 {
     public partial class MaterialDialog : Window, INotifyPropertyChanged
     {
+        private const double DefaultDialogWidth = 420;
+        private const double DefaultDialogHeight = 620;
+        private const double MinimumDialogWidth = 360;
+        private const double MinimumDialogHeight = 440;
+
         public List<string> MaterialArten { get; } =
             new() { "Stahl", "Edelstahl", "Aluminium" };
 
@@ -170,6 +175,7 @@ namespace MaterialManager_V01.Views
         public MaterialDialog()
         {
             InitializeComponent();
+            Loaded += (_, _) => ApplyResponsiveLayout();
             DataContext = this;
             // initialize defaults
             Legierungen = new List<string>();
@@ -178,6 +184,15 @@ namespace MaterialManager_V01.Views
             SelectedStaerke = Staerken.Length > 0 ? Staerken[0] : 0;
             CanSave = true;
             UpdateShelfStats();
+        }
+
+        private void ApplyResponsiveLayout()
+        {
+            var workArea = SystemParameters.WorkArea;
+            MaxWidth = Math.Max(MinimumDialogWidth, workArea.Width - 40);
+            MaxHeight = Math.Max(MinimumDialogHeight, workArea.Height - 40);
+            Width = Math.Min(MaxWidth, Math.Max(MinimumDialogWidth, DefaultDialogWidth));
+            Height = Math.Min(MaxHeight, Math.Max(MinimumDialogHeight, DefaultDialogHeight));
         }
 
         // overload to accept current inventory to compute shelf utilization
@@ -318,6 +333,8 @@ namespace MaterialManager_V01.Views
 
         private void OnOk(object sender, RoutedEventArgs e)
         {
+            Keyboard.ClearFocus();
+
             if (SelectedForm == "Rest")
             {
                 Restnummer = string.IsNullOrWhiteSpace(Restnummer) ? MaterialDefinitions.NeueRestnummer() : Restnummer;
