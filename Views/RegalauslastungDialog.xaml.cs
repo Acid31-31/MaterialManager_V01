@@ -147,14 +147,14 @@ namespace MaterialManager_V01.Views
             RegalPanel.Children.Add(summaryBorder);
         }
 
-        private Brush GetProgressBarColor(double percent)
+        private System.Windows.Media.Brush GetProgressBarColor(double percent)
         {
             if (percent < 50) return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
             if (percent < 80) return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
             return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336"));
         }
 
-        private Brush GetPercentageColor(double percent)
+        private System.Windows.Media.Brush GetPercentageColor(double percent)
         {
             if (percent < 50) return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
             if (percent < 80) return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"));
