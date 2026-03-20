@@ -13,7 +13,7 @@ $Script:TotalSteps = 6
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:SourcePath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Script:VersionApiUrl = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest"
-$Script:FallbackVersion = "1.0.26"
+$Script:FallbackVersion = "1.0.27"
 
 function Get-NormalizedVersion {
     param([string]$Value)
@@ -423,7 +423,7 @@ Privat: hoelzer_alex@yahoo.de
 3. NUTZUNGSRECHTE UND NUTZUNGSBESCHRAENKUNGEN
 ================================================================================
 
-3.1 ERLAUBT IST:
+3.1 ERLAUBTIST:
     - Installation auf einem (1) Computer fuer geschaeftliche Zwecke
     - Erstellung von Sicherungskopien fuer eigene Archivzwecke
     - Nutzung durch autorisierte Mitarbeiter des Lizenznehmers

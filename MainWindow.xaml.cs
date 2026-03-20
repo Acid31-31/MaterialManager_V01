@@ -780,14 +780,14 @@ namespace MaterialManager_V01
             var total = Materialien.Sum(m => m.GewichtKg);
             GesamtGewichtText = $"{total:F2} kg";
             DurchschnittAuslastung = Materialien.Any() ? 50 : 0;
-            AuslastungText = "+ÿ 50% (Regale A-J)";
+            AuslastungText = "+/- 50% (Regale A-J)";
             
             var restGewicht = Materialien.Where(m => m.Form == "Rest").Sum(m => m.GewichtKg);
             EuPalettePct = restGewicht / 2000.0 * 100.0;
             EuPaletteDisplayText = $"{restGewicht:F2} / 2.000 kg ({EuPalettePct:F0}%)";
             
             var niedrig = Materialien.Count(m => (m.Form == "GF" || m.Form == "MF" || m.Form == "KF") && m.Stueckzahl <= 3);
-            NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK Ô£ô";
+            NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ?";
             NiedrigeBestaendeFarbe = niedrig > 0 ? "#FF9800" : "#4CAF50";
             
             ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
