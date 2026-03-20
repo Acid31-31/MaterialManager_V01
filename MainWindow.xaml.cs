@@ -191,7 +191,7 @@ namespace MaterialManager_V01
                 var display = this.FindName("OnlineUsersDisplay") as TextBlock;
                 if (display != null)
                 {
-                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"­ƒæñ {u}"));
+                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"User: {u}"));
                 }
             }
             catch { }
