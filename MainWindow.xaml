@@ -10,7 +10,7 @@
         
         <!-- MENU & MENUITEM COMPLETE DARK THEME -->
         <Style TargetType="Menu">
-            <Setter Property="Background" Value="#0F0F0F"/>
+            <Setter Property="Background" Value="#1F1F1F"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         
@@ -46,11 +46,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="Role" Value="TopLevelHeader">
-                                <Setter TargetName="Border" Property="Background" Value="#0F0F0F"/>
+                                <Setter TargetName="Border" Property="Background" Value="#1F1F1F"/>
                                 <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
                             </Trigger>
                             <Trigger Property="Role" Value="TopLevelItem">
-                                <Setter TargetName="Border" Property="Background" Value="#0F0F0F"/>
+                                <Setter TargetName="Border" Property="Background" Value="#1F1F1F"/>
                             </Trigger>
                             <Trigger Property="Role" Value="SubmenuHeader">
                                 <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
@@ -162,56 +162,49 @@
     </Window.Resources>
     
     <DockPanel>
-        <Menu DockPanel.Dock="Top" Height="22" FontSize="15">
-            <MenuItem Header="Datei">
-                <MenuItem Header="Material neu" Click="OnMaterialNeu"/>
-                <Separator/>
-                <MenuItem Header="Import" Click="OnImport"/>
-                <MenuItem Header="Export" Click="OnExport"/>
-                <Separator/>
-                <MenuItem Header="Netzwerk‑Einstellungen" Click="OnNetzwerkEinstellungen"/>
-                <Separator/>
-                <MenuItem Header="Beenden" Click="OnBeenden"/>
-            </MenuItem>
-            <MenuItem Header="Bearbeiten">
-                <MenuItem Header="↶ Rückgängig (Ctrl+Z)" Click="OnUndo"/>
-                <MenuItem Header="↷ Wiederherstellen" Click="OnRedo" IsEnabled="False"/>
-                <Separator/>
-                <MenuItem Header="Löschen" Click="OnMaterialLoeschen"/>
-                <Separator/>
-                <MenuItem Header="Tafel verbrauchen" Click="OnTafelVerbrauchen"/>
-            </MenuItem>
-            <MenuItem Header="Ansicht">
-                <MenuItem Header="Inventur" Click="OnInventur"/>
-                <MenuItem Header="Statistik" Click="OnStatistik"/>
-                <MenuItem Header="Reste suchen" Click="OnResteSuchen"/>
-                <MenuItem Header="🔖 Reservierte Reste" Click="OnReservierteReste"/>
-            </MenuItem>
-            <MenuItem Header="Hilfe">
-                <MenuItem Header="📄 Materialliste drucken" Click="OnPrintMaterialList"/>
-                <MenuItem Header="📊 Als Excel exportieren" Click="OnExportExcel"/>
-                <MenuItem Header="📋 Als CSV exportieren" Click="OnExportCSV"/>
-                <Separator/>
-                <MenuItem Header="Lizenz aktivieren" Click="OnLizenzAktivieren"/>
-                <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
-            </MenuItem>
-        </Menu>
-        
-        <Border DockPanel.Dock="Top" Background="#1F1F1F" Height="65">
-            <Grid Margin="8">
+        <Border DockPanel.Dock="Top" Background="#1F1F1F" Height="58">
+            <Grid Margin="8,6,8,6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="Assets/logo.png" Height="55" Margin="0,0,15,0"/>
-                
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,15,0">
-                    <Button Content="↶" Click="OnUndo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Rückgängig (Ctrl+Z)"/>
-                    <Button Content="↷" Click="OnRedo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Wiederherstellen (Ctrl+Y)"/>
-                    <Separator Background="#555" Width="1" Margin="5,0"/>
-                    <Button Content="🔄" Click="OnCheckForUpdates" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Nach Programm-Updates suchen"/>
-                </StackPanel>
+                <Image Grid.Column="0" Source="Assets/logo.png" Height="40" Margin="0,0,12,0" VerticalAlignment="Center"/>
+
+                <Menu Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0" FontSize="15">
+                    <MenuItem Header="Datei">
+                        <MenuItem Header="Material neu" Click="OnMaterialNeu"/>
+                        <Separator/>
+                        <MenuItem Header="Import" Click="OnImport"/>
+                        <MenuItem Header="Export" Click="OnExport"/>
+                        <Separator/>
+                        <MenuItem Header="Netzwerk‑Einstellungen" Click="OnNetzwerkEinstellungen"/>
+                        <Separator/>
+                        <MenuItem Header="Beenden" Click="OnBeenden"/>
+                    </MenuItem>
+                    <MenuItem Header="Bearbeiten">
+                        <MenuItem Header="↶ Rückgängig (Ctrl+Z)" Click="OnUndo"/>
+                        <MenuItem Header="↷ Wiederherstellen" Click="OnRedo" IsEnabled="False"/>
+                        <Separator/>
+                        <MenuItem Header="Löschen" Click="OnMaterialLoeschen"/>
+                        <Separator/>
+                        <MenuItem Header="Tafel verbrauchen" Click="OnTafelVerbrauchen"/>
+                    </MenuItem>
+                    <MenuItem Header="Ansicht">
+                        <MenuItem Header="Inventur" Click="OnInventur"/>
+                        <MenuItem Header="Statistik" Click="OnStatistik"/>
+                        <MenuItem Header="Reste suchen" Click="OnResteSuchen"/>
+                        <MenuItem Header="🔖 Reservierte Reste" Click="OnReservierteReste"/>
+                    </MenuItem>
+                    <MenuItem Header="Hilfe">
+                        <MenuItem Header="📄 Materialliste drucken" Click="OnPrintMaterialList"/>
+                        <MenuItem Header="📊 Als Excel exportieren" Click="OnExportExcel"/>
+                        <MenuItem Header="📋 Als CSV exportieren" Click="OnExportCSV"/>
+                        <Separator/>
+                        <MenuItem Header="Lizenz aktivieren" Click="OnLizenzAktivieren"/>
+                        <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
+                    </MenuItem>
+                </Menu>
                 
                 <DockPanel Grid.Column="2" VerticalAlignment="Center">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
