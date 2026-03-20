@@ -4,6 +4,7 @@
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="MaterialManager V01" Height="800" Width="1600" MinWidth="640" MinHeight="480"
+        Icon="Assets/app.ico"
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
@@ -12,7 +13,7 @@
         BorderBrush="#2A2A2A"
         BorderThickness="1">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="34"
+        <shell:WindowChrome CaptionHeight="32"
                             ResizeBorderThickness="6"
                             CornerRadius="0"
                             GlassFrameThickness="0"
@@ -69,7 +70,7 @@
         <Style TargetType="MenuItem">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Padding" Value="6,2"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
@@ -214,7 +215,7 @@
     </Window.Resources>
     
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="34" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+        <Border DockPanel.Dock="Top" Background="#111111" Height="32" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -224,15 +225,17 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Grid.Column="0"
-                       Source="Assets/logo.png"
-                       Height="18"
+                       Source="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Icon}"
+                       Height="16"
+                       Width="16"
                        Margin="8,0,10,0"
                        VerticalAlignment="Center"
+                       SnapsToDevicePixels="True"
                        shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
 
                 <Menu Grid.Column="1"
                       VerticalAlignment="Center"
-                      FontSize="14"
+                      FontSize="13"
                       shell:WindowChrome.IsHitTestVisibleInChrome="True">
                     <MenuItem Header="Datei">
                         <MenuItem Header="Material neu" Click="OnMaterialNeu"/>
@@ -268,14 +271,7 @@
                     </MenuItem>
                 </Menu>
 
-                <Border Grid.Column="2" Background="Transparent">
-                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}"
-                               Foreground="#CFCFCF"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               Margin="8,0,0,0"
-                               TextTrimming="CharacterEllipsis"/>
-                </Border>
+                <Border Grid.Column="2" Background="Transparent"/>
 
                 <StackPanel Grid.Column="3"
                             Orientation="Horizontal"
