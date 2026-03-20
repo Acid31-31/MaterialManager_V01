@@ -1,0 +1,59 @@
+<Window x:Class="MaterialManager_V01.Views.LaserUserSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Laser - Benutzer auswählen"
+        Height="320"
+        Width="460"
+        Background="#0B0B0B"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/Assets/app-icon.png">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Laser-Demo" Foreground="White" FontSize="22" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Text="Benutzer auswählen oder Bediener neu anlegen" Foreground="#AAAAAA" Margin="0,6,0,18"/>
+
+        <TextBlock Grid.Row="2" Text="Benutzer" Foreground="White" Margin="0,0,0,6"/>
+        <ComboBox x:Name="UserBox"
+                  Grid.Row="3"
+                  Height="36"
+                  Background="#1E1E1E"
+                  Foreground="White"
+                  BorderBrush="#444"
+                  DisplayMemberPath="DisplayLabel"
+                  Margin="0,0,0,16"/>
+
+        <DockPanel Grid.Row="4">
+            <Button Content="Bediener neu anlegen"
+                    Click="OnCreateOperatorClick"
+                    DockPanel.Dock="Left"
+                    Background="#2E7D32"
+                    Foreground="White"
+                    Padding="12,8"
+                    Margin="0,0,8,0"
+                    Cursor="Hand"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Abbrechen"
+                        Click="OnCancelClick"
+                        Background="#555"
+                        Foreground="White"
+                        Padding="12,8"
+                        Margin="0,0,8,0"
+                        Cursor="Hand"/>
+                <Button Content="OK"
+                        Click="OnOkClick"
+                        Background="#1976D2"
+                        Foreground="White"
+                        Padding="18,8"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
