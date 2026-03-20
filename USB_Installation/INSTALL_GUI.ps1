@@ -13,7 +13,7 @@ $Script:TotalSteps = 6
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:SourcePath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Script:VersionApiUrl = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest"
-$Script:FallbackVersion = "1.0.28"
+$Script:FallbackVersion = "1.0.29"
 
 function Get-NormalizedVersion {
     param([string]$Value)

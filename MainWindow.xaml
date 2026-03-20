@@ -224,11 +224,12 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Grid.Column="0"
-                       Source="/Assets/app-icon.png"
+                       Source="pack://application:,,,/Assets/app-icon.png"
                        Height="18"
                        Width="18"
                        Margin="8,0,10,0"
                        VerticalAlignment="Center"
+                       Stretch="Uniform"
                        SnapsToDevicePixels="True"
                        shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
 
