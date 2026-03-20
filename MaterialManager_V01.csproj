@@ -15,10 +15,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
 
     <!-- App-Informationen (reduziert SmartScreen-Warnungen) -->
-    <Version>1.0.28</Version>
-    <FileVersion>1.0.28.0</FileVersion>
-    <AssemblyVersion>1.0.28.0</AssemblyVersion>
-    <InformationalVersion>1.0.28</InformationalVersion>
+    <Version>1.0.29</Version>
+    <FileVersion>1.0.29.0</FileVersion>
+    <AssemblyVersion>1.0.29.0</AssemblyVersion>
+    <InformationalVersion>1.0.29</InformationalVersion>
     <Product>MaterialManager V01</Product>
     <Company>Alexander Hoelzer</Company>
     <Description>Materialverwaltung für Blechlager - Vollversion mit Lizenzierung</Description>
