@@ -8,9 +8,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace MaterialManager_V01
 {
@@ -20,8 +22,52 @@ namespace MaterialManager_V01
         private const double DefaultWindowHeight = 800;
         private const double MinimumResponsiveWidth = 640;
         private const double MinimumResponsiveHeight = 480;
+        private const int WmGetMinMaxInfo = 0x0024;
+        private const uint MonitorDefaultToNearest = 0x00000002;
 
         public ObservableCollection<MaterialItem> Materialien { get; set; } = new();
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PointNative
+        {
+            public int X;
+            public int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MinMaxInfoNative
+        {
+            public PointNative Reserved;
+            public PointNative MaxSize;
+            public PointNative MaxPosition;
+            public PointNative MinTrackSize;
+            public PointNative MaxTrackSize;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RectNative
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private sealed class MonitorInfoNative
+        {
+            public int Size = Marshal.SizeOf<MonitorInfoNative>();
+            public RectNative Monitor;
+            public RectNative WorkArea;
+            public uint Flags;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, MonitorInfoNative lpmi);
+
         private DateTime _lastSaveUtc;
         private readonly System.Windows.Threading.DispatcherTimer _updateCheckTimer = new();
         private bool _isUpdateCheckRunning;
@@ -86,6 +132,9 @@ namespace MaterialManager_V01
 
                 Materialien.CollectionChanged += (_, __) => UpdateStats();
                 this.KeyDown += MainWindow_KeyDown;
+                SourceInitialized += OnWindowSourceInitialized;
+                StateChanged += OnWindowBoundsChanged;
+                LocationChanged += OnWindowBoundsChanged;
                 Log("Event-Handler registriert");
 
                 LoadAutosave();
@@ -162,24 +211,97 @@ namespace MaterialManager_V01
 
         private void ApplyResponsiveWindowLayout()
         {
-            var workArea = SystemParameters.WorkArea;
-            MaxWidth = workArea.Width;
-            MaxHeight = workArea.Height;
-
-            var targetWidth = Math.Min(DefaultWindowWidth, workArea.Width);
-            var targetHeight = Math.Min(DefaultWindowHeight, workArea.Height);
-
-            if (workArea.Width < DefaultWindowWidth || workArea.Height < DefaultWindowHeight)
-            {
-                WindowState = WindowState.Normal;
-                Width = Math.Min(workArea.Width, Math.Max(MinimumResponsiveWidth, targetWidth));
-                Height = Math.Min(workArea.Height, Math.Max(MinimumResponsiveHeight, targetHeight));
-                Left = workArea.Left + Math.Max(0, (workArea.Width - Width) / 2);
-                Top = workArea.Top + Math.Max(0, (workArea.Height - Height) / 2);
+            if (!IsLoaded || WindowState == WindowState.Minimized)
                 return;
+
+            var workArea = GetCurrentMonitorWorkAreaInDip();
+            MaxWidth = Math.Max(MinimumResponsiveWidth, workArea.Width);
+            MaxHeight = Math.Max(MinimumResponsiveHeight, workArea.Height);
+
+            if (WindowState != WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+
+        private void OnWindowSourceInitialized(object? sender, EventArgs e)
+        {
+            if (PresentationSource.FromVisual(this) is HwndSource source)
+            {
+                source.AddHook(WindowProc);
             }
 
-            WindowState = WindowState.Maximized;
+            ApplyResponsiveWindowLayout();
+        }
+
+        private void OnWindowBoundsChanged(object? sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                ApplyResponsiveWindowLayout();
+            }
+        }
+
+        private Rect GetCurrentMonitorWorkAreaInDip()
+        {
+            var handle = new WindowInteropHelper(this).Handle;
+            if (handle == IntPtr.Zero)
+                return SystemParameters.WorkArea;
+
+            var monitor = MonitorFromWindow(handle, MonitorDefaultToNearest);
+            if (monitor == IntPtr.Zero)
+                return SystemParameters.WorkArea;
+
+            var monitorInfo = new MonitorInfoNative();
+            if (!GetMonitorInfo(monitor, monitorInfo))
+                return SystemParameters.WorkArea;
+
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget == null)
+            {
+                return new Rect(
+                    monitorInfo.WorkArea.Left,
+                    monitorInfo.WorkArea.Top,
+                    monitorInfo.WorkArea.Right - monitorInfo.WorkArea.Left,
+                    monitorInfo.WorkArea.Bottom - monitorInfo.WorkArea.Top);
+            }
+
+            var transform = source.CompositionTarget.TransformFromDevice;
+            var topLeft = transform.Transform(new Point(monitorInfo.WorkArea.Left, monitorInfo.WorkArea.Top));
+            var bottomRight = transform.Transform(new Point(monitorInfo.WorkArea.Right, monitorInfo.WorkArea.Bottom));
+            return new Rect(topLeft, bottomRight);
+        }
+
+        private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WmGetMinMaxInfo)
+            {
+                UpdateMinMaxInfo(hwnd, lParam);
+            }
+
+            return IntPtr.Zero;
+        }
+
+        private static void UpdateMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        {
+            var monitor = MonitorFromWindow(hwnd, MonitorDefaultToNearest);
+            if (monitor == IntPtr.Zero)
+                return;
+
+            var monitorInfo = new MonitorInfoNative();
+            if (!GetMonitorInfo(monitor, monitorInfo))
+                return;
+
+            var minMaxInfo = Marshal.PtrToStructure<MinMaxInfoNative>(lParam);
+            var workArea = monitorInfo.WorkArea;
+            var monitorArea = monitorInfo.Monitor;
+
+            minMaxInfo.MaxPosition.X = workArea.Left - monitorArea.Left;
+            minMaxInfo.MaxPosition.Y = workArea.Top - monitorArea.Top;
+            minMaxInfo.MaxSize.X = workArea.Right - workArea.Left;
+            minMaxInfo.MaxSize.Y = workArea.Bottom - workArea.Top;
+
+            Marshal.StructureToPtr(minMaxInfo, lParam, true);
         }
 
         // Ô£à UPDATE ONLINE-STATUS alle 5 Sekunden
