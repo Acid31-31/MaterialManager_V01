@@ -1,5 +1,5 @@
 # ============================================
-# MaterialManager V01 - GUI Deinstaller v1.0.29
+# MaterialManager V01 - GUI Deinstaller v1.0.30
 # ============================================
 
 Add-Type -AssemblyName System.Windows.Forms
