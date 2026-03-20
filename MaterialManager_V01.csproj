@@ -15,10 +15,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
 
     <!-- App-Informationen (reduziert SmartScreen-Warnungen) -->
-    <Version>1.0.27</Version>
-    <FileVersion>1.0.27.0</FileVersion>
-    <AssemblyVersion>1.0.27.0</AssemblyVersion>
-    <InformationalVersion>1.0.27</InformationalVersion>
+    <Version>1.0.28</Version>
+    <FileVersion>1.0.28.0</FileVersion>
+    <AssemblyVersion>1.0.28.0</AssemblyVersion>
+    <InformationalVersion>1.0.28</InformationalVersion>
     <Product>MaterialManager V01</Product>
     <Company>Alexander Hoelzer</Company>
     <Description>Materialverwaltung für Blechlager - Vollversion mit Lizenzierung</Description>
@@ -48,6 +48,7 @@
   <ItemGroup>
     <None Remove="Assets\logo.png" />
     <None Remove="Assets\app.ico" />
+    <None Remove="Assets\app-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,9 +82,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\logo.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\app-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -124,10 +124,6 @@
     <None Remove="Backup*\**\*.*" />
     <None Remove="Installer_Source\obj\**\*.*" />
     <None Remove="Installer_Source\bin\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
 </Project>
