@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <None Remove="Assets\logo.png" />
+    <None Remove="Assets\app.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -123,6 +124,10 @@
     <None Remove="Backup*\**\*.*" />
     <None Remove="Installer_Source\obj\**\*.*" />
     <None Remove="Installer_Source\bin\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
 </Project>
