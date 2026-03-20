@@ -731,6 +731,39 @@ namespace MaterialManager_V01
 
         private void OnUeber(object sender, RoutedEventArgs e) { MessageBox.Show("MaterialManager V01 v1.0\n.NET 8.0 | WPF\n\nMit Reservierungs-Funktion"); }
         private void OnBeenden(object sender, RoutedEventArgs e) { Application.Current.Shutdown(); }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left)
+                return;
+
+            if (e.ClickCount == 2)
+            {
+                OnMaximizeRestoreWindow(sender, new RoutedEventArgs());
+                return;
+            }
+
+            try
+            {
+                DragMove();
+            }
+            catch { }
+        }
+
+        private void OnMinimizeWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OnMaximizeRestoreWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void OnCloseWindow(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
         
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
