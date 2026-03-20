@@ -224,9 +224,9 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Grid.Column="0"
-                       Source="/Assets/app.ico"
-                       Height="16"
-                       Width="16"
+                       Source="/Assets/app-icon.png"
+                       Height="18"
+                       Width="18"
                        Margin="8,0,10,0"
                        VerticalAlignment="Center"
                        SnapsToDevicePixels="True"
