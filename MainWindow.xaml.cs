@@ -36,7 +36,7 @@ namespace MaterialManager_V01
         private string _auslastungText = "0%";
         public string AuslastungText { get => _auslastungText; set { _auslastungText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuslastungText))); } }
 
-        private string _niedrigeBestaendeText = "Alle OK Ô£ô";
+        private string _niedrigeBestaendeText = "Alle OK ?";
         public string NiedrigeBestaendeText { get => _niedrigeBestaendeText; set { _niedrigeBestaendeText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeText))); } }
 
         private string _niedrigeBestaendeFarbe = "#4CAF50";
