@@ -4,7 +4,6 @@
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="MaterialManager V01" Height="800" Width="1600" MinWidth="640" MinHeight="480"
-        Icon="Assets/app.ico"
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
@@ -225,7 +224,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Grid.Column="0"
-                       Source="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Icon}"
+                       Source="/Assets/app.ico"
                        Height="16"
                        Width="16"
                        Margin="8,0,10,0"
