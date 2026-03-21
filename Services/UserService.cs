@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using MaterialManager_V01.Models;
 
 namespace MaterialManager_V01.Services
@@ -11,6 +13,7 @@ namespace MaterialManager_V01.Services
     /// </summary>
     public static class UserService
     {
+        private static readonly string UsersFilePath = Path.Combine(PathService.DataDirectory, "users.json");
         private static List<User> _users = new();
         private static User _currentUser = null;
         private static DateTime _lastActivityTime = DateTime.Now;
@@ -19,6 +22,8 @@ namespace MaterialManager_V01.Services
         static UserService()
         {
             InitializeDefaultUsers();
+            LoadUsersFromDisk();
+            SaveUsersToDisk();
         }
 
         /// <summary>
@@ -118,6 +123,7 @@ namespace MaterialManager_V01.Services
                 reason: "User login"
             );
 
+            SaveUsersToDisk();
             return true;
         }
 
@@ -231,6 +237,7 @@ namespace MaterialManager_V01.Services
             };
 
             _users.Add(user);
+            SaveUsersToDisk();
             return user;
         }
 
@@ -248,7 +255,11 @@ namespace MaterialManager_V01.Services
             if (user == null)
                 return false;
 
-            return _users.Remove(user);
+            var removed = _users.Remove(user);
+            if (removed)
+                SaveUsersToDisk();
+
+            return removed;
         }
 
         /// <summary>
@@ -275,7 +286,39 @@ namespace MaterialManager_V01.Services
                 reason: "User changed password"
             );
 
+            SaveUsersToDisk();
             return true;
+        }
+
+        private static void LoadUsersFromDisk()
+        {
+            try
+            {
+                if (!File.Exists(UsersFilePath))
+                    return;
+
+                var json = File.ReadAllText(UsersFilePath);
+                var persistedUsers = JsonSerializer.Deserialize<List<User>>(json);
+                if (persistedUsers == null || persistedUsers.Count == 0)
+                    return;
+
+                _users = persistedUsers;
+            }
+            catch
+            {
+            }
+        }
+
+        private static void SaveUsersToDisk()
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(_users, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(UsersFilePath, json);
+            }
+            catch
+            {
+            }
         }
 
         // ═══════════════════════════════════════════════════════════════

@@ -14,6 +14,8 @@ namespace MaterialManager_V01.Views
         {
             public required User User { get; init; }
             public string DisplayLabel => $"{User.DisplayName} ({User.Role})";
+
+            public override string ToString() => DisplayLabel;
         }
 
         public User? SelectedUser { get; private set; }
