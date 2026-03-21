@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -10,14 +9,6 @@ namespace MaterialManager_V01.Views
 {
     public partial class LaserUserSelectionWindow : Window
     {
-        private sealed class LaserUserItem
-        {
-            public required User User { get; init; }
-            public string DisplayLabel => $"{User.DisplayName} ({User.Role})";
-
-            public override string ToString() => DisplayLabel;
-        }
-
         public User? SelectedUser { get; private set; }
 
         public LaserUserSelectionWindow()
@@ -28,18 +19,17 @@ namespace MaterialManager_V01.Views
 
         private void LoadUsers()
         {
-            var currentSelection = (UserBox.SelectedItem as LaserUserItem)?.User.Username;
+            var currentSelection = (UserBox.SelectedItem as User)?.Username;
 
             var users = UserService.GetUsersByRoles(UserRole.LaserProgrammierer, UserRole.LaserBediener)
                 .OrderBy(u => u.Role == UserRole.LaserProgrammierer ? 0 : 1)
                 .ThenBy(u => u.DisplayName)
-                .Select(u => new LaserUserItem { User = u })
                 .ToList();
 
             UserBox.ItemsSource = users;
 
-            var selected = users.FirstOrDefault(u => u.User.Username == currentSelection)
-                ?? users.FirstOrDefault(u => u.User.Role == UserRole.LaserProgrammierer)
+            var selected = users.FirstOrDefault(u => u.Username == currentSelection)
+                ?? users.FirstOrDefault(u => u.Role == UserRole.LaserProgrammierer)
                 ?? users.FirstOrDefault();
 
             UserBox.SelectedItem = selected;
@@ -54,28 +44,28 @@ namespace MaterialManager_V01.Views
             var user = UserService.CreateDemoLaserUser(name, UserRole.LaserBediener);
             LoadUsers();
 
-            var items = UserBox.ItemsSource as List<LaserUserItem>;
-            var match = items?.FirstOrDefault(i => i.User.Username == user.Username);
+            var items = UserBox.ItemsSource as System.Collections.Generic.List<User>;
+            var match = items?.FirstOrDefault(i => i.Username == user.Username);
             if (match != null)
                 UserBox.SelectedItem = match;
         }
 
         private void OnDeleteOperatorClick(object sender, RoutedEventArgs e)
         {
-            if (UserBox.SelectedItem is not LaserUserItem item)
+            if (UserBox.SelectedItem is not User item)
             {
                 MessageBox.Show("Bitte zuerst einen Bediener auswählen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            if (item.User.Role != UserRole.LaserBediener)
+            if (item.Role != UserRole.LaserBediener)
             {
                 MessageBox.Show("Nur Laser-Bediener können hier gelöscht werden.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirm = MessageBox.Show(
-                $"Bediener '{item.User.DisplayName}' wirklich löschen?",
+                $"Bediener '{item.DisplayName}' wirklich löschen?",
                 "Bediener löschen",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -83,7 +73,7 @@ namespace MaterialManager_V01.Views
             if (confirm != MessageBoxResult.Yes)
                 return;
 
-            if (!UserService.DeleteDemoUser(item.User.Username, UserRole.LaserBediener))
+            if (!UserService.DeleteDemoUser(item.Username, UserRole.LaserBediener))
             {
                 MessageBox.Show("Bediener konnte nicht gelöscht werden.", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -94,13 +84,13 @@ namespace MaterialManager_V01.Views
 
         private void OnOkClick(object sender, RoutedEventArgs e)
         {
-            if (UserBox.SelectedItem is not LaserUserItem item)
+            if (UserBox.SelectedItem is not User item)
             {
                 MessageBox.Show("Bitte einen Benutzer auswählen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            SelectedUser = item.User;
+            SelectedUser = item;
             DialogResult = true;
             Close();
         }
