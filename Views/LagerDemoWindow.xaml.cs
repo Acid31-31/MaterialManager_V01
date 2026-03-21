@@ -137,9 +137,27 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private MaterialItem? GetPrimarySelectedMaterial()
+        {
+            return GefilterteMaterialien.FirstOrDefault(m => m.IsSelected)
+                ?? MaterialGrid.SelectedItem as MaterialItem;
+        }
+
+        private List<MaterialItem> GetMarkedMaterials()
+        {
+            var marked = GefilterteMaterialien.Where(m => m.IsSelected).ToList();
+            if (marked.Count > 0)
+                return marked;
+
+            return MaterialGrid.SelectedItem is MaterialItem selected
+                ? new List<MaterialItem> { selected }
+                : new List<MaterialItem>();
+        }
+
         private void OnEditMaterialClick(object sender, RoutedEventArgs e)
         {
-            if (MaterialGrid.SelectedItem is not MaterialItem item)
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
                 return;
 
             var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
@@ -151,6 +169,7 @@ namespace MaterialManager_V01.Views
             if (index < 0)
                 return;
 
+            dlg.Material.IsSelected = item.IsSelected;
             _alleMaterialien[index] = dlg.Material;
             SaveAllMaterials();
             LoadMaterials();
@@ -158,11 +177,14 @@ namespace MaterialManager_V01.Views
 
         private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
         {
-            if (MaterialGrid.SelectedItem is not MaterialItem item)
+            var items = GetMarkedMaterials();
+            if (items.Count == 0)
                 return;
 
             var confirm = MessageBox.Show(
-                $"Material '{item.MaterialArt} {item.Mass}' wirklich löschen?",
+                items.Count == 1
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
                 "Lager",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -170,7 +192,11 @@ namespace MaterialManager_V01.Views
             if (confirm != MessageBoxResult.Yes)
                 return;
 
-            _alleMaterialien.Remove(item);
+            foreach (var item in items)
+            {
+                _alleMaterialien.Remove(item);
+            }
+
             SaveAllMaterials();
             LoadMaterials();
         }

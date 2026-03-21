@@ -36,6 +36,14 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#1E4E79"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <DockPanel>
@@ -132,8 +140,17 @@
                   Margin="10"
                   CanUserAddRows="False"
                   IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
                   MouseDoubleClick="OnEditRestClick">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="" Width="35">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
                 <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>

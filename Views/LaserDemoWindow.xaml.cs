@@ -214,12 +214,19 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private MaterialItem? GetPrimarySelectedMaterial()
+        {
+            return RestMaterialien.FirstOrDefault(m => m.IsSelected)
+                ?? RestMaterialGrid.SelectedItem as MaterialItem;
+        }
+
         private void OnEditRestClick(object sender, RoutedEventArgs e)
         {
             if (!CanManageRestMaterials)
                 return;
 
-            if (RestMaterialGrid.SelectedItem is not MaterialItem item)
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
                 return;
 
             var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
@@ -232,6 +239,7 @@ namespace MaterialManager_V01.Views
                 return;
 
             dlg.Material.Form = "Rest";
+            dlg.Material.IsSelected = item.IsSelected;
             _alleMaterialien[index] = dlg.Material;
             SaveAllMaterials();
             LoadMaterials();
