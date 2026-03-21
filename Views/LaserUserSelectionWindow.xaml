@@ -96,7 +96,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Laser-Demo" Foreground="White" FontSize="22" FontWeight="Bold"/>
-            <TextBlock Grid.Row="1" Text="Benutzer auswählen oder Bediener neu anlegen" Foreground="#AAAAAA" Margin="0,6,0,18"/>
+            <TextBlock Grid.Row="1" Text="Benutzer auswählen, Bediener neu anlegen oder löschen" Foreground="#AAAAAA" Margin="0,6,0,18"/>
 
             <TextBlock Grid.Row="2" Text="Benutzer" Foreground="White" Margin="0,0,0,6"/>
             <ComboBox x:Name="UserBox"
@@ -109,14 +109,22 @@
                       Margin="0,0,0,16"/>
 
             <DockPanel Grid.Row="4">
-                <Button Content="Bediener neu anlegen"
-                        Click="OnCreateOperatorClick"
-                        DockPanel.Dock="Left"
-                        Background="#2E7D32"
-                        Foreground="White"
-                        Padding="12,8"
-                        Margin="0,0,8,0"
-                        Cursor="Hand"/>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Content="Bediener neu anlegen"
+                            Click="OnCreateOperatorClick"
+                            Background="#2E7D32"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"
+                            Cursor="Hand"/>
+                    <Button Content="Bediener löschen"
+                            Click="OnDeleteOperatorClick"
+                            Background="#8B1E1E"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"
+                            Cursor="Hand"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Abbrechen"
                             Click="OnCancelClick"

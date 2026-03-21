@@ -239,6 +239,18 @@ namespace MaterialManager_V01.Services
             return CreateDemoUser(displayName, role);
         }
 
+        public static bool DeleteDemoUser(string username, UserRole role)
+        {
+            var user = _users.FirstOrDefault(u =>
+                u.Username.Equals(username, StringComparison.OrdinalIgnoreCase) &&
+                u.Role == role);
+
+            if (user == null)
+                return false;
+
+            return _users.Remove(user);
+        }
+
         /// <summary>
         /// Passwort ändern
         /// </summary>
