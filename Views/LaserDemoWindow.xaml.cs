@@ -13,7 +13,6 @@ namespace MaterialManager_V01.Views
 {
     public partial class LaserDemoWindow : Window, INotifyPropertyChanged
     {
-        private readonly User _selectedUser;
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
 
@@ -41,16 +40,15 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        public bool CanManageRestMaterials => _selectedUser.Role == UserRole.LaserProgrammierer;
+        public bool CanManageRestMaterials => true;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public LaserDemoWindow(User selectedUser)
+        public LaserDemoWindow()
         {
             InitializeComponent();
-            _selectedUser = selectedUser;
             DataContext = this;
-            HeaderText = $"Angemeldet als {_selectedUser.DisplayName} – {_selectedUser.Role}";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName}";
             Loaded += (_, _) => LoadMaterials();
         }
 
@@ -75,13 +73,6 @@ namespace MaterialManager_V01.Views
                 _restMaterialienCache = _alleMaterialien
                     .Where(m => string.Equals(m.Form, "Rest", StringComparison.OrdinalIgnoreCase))
                     .ToList();
-
-                if (_selectedUser.Role == UserRole.LaserBediener)
-                {
-                    _restMaterialienCache = _restMaterialienCache
-                        .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
-                        .ToList();
-                }
 
                 ApplyFilter();
             }
@@ -201,7 +192,7 @@ namespace MaterialManager_V01.Views
                 return;
 
             auswahlDlg.SelectedMaterial.AuftragNr = reservierungDlg.AuftragNr.Trim();
-            auswahlDlg.SelectedMaterial.GeaendertVon = _selectedUser.DisplayName;
+            auswahlDlg.SelectedMaterial.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
             auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
             SaveAllMaterials();
             LoadMaterials();

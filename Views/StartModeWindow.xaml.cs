@@ -1,7 +1,5 @@
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -26,8 +24,17 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private bool PromptForOperatorName()
+        {
+            var dlg = new LaserUserSelectionWindow { Owner = this };
+            return dlg.ShowDialog() == true && !string.IsNullOrWhiteSpace(dlg.SelectedName);
+        }
+
         private void OnStandardClick(object sender, RoutedEventArgs e)
         {
+            if (!PromptForOperatorName())
+                return;
+
             var window = new MainWindow();
             Application.Current.MainWindow = window;
             window.Show();
@@ -36,11 +43,10 @@ namespace MaterialManager_V01.Views
 
         private void OnLagerClick(object sender, RoutedEventArgs e)
         {
-            var user = UserService.GetUsersByRoles(UserRole.Lagerarbeiter, UserRole.Manager, UserRole.Admin)
-                .FirstOrDefault(u => u.Role == UserRole.Lagerarbeiter)
-                ?? UserService.CreateDemoUser("Lager Demo", UserRole.Lagerarbeiter);
+            if (!PromptForOperatorName())
+                return;
 
-            var window = new LagerDemoWindow(user);
+            var window = new LagerDemoWindow();
             Application.Current.MainWindow = window;
             window.Show();
             Close();
@@ -48,11 +54,10 @@ namespace MaterialManager_V01.Views
 
         private void OnLaserClick(object sender, RoutedEventArgs e)
         {
-            var dlg = new LaserUserSelectionWindow { Owner = this };
-            if (dlg.ShowDialog() != true || dlg.SelectedUser == null)
+            if (!PromptForOperatorName())
                 return;
 
-            var window = new LaserDemoWindow(dlg.SelectedUser);
+            var window = new LaserDemoWindow();
             Application.Current.MainWindow = window;
             window.Show();
             Close();

@@ -341,7 +341,7 @@ namespace MaterialManager_V01.Views
                 Stueckzahl = 1; // Reste haben immer Stückzahl 1
             }
 
-            var currentUser = Environment.UserName;
+            var currentUser = Services.OperatorIdentityService.CurrentOperatorName;
             var angelegtVon = _isEdit && !string.IsNullOrWhiteSpace(_originalAngelegtVon) ? _originalAngelegtVon : currentUser;
             var geaendertVon = _isEdit ? currentUser : string.Empty;
 
@@ -393,7 +393,7 @@ namespace MaterialManager_V01.Views
             {
                 MaterialArt = SelectedMaterialArt,
                 Legierung = SelectedLegierung,
-                Oberflaeche = SelectedOberflaeche,
+                Oberflaeche = SelectedGuete,
                 Guete = SelectedGuete,
                 Form = SelectedForm,
                 Staerke = SelectedStaerke,

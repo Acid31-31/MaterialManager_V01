@@ -771,7 +771,7 @@ namespace MaterialManager_V01
                     var auftragNr = reservierungDlg.AuftragNr;
                     if (!string.IsNullOrWhiteSpace(auftragNr))
                     {
-                        var user = Environment.UserName;
+                        var user = Services.OperatorIdentityService.CurrentOperatorName;
                         
                         // Ô£à SOFORT in UI aktualisieren
                         auswahlDlg.SelectedMaterial.AuftragNr = auftragNr.Trim();

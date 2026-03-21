@@ -13,7 +13,6 @@ namespace MaterialManager_V01.Views
 {
     public partial class LagerDemoWindow : Window, INotifyPropertyChanged
     {
-        private readonly User _selectedUser;
         private List<MaterialItem> _alleMaterialien = new();
 
         public ObservableCollection<MaterialItem> GefilterteMaterialien { get; } = new();
@@ -42,12 +41,11 @@ namespace MaterialManager_V01.Views
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public LagerDemoWindow(User selectedUser)
+        public LagerDemoWindow()
         {
             InitializeComponent();
-            _selectedUser = selectedUser;
             DataContext = this;
-            HeaderText = $"Angemeldet als {_selectedUser.DisplayName} – Lager-Sicht";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager-Sicht";
             Loaded += (_, _) => LoadMaterials();
         }
 
