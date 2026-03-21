@@ -33,7 +33,7 @@
 
             <StackPanel Grid.Row="0" Margin="0,0,0,24">
                 <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Demo-Startauswahl" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                <TextBlock Text="Startauswahl" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,0"/>
             </StackPanel>
 
             <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
@@ -67,7 +67,7 @@
             </UniformGrid>
 
             <TextBlock Grid.Row="2"
-                       Text="Demo-Modi: Lager mit reduzierter Materialsicht, Laser nur für Restmaterial, Standard mit voller Hauptansicht."
+                       Text="Lager für Wareneingang, Regalauslastung und Inventur. Laser für Restmaterial. Standard für die volle Hauptansicht."
                        Foreground="#888"
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center"

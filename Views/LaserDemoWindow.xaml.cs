@@ -78,7 +78,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Restmaterialien:\n{ex.Message}", "Laser-Demo", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Restmaterialien:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -179,7 +179,7 @@ namespace MaterialManager_V01.Views
 
             if (!gefunden.Any())
             {
-                MessageBox.Show("Keine passenden Restmaterialien gefunden.", "Laser-Demo", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Keine passenden Restmaterialien gefunden.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 

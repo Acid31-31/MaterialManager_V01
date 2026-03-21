@@ -45,7 +45,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
-            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager-Sicht";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager";
             Loaded += (_, _) => LoadMaterials();
         }
 
@@ -70,7 +70,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Lager-Demo", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Lager", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -102,7 +102,7 @@ namespace MaterialManager_V01.Views
                 GefilterteMaterialien.Add(item);
 
             var reserviert = filtered.Count(m => !string.IsNullOrWhiteSpace(m.AuftragNr));
-            SummaryText = $"{filtered.Count} Material(ien), {reserviert} reserviert";
+            SummaryText = $"{filtered.Count} Material(ien)";
         }
 
         private void SaveAllMaterials()
@@ -123,13 +123,6 @@ namespace MaterialManager_V01.Views
 
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
-            LoadMaterials();
-        }
-
-        private void OnReservedRestsClick(object sender, RoutedEventArgs e)
-        {
-            var dlg = new ReservierteResteDialog { Owner = this };
-            dlg.ShowDialog();
             LoadMaterials();
         }
 
@@ -170,7 +163,7 @@ namespace MaterialManager_V01.Views
 
             var confirm = MessageBox.Show(
                 $"Material '{item.MaterialArt} {item.Mass}' wirklich löschen?",
-                "Lager-Demo",
+                "Lager",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -179,6 +172,20 @@ namespace MaterialManager_V01.Views
 
             _alleMaterialien.Remove(item);
             SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void OnShelfUtilizationClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new RegalauslastungDialog(_alleMaterialien) { Owner = this };
+            dlg.ShowDialog();
+            LoadMaterials();
+        }
+
+        private void OnInventoryClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new InventurDialog(_alleMaterialien) { Owner = this };
+            dlg.ShowDialog();
             LoadMaterials();
         }
 
