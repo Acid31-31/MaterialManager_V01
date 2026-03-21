@@ -699,53 +699,16 @@ namespace MaterialManager_V01
             {
                 // Suche nach passenden Materialien
                 var gefunden = Materialien.Where(m =>
-                {
-                    bool match = true;
-
-                    // Material pr++fen
-                    if (!string.IsNullOrEmpty(dlg.Material) && m.MaterialArt != dlg.Material)
-                        match = false;
-
-                    // Legierung pr++fen
-                    if (!string.IsNullOrEmpty(dlg.Legierung) && m.Legierung != dlg.Legierung)
-                        match = false;
-
-                    // St+ñrke mit Toleranz pr++fen
-                    if (dlg.Staerke.HasValue)
-                    {
-                        var toleranz = dlg.ToleranzProzent / 100.0;
-                        var min = dlg.Staerke.Value * (1 - toleranz);
-                        var max = dlg.Staerke.Value * (1 + toleranz);
-                        if (m.Staerke < min || m.Staerke > max)
-                            match = false;
-                    }
-
-                    // Ma+ƒe mit Toleranz pr++fen
-                    if (dlg.Laenge.HasValue && dlg.Breite.HasValue)
-                    {
-                        var parts = m.Mass?.Split('x', '×');
-                        if (parts?.Length == 2)
-                        {
-                            if (int.TryParse(parts[0].Trim(), out var l) && int.TryParse(parts[1].Trim(), out var b))
-                            {
-                                var toleranz = dlg.ToleranzProzent / 100.0;
-                                var minL = dlg.Laenge.Value * (1 - toleranz);
-                                var maxL = dlg.Laenge.Value * (1 + toleranz);
-                                var minB = dlg.Breite.Value * (1 - toleranz);
-                                var maxB = dlg.Breite.Value * (1 + toleranz);
-
-                                if (l < minL || l > maxL || b < minB || b > maxB)
-                                    match = false;
-                            }
-                        }
-                    }
-
-                    // Form pr++fen
-                    if (dlg.Form != "Alle" && m.Form != dlg.Form)
-                        match = false;
-
-                    return match;
-                }).ToList();
+                    Services.RestMaterialSearchService.Matches(
+                        m,
+                        dlg.Material,
+                        dlg.Legierung,
+                        dlg.Staerke,
+                        dlg.Laenge,
+                        dlg.Breite,
+                        dlg.ToleranzProzent,
+                        dlg.Form,
+                        requireRest: false)).ToList();
 
                 // Markiere gefundene Materialien GR+£N
                 foreach (var m in Materialien)

@@ -18,25 +18,28 @@ namespace MaterialManager_V01.Views
 
         private void LoadNames()
         {
-            NameBox.ItemsSource = OperatorIdentityService.RecentOperatorNames.ToList();
-            NameBox.Text = OperatorIdentityService.CurrentOperatorName;
+            RecentNamesList.ItemsSource = OperatorIdentityService.RecentOperatorNames.ToList();
+            NameTextBox.Text = OperatorIdentityService.CurrentOperatorName;
             Loaded += (_, _) =>
             {
-                if (NameBox.Template.FindName("PART_EditableTextBox", NameBox) is TextBox textBox)
-                {
-                    textBox.Focus();
-                    textBox.SelectAll();
-                }
-                else
-                {
-                    NameBox.Focus();
-                }
+                NameTextBox.Focus();
+                NameTextBox.SelectAll();
             };
+        }
+
+        private void OnRecentNameDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (RecentNamesList.SelectedItem is string name)
+            {
+                NameTextBox.Text = name;
+                NameTextBox.Focus();
+                NameTextBox.SelectAll();
+            }
         }
 
         private void OnOkClick(object sender, RoutedEventArgs e)
         {
-            var name = NameBox.Text?.Trim();
+            var name = NameTextBox.Text?.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
                 MessageBox.Show("Bitte einen Namen eingeben.", "Anmeldung", MessageBoxButton.OK, MessageBoxImage.Information);

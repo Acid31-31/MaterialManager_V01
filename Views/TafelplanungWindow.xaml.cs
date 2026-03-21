@@ -148,47 +148,16 @@ namespace MaterialManager_V01.Views
                 return;
 
             var gefunden = _alleMaterialien.Where(m =>
-            {
-                if (!string.Equals(m.Form, "Rest", StringComparison.OrdinalIgnoreCase))
-                    return false;
-
-                var match = true;
-
-                if (!string.IsNullOrEmpty(dlg.Material) && m.MaterialArt != dlg.Material)
-                    match = false;
-                if (!string.IsNullOrEmpty(dlg.Legierung) && m.Legierung != dlg.Legierung)
-                    match = false;
-                if (dlg.Form != "Alle" && m.Form != dlg.Form)
-                    match = false;
-
-                if (dlg.Staerke.HasValue)
-                {
-                    var toleranz = dlg.ToleranzProzent / 100.0;
-                    var min = dlg.Staerke.Value * (1 - toleranz);
-                    var max = dlg.Staerke.Value * (1 + toleranz);
-                    if (m.Staerke < min || m.Staerke > max)
-                        match = false;
-                }
-
-                if (dlg.Laenge.HasValue && dlg.Breite.HasValue)
-                {
-                    var parts = m.Mass?.Split('x', '×');
-                    if (parts?.Length == 2 &&
-                        int.TryParse(parts[0].Trim(), out var l) &&
-                        int.TryParse(parts[1].Trim(), out var b))
-                    {
-                        var toleranz = dlg.ToleranzProzent / 100.0;
-                        var minL = dlg.Laenge.Value * (1 - toleranz);
-                        var maxL = dlg.Laenge.Value * (1 + toleranz);
-                        var minB = dlg.Breite.Value * (1 - toleranz);
-                        var maxB = dlg.Breite.Value * (1 + toleranz);
-                        if (l < minL || l > maxL || b < minB || b > maxB)
-                            match = false;
-                    }
-                }
-
-                return match;
-            }).ToList();
+                RestMaterialSearchService.Matches(
+                    m,
+                    dlg.Material,
+                    dlg.Legierung,
+                    dlg.Staerke,
+                    dlg.Laenge,
+                    dlg.Breite,
+                    dlg.ToleranzProzent,
+                    dlg.Form,
+                    requireRest: true)).ToList();
 
             if (!gefunden.Any())
             {
