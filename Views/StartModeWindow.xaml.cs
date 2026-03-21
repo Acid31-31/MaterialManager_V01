@@ -52,6 +52,17 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnTafelplanungClick(object sender, RoutedEventArgs e)
+        {
+            if (!PromptForOperatorName())
+                return;
+
+            var window = new TafelplanungWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+        }
+
         private void OnLaserClick(object sender, RoutedEventArgs e)
         {
             if (!PromptForOperatorName())
