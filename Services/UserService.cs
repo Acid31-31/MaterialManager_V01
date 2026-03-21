@@ -197,7 +197,7 @@ namespace MaterialManager_V01.Services
             return _users.Where(u => u.IsActive && roles.Contains(u.Role)).ToList();
         }
 
-        public static User CreateDemoLaserUser(string displayName, UserRole role)
+        public static User CreateDemoUser(string displayName, UserRole role)
         {
             var normalizedDisplayName = displayName.Trim();
             var existing = _users.FirstOrDefault(u => u.DisplayName.Equals(normalizedDisplayName, StringComparison.OrdinalIgnoreCase) && u.Role == role);
@@ -210,7 +210,7 @@ namespace MaterialManager_V01.Services
                 .ToArray());
 
             if (string.IsNullOrWhiteSpace(baseUsername))
-                baseUsername = "laseruser";
+                baseUsername = "demoUser";
 
             var uniqueUsername = baseUsername;
             var suffix = 1;
@@ -232,6 +232,11 @@ namespace MaterialManager_V01.Services
 
             _users.Add(user);
             return user;
+        }
+
+        public static User CreateDemoLaserUser(string displayName, UserRole role)
+        {
+            return CreateDemoUser(displayName, role);
         }
 
         /// <summary>

@@ -1,0 +1,159 @@
+<Window x:Class="MaterialManager_V01.Views.LagerDemoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lager - Materialübersicht"
+        Height="840"
+        Width="1500"
+        Background="#0B0B0B"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Icon="/Assets/app-icon.png">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#121212"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="RowBackground" Value="#1A1A1A"/>
+            <Setter Property="AlternatingRowBackground" Value="#151515"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#111111" Padding="16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Lager-Demo – Materialübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="Schließen"
+                        Click="OnCloseClick"
+                        Background="#C42B1C"
+                        Foreground="White"
+                        Padding="14,8"/>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="Reservierte Reste"
+                            Click="OnReservedRestsClick"
+                            Background="#1976D2"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Aktualisieren"
+                            Click="OnRefreshClick"
+                            Background="#555"
+                            Foreground="White"
+                            Padding="12,8"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Material neu"
+                            Click="OnNewMaterialClick"
+                            Background="#2E7D32"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Material bearbeiten"
+                            Click="OnEditMaterialClick"
+                            Background="#455A64"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Material löschen"
+                            Click="OnDeleteMaterialClick"
+                            Background="#C62828"
+                            Foreground="White"
+                            Padding="12,8"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                <TextBox Grid.Column="1"
+                         x:Name="SearchBox"
+                         Background="#222"
+                         Foreground="White"
+                         BorderBrush="#444"
+                         Padding="8,5"
+                         TextChanged="OnSearchTextChanged"/>
+                <TextBlock Grid.Column="2" Text="Form:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                <ComboBox Grid.Column="3"
+                          x:Name="FormFilterBox"
+                          Background="#222"
+                          Foreground="White"
+                          BorderBrush="#444"
+                          SelectionChanged="OnFilterChanged">
+                    <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                    <ComboBoxItem>GF</ComboBoxItem>
+                    <ComboBoxItem>MF</ComboBoxItem>
+                    <ComboBoxItem>KF</ComboBoxItem>
+                    <ComboBoxItem>Rest</ComboBoxItem>
+                </ComboBox>
+                <TextBlock Grid.Column="4"
+                           Text="{Binding SummaryText}"
+                           Foreground="#AAAAAA"
+                           VerticalAlignment="Center"
+                           Margin="16,0,0,0"/>
+            </Grid>
+        </Border>
+
+        <DataGrid x:Name="MaterialGrid"
+                  ItemsSource="{Binding GefilterteMaterialien}"
+                  AutoGenerateColumns="False"
+                  Margin="10"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  MouseDoubleClick="OnEditMaterialClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90"/>
+                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
+                <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="120"/>
+                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60"/>
+                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
+                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
+                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60"/>
+                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95"/>
+                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90"/>
+                <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110"/>
+                <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140"/>
+                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="110"/>
+                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="110"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
