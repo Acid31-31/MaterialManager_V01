@@ -7,54 +7,71 @@
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
+        WindowStyle="None"
+        BorderBrush="#2A2A2A"
+        BorderThickness="1"
         Icon="/Assets/app-icon.png">
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#111111" Height="36" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="10,0,8,0" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="MaterialManager V01 - Start" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                <Button Grid.Column="2" Content="✕" Click="OnCloseClick" Width="46" Height="30" Margin="0,3,3,3" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            </Grid>
+        </Border>
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
-            <TextBlock Text="Demo-Startauswahl" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-        </StackPanel>
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Demo-Startauswahl" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+            </StackPanel>
 
-        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
-            <Button Content="Standard"
-                    Click="OnStandardClick"
-                    Margin="0,0,8,0"
-                    Height="90"
-                    Background="#1976D2"
-                    Foreground="White"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Cursor="Hand"/>
-            <Button Content="Lager"
-                    Click="OnLagerClick"
-                    Margin="4,0,4,0"
-                    Height="90"
-                    Background="#6A1B9A"
-                    Foreground="White"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Cursor="Hand"/>
-            <Button Content="Laser"
-                    Click="OnLaserClick"
-                    Margin="8,0,0,0"
-                    Height="90"
-                    Background="#2E7D32"
-                    Foreground="White"
-                    FontSize="18"
-                    FontWeight="Bold"
-                    Cursor="Hand"/>
-        </UniformGrid>
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
+                <Button Content="Standard"
+                        Click="OnStandardClick"
+                        Margin="0,0,8,0"
+                        Height="90"
+                        Background="#1976D2"
+                        Foreground="White"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Cursor="Hand"/>
+                <Button Content="Lager"
+                        Click="OnLagerClick"
+                        Margin="4,0,4,0"
+                        Height="90"
+                        Background="#6A1B9A"
+                        Foreground="White"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Cursor="Hand"/>
+                <Button Content="Laser"
+                        Click="OnLaserClick"
+                        Margin="8,0,0,0"
+                        Height="90"
+                        Background="#2E7D32"
+                        Foreground="White"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Cursor="Hand"/>
+            </UniformGrid>
 
-        <TextBlock Grid.Row="2"
-                   Text="Demo-Modi: Lager mit reduzierter Materialsicht, Laser nur für Restmaterial, Standard mit voller Hauptansicht."
-                   Foreground="#888"
-                   TextWrapping="Wrap"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Top"/>
-    </Grid>
+            <TextBlock Grid.Row="2"
+                       Text="Demo-Modi: Lager mit reduzierter Materialsicht, Laser nur für Restmaterial, Standard mit voller Hauptansicht."
+                       Foreground="#888"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"/>
+        </Grid>
+    </DockPanel>
 </Window>

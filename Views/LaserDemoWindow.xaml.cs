@@ -54,6 +54,14 @@ namespace MaterialManager_V01.Views
             Loaded += (_, _) => LoadMaterials();
         }
 
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && WindowState != WindowState.Maximized)
+            {
+                DragMove();
+            }
+        }
+
         private void LoadMaterials()
         {
             try

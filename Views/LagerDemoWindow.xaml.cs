@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -48,6 +49,14 @@ namespace MaterialManager_V01.Views
             DataContext = this;
             HeaderText = $"Angemeldet als {_selectedUser.DisplayName} – Lager-Sicht";
             Loaded += (_, _) => LoadMaterials();
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && WindowState != WindowState.Maximized)
+            {
+                DragMove();
+            }
         }
 
         private void LoadMaterials()

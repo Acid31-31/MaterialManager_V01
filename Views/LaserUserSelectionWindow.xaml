@@ -7,53 +7,82 @@
         Background="#0B0B0B"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
+        WindowStyle="None"
+        BorderBrush="#2A2A2A"
+        BorderThickness="1"
         Icon="/Assets/app-icon.png">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Window.Resources>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#222"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Height" Value="36"/>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#1A1A1A"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="#111111" Height="36" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="10,0,8,0" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="Laser - Benutzer auswählen" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                <Button Grid.Column="2" Content="✕" Click="OnWindowCloseClick" Width="46" Height="30" Margin="0,3,3,3" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            </Grid>
+        </Border>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Laser-Demo" Foreground="White" FontSize="22" FontWeight="Bold"/>
-        <TextBlock Grid.Row="1" Text="Benutzer auswählen oder Bediener neu anlegen" Foreground="#AAAAAA" Margin="0,6,0,18"/>
+            <TextBlock Grid.Row="0" Text="Laser-Demo" Foreground="White" FontSize="22" FontWeight="Bold"/>
+            <TextBlock Grid.Row="1" Text="Benutzer auswählen oder Bediener neu anlegen" Foreground="#AAAAAA" Margin="0,6,0,18"/>
 
-        <TextBlock Grid.Row="2" Text="Benutzer" Foreground="White" Margin="0,0,0,6"/>
-        <ComboBox x:Name="UserBox"
-                  Grid.Row="3"
-                  Height="36"
-                  Background="#1E1E1E"
-                  Foreground="White"
-                  BorderBrush="#444"
-                  DisplayMemberPath="DisplayLabel"
-                  Margin="0,0,0,16"/>
+            <TextBlock Grid.Row="2" Text="Benutzer" Foreground="White" Margin="0,0,0,6"/>
+            <ComboBox x:Name="UserBox"
+                      Grid.Row="3"
+                      Height="36"
+                      Background="#1E1E1E"
+                      Foreground="White"
+                      BorderBrush="#444"
+                      DisplayMemberPath="DisplayLabel"
+                      Margin="0,0,0,16"/>
 
-        <DockPanel Grid.Row="4">
-            <Button Content="Bediener neu anlegen"
-                    Click="OnCreateOperatorClick"
-                    DockPanel.Dock="Left"
-                    Background="#2E7D32"
-                    Foreground="White"
-                    Padding="12,8"
-                    Margin="0,0,8,0"
-                    Cursor="Hand"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Abbrechen"
-                        Click="OnCancelClick"
-                        Background="#555"
+            <DockPanel Grid.Row="4">
+                <Button Content="Bediener neu anlegen"
+                        Click="OnCreateOperatorClick"
+                        DockPanel.Dock="Left"
+                        Background="#2E7D32"
                         Foreground="White"
                         Padding="12,8"
                         Margin="0,0,8,0"
                         Cursor="Hand"/>
-                <Button Content="OK"
-                        Click="OnOkClick"
-                        Background="#1976D2"
-                        Foreground="White"
-                        Padding="18,8"
-                        Cursor="Hand"/>
-            </StackPanel>
-        </DockPanel>
-    </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Abbrechen"
+                            Click="OnCancelClick"
+                            Background="#555"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"
+                            Cursor="Hand"/>
+                    <Button Content="OK"
+                            Click="OnOkClick"
+                            Background="#1976D2"
+                            Foreground="White"
+                            Padding="18,8"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
 </Window>

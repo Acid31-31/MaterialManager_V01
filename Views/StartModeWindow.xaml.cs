@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -10,6 +11,19 @@ namespace MaterialManager_V01.Views
         public StartModeWindow()
         {
             InitializeComponent();
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
+        }
+
+        private void OnCloseClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void OnStandardClick(object sender, RoutedEventArgs e)

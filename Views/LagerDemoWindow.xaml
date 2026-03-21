@@ -7,10 +7,22 @@
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
+        WindowStyle="None"
+        BorderBrush="#2A2A2A"
+        BorderThickness="1"
         Icon="/Assets/app-icon.png">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#222"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#1A1A1A"/>
         </Style>
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#121212"/>
@@ -35,19 +47,21 @@
     </Window.Resources>
 
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Padding="16">
+        <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel>
+                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1">
                     <TextBlock Text="Lager-Demo – Materialübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
                     <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                 </StackPanel>
 
-                <Button Grid.Column="1"
+                <Button Grid.Column="2"
                         Content="Schließen"
                         Click="OnCloseClick"
                         Background="#C42B1C"

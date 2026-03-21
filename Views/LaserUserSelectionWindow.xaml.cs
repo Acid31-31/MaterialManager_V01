@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 using Microsoft.VisualBasic;
@@ -62,6 +63,20 @@ namespace MaterialManager_V01.Views
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
+        }
+
+        private void OnWindowCloseClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
