@@ -92,6 +92,12 @@
                             Background="#8B1E1E"
                             Foreground="White"
                             Padding="16,12"
+                            Margin="0,0,8,0"/>
+                    <Button Content="📄 PDF öffnen"
+                            Click="OnOpenPdfClick"
+                            Background="#E65100"
+                            Foreground="White"
+                            Padding="16,12"
                             Margin="0,0,12,0"/>
                     <TextBlock Text="Nur gebuchte Materialien mit Auftragsnummer – Änderung hebt die Reservierung auf" Foreground="#AAAAAA" VerticalAlignment="Center"/>
                 </StackPanel>
@@ -151,6 +157,14 @@
                 <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140" IsReadOnly="True"/>
+                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="160" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#FF9800"/>
+                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="100" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>

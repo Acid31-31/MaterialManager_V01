@@ -38,6 +38,9 @@
         public string LieferscheinNr { get; set; } = "";
         public string AuftragNr { get; set; } = "";
         public bool IstReserviert => !string.IsNullOrWhiteSpace(AuftragNr);
+        public string PdfPfad { get; set; } = "";
+        public string PdfDateiname => string.IsNullOrWhiteSpace(PdfPfad) ? "" : System.IO.Path.GetFileName(PdfPfad);
+        public bool HasPdf => !string.IsNullOrWhiteSpace(PdfPfad);
         public decimal PreisProKg { get; set; } = 0m;
         public decimal Gesamtwert => (decimal)GewichtKg * PreisProKg;
 

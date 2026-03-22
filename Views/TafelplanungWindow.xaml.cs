@@ -326,7 +326,8 @@ namespace MaterialManager_V01.Views
                 GeaendertVon = source.GeaendertVon,
                 Lieferant = source.Lieferant,
                 LieferscheinNr = source.LieferscheinNr,
-                AuftragNr = source.AuftragNr
+                AuftragNr = source.AuftragNr,
+                PdfPfad = source.PdfPfad
             };
         }
 
@@ -363,6 +364,35 @@ namespace MaterialManager_V01.Views
                 child = VisualTreeHelper.GetParent(child);
             }
             return null;
+        }
+
+        private void OnAttachPdfClick(object sender, RoutedEventArgs e)
+        {
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
+            {
+                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF anhängen", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "PDF-Datei für Auftrag auswählen",
+                Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (!string.IsNullOrWhiteSpace(item.PdfPfad) && System.IO.File.Exists(item.PdfPfad))
+                dlg.InitialDirectory = System.IO.Path.GetDirectoryName(item.PdfPfad);
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            item.PdfPfad = dlg.FileName;
+            item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            item.AenderungsDatum = DateTime.Now;
+            SaveAllMaterials();
+            LoadMaterials();
         }
     }
 }

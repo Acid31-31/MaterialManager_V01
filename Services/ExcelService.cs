@@ -17,28 +17,28 @@ namespace MaterialManager_V01
         private const int RETRY_DELAY_MS = 300;
 
         // ── Spaltennamen ─────────────────────────────────────────────────────────
-        // Bleche (18 Spalten – identisch mit bisherigem Format)
+        // Bleche (19 Spalten – identisch mit bisherigem Format)
         private static readonly string[] HeaderBleche =
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Form","Staerke","Mass",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
         };
 
-        // Rohre (18 Spalten)
+        // Rohre (19 Spalten)
         private static readonly string[] HeaderRohre =
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Durchmesser","Wandstaerke","Laenge",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
         };
 
-        // Profile (20 Spalten)
+        // Profile (21 Spalten)
         private static readonly string[] HeaderProfile =
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","ProfilTyp","Hoehe","Breite","Wandstaerke","Laenge",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
         };
 
         public static void Export(string filePath, IEnumerable<Models.MaterialItem> materialien)
@@ -131,6 +131,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 16).Value = (double)m.PreisProKg;
                 ws.Cell(r, 17).Value = m.AngelegtVon;
                 ws.Cell(r, 18).Value = m.GeaendertVon;
+                ws.Cell(r, 19).Value = m.PdfPfad;
                 r++;
             }
 
@@ -164,6 +165,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 16).Value = (double)m.PreisProKg;
                 ws.Cell(r, 17).Value = m.AngelegtVon;
                 ws.Cell(r, 18).Value = m.GeaendertVon;
+                ws.Cell(r, 19).Value = m.PdfPfad;
                 r++;
             }
 
@@ -199,6 +201,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 18).Value = (double)m.PreisProKg;
                 ws.Cell(r, 19).Value = m.AngelegtVon;
                 ws.Cell(r, 20).Value = m.GeaendertVon;
+                ws.Cell(r, 21).Value = m.PdfPfad;
                 r++;
             }
 
@@ -299,6 +302,7 @@ namespace MaterialManager_V01
                 var preis        = lastCol >= 16 ? ParseDecimal(ws.Cell(r, 16).GetString()) : 0m;
                 var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
                 var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
+                var pdfPfad      = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
 
                 result.Add(new Models.MaterialItem
                 {
@@ -320,7 +324,8 @@ namespace MaterialManager_V01
                     LieferscheinNr = lieferschein,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
-                    GeaendertVon   = geaendertVon
+                    GeaendertVon   = geaendertVon,
+                    PdfPfad        = pdfPfad
                 });
             }
             return result;
@@ -353,6 +358,7 @@ namespace MaterialManager_V01
                 var preis      = lastCol >= 16 ? ParseDecimal(ws.Cell(r, 16).GetString()) : 0m;
                 var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
                 var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
+                var pdfPfad    = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
 
                 if (string.IsNullOrWhiteSpace(matArt) && dm == 0) continue;
 
@@ -376,7 +382,8 @@ namespace MaterialManager_V01
                     LieferscheinNr = lieferschein,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
-                    GeaendertVon   = geaendertVon
+                    GeaendertVon   = geaendertVon,
+                    PdfPfad        = pdfPfad
                 });
             }
             return result;
@@ -411,6 +418,7 @@ namespace MaterialManager_V01
                 var preis      = lastCol >= 18 ? ParseDecimal(ws.Cell(r, 18).GetString()) : 0m;
                 var angelegtVon  = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
                 var geaendertVon = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
+                var pdfPfad    = lastCol >= 21 ? ws.Cell(r, 21).GetString() : "";
 
                 if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(profilTyp)) continue;
 
@@ -436,7 +444,8 @@ namespace MaterialManager_V01
                     LieferscheinNr = lieferschein,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
-                    GeaendertVon   = geaendertVon
+                    GeaendertVon   = geaendertVon,
+                    PdfPfad        = pdfPfad
                 });
             }
             return result;

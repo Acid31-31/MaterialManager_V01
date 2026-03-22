@@ -299,5 +299,40 @@ namespace MaterialManager_V01.Views
             }
             return null;
         }
+
+        private void OnOpenPdfClick(object sender, RoutedEventArgs e)
+        {
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
+            {
+                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(item.PdfPfad))
+            {
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!System.IO.File.Exists(item.PdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{item.PdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = item.PdfPfad,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
