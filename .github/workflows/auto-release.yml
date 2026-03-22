@@ -35,8 +35,8 @@ jobs:
         shell: pwsh
         run: |
           [xml]$proj = Get-Content "MaterialManager_V01.csproj"
-          $baseVersion = ($proj.Project.PropertyGroup.Version).Trim()
-          if ([string]::IsNullOrWhiteSpace($baseVersion)) { $baseVersion = "1.0.0" }
+          $versionNode = $proj.SelectSingleNode("//*[local-name()='Version']")
+          $baseVersion = if ($versionNode) { $versionNode.InnerText.Trim() } else { "1.0.0" }
           $tag = "v$baseVersion.$env:GITHUB_RUN_NUMBER"
           $zip = "MaterialManager_V01_$tag.zip"
           $payloadZip = Join-Path $env:RUNNER_TEMP "update_payload.zip"
