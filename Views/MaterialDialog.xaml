@@ -47,7 +47,14 @@
                             <TextBox
                                 x:Name="PART_EditableTextBox"
                                 Visibility="Hidden"
-                                IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                                IsReadOnly="{TemplateBinding IsReadOnly}"
+                                Background="{TemplateBinding Background}"
+                                Foreground="{TemplateBinding Foreground}"
+                                BorderThickness="0"
+                                Padding="3"
+                                Margin="0,0,20,0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch"/>
                             <Popup
                                 Name="Popup"
                                 Placement="Bottom"
@@ -72,6 +79,12 @@
                                 </Grid>
                             </Popup>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
