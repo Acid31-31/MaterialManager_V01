@@ -39,6 +39,23 @@ namespace MaterialManager_V01.Services
             Save();
         }
 
+        public static bool RemoveOperatorName(string name)
+        {
+            var normalized = (name ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(normalized))
+                return false;
+
+            var removed = _store.RecentOperatorNames.RemoveAll(n => string.Equals(n, normalized, StringComparison.OrdinalIgnoreCase)) > 0;
+            if (!removed)
+                return false;
+
+            if (string.Equals(_store.CurrentOperatorName, normalized, StringComparison.OrdinalIgnoreCase))
+                _store.CurrentOperatorName = _store.RecentOperatorNames.FirstOrDefault() ?? string.Empty;
+
+            Save();
+            return true;
+        }
+
         private static void Load()
         {
             try

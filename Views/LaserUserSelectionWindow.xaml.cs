@@ -37,6 +37,30 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private void OnDeleteNameClick(object sender, RoutedEventArgs e)
+        {
+            var name = (RecentNamesList.SelectedItem as string ?? NameTextBox.Text)?.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Bitte zuerst einen Namen auswählen.", "Anmeldung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Name '{name}' aus der Liste löschen?", "Anmeldung", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            if (!OperatorIdentityService.RemoveOperatorName(name))
+            {
+                MessageBox.Show("Name konnte nicht gelöscht werden.", "Anmeldung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            LoadNames();
+            NameTextBox.Focus();
+            NameTextBox.SelectAll();
+        }
+
         private void OnOkClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text?.Trim();
