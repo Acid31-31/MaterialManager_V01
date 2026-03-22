@@ -132,33 +132,33 @@ namespace MaterialManager_V01.Views
         public double[] RohrWandstaerken => MaterialDefinitions.RohrStandardWandstaerken;
         public int[]    StandardLaengen  => MaterialDefinitions.StandardLaengen;
 
-        private double _selectedDurchmesser;
-        public double SelectedDurchmesser { get => _selectedDurchmesser; set { _selectedDurchmesser = value; OnPropertyChanged(nameof(SelectedDurchmesser)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedDurchmesser = "";
+        public string SelectedDurchmesser { get => _selectedDurchmesser; set { _selectedDurchmesser = value; OnPropertyChanged(nameof(SelectedDurchmesser)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private double _selectedRohrWand;
-        public double SelectedRohrWand { get => _selectedRohrWand; set { _selectedRohrWand = value; OnPropertyChanged(nameof(SelectedRohrWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedRohrWand = "";
+        public string SelectedRohrWand { get => _selectedRohrWand; set { _selectedRohrWand = value; OnPropertyChanged(nameof(SelectedRohrWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private double _selectedLaenge;
-        public double SelectedLaenge { get => _selectedLaenge; set { _selectedLaenge = value; OnPropertyChanged(nameof(SelectedLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedLaenge = "";
+        public string SelectedLaenge { get => _selectedLaenge; set { _selectedLaenge = value; OnPropertyChanged(nameof(SelectedLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
         // ── Profil-spezifisch ────────────────────────────────────────────────
-        public string[] ProfilTypen => MaterialDefinitions.ProfilTypen;
+        public string[] ProfilTypen  => MaterialDefinitions.ProfilTypen;
         public double[] ProfilHoehen => MaterialDefinitions.ProfilStandardHoehen;
 
         private string _selectedProfilTyp = "";
         public string SelectedProfilTyp { get => _selectedProfilTyp; set { _selectedProfilTyp = value; OnPropertyChanged(nameof(SelectedProfilTyp)); } }
 
-        private double _selectedProfilHoehe;
-        public double SelectedProfilHoehe { get => _selectedProfilHoehe; set { _selectedProfilHoehe = value; OnPropertyChanged(nameof(SelectedProfilHoehe)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedProfilHoehe = "";
+        public string SelectedProfilHoehe { get => _selectedProfilHoehe; set { _selectedProfilHoehe = value; OnPropertyChanged(nameof(SelectedProfilHoehe)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private double _selectedProfilBreite;
-        public double SelectedProfilBreite { get => _selectedProfilBreite; set { _selectedProfilBreite = value; OnPropertyChanged(nameof(SelectedProfilBreite)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedProfilBreite = "";
+        public string SelectedProfilBreite { get => _selectedProfilBreite; set { _selectedProfilBreite = value; OnPropertyChanged(nameof(SelectedProfilBreite)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private double _selectedProfilWand;
-        public double SelectedProfilWand { get => _selectedProfilWand; set { _selectedProfilWand = value; OnPropertyChanged(nameof(SelectedProfilWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedProfilWand = "";
+        public string SelectedProfilWand { get => _selectedProfilWand; set { _selectedProfilWand = value; OnPropertyChanged(nameof(SelectedProfilWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private double _selectedProfilLaenge;
-        public double SelectedProfilLaenge { get => _selectedProfilLaenge; set { _selectedProfilLaenge = value; OnPropertyChanged(nameof(SelectedProfilLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private string _selectedProfilLaenge = "";
+        public string SelectedProfilLaenge { get => _selectedProfilLaenge; set { _selectedProfilLaenge = value; OnPropertyChanged(nameof(SelectedProfilLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
         // ── Geschätzter Wert ─────────────────────────────────────────────────
         public string GeschaetzterWert
@@ -174,24 +174,45 @@ namespace MaterialManager_V01.Views
                 if (_selectedKategorie == "Blech" && !string.IsNullOrWhiteSpace(_mass))
                 {
                     var parts = _mass.Split('x');
-                    if (parts.Length == 2 && int.TryParse(parts[0], out var l) && int.TryParse(parts[1], out var b))
+                    if (parts.Length == 2 && double.TryParse(parts[0], out var l) && double.TryParse(parts[1], out var b))
                         gewicht = (l / 1000.0) * (b / 1000.0) * (_selectedStaerke / 1000.0) * dichte * _stueckzahl;
                 }
-                else if (_selectedKategorie == "Rohr" && _selectedDurchmesser > 0 && _selectedRohrWand > 0 && _selectedLaenge > 0)
+                else if (_selectedKategorie == "Rohr")
                 {
-                    double ra = _selectedDurchmesser / 2.0 / 1000.0;
-                    double ri = (_selectedDurchmesser / 2.0 - _selectedRohrWand) / 1000.0;
-                    gewicht = Math.PI * (ra * ra - ri * ri) * (_selectedLaenge / 1000.0) * dichte * _stueckzahl;
+                    ParseD(_selectedDurchmesser, out var dm);
+                    ParseD(_selectedRohrWand, out var wand);
+                    ParseD(_selectedLaenge, out var len);
+                    if (dm > 0 && wand > 0 && len > 0)
+                    {
+                        double ra = dm / 2.0 / 1000.0;
+                        double ri = (dm / 2.0 - wand) / 1000.0;
+                        gewicht = Math.PI * (ra * ra - ri * ri) * (len / 1000.0) * dichte * _stueckzahl;
+                    }
                 }
-                else if (_selectedKategorie == "Profil" && _selectedProfilHoehe > 0 && _selectedProfilWand > 0 && _selectedProfilLaenge > 0)
+                else if (_selectedKategorie == "Profil")
                 {
-                    double b = _selectedProfilBreite > 0 ? _selectedProfilBreite : _selectedProfilHoehe;
-                    double querschnitt = 2 * ((_selectedProfilHoehe + b) * _selectedProfilWand) / 1e6;
-                    gewicht = querschnitt * (_selectedProfilLaenge / 1000.0) * dichte * _stueckzahl;
+                    ParseD(_selectedProfilHoehe, out var h);
+                    ParseD(_selectedProfilBreite, out var b);
+                    ParseD(_selectedProfilWand, out var wand);
+                    ParseD(_selectedProfilLaenge, out var len);
+                    if (h > 0 && wand > 0 && len > 0)
+                    {
+                        double beff = b > 0 ? b : h;
+                        double querschnitt = 2 * ((h + beff) * wand) / 1e6;
+                        gewicht = querschnitt * (len / 1000.0) * dichte * _stueckzahl;
+                    }
                 }
 
                 return gewicht > 0 ? $"≈ {(decimal)gewicht * preis:N2} €" : "0,00 €";
             }
+        }
+
+        private static bool ParseD(string s, out double result)
+        {
+            result = 0;
+            if (string.IsNullOrWhiteSpace(s)) return false;
+            s = s.Replace(',', '.');
+            return double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result);
         }
 
         // ── Shelf-Stats ───────────────────────────────────────────────────────
@@ -285,16 +306,16 @@ namespace MaterialManager_V01.Views
                     Mass = original.Mass;
                     break;
                 case MaterialKategorie.Rohr:
-                    SelectedDurchmesser = original.Durchmesser;
-                    SelectedRohrWand = original.Staerke;
-                    SelectedLaenge = original.Laenge;
+                    SelectedDurchmesser = original.Durchmesser > 0 ? original.Durchmesser.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                    SelectedRohrWand    = original.Staerke     > 0 ? original.Staerke.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                    SelectedLaenge      = original.Laenge       > 0 ? original.Laenge.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
                     break;
                 case MaterialKategorie.Profil:
-                    SelectedProfilTyp = original.ProfilTyp;
-                    SelectedProfilHoehe = original.ProfilHoehe;
-                    SelectedProfilBreite = original.ProfilBreite;
-                    SelectedProfilWand = original.Staerke;
-                    SelectedProfilLaenge = original.Laenge;
+                    SelectedProfilTyp    = original.ProfilTyp;
+                    SelectedProfilHoehe  = original.ProfilHoehe  > 0 ? original.ProfilHoehe.ToString(System.Globalization.CultureInfo.InvariantCulture)  : "";
+                    SelectedProfilBreite = original.ProfilBreite > 0 ? original.ProfilBreite.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                    SelectedProfilWand   = original.Staerke      > 0 ? original.Staerke.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                    SelectedProfilLaenge = original.Laenge        > 0 ? original.Laenge.ToString(System.Globalization.CultureInfo.InvariantCulture)        : "";
                     break;
             }
 
@@ -422,6 +443,9 @@ namespace MaterialManager_V01.Views
             }
             else if (kat == MaterialKategorie.Rohr)
             {
+                ParseD(SelectedDurchmesser, out var dm);
+                ParseD(SelectedRohrWand,    out var wand);
+                ParseD(SelectedLaenge,      out var len);
                 Material = new MaterialItem
                 {
                     Kategorie      = MaterialKategorie.Rohr,
@@ -429,9 +453,9 @@ namespace MaterialManager_V01.Views
                     Legierung      = SelectedLegierung,
                     Oberflaeche    = SelectedOberflaeche,
                     Guete          = SelectedGuete,
-                    Durchmesser    = SelectedDurchmesser,
-                    Staerke        = SelectedRohrWand,
-                    Laenge         = SelectedLaenge,
+                    Durchmesser    = dm,
+                    Staerke        = wand,
+                    Laenge         = len,
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
@@ -447,6 +471,10 @@ namespace MaterialManager_V01.Views
             }
             else
             {
+                ParseD(SelectedProfilHoehe,  out var h);
+                ParseD(SelectedProfilBreite, out var b);
+                ParseD(SelectedProfilWand,   out var pw);
+                ParseD(SelectedProfilLaenge, out var pl);
                 Material = new MaterialItem
                 {
                     Kategorie      = MaterialKategorie.Profil,
@@ -455,10 +483,10 @@ namespace MaterialManager_V01.Views
                     Oberflaeche    = SelectedOberflaeche,
                     Guete          = SelectedGuete,
                     ProfilTyp      = SelectedProfilTyp,
-                    ProfilHoehe    = SelectedProfilHoehe,
-                    ProfilBreite   = SelectedProfilBreite,
-                    Staerke        = SelectedProfilWand,
-                    Laenge         = SelectedProfilLaenge,
+                    ProfilHoehe    = h,
+                    ProfilBreite   = b,
+                    Staerke        = pw,
+                    Laenge         = pl,
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),

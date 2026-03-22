@@ -257,21 +257,21 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Außen-Ø (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1"
                               ItemsSource="{Binding RohrDurchmesser}"
-                              SelectedItem="{Binding SelectedDurchmesser, Mode=TwoWay}"
+                              Text="{Binding SelectedDurchmesser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding RohrWandstaerken}"
-                              SelectedItem="{Binding SelectedRohrWand, Mode=TwoWay}"
+                              Text="{Binding SelectedRohrWand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="2" Grid.Column="1"
                               ItemsSource="{Binding StandardLaengen}"
-                              SelectedItem="{Binding SelectedLaenge, Mode=TwoWay}"
+                              Text="{Binding SelectedLaenge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
@@ -301,14 +301,14 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Profiltyp:" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1"
                               ItemsSource="{Binding ProfilTypen}"
-                              SelectedItem="{Binding SelectedProfilTyp, Mode=TwoWay}"
+                              Text="{Binding SelectedProfilTyp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Höhe h (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding ProfilHoehen}"
-                              SelectedItem="{Binding SelectedProfilHoehe, Mode=TwoWay}"
+                              Text="{Binding SelectedProfilHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
@@ -325,7 +325,7 @@
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="4" Grid.Column="1"
                               ItemsSource="{Binding StandardLaengen}"
-                              SelectedItem="{Binding SelectedProfilLaenge, Mode=TwoWay}"
+                              Text="{Binding SelectedProfilLaenge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
