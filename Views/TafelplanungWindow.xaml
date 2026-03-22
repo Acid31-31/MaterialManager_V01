@@ -190,7 +190,8 @@
                   Margin="10"
                   CanUserAddRows="False"
                   SelectionMode="Single"
-                  SelectionUnit="FullRow">
+                  SelectionUnit="FullRow"
+                  PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="" Width="35">
                     <DataGridTemplateColumn.CellTemplate>

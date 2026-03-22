@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -331,6 +332,33 @@ namespace MaterialManager_V01.Views
             Application.Current.MainWindow = startWindow;
             startWindow.Show();
             Close();
+        }
+
+        private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dep = e.OriginalSource as DependencyObject;
+            if (dep == null) return;
+
+            var cell = FindVisualParent<DataGridCell>(dep);
+            if (cell == null) return;
+
+            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
+
+            if (cell.DataContext is not MaterialItem item) return;
+
+            item.IsSelected = !item.IsSelected;
+            RestMaterialGrid.SelectedItem = item;
+            e.Handled = true;
+        }
+
+        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
+        {
+            while (child != null)
+            {
+                if (child is T t) return t;
+                child = VisualTreeHelper.GetParent(child);
+            }
+            return null;
         }
     }
 }

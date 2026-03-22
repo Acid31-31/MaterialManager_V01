@@ -128,7 +128,8 @@
                   CanUserAddRows="False"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
-                  MouseDoubleClick="OnEditRestClick">
+                  MouseDoubleClick="OnEditRestClick"
+                  PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="" Width="35">
                     <DataGridTemplateColumn.CellTemplate>
