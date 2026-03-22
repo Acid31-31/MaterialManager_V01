@@ -1,4 +1,4 @@
 ﻿MaterialManager 1.2.0
-Erstellt: 22.03.2026 11:28:26
-Groesse: 186.06 MB
-Version: Release Self-Contained (UI-Freeze Bugfix)
+Erstellt: 22.03.2026 17:54:02
+Groesse: 186.11 MB
+Version: Release Self-Contained (Tablet-Modus + PDF-Funktion)
