@@ -40,7 +40,7 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        public bool CanManageRestMaterials => true;
+        public bool CanManageRestMaterials => false;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -48,7 +48,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
-            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName}";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
             Loaded += (_, _) => LoadMaterials();
         }
 
@@ -71,14 +71,14 @@ namespace MaterialManager_V01.Views
 
                 _alleMaterialien = items;
                 _restMaterialienCache = _alleMaterialien
-                    .Where(m => string.Equals(m.Form, "Rest", StringComparison.OrdinalIgnoreCase))
+                    .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
                     .ToList();
 
                 ApplyFilter();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Restmaterialien:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Auftragsmaterialien:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -93,13 +93,14 @@ namespace MaterialManager_V01.Views
                     (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                    (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query)).ToList();
 
             RestMaterialien.Clear();
             foreach (var item in filtered)
                 RestMaterialien.Add(item);
 
-            SummaryText = $"{RestMaterialien.Count} Restmaterial(ien)";
+            SummaryText = $"{RestMaterialien.Count} gebuchte Material(ien)";
         }
 
         private void SaveAllMaterials()
@@ -189,11 +190,19 @@ namespace MaterialManager_V01.Views
                 ?? RestMaterialGrid.SelectedItem as MaterialItem;
         }
 
+        private List<MaterialItem> GetMarkedMaterials()
+        {
+            var marked = RestMaterialien.Where(m => m.IsSelected).ToList();
+            if (marked.Count > 0)
+                return marked;
+
+            return RestMaterialGrid.SelectedItem is MaterialItem selected
+                ? new List<MaterialItem> { selected }
+                : new List<MaterialItem>();
+        }
+
         private void OnEditRestClick(object sender, RoutedEventArgs e)
         {
-            if (!CanManageRestMaterials)
-                return;
-
             var item = GetPrimarySelectedMaterial();
             if (item == null)
                 return;
@@ -207,9 +216,46 @@ namespace MaterialManager_V01.Views
             if (index < 0)
                 return;
 
-            dlg.Material.Form = "Rest";
-            dlg.Material.IsSelected = item.IsSelected;
+            dlg.Material.AuftragNr = string.Empty;
+            dlg.Material.Lagerort = RegalService.DetermineLagerort(
+                dlg.Material.MaterialArt,
+                dlg.Material.Legierung,
+                dlg.Material.Form,
+                dlg.Material.Staerke,
+                dlg.Material.Mass,
+                _alleMaterialien.Where(m => !ReferenceEquals(m, item)).ToList());
+            dlg.Material.IsSelected = false;
             _alleMaterialien[index] = dlg.Material;
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void OnDeleteReservedClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("Bitte zuerst reserviertes Material auswählen oder markieren.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                items.Count == 1
+                    ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} reservierte Materialien wirklich löschen?",
+                "Laser",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            foreach (var item in items)
+            {
+                BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
+                _alleMaterialien.Remove(item);
+            }
+
             SaveAllMaterials();
             LoadMaterials();
         }

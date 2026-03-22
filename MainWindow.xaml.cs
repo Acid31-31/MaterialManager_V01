@@ -986,6 +986,33 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
+        private void OnOpenLagerView(object sender, MouseButtonEventArgs e)
+        {
+            var window = new LagerDemoWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+            e.Handled = true;
+        }
+
+        private void OnOpenTafelplanungView(object sender, MouseButtonEventArgs e)
+        {
+            var window = new TafelplanungWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+            e.Handled = true;
+        }
+
+        private void OnOpenLaserView(object sender, MouseButtonEventArgs e)
+        {
+            var window = new LaserDemoWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+            e.Handled = true;
+        }
+
         private void OnNetzwerkEinstellungen(object sender, RoutedEventArgs e)
         {
             var dlg = new NetzwerkEinstellungenDialog { Owner = this };
@@ -1006,7 +1033,6 @@ namespace MaterialManager_V01
             }
         }
 
-        // Ô£à PRINT & EXPORT FUNKTIONEN
         private void OnPrintMaterialList(object sender, RoutedEventArgs e)
         {
             if (!Materialien.Any())
@@ -1058,7 +1084,6 @@ namespace MaterialManager_V01
             }
         }
 
-        // Ô£à AUTO-UPDATE PR+£FUNG BEIM START
         private async System.Threading.Tasks.Task CheckForUpdatesOnStartupAsync()
         {
             await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(5));
@@ -1099,12 +1124,12 @@ namespace MaterialManager_V01
                 _lastPromptedVersion = result.LatestVersion;
 
                 var decision = MessageBox.Show(
-                    $"Neue Version {result.LatestVersion} verf++gbar. Jetzt installieren?",
-                    "Update verf++gbar",
+                    $"Neue Version {result.LatestVersion} verfügbar. Jetzt installieren?",
+                    "Update verfügbar",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Information);
 
-                AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Sp+ñter")}");
+                AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Später")}");
 
                 if (decision == MessageBoxResult.Yes)
                 {
@@ -1142,6 +1167,5 @@ namespace MaterialManager_V01
             }
             catch { }
         }
-
     }
 }

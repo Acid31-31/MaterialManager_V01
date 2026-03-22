@@ -57,7 +57,7 @@
 
                 <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="Laser – Restmaterial" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="Laser – Auftragsübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
                     <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                 </StackPanel>
 
@@ -73,12 +73,6 @@
         <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
             <DockPanel LastChildFill="True">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Content="Reservierte Reste"
-                            Click="OnReservedRestsClick"
-                            Background="#1976D2"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
                     <Button Content="Aktualisieren"
                             Click="OnRefreshClick"
                             Background="#555"
@@ -87,26 +81,19 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Restmaterial neu"
-                            Click="OnNewRestClick"
-                            Background="#2E7D32"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"
-                            Visibility="{Binding CanManageRestMaterials, Converter={StaticResource BoolToVisibility}}"/>
-                    <Button Content="Restmaterial bearbeiten"
+                    <Button Content="Material bearbeiten"
                             Click="OnEditRestClick"
                             Background="#455A64"
                             Foreground="White"
                             Padding="12,8"
-                            Margin="0,0,8,0"
-                            Visibility="{Binding CanManageRestMaterials, Converter={StaticResource BoolToVisibility}}"/>
-                    <Button Content="Restmaterial suchen / reservieren"
-                            Click="OnSearchReserveClick"
-                            Background="#00897B"
+                            Margin="0,0,8,0"/>
+                    <Button Content="Material löschen"
+                            Click="OnDeleteReservedClick"
+                            Background="#8B1E1E"
                             Foreground="White"
                             Padding="12,8"
-                            Visibility="{Binding CanManageRestMaterials, Converter={StaticResource BoolToVisibility}}"/>
+                            Margin="0,0,12,0"/>
+                    <TextBlock Text="Nur gebuchte Materialien mit Auftragsnummer – Änderung hebt die Reservierung auf" Foreground="#AAAAAA" VerticalAlignment="Center"/>
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -153,11 +140,12 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
+                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60"/>
                 <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
                 <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
                 <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60"/>
                 <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95"/>
-                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90"/>
+                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="100"/>
                 <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
                 <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
                 <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110"/>

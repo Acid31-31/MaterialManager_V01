@@ -171,6 +171,8 @@ namespace MaterialManager_V01.Views
         private DateTime? _originalAenderungsDatum;
         private string _originalAngelegtVon = "";
         private string _originalGeaendertVon = "";
+        private string _originalAuftragNr = "";
+        private string _originalLagerort = "";
 
         public MaterialDialog()
         {
@@ -217,6 +219,8 @@ namespace MaterialManager_V01.Views
             _originalAenderungsDatum = original.AenderungsDatum;
             _originalAngelegtVon = original.AngelegtVon;
             _originalGeaendertVon = original.GeaendertVon;
+            _originalAuftragNr = original.AuftragNr;
+            _originalLagerort = original.Lagerort;
 
             SelectedMaterialArt = original.MaterialArt;
             SelectedLegierung = original.Legierung;
@@ -241,6 +245,8 @@ namespace MaterialManager_V01.Views
             _isEdit = true;
             _originalAngelegtVon = existing.AngelegtVon;
             _originalGeaendertVon = existing.GeaendertVon;
+            _originalAuftragNr = existing.AuftragNr;
+            _originalLagerort = existing.Lagerort;
             // populate lists first
             SelectedMaterialArt = existing.MaterialArt;
             SelectedLegierung = existing.Legierung;
@@ -358,18 +364,21 @@ namespace MaterialManager_V01.Views
                 Restnummer = Restnummer,
                 Datum = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                 AenderungsDatum = _isEdit ? DateTime.Now : null,
-                Lagerort = MaterialManager_V01.Services.RegalService.DetermineLagerort(
-                    SelectedMaterialArt,
-                    SelectedLegierung,
-                    SelectedForm,
-                    SelectedStaerke,
-                    Mass,
-                    _inventory),
+                Lagerort = _isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
+                    ? _originalLagerort
+                    : MaterialManager_V01.Services.RegalService.DetermineLagerort(
+                        SelectedMaterialArt,
+                        SelectedLegierung,
+                        SelectedForm,
+                        SelectedStaerke,
+                        Mass,
+                        _inventory),
                 Lieferant = SelectedLieferant,
                 LieferscheinNr = SelectedLieferscheinNr,
                 PreisProKg = decimal.TryParse(PreisProKg.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var preis) ? preis : 0m,
                 AngelegtVon = angelegtVon,
-                GeaendertVon = geaendertVon
+                GeaendertVon = geaendertVon,
+                AuftragNr = _isEdit ? _originalAuftragNr : string.Empty
             };
 
             DialogResult = true;

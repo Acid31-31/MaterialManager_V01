@@ -37,7 +37,7 @@
             </StackPanel>
 
             <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
-                <Button Content="Standard"
+                <Button Content="Hauptprogramm"
                         Click="OnStandardClick"
                         Margin="0,0,6,0"
                         Height="90"
@@ -76,7 +76,7 @@
             </UniformGrid>
 
             <TextBlock Grid.Row="2"
-                       Text="Lager für Wareneingang, Regalauslastung und Inventur. Tafelplanung für Restmaterial-Reservierung. Laser für Restmaterial. Standard für die volle Hauptansicht."
+                       Text="Lager für Wareneingang, Regalauslastung und Inventur. Tafelplanung für Restmaterial-Reservierung. Laser für Restmaterial. Hauptprogramm für die volle Hauptansicht."
                        Foreground="#888"
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center"
