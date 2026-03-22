@@ -296,7 +296,9 @@ namespace MaterialManager_V01.Services
             if (version == null)
                 return "v1.0.0";
 
-            return $"v{version.Major}.{version.Minor}.{version.Build}";
+            return version.Revision > 0
+                ? $"v{version.Major}.{version.Minor}.{version.Build}.{version.Revision}"
+                : $"v{version.Major}.{version.Minor}.{version.Build}";
         }
 
         private static Version ParseVersion(string tag)
