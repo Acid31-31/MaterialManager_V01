@@ -39,46 +39,32 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($baseVersion)) { $baseVersion = "1.0.0" }
           $tag = "v$baseVersion.$env:GITHUB_RUN_NUMBER"
           $zip = "MaterialManager_V01_$tag.zip"
-          $payloadZip = "$env:RUNNER_TEMP\update_payload.zip"
-          $updateInstallerDir = "update-installer"
-          $updateInstallerExe = "$updateInstallerDir\UpdateInstaller.exe"
+          $payloadZip = Join-Path $env:RUNNER_TEMP "update_payload.zip"
+          $updateInstallerDir = Join-Path $env:GITHUB_WORKSPACE "update-installer"
+          $updateInstallerExe = Join-Path $updateInstallerDir "UpdateInstaller.exe"
 
           Compress-Archive -Path "publish\*" -DestinationPath $zip -Force
-          Compress-Archive -Path "publish\*" -DestinationPath $payloadZip -Force
+          Copy-Item $zip -Destination $payloadZip -Force
 
           "tag=$tag" >> $env:GITHUB_OUTPUT
           "zip=$zip" >> $env:GITHUB_OUTPUT
           "payload_zip=$payloadZip" >> $env:GITHUB_OUTPUT
+          "update_installer_dir=$updateInstallerDir" >> $env:GITHUB_OUTPUT
           "update_installer_exe=$updateInstallerExe" >> $env:GITHUB_OUTPUT
 
       - name: Build update installer
-        run: dotnet publish Installer_Source\UpdateInstaller.csproj -c Release -r win-x64 --self-contained true -o update-installer /p:PayloadZip="${{ steps.meta.outputs.payload_zip }}"
-
-      - name: Import code-signing certificate
-        if: ${{ secrets.CODESIGN_PFX_BASE64 != '' && secrets.CODESIGN_PFX_PASSWORD != '' }}
         shell: pwsh
         run: |
-          $pfxPath = "$env:RUNNER_TEMP\codesign.pfx"
-          [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String("${{ secrets.CODESIGN_PFX_BASE64 }}"))
-          "CODESIGN_PFX_PATH=$pfxPath" >> $env:GITHUB_ENV
-
-      - name: Sign update installer
-        if: ${{ env.CODESIGN_PFX_PATH != '' }}
-        shell: pwsh
-        run: |
-          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
-            Sort-Object FullName -Descending |
-            Select-Object -First 1 -ExpandProperty FullName
-
-          if (-not $signtool) { throw "signtool.exe nicht gefunden." }
-
-          & $signtool sign /fd SHA256 /f "$env:CODESIGN_PFX_PATH" /p "${{ secrets.CODESIGN_PFX_PASSWORD }}" /tr "http://timestamp.digicert.com" /td SHA256 "${{ steps.meta.outputs.update_installer_exe }}"
+          $payloadZip = "${{ steps.meta.outputs.payload_zip }}"
+          $outputDir = "${{ steps.meta.outputs.update_installer_dir }}"
+          New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
+          dotnet publish Installer_Source/UpdateInstaller.csproj -c Release -r win-x64 --self-contained true -o $outputDir /p:PayloadZip="$payloadZip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
-          name: Auto Release ${{ steps.meta.outputs.tag }}
+          name: "Release ${{ steps.meta.outputs.tag }}"
           generate_release_notes: true
           files: |
             ${{ steps.meta.outputs.zip }}
