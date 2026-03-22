@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Input;
 using MaterialManager_V01.Services;
@@ -13,11 +12,6 @@ namespace MaterialManager_V01.Views
 {
     public partial class UpdateDialog : Window, INotifyPropertyChanged
     {
-        private static readonly HashSet<string> AllowedSignerThumbprints = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "7C7BA253CDF3E80EF732EC1E4027BAEF32FCF8A7"
-        };
-
         private readonly UpdateCheckResult _updateInfo;
         private readonly string _uiUpdateLogPath;
         private readonly bool _autoStartInstall;
@@ -100,30 +94,6 @@ namespace MaterialManager_V01.Views
 
                 var installerPath = prepared.InstallerExecutablePath;
                 var isUpdateInstaller = string.Equals(Path.GetFileName(installerPath), "UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase);
-
-                if (!IsSignedAndTrusted(installerPath, out var trustInfo))
-                {
-                    AppendUiLog($"Signaturprüfung fehlgeschlagen: {trustInfo}");
-                    var proceedUntrusted = MessageBox.Show(
-                        "Die Update-Datei ist nicht vertrauenswürdig signiert.\n\n" +
-                        "Aus Sicherheitsgründen wird eine signierte Version empfohlen.\n\n" +
-                        "Trotzdem fortfahren?",
-                        "Warnung: Unsigniertes/Untrusted Update",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-
-                    if (proceedUntrusted != MessageBoxResult.Yes)
-                    {
-                        DownloadStatus = "Abgebrochen (Signaturwarnung).";
-                        return;
-                    }
-
-                    AppendUiLog("Benutzer hat Fortfahren trotz Signaturwarnung bestätigt.");
-                }
-                else
-                {
-                    AppendUiLog($"Signaturprüfung OK: {trustInfo}");
-                }
 
                 var confirm = MessageBox.Show(
                     "Das Update wird jetzt gestartet.\nDie Anwendung wird geschlossen.\n\nWeiter?",
@@ -256,41 +226,6 @@ namespace MaterialManager_V01.Views
         {
             _cts?.Cancel();
             Close();
-        }
-
-        private static bool IsSignedAndTrusted(string filePath, out string details)
-        {
-            try
-            {
-                var signer = X509Certificate.CreateFromSignedFile(filePath);
-                var signerCert = new X509Certificate2(signer);
-
-                if (AllowedSignerThumbprints.Contains(signerCert.Thumbprint))
-                {
-                    details = $"Signiert von freigegebenem Zertifikat '{signerCert.Subject}' ({signerCert.Thumbprint})";
-                    return true;
-                }
-
-                using var chain = new X509Chain();
-                chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-                chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-
-                var trusted = chain.Build(signerCert);
-                if (trusted)
-                {
-                    details = $"Signiert von '{signerCert.Subject}'";
-                    return true;
-                }
-
-                var chainErrors = string.Join("; ", chain.ChainStatus.Select(s => s.StatusInformation?.Trim()).Where(s => !string.IsNullOrWhiteSpace(s)));
-                details = $"Signiert von '{signerCert.Subject}', aber Kette nicht vertrauenswürdig. {chainErrors}";
-                return false;
-            }
-            catch (Exception ex)
-            {
-                details = $"Keine gültige Signatur erkannt ({ex.Message})";
-                return false;
-            }
         }
     }
 }
