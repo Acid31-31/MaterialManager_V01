@@ -4,6 +4,7 @@ namespace MaterialManager_V01.Models
 {
     public static class MaterialDefinitions
     {
+        // ── Blech ──────────────────────────────────────────────────────────────
         public static readonly Dictionary<string, (int Laenge, int Breite)> StandardMasse =
             new()
             {
@@ -17,6 +18,46 @@ namespace MaterialManager_V01.Models
             0.3, 0.5, 0.8, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25
         };
 
+        // ── Rohr ───────────────────────────────────────────────────────────────
+        /// <summary>Standardaußendurchmesser für Rundrohre in mm (EN 10216/10217)</summary>
+        public static readonly double[] RohrStandardDurchmesser =
+        {
+            10, 13.5, 17.2, 21.3, 26.9, 33.7, 42.4, 48.3, 60.3, 76.1,
+            88.9, 101.6, 114.3, 133, 139.7, 159, 168.3, 193.7, 219.1, 273
+        };
+
+        /// <summary>Übliche Wandstärken für Rohre in mm</summary>
+        public static readonly double[] RohrStandardWandstaerken =
+        {
+            1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12
+        };
+
+        /// <summary>Standardlängen für Rohre/Profile in mm</summary>
+        public static readonly int[] StandardLaengen =
+        {
+            1000, 2000, 3000, 4000, 6000, 12000
+        };
+
+        // ── Profil ─────────────────────────────────────────────────────────────
+        /// <summary>Verfügbare Profiltypen</summary>
+        public static readonly string[] ProfilTypen =
+        {
+            "IPE", "HEA", "HEB", "HEM",
+            "UNP", "UPE",
+            "L-Winkel gleich", "L-Winkel ungleich",
+            "T-Profil",
+            "RHS", "SHS",
+            "Flachstahl", "Rundstahl", "Vierkantstahl"
+        };
+
+        /// <summary>Standardhöhen für Profile in mm (Richtwerte)</summary>
+        public static readonly double[] ProfilStandardHoehen =
+        {
+            20, 25, 30, 40, 50, 60, 80, 100, 120, 140, 160, 180, 200,
+            220, 240, 260, 280, 300, 320, 360, 400, 450, 500, 550, 600
+        };
+
+        // ── Gemeinsam ──────────────────────────────────────────────────────────
         public static readonly Dictionary<string, List<string>> Legierungen =
             new()
             {

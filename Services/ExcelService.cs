@@ -9,11 +9,38 @@ using ClosedXML.Excel;
 namespace MaterialManager_V01
 {
     // Excel import/export for MaterialItem using ClosedXML (.xlsx)
+    // Stufe 2: separate Worksheets "Bleche", "Rohre", "Profile"
+    // Abwärtskompatibel: altes Worksheet "Materialien" wird als "Bleche" interpretiert
     public static class ExcelService
     {
         private const int MAX_RETRY_ATTEMPTS = 20;
         private const int RETRY_DELAY_MS = 300;
-        
+
+        // ── Spaltennamen ─────────────────────────────────────────────────────────
+        // Bleche (18 Spalten – identisch mit bisherigem Format)
+        private static readonly string[] HeaderBleche =
+        {
+            "MaterialArt","Legierung","Oberflaeche","Guete","Form","Staerke","Mass",
+            "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+        };
+
+        // Rohre (18 Spalten)
+        private static readonly string[] HeaderRohre =
+        {
+            "MaterialArt","Legierung","Oberflaeche","Guete","Durchmesser","Wandstaerke","Laenge",
+            "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+        };
+
+        // Profile (20 Spalten)
+        private static readonly string[] HeaderProfile =
+        {
+            "MaterialArt","Legierung","Oberflaeche","Guete","ProfilTyp","Hoehe","Breite","Wandstaerke","Laenge",
+            "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon"
+        };
+
         public static void Export(string filePath, IEnumerable<Models.MaterialItem> materialien)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -23,7 +50,6 @@ namespace MaterialManager_V01
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            // ✅ STRATEGIE: Versuche mit Retry, dann Temp-Datei als Fallback
             for (int attempt = 0; attempt < MAX_RETRY_ATTEMPTS; attempt++)
             {
                 try
@@ -39,11 +65,10 @@ namespace MaterialManager_V01
                 }
             }
 
-            // ✅ FALLBACK: Speichere in TEMP-Datei (mit Zeitstempel)
             var tempPath = filePath.Replace(".xlsx", $"_TEMP_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
             System.Diagnostics.Debug.WriteLine($"[ExcelService.Export] FALLBACK zu Temp-Datei: {tempPath}");
             ExportInternal(tempPath, materialien);
-            
+
             System.Windows.MessageBox.Show(
                 $"⚠️ Die Hauptdatei ist blockiert (vermutlich in Excel geöffnet).\n\n" +
                 $"Daten wurden gespeichert in:\n{Path.GetFileName(tempPath)}\n\n" +
@@ -59,70 +84,129 @@ namespace MaterialManager_V01
             try
             {
                 wb = new XLWorkbook();
-                var ws = wb.Worksheets.Add("Materialien");
 
-                // Header
-                ws.Cell(1, 1).Value = "MaterialArt";
-                ws.Cell(1, 2).Value = "Legierung";
-                ws.Cell(1, 3).Value = "Oberflaeche";
-                ws.Cell(1, 4).Value = "Guete";
-                ws.Cell(1, 5).Value = "Form";
-                ws.Cell(1, 6).Value = "Staerke";
-                ws.Cell(1, 7).Value = "Mass";
-                ws.Cell(1, 8).Value = "Stueckzahl";
-                ws.Cell(1, 9).Value = "Restnummer";
-                ws.Cell(1, 10).Value = "Datum";
-                ws.Cell(1, 11).Value = "Lagerort";
-                ws.Cell(1, 12).Value = "AenderungsDatum";
-                ws.Cell(1, 13).Value = "AuftragNr";
-                ws.Cell(1, 14).Value = "Lieferant";
-                ws.Cell(1, 15).Value = "LieferscheinNr";
-                ws.Cell(1, 16).Value = "PreisProKg";
-                ws.Cell(1, 17).Value = "AngelegtVon";
-                ws.Cell(1, 18).Value = "GeaendertVon";
+                var bleche  = materialien?.Where(m => m.Kategorie == Models.MaterialKategorie.Blech)  ?? Array.Empty<Models.MaterialItem>();
+                var rohre   = materialien?.Where(m => m.Kategorie == Models.MaterialKategorie.Rohr)   ?? Array.Empty<Models.MaterialItem>();
+                var profile = materialien?.Where(m => m.Kategorie == Models.MaterialKategorie.Profil) ?? Array.Empty<Models.MaterialItem>();
 
-                int r = 2;
-                foreach (var m in materialien ?? Array.Empty<Models.MaterialItem>())
-                {
-                    ws.Cell(r, 1).Value = m.MaterialArt;
-                    ws.Cell(r, 2).Value = m.Legierung;
-                    ws.Cell(r, 3).Value = m.Oberflaeche;
-                    ws.Cell(r, 4).Value = m.Guete;
-                    ws.Cell(r, 5).Value = m.Form;
-                    ws.Cell(r, 6).Value = m.Staerke;
-                    ws.Cell(r, 7).Value = m.Mass;
-                    ws.Cell(r, 8).Value = m.Stueckzahl;
-                    ws.Cell(r, 9).Value = m.Restnummer;
-                    ws.Cell(r, 10).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
-                    ws.Cell(r, 11).Value = m.Lagerort;
-                    ws.Cell(r, 12).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
-                    ws.Cell(r, 13).Value = m.AuftragNr;
-                    ws.Cell(r, 14).Value = m.Lieferant;
-                    ws.Cell(r, 15).Value = m.LieferscheinNr;
-                    ws.Cell(r, 16).Value = (double)m.PreisProKg;
-                    ws.Cell(r, 17).Value = m.AngelegtVon;
-                    ws.Cell(r, 18).Value = m.GeaendertVon;
-                    r++;
-                }
-
-                // Auto-fit columns and enable autofilter on header
-                ws.Range(1, 1, Math.Max(1, r - 1), 18).SetAutoFilter();
-                ws.Columns().AdjustToContents();
+                WriteBlech(wb.Worksheets.Add("Bleche"), bleche);
+                WriteRohr (wb.Worksheets.Add("Rohre"),  rohre);
+                WriteProfil(wb.Worksheets.Add("Profile"), profile);
 
                 wb.SaveAs(filePath);
             }
             finally
             {
-                // ✅ WICHTIG: Stelle sicher dass Workbook IMMER geschlossen wird!
-                if (wb != null)
-                {
-                    wb.Dispose();
-                }
+                wb?.Dispose();
             }
-            
-            // ✅ Warte damit Windows Datei-Lock GARANTIERT freigibt
-            System.Threading.Thread.Sleep(200);
+
+            Thread.Sleep(200);
         }
+
+        // ── Schreiben ─────────────────────────────────────────────────────────────
+
+        private static void WriteBlech(IXLWorksheet ws, IEnumerable<Models.MaterialItem> items)
+        {
+            for (int c = 0; c < HeaderBleche.Length; c++)
+                ws.Cell(1, c + 1).Value = HeaderBleche[c];
+
+            int r = 2;
+            foreach (var m in items)
+            {
+                ws.Cell(r, 1).Value  = m.MaterialArt;
+                ws.Cell(r, 2).Value  = m.Legierung;
+                ws.Cell(r, 3).Value  = m.Oberflaeche;
+                ws.Cell(r, 4).Value  = m.Guete;
+                ws.Cell(r, 5).Value  = m.Form;
+                ws.Cell(r, 6).Value  = m.Staerke;
+                ws.Cell(r, 7).Value  = m.Mass;
+                ws.Cell(r, 8).Value  = m.Stueckzahl;
+                ws.Cell(r, 9).Value  = m.Restnummer;
+                ws.Cell(r, 10).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 11).Value = m.Lagerort;
+                ws.Cell(r, 12).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 13).Value = m.AuftragNr;
+                ws.Cell(r, 14).Value = m.Lieferant;
+                ws.Cell(r, 15).Value = m.LieferscheinNr;
+                ws.Cell(r, 16).Value = (double)m.PreisProKg;
+                ws.Cell(r, 17).Value = m.AngelegtVon;
+                ws.Cell(r, 18).Value = m.GeaendertVon;
+                r++;
+            }
+
+            ws.Range(1, 1, Math.Max(1, r - 1), HeaderBleche.Length).SetAutoFilter();
+            ws.Columns().AdjustToContents();
+        }
+
+        private static void WriteRohr(IXLWorksheet ws, IEnumerable<Models.MaterialItem> items)
+        {
+            for (int c = 0; c < HeaderRohre.Length; c++)
+                ws.Cell(1, c + 1).Value = HeaderRohre[c];
+
+            int r = 2;
+            foreach (var m in items)
+            {
+                ws.Cell(r, 1).Value  = m.MaterialArt;
+                ws.Cell(r, 2).Value  = m.Legierung;
+                ws.Cell(r, 3).Value  = m.Oberflaeche;
+                ws.Cell(r, 4).Value  = m.Guete;
+                ws.Cell(r, 5).Value  = m.Durchmesser;
+                ws.Cell(r, 6).Value  = m.Staerke;       // Wandstärke
+                ws.Cell(r, 7).Value  = m.Laenge;
+                ws.Cell(r, 8).Value  = m.Stueckzahl;
+                ws.Cell(r, 9).Value  = m.Restnummer;
+                ws.Cell(r, 10).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 11).Value = m.Lagerort;
+                ws.Cell(r, 12).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 13).Value = m.AuftragNr;
+                ws.Cell(r, 14).Value = m.Lieferant;
+                ws.Cell(r, 15).Value = m.LieferscheinNr;
+                ws.Cell(r, 16).Value = (double)m.PreisProKg;
+                ws.Cell(r, 17).Value = m.AngelegtVon;
+                ws.Cell(r, 18).Value = m.GeaendertVon;
+                r++;
+            }
+
+            ws.Range(1, 1, Math.Max(1, r - 1), HeaderRohre.Length).SetAutoFilter();
+            ws.Columns().AdjustToContents();
+        }
+
+        private static void WriteProfil(IXLWorksheet ws, IEnumerable<Models.MaterialItem> items)
+        {
+            for (int c = 0; c < HeaderProfile.Length; c++)
+                ws.Cell(1, c + 1).Value = HeaderProfile[c];
+
+            int r = 2;
+            foreach (var m in items)
+            {
+                ws.Cell(r, 1).Value  = m.MaterialArt;
+                ws.Cell(r, 2).Value  = m.Legierung;
+                ws.Cell(r, 3).Value  = m.Oberflaeche;
+                ws.Cell(r, 4).Value  = m.Guete;
+                ws.Cell(r, 5).Value  = m.ProfilTyp;
+                ws.Cell(r, 6).Value  = m.ProfilHoehe;
+                ws.Cell(r, 7).Value  = m.ProfilBreite;
+                ws.Cell(r, 8).Value  = m.Staerke;       // Wandstärke
+                ws.Cell(r, 9).Value  = m.Laenge;
+                ws.Cell(r, 10).Value = m.Stueckzahl;
+                ws.Cell(r, 11).Value = m.Restnummer;
+                ws.Cell(r, 12).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 13).Value = m.Lagerort;
+                ws.Cell(r, 14).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 15).Value = m.AuftragNr;
+                ws.Cell(r, 16).Value = m.Lieferant;
+                ws.Cell(r, 17).Value = m.LieferscheinNr;
+                ws.Cell(r, 18).Value = (double)m.PreisProKg;
+                ws.Cell(r, 19).Value = m.AngelegtVon;
+                ws.Cell(r, 20).Value = m.GeaendertVon;
+                r++;
+            }
+
+            ws.Range(1, 1, Math.Max(1, r - 1), HeaderProfile.Length).SetAutoFilter();
+            ws.Columns().AdjustToContents();
+        }
+
+        // ── Lesen ─────────────────────────────────────────────────────────────────
 
         public static IEnumerable<Models.MaterialItem> Import(string filePath)
         {
@@ -133,134 +217,259 @@ namespace MaterialManager_V01
                 throw new FileNotFoundException("Excel file not found", filePath);
 
             var result = new List<Models.MaterialItem>();
-            
-            // ✅ RETRY-MECHANISMUS beim Laden (falls Excel gerade speichert)
+
             for (int attempt = 0; attempt < MAX_RETRY_ATTEMPTS; attempt++)
             {
                 XLWorkbook wb = null;
                 try
                 {
-                    // ✅ Öffne mit FileShare.ReadWrite (erlaubt gleichzeitigen Zugriff)
                     using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         wb = new XLWorkbook(stream);
-                        var ws = wb.Worksheets.First();
 
-                        var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
-                        if (lastRow < 2)
-                            return result;
-
-                        var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
-
-                        for (int r = 2; r <= lastRow; r++)
+                        // Rückwärtskompatibilität: altes Blatt heißt "Materialien" → als Bleche importieren
+                        foreach (var ws in wb.Worksheets)
                         {
-                            var matArt = ws.Cell(r, 1).GetString();
-                            var leg = ws.Cell(r, 2).GetString();
-                            var ober = ws.Cell(r, 3).GetString();
-                            var guete = ws.Cell(r, 4).GetString();
-                            var form = ws.Cell(r, 5).GetString();
-
-                            double sta = 0;
-                            var staCell = ws.Cell(r, 6).GetString();
-                            if (!string.IsNullOrWhiteSpace(staCell))
+                            var name = ws.Name;
+                            if (name.Equals("Bleche", StringComparison.OrdinalIgnoreCase) ||
+                                name.Equals("Materialien", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (!double.TryParse(staCell, NumberStyles.Any, CultureInfo.InvariantCulture, out sta))
-                                    double.TryParse(staCell, NumberStyles.Any, CultureInfo.CurrentCulture, out sta);
+                                result.AddRange(ReadBleche(ws));
                             }
-
-                            var mass = ws.Cell(r, 7).GetString();
-
-                            int stueckzahl = 1;
-                            var stueckzahlCell = ws.Cell(r, 8).GetString();
-                            if (!string.IsNullOrWhiteSpace(stueckzahlCell))
+                            else if (name.Equals("Rohre", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (!int.TryParse(stueckzahlCell, out stueckzahl))
-                                    stueckzahl = 1;
+                                result.AddRange(ReadRohre(ws));
                             }
-
-                            var rest = ws.Cell(r, 9).GetString();
-
-                            DateTime? datum = null;
-                            var datumCell = ws.Cell(r, 10).GetString();
-                            if (!string.IsNullOrWhiteSpace(datumCell))
+                            else if (name.Equals("Profile", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (DateTime.TryParse(datumCell, out var parsedDatum))
-                                    datum = parsedDatum;
+                                result.AddRange(ReadProfile(ws));
                             }
-
-                            var lager = MaterialManager_V01.Services.RegalService.DetermineLagerort(matArt, leg, form, sta, mass, null);
-
-                            if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
-                                rest = MaterialManager_V01.Models.MaterialDefinitions.NeueRestnummer();
-
-                            if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(mass))
-                                continue;
-
-                            DateTime? aenderungsDatum = null;
-                            var aenderungCell = lastCol >= 12 ? ws.Cell(r, 12).GetString() : "";
-                            if (!string.IsNullOrWhiteSpace(aenderungCell))
-                            {
-                                if (DateTime.TryParse(aenderungCell, out var parsedAenderung))
-                                    aenderungsDatum = parsedAenderung;
-                            }
-
-                            var auftragNr = lastCol >= 13 ? ws.Cell(r, 13).GetString() : "";
-                            var lieferant = lastCol >= 14 ? ws.Cell(r, 14).GetString() : "";
-                            var lieferscheinNr = lastCol >= 15 ? ws.Cell(r, 15).GetString() : "";
-
-                            decimal preisProKg = 0m;
-                            var preisCell = lastCol >= 16 ? ws.Cell(r, 16).GetString() : "";
-                            if (!string.IsNullOrWhiteSpace(preisCell))
-                            {
-                                if (!decimal.TryParse(preisCell, NumberStyles.Any, CultureInfo.InvariantCulture, out preisProKg))
-                                    decimal.TryParse(preisCell, NumberStyles.Any, CultureInfo.CurrentCulture, out preisProKg);
-                            }
-
-                            var angelegtVon = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
-                            var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
-
-                            result.Add(new Models.MaterialItem
-                            {
-                                MaterialArt = matArt,
-                                Legierung = leg,
-                                Oberflaeche = ober,
-                                Guete = guete,
-                                Form = form,
-                                Staerke = sta,
-                                Mass = mass,
-                                Stueckzahl = stueckzahl,
-                                Restnummer = rest,
-                                Datum = datum,
-                                Lagerort = lager,
-                                AenderungsDatum = aenderungsDatum,
-                                AuftragNr = auftragNr,
-                                Lieferant = lieferant,
-                                LieferscheinNr = lieferscheinNr,
-                                PreisProKg = preisProKg,
-                                AngelegtVon = angelegtVon,
-                                GeaendertVon = geaendertVon
-                            });
                         }
                     }
-                    
-                    System.Diagnostics.Debug.WriteLine($"[ExcelService.Import] Erfolgreich geladen nach {attempt + 1} Versuch(en): {result.Count} Materialien");
+
+                    System.Diagnostics.Debug.WriteLine($"[ExcelService.Import] {result.Count} Materialien geladen nach {attempt + 1} Versuch(en)");
                     return result;
                 }
                 catch (IOException ex) when (attempt < MAX_RETRY_ATTEMPTS - 1)
                 {
                     System.Diagnostics.Debug.WriteLine($"[ExcelService.Import] Versuch {attempt + 1}/{MAX_RETRY_ATTEMPTS} fehlgeschlagen: {ex.Message}");
                     Thread.Sleep(RETRY_DELAY_MS);
+                    result.Clear();
                 }
                 finally
                 {
-                    if (wb != null)
-                    {
-                        wb.Dispose();
-                    }
+                    wb?.Dispose();
                 }
             }
 
             throw new IOException($"Konnte Datei nach {MAX_RETRY_ATTEMPTS} Versuchen nicht laden: {filePath}");
+        }
+
+        private static IEnumerable<Models.MaterialItem> ReadBleche(IXLWorksheet ws)
+        {
+            var result = new List<Models.MaterialItem>();
+            var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+            if (lastRow < 2) return result;
+            var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+
+            for (int r = 2; r <= lastRow; r++)
+            {
+                var matArt = ws.Cell(r, 1).GetString();
+                var leg    = ws.Cell(r, 2).GetString();
+                var ober   = ws.Cell(r, 3).GetString();
+                var guete  = ws.Cell(r, 4).GetString();
+                var form   = ws.Cell(r, 5).GetString();
+                var sta    = ParseDouble(ws.Cell(r, 6).GetString());
+                var mass   = ws.Cell(r, 7).GetString();
+                var stueck = ParseInt(ws.Cell(r, 8).GetString(), 1);
+                var rest   = ws.Cell(r, 9).GetString();
+                var datum  = ParseDate(ws.Cell(r, 10).GetString());
+                var lager  = MaterialManager_V01.Services.RegalService.DetermineLagerort(matArt, leg, form, sta, mass, null);
+
+                if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
+                    rest = Models.MaterialDefinitions.NeueRestnummer();
+
+                if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(mass))
+                    continue;
+
+                var aenderung    = lastCol >= 12 ? ParseDate(ws.Cell(r, 12).GetString()) : null;
+                var auftragNr    = lastCol >= 13 ? ws.Cell(r, 13).GetString() : "";
+                var lieferant    = lastCol >= 14 ? ws.Cell(r, 14).GetString() : "";
+                var lieferschein = lastCol >= 15 ? ws.Cell(r, 15).GetString() : "";
+                var preis        = lastCol >= 16 ? ParseDecimal(ws.Cell(r, 16).GetString()) : 0m;
+                var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
+                var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
+
+                result.Add(new Models.MaterialItem
+                {
+                    Kategorie      = Models.MaterialKategorie.Blech,
+                    MaterialArt    = matArt,
+                    Legierung      = leg,
+                    Oberflaeche    = ober,
+                    Guete          = guete,
+                    Form           = form,
+                    Staerke        = sta,
+                    Mass           = mass,
+                    Stueckzahl     = stueck,
+                    Restnummer     = rest,
+                    Datum          = datum,
+                    Lagerort       = lager,
+                    AenderungsDatum = aenderung,
+                    AuftragNr      = auftragNr,
+                    Lieferant      = lieferant,
+                    LieferscheinNr = lieferschein,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon
+                });
+            }
+            return result;
+        }
+
+        private static IEnumerable<Models.MaterialItem> ReadRohre(IXLWorksheet ws)
+        {
+            var result = new List<Models.MaterialItem>();
+            var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+            if (lastRow < 2) return result;
+            var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+
+            for (int r = 2; r <= lastRow; r++)
+            {
+                var matArt     = ws.Cell(r, 1).GetString();
+                var leg        = ws.Cell(r, 2).GetString();
+                var ober       = ws.Cell(r, 3).GetString();
+                var guete      = ws.Cell(r, 4).GetString();
+                var dm         = ParseDouble(ws.Cell(r, 5).GetString());
+                var wand       = ParseDouble(ws.Cell(r, 6).GetString());
+                var laenge     = ParseDouble(ws.Cell(r, 7).GetString());
+                var stueck     = ParseInt(ws.Cell(r, 8).GetString(), 1);
+                var rest       = ws.Cell(r, 9).GetString();
+                var datum      = ParseDate(ws.Cell(r, 10).GetString());
+                var lager      = ws.Cell(r, 11).GetString();
+                var aenderung  = lastCol >= 12 ? ParseDate(ws.Cell(r, 12).GetString()) : null;
+                var auftragNr  = lastCol >= 13 ? ws.Cell(r, 13).GetString() : "";
+                var lieferant  = lastCol >= 14 ? ws.Cell(r, 14).GetString() : "";
+                var lieferschein = lastCol >= 15 ? ws.Cell(r, 15).GetString() : "";
+                var preis      = lastCol >= 16 ? ParseDecimal(ws.Cell(r, 16).GetString()) : 0m;
+                var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
+                var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
+
+                if (string.IsNullOrWhiteSpace(matArt) && dm == 0) continue;
+
+                result.Add(new Models.MaterialItem
+                {
+                    Kategorie      = Models.MaterialKategorie.Rohr,
+                    MaterialArt    = matArt,
+                    Legierung      = leg,
+                    Oberflaeche    = ober,
+                    Guete          = guete,
+                    Durchmesser    = dm,
+                    Staerke        = wand,
+                    Laenge         = laenge,
+                    Stueckzahl     = stueck,
+                    Restnummer     = rest,
+                    Datum          = datum,
+                    Lagerort       = string.IsNullOrWhiteSpace(lager) ? "Rohrlager" : lager,
+                    AenderungsDatum = aenderung,
+                    AuftragNr      = auftragNr,
+                    Lieferant      = lieferant,
+                    LieferscheinNr = lieferschein,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon
+                });
+            }
+            return result;
+        }
+
+        private static IEnumerable<Models.MaterialItem> ReadProfile(IXLWorksheet ws)
+        {
+            var result = new List<Models.MaterialItem>();
+            var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+            if (lastRow < 2) return result;
+            var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+
+            for (int r = 2; r <= lastRow; r++)
+            {
+                var matArt     = ws.Cell(r, 1).GetString();
+                var leg        = ws.Cell(r, 2).GetString();
+                var ober       = ws.Cell(r, 3).GetString();
+                var guete      = ws.Cell(r, 4).GetString();
+                var profilTyp  = ws.Cell(r, 5).GetString();
+                var hoehe      = ParseDouble(ws.Cell(r, 6).GetString());
+                var breite     = ParseDouble(ws.Cell(r, 7).GetString());
+                var wand       = ParseDouble(ws.Cell(r, 8).GetString());
+                var laenge     = ParseDouble(ws.Cell(r, 9).GetString());
+                var stueck     = ParseInt(ws.Cell(r, 10).GetString(), 1);
+                var rest       = ws.Cell(r, 11).GetString();
+                var datum      = ParseDate(ws.Cell(r, 12).GetString());
+                var lager      = ws.Cell(r, 13).GetString();
+                var aenderung  = lastCol >= 14 ? ParseDate(ws.Cell(r, 14).GetString()) : null;
+                var auftragNr  = lastCol >= 15 ? ws.Cell(r, 15).GetString() : "";
+                var lieferant  = lastCol >= 16 ? ws.Cell(r, 16).GetString() : "";
+                var lieferschein = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
+                var preis      = lastCol >= 18 ? ParseDecimal(ws.Cell(r, 18).GetString()) : 0m;
+                var angelegtVon  = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
+                var geaendertVon = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
+
+                if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(profilTyp)) continue;
+
+                result.Add(new Models.MaterialItem
+                {
+                    Kategorie      = Models.MaterialKategorie.Profil,
+                    MaterialArt    = matArt,
+                    Legierung      = leg,
+                    Oberflaeche    = ober,
+                    Guete          = guete,
+                    ProfilTyp      = profilTyp,
+                    ProfilHoehe    = hoehe,
+                    ProfilBreite   = breite,
+                    Staerke        = wand,
+                    Laenge         = laenge,
+                    Stueckzahl     = stueck,
+                    Restnummer     = rest,
+                    Datum          = datum,
+                    Lagerort       = string.IsNullOrWhiteSpace(lager) ? "Profillager" : lager,
+                    AenderungsDatum = aenderung,
+                    AuftragNr      = auftragNr,
+                    Lieferant      = lieferant,
+                    LieferscheinNr = lieferschein,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon
+                });
+            }
+            return result;
+        }
+
+        // ── Hilfsmethoden ─────────────────────────────────────────────────────────
+
+        private static double ParseDouble(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return 0;
+            if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v)) return v;
+            if (double.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+            return 0;
+        }
+
+        private static int ParseInt(string s, int fallback = 0)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return fallback;
+            return int.TryParse(s, out var v) ? v : fallback;
+        }
+
+        private static decimal ParseDecimal(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return 0m;
+            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v)) return v;
+            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+            return 0m;
+        }
+
+        private static DateTime? ParseDate(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return null;
+            return DateTime.TryParse(s, out var d) ? d : (DateTime?)null;
         }
     }
 }

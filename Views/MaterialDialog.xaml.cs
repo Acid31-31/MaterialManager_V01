@@ -9,39 +9,46 @@ namespace MaterialManager_V01.Views
 {
     public partial class MaterialDialog : Window, INotifyPropertyChanged
     {
-        private const double DefaultDialogWidth = 420;
-        private const double DefaultDialogHeight = 620;
+        private const double DefaultDialogWidth = 440;
+        private const double DefaultDialogHeight = 680;
         private const double MinimumDialogWidth = 360;
-        private const double MinimumDialogHeight = 440;
+        private const double MinimumDialogHeight = 460;
 
-        public List<string> MaterialArten { get; } =
-            new() { "Stahl", "Edelstahl", "Aluminium" };
+        // ── Kategorien ────────────────────────────────────────────────────────
+        public List<string> Kategorien { get; } = new() { "Blech", "Rohr", "Profil" };
+
+        private string _selectedKategorie = "Blech";
+        public string SelectedKategorie
+        {
+            get => _selectedKategorie;
+            set
+            {
+                if (_selectedKategorie == value) return;
+                _selectedKategorie = value;
+                OnPropertyChanged(nameof(SelectedKategorie));
+                OnPropertyChanged(nameof(BlechFelderVisible));
+                OnPropertyChanged(nameof(RohrFelderVisible));
+                OnPropertyChanged(nameof(ProfilFelderVisible));
+                OnPropertyChanged(nameof(GeschaetzterWert));
+                UpdateShelfStats();
+            }
+        }
+
+        public Visibility BlechFelderVisible  => _selectedKategorie == "Blech"  ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility RohrFelderVisible   => _selectedKategorie == "Rohr"   ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ProfilFelderVisible => _selectedKategorie == "Profil" ? Visibility.Visible : Visibility.Collapsed;
+
+        // ── Gemeinsam ─────────────────────────────────────────────────────────
+        public List<string> MaterialArten { get; } = new() { "Stahl", "Edelstahl", "Aluminium" };
 
         private List<string> _legierungen = new();
-        public List<string> Legierungen
-        {
-            get => _legierungen;
-            set { _legierungen = value; OnPropertyChanged(nameof(Legierungen)); }
-        }
+        public List<string> Legierungen { get => _legierungen; set { _legierungen = value; OnPropertyChanged(nameof(Legierungen)); } }
 
         private List<string> _oberflaechen = new();
-        public List<string> Oberflaechen
-        {
-            get => _oberflaechen;
-            set { _oberflaechen = value; OnPropertyChanged(nameof(Oberflaechen)); }
-        }
+        public List<string> Oberflaechen { get => _oberflaechen; set { _oberflaechen = value; OnPropertyChanged(nameof(Oberflaechen)); } }
 
         private List<string> _gueten = new();
-        public List<string> Gueten
-        {
-            get => _gueten;
-            set { _gueten = value; OnPropertyChanged(nameof(Gueten)); }
-        }
-
-        public List<string> Formen { get; } =
-            new() { "GF", "MF", "KF", "Rest" };
-
-        public double[] Staerken => MaterialDefinitions.StandardStaerken;
+        public List<string> Gueten { get => _gueten; set { _gueten = value; OnPropertyChanged(nameof(Gueten)); } }
 
         private string _selectedMaterialArt = "";
         public string SelectedMaterialArt
@@ -66,6 +73,30 @@ namespace MaterialManager_V01.Views
         private string _selectedGuete = "";
         public string SelectedGuete { get => _selectedGuete; set { _selectedGuete = value; OnPropertyChanged(nameof(SelectedGuete)); } }
 
+        private int _stueckzahl = 1;
+        public int Stueckzahl { get => _stueckzahl; set { _stueckzahl = value; OnPropertyChanged(nameof(Stueckzahl)); } }
+
+        private string _restnummer = "";
+        public string Restnummer { get => _restnummer; set { _restnummer = value; OnPropertyChanged(nameof(Restnummer)); } }
+
+        private DateTime? _selectedDatum = DateTime.Today;
+        public DateTime? SelectedDatum { get => _selectedDatum; set { _selectedDatum = value; OnPropertyChanged(nameof(SelectedDatum)); } }
+
+        private string _selectedLieferant = "";
+        public string SelectedLieferant { get => _selectedLieferant; set { _selectedLieferant = value; OnPropertyChanged(nameof(SelectedLieferant)); } }
+
+        private string _selectedLieferscheinNr = "";
+        public string SelectedLieferscheinNr { get => _selectedLieferscheinNr; set { _selectedLieferscheinNr = value; OnPropertyChanged(nameof(SelectedLieferscheinNr)); } }
+
+        private string _preisProKg = "0,00";
+        public string PreisProKg { get => _preisProKg; set { _preisProKg = value; OnPropertyChanged(nameof(PreisProKg)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        public Visibility GueteVisible => SelectedMaterialArt == "Aluminium" ? Visibility.Visible : Visibility.Collapsed;
+
+        // ── Blech-spezifisch ─────────────────────────────────────────────────
+        public List<string> Formen { get; } = new() { "GF", "MF", "KF", "Rest" };
+        public double[] Staerken => MaterialDefinitions.StandardStaerken;
+
         private string _selectedForm = "";
         public string SelectedForm
         {
@@ -85,82 +116,96 @@ namespace MaterialManager_V01.Views
         }
 
         private double _selectedStaerke;
-        public double SelectedStaerke { get => _selectedStaerke; set { _selectedStaerke = value; OnPropertyChanged(nameof(SelectedStaerke)); } }
+        public double SelectedStaerke { get => _selectedStaerke; set { _selectedStaerke = value; OnPropertyChanged(nameof(SelectedStaerke)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
         private string _mass = "";
-        public string Mass { get => _mass; set { _mass = value; OnPropertyChanged(nameof(Mass)); } }
+        public string Mass { get => _mass; set { _mass = value; OnPropertyChanged(nameof(Mass)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        private int _stueckzahl = 1;
-        public int Stueckzahl { get => _stueckzahl; set { _stueckzahl = value; OnPropertyChanged(nameof(Stueckzahl)); } }
-
-        private string _restnummer = "";
-        public string Restnummer { get => _restnummer; set { _restnummer = value; OnPropertyChanged(nameof(Restnummer)); } }
-
-        private DateTime? _selectedDatum = DateTime.Today;
-        public DateTime? SelectedDatum { get => _selectedDatum; set { _selectedDatum = value; OnPropertyChanged(nameof(SelectedDatum)); } }
-
-        // Beschriftung ändert sich je nach Form
         public string DatumLabel => SelectedForm == "Rest" ? "Erstelldatum:" : "Lieferdatum:";
+        public bool IsMassEditable => SelectedForm == "Rest";
+        public Visibility StueckzahlVisible => SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility LieferantVisible  => SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility EtiquetteVisible  => SelectedForm == "Rest" ? Visibility.Visible : Visibility.Collapsed;
 
-        // Lieferant
-        private string _selectedLieferant = "";
-        public string SelectedLieferant { get => _selectedLieferant; set { _selectedLieferant = value; OnPropertyChanged(nameof(SelectedLieferant)); } }
+        // ── Rohr-spezifisch ──────────────────────────────────────────────────
+        public double[] RohrDurchmesser  => MaterialDefinitions.RohrStandardDurchmesser;
+        public double[] RohrWandstaerken => MaterialDefinitions.RohrStandardWandstaerken;
+        public int[]    StandardLaengen  => MaterialDefinitions.StandardLaengen;
 
-        // Lieferschein-Nr
-        private string _selectedLieferscheinNr = "";
-        public string SelectedLieferscheinNr { get => _selectedLieferscheinNr; set { _selectedLieferscheinNr = value; OnPropertyChanged(nameof(SelectedLieferscheinNr)); } }
+        private double _selectedDurchmesser;
+        public double SelectedDurchmesser { get => _selectedDurchmesser; set { _selectedDurchmesser = value; OnPropertyChanged(nameof(SelectedDurchmesser)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        // Preis pro kg (Feature 8)
-        private string _preisProKg = "0,00";
-        public string PreisProKg { get => _preisProKg; set { _preisProKg = value; OnPropertyChanged(nameof(PreisProKg)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        private double _selectedRohrWand;
+        public double SelectedRohrWand { get => _selectedRohrWand; set { _selectedRohrWand = value; OnPropertyChanged(nameof(SelectedRohrWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
-        // Geschätzter Wert (berechnet)
+        private double _selectedLaenge;
+        public double SelectedLaenge { get => _selectedLaenge; set { _selectedLaenge = value; OnPropertyChanged(nameof(SelectedLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        // ── Profil-spezifisch ────────────────────────────────────────────────
+        public string[] ProfilTypen => MaterialDefinitions.ProfilTypen;
+        public double[] ProfilHoehen => MaterialDefinitions.ProfilStandardHoehen;
+
+        private string _selectedProfilTyp = "";
+        public string SelectedProfilTyp { get => _selectedProfilTyp; set { _selectedProfilTyp = value; OnPropertyChanged(nameof(SelectedProfilTyp)); } }
+
+        private double _selectedProfilHoehe;
+        public double SelectedProfilHoehe { get => _selectedProfilHoehe; set { _selectedProfilHoehe = value; OnPropertyChanged(nameof(SelectedProfilHoehe)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        private double _selectedProfilBreite;
+        public double SelectedProfilBreite { get => _selectedProfilBreite; set { _selectedProfilBreite = value; OnPropertyChanged(nameof(SelectedProfilBreite)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        private double _selectedProfilWand;
+        public double SelectedProfilWand { get => _selectedProfilWand; set { _selectedProfilWand = value; OnPropertyChanged(nameof(SelectedProfilWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        private double _selectedProfilLaenge;
+        public double SelectedProfilLaenge { get => _selectedProfilLaenge; set { _selectedProfilLaenge = value; OnPropertyChanged(nameof(SelectedProfilLaenge)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        // ── Geschätzter Wert ─────────────────────────────────────────────────
         public string GeschaetzterWert
         {
             get
             {
-                if (decimal.TryParse(_preisProKg.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var preis) && preis > 0)
+                if (!decimal.TryParse(_preisProKg.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var preis) || preis <= 0)
+                    return "0,00 €";
+
+                double dichte = _selectedMaterialArt == "Stahl" ? 7850 : _selectedMaterialArt == "Edelstahl" ? 8000 : 2700;
+                double gewicht = 0;
+
+                if (_selectedKategorie == "Blech" && !string.IsNullOrWhiteSpace(_mass))
                 {
-                    // Geschätzte Masse berechnen
-                    if (!string.IsNullOrWhiteSpace(_mass))
-                    {
-                        var parts = _mass.Split('x');
-                        if (parts.Length == 2 && int.TryParse(parts[0], out var l) && int.TryParse(parts[1], out var b))
-                        {
-                            double dichte = _selectedMaterialArt == "Stahl" ? 7850 : _selectedMaterialArt == "Edelstahl" ? 8000 : 2700;
-                            double gewicht = (l / 1000.0) * (b / 1000.0) * (_selectedStaerke / 1000.0) * dichte * _stueckzahl;
-                            var wert = (decimal)gewicht * preis;
-                            return $"≈ {wert:N2} €";
-                        }
-                    }
+                    var parts = _mass.Split('x');
+                    if (parts.Length == 2 && int.TryParse(parts[0], out var l) && int.TryParse(parts[1], out var b))
+                        gewicht = (l / 1000.0) * (b / 1000.0) * (_selectedStaerke / 1000.0) * dichte * _stueckzahl;
                 }
-                return "0,00 €";
+                else if (_selectedKategorie == "Rohr" && _selectedDurchmesser > 0 && _selectedRohrWand > 0 && _selectedLaenge > 0)
+                {
+                    double ra = _selectedDurchmesser / 2.0 / 1000.0;
+                    double ri = (_selectedDurchmesser / 2.0 - _selectedRohrWand) / 1000.0;
+                    gewicht = Math.PI * (ra * ra - ri * ri) * (_selectedLaenge / 1000.0) * dichte * _stueckzahl;
+                }
+                else if (_selectedKategorie == "Profil" && _selectedProfilHoehe > 0 && _selectedProfilWand > 0 && _selectedProfilLaenge > 0)
+                {
+                    double b = _selectedProfilBreite > 0 ? _selectedProfilBreite : _selectedProfilHoehe;
+                    double querschnitt = 2 * ((_selectedProfilHoehe + b) * _selectedProfilWand) / 1e6;
+                    gewicht = querschnitt * (_selectedProfilLaenge / 1000.0) * dichte * _stueckzahl;
+                }
+
+                return gewicht > 0 ? $"≈ {(decimal)gewicht * preis:N2} €" : "0,00 €";
             }
         }
 
-        // Lieferant nur bei GF/MF/KF sichtbar
-        public Visibility LieferantVisible =>
-            SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF"
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+        // ── Shelf-Stats ───────────────────────────────────────────────────────
+        private double _currentLoadKg;
+        public double CurrentLoadKg { get => _currentLoadKg; set { _currentLoadKg = value; OnPropertyChanged(nameof(CurrentLoadKg)); } }
 
-        // Etikett-Button bei Rest sichtbar (für QR-Code)
-        public Visibility EtiquetteVisible =>
-            SelectedForm == "Rest"
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+        private double _capacityKg;
+        public double CapacityKg { get => _capacityKg; set { _capacityKg = value; OnPropertyChanged(nameof(CapacityKg)); } }
 
-        public Visibility GueteVisible =>
-            SelectedMaterialArt == "Aluminium"
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+        private double _utilizationPercent;
+        public double UtilizationPercent { get => _utilizationPercent; set { _utilizationPercent = value; OnPropertyChanged(nameof(UtilizationPercent)); } }
 
-        public Visibility StueckzahlVisible =>
-            SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF"
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
-        public bool IsMassEditable => SelectedForm == "Rest";
+        private double _totalInventoryWeight;
+        public double TotalInventoryWeight { get => _totalInventoryWeight; set { _totalInventoryWeight = value; OnPropertyChanged(nameof(TotalInventoryWeight)); } }
 
         public MaterialItem Material { get; private set; }
 
@@ -174,12 +219,14 @@ namespace MaterialManager_V01.Views
         private string _originalAuftragNr = "";
         private string _originalLagerort = "";
 
+        private bool _canSave = true;
+        public bool CanSave { get => _canSave; set { _canSave = value; OnPropertyChanged(nameof(CanSave)); } }
+
         public MaterialDialog()
         {
             InitializeComponent();
             Loaded += (_, _) => ApplyResponsiveLayout();
             DataContext = this;
-            // initialize defaults
             Legierungen = new List<string>();
             Oberflaechen = new List<string>();
             Gueten = new List<string>();
@@ -191,13 +238,12 @@ namespace MaterialManager_V01.Views
         private void ApplyResponsiveLayout()
         {
             var workArea = SystemParameters.WorkArea;
-            MaxWidth = Math.Max(MinimumDialogWidth, workArea.Width - 40);
+            MaxWidth  = Math.Max(MinimumDialogWidth,  workArea.Width  - 40);
             MaxHeight = Math.Max(MinimumDialogHeight, workArea.Height - 40);
-            Width = Math.Min(MaxWidth, Math.Max(MinimumDialogWidth, DefaultDialogWidth));
+            Width  = Math.Min(MaxWidth,  Math.Max(MinimumDialogWidth,  DefaultDialogWidth));
             Height = Math.Min(MaxHeight, Math.Max(MinimumDialogHeight, DefaultDialogHeight));
         }
 
-        // overload to accept current inventory to compute shelf utilization
         public MaterialDialog(IEnumerable<MaterialItem> inventory) : this()
         {
             _inventory = inventory ?? new List<MaterialItem>();
@@ -209,9 +255,6 @@ namespace MaterialManager_V01.Views
             UpdateShelfStats();
         }
 
-        /// <summary>
-        /// Aktiviert Bearbeitungsmodus — Originaldatum bleibt, Änderungsdatum wird gesetzt
-        /// </summary>
         public void SetEditMode(MaterialItem original)
         {
             _isEdit = true;
@@ -222,20 +265,39 @@ namespace MaterialManager_V01.Views
             _originalAuftragNr = original.AuftragNr;
             _originalLagerort = original.Lagerort;
 
+            SelectedKategorie = original.Kategorie.ToString();
             SelectedMaterialArt = original.MaterialArt;
             SelectedLegierung = original.Legierung;
             SelectedOberflaeche = original.Oberflaeche;
             SelectedGuete = original.Guete;
-            SelectedForm = original.Form;
-            SelectedStaerke = original.Staerke;
-            Mass = original.Mass;
             Stueckzahl = original.Stueckzahl;
             Restnummer = original.Restnummer;
-
             SelectedDatum = original.Datum ?? DateTime.Today;
             SelectedLieferant = original.Lieferant;
             SelectedLieferscheinNr = original.LieferscheinNr;
             PreisProKg = original.PreisProKg.ToString("F2", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',');
+
+            switch (original.Kategorie)
+            {
+                case MaterialKategorie.Blech:
+                    SelectedForm = original.Form;
+                    SelectedStaerke = original.Staerke;
+                    Mass = original.Mass;
+                    break;
+                case MaterialKategorie.Rohr:
+                    SelectedDurchmesser = original.Durchmesser;
+                    SelectedRohrWand = original.Staerke;
+                    SelectedLaenge = original.Laenge;
+                    break;
+                case MaterialKategorie.Profil:
+                    SelectedProfilTyp = original.ProfilTyp;
+                    SelectedProfilHoehe = original.ProfilHoehe;
+                    SelectedProfilBreite = original.ProfilBreite;
+                    SelectedProfilWand = original.Staerke;
+                    SelectedProfilLaenge = original.Laenge;
+                    break;
+            }
+
             Title = "Material bearbeiten";
             OnPropertyChanged(nameof(EtiquetteVisible));
         }
@@ -247,19 +309,10 @@ namespace MaterialManager_V01.Views
             _originalGeaendertVon = existing.GeaendertVon;
             _originalAuftragNr = existing.AuftragNr;
             _originalLagerort = existing.Lagerort;
-            // populate lists first
-            SelectedMaterialArt = existing.MaterialArt;
-            SelectedLegierung = existing.Legierung;
-            SelectedOberflaeche = existing.Oberflaeche;
-            SelectedGuete = existing.Guete;
-            SelectedForm = existing.Form;
-            SelectedStaerke = existing.Staerke;
-            Mass = existing.Mass;
-            Stueckzahl = existing.Stueckzahl;
-            Restnummer = existing.Restnummer;
             _originalDatum = existing.Datum;
             _originalAenderungsDatum = existing.AenderungsDatum;
             SelectedDatum = existing.Datum ?? DateTime.Today;
+            SetEditMode(existing);
         }
 
         private void UpdateLegierungenUndOberflaechen()
@@ -271,7 +324,6 @@ namespace MaterialManager_V01.Views
                 Gueten = new List<string>();
                 return;
             }
-
             if (MaterialDefinitions.Legierungen.TryGetValue(SelectedMaterialArt, out var lg))
                 Legierungen = new List<string>(lg);
             else
@@ -294,27 +346,14 @@ namespace MaterialManager_V01.Views
             }
             else if (SelectedForm == "Rest")
             {
-                Mass = string.Empty; // user must enter
+                Mass = string.Empty;
             }
-
             UpdateShelfStats();
         }
 
-        // Shelf stats bindings
-        private double _currentLoadKg;
-        public double CurrentLoadKg { get => _currentLoadKg; set { _currentLoadKg = value; OnPropertyChanged(nameof(CurrentLoadKg)); } }
-
-        private double _capacityKg;
-        public double CapacityKg { get => _capacityKg; set { _capacityKg = value; OnPropertyChanged(nameof(CapacityKg)); } }
-
-        private double _utilizationPercent;
-        public double UtilizationPercent { get => _utilizationPercent; set { _utilizationPercent = value; OnPropertyChanged(nameof(UtilizationPercent)); } }
-
         private void UpdateShelfStats()
         {
-            // determine target lagerort for the selected form
             var lagerort = SelectedForm == "Rest" ? "Restregal" : SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? "Tafelregal" : "Palette";
-
             CapacityKg = Services.LagerService.GetCapacity(lagerort);
             CurrentLoadKg = Services.LagerService.CalculateCurrentLoad(_inventory, lagerort);
             UtilizationPercent = Services.LagerService.ComputeUtilizationPercent(CurrentLoadKg, CapacityKg);
@@ -323,7 +362,6 @@ namespace MaterialManager_V01.Views
 
         private void Inventory_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            // Recompute stats on collection changes
             UpdateShelfStats();
         }
 
@@ -334,58 +372,109 @@ namespace MaterialManager_V01.Views
                 _inventoryNotifier.CollectionChanged -= Inventory_CollectionChanged;
         }
 
-        private double _totalInventoryWeight;
-        public double TotalInventoryWeight { get => _totalInventoryWeight; set { _totalInventoryWeight = value; OnPropertyChanged(nameof(TotalInventoryWeight)); } }
-
         private void OnOk(object sender, RoutedEventArgs e)
         {
             Keyboard.ClearFocus();
 
-            if (SelectedForm == "Rest")
-            {
-                Restnummer = string.IsNullOrWhiteSpace(Restnummer) ? MaterialDefinitions.NeueRestnummer() : Restnummer;
-                Stueckzahl = 1; // Reste haben immer Stückzahl 1
-            }
-
             var currentUser = Services.OperatorIdentityService.CurrentOperatorName;
             var angelegtVon = _isEdit && !string.IsNullOrWhiteSpace(_originalAngelegtVon) ? _originalAngelegtVon : currentUser;
             var geaendertVon = _isEdit ? currentUser : string.Empty;
+            var preis = decimal.TryParse(PreisProKg.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var p) ? p : 0m;
 
-            Material = new MaterialItem
+            var kat = _selectedKategorie switch
             {
-                MaterialArt = SelectedMaterialArt,
-                Legierung = SelectedLegierung,
-                Oberflaeche = SelectedOberflaeche,
-                Guete = SelectedGuete,
-                Form = SelectedForm,
-                Staerke = SelectedStaerke,
-                Mass = Mass,
-                Stueckzahl = Stueckzahl,
-                Restnummer = Restnummer,
-                Datum = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
-                AenderungsDatum = _isEdit ? DateTime.Now : null,
-                Lagerort = _isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
-                    ? _originalLagerort
-                    : MaterialManager_V01.Services.RegalService.DetermineLagerort(
-                        SelectedMaterialArt,
-                        SelectedLegierung,
-                        SelectedForm,
-                        SelectedStaerke,
-                        Mass,
-                        _inventory),
-                Lieferant = SelectedLieferant,
-                LieferscheinNr = SelectedLieferscheinNr,
-                PreisProKg = decimal.TryParse(PreisProKg.Replace(',', '.'), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var preis) ? preis : 0m,
-                AngelegtVon = angelegtVon,
-                GeaendertVon = geaendertVon,
-                AuftragNr = _isEdit ? _originalAuftragNr : string.Empty
+                "Rohr"   => MaterialKategorie.Rohr,
+                "Profil" => MaterialKategorie.Profil,
+                _        => MaterialKategorie.Blech
             };
+
+            if (kat == MaterialKategorie.Blech)
+            {
+                if (SelectedForm == "Rest")
+                {
+                    Restnummer = string.IsNullOrWhiteSpace(Restnummer) ? MaterialDefinitions.NeueRestnummer() : Restnummer;
+                    Stueckzahl = 1;
+                }
+                Material = new MaterialItem
+                {
+                    Kategorie      = MaterialKategorie.Blech,
+                    MaterialArt    = SelectedMaterialArt,
+                    Legierung      = SelectedLegierung,
+                    Oberflaeche    = SelectedOberflaeche,
+                    Guete          = SelectedGuete,
+                    Form           = SelectedForm,
+                    Staerke        = SelectedStaerke,
+                    Mass           = Mass,
+                    Stueckzahl     = Stueckzahl,
+                    Restnummer     = Restnummer,
+                    Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
+                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    Lagerort       = _isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
+                                        ? _originalLagerort
+                                        : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, SelectedStaerke, Mass, _inventory),
+                    Lieferant      = SelectedLieferant,
+                    LieferscheinNr = SelectedLieferscheinNr,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon,
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                };
+            }
+            else if (kat == MaterialKategorie.Rohr)
+            {
+                Material = new MaterialItem
+                {
+                    Kategorie      = MaterialKategorie.Rohr,
+                    MaterialArt    = SelectedMaterialArt,
+                    Legierung      = SelectedLegierung,
+                    Oberflaeche    = SelectedOberflaeche,
+                    Guete          = SelectedGuete,
+                    Durchmesser    = SelectedDurchmesser,
+                    Staerke        = SelectedRohrWand,
+                    Laenge         = SelectedLaenge,
+                    Stueckzahl     = Stueckzahl,
+                    Restnummer     = Restnummer,
+                    Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
+                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    Lagerort       = "Rohrlager",
+                    Lieferant      = SelectedLieferant,
+                    LieferscheinNr = SelectedLieferscheinNr,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon,
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                };
+            }
+            else
+            {
+                Material = new MaterialItem
+                {
+                    Kategorie      = MaterialKategorie.Profil,
+                    MaterialArt    = SelectedMaterialArt,
+                    Legierung      = SelectedLegierung,
+                    Oberflaeche    = SelectedOberflaeche,
+                    Guete          = SelectedGuete,
+                    ProfilTyp      = SelectedProfilTyp,
+                    ProfilHoehe    = SelectedProfilHoehe,
+                    ProfilBreite   = SelectedProfilBreite,
+                    Staerke        = SelectedProfilWand,
+                    Laenge         = SelectedProfilLaenge,
+                    Stueckzahl     = Stueckzahl,
+                    Restnummer     = Restnummer,
+                    Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
+                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    Lagerort       = "Profillager",
+                    Lieferant      = SelectedLieferant,
+                    LieferscheinNr = SelectedLieferscheinNr,
+                    PreisProKg     = preis,
+                    AngelegtVon    = angelegtVon,
+                    GeaendertVon   = geaendertVon,
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                };
+            }
 
             DialogResult = true;
         }
-
-        private bool _canSave = true;
-        public bool CanSave { get => _canSave; set { _canSave = value; OnPropertyChanged(nameof(CanSave)); } }
 
         private void OnCancel(object sender, RoutedEventArgs e)
         {
@@ -394,25 +483,22 @@ namespace MaterialManager_V01.Views
 
         private void OnEtikett(object sender, RoutedEventArgs e)
         {
-            // Temporäres Material für Etikett erstellen (Dialog bleibt offen)
-            // ✅ Restnummer = "Materialart-Stärke" (z.B. "Stahl-25.0")
             var etiketLabel = $"{SelectedMaterialArt}-{SelectedStaerke:0.0}";
-            
             var tempMaterial = new MaterialItem
             {
-                MaterialArt = SelectedMaterialArt,
-                Legierung = SelectedLegierung,
-                Oberflaeche = SelectedGuete,
-                Guete = SelectedGuete,
-                Form = SelectedForm,
-                Staerke = SelectedStaerke,
-                Mass = Mass,
-                Stueckzahl = Stueckzahl,
-                Restnummer = etiketLabel,  // ✅ GEÄNDERT: z.B. "Stahl-25.0"
-                Datum = SelectedDatum ?? DateTime.Today,
-                Lagerort = "(wird berechnet)",
-                Lieferant = SelectedLieferant,  // ✅ Lieferant hinzugefügt
-                LieferscheinNr = SelectedLieferscheinNr  // ✅ Lieferschein-Nr hinzugefügt
+                MaterialArt    = SelectedMaterialArt,
+                Legierung      = SelectedLegierung,
+                Oberflaeche    = SelectedGuete,
+                Guete          = SelectedGuete,
+                Form           = SelectedForm,
+                Staerke        = SelectedStaerke,
+                Mass           = Mass,
+                Stueckzahl     = Stueckzahl,
+                Restnummer     = etiketLabel,
+                Datum          = SelectedDatum ?? DateTime.Today,
+                Lagerort       = "(wird berechnet)",
+                Lieferant      = SelectedLieferant,
+                LieferscheinNr = SelectedLieferscheinNr
             };
             Services.QrCodeService.ZeigeEtikett(tempMaterial);
         }
@@ -427,7 +513,6 @@ namespace MaterialManager_V01.Views
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
         private void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

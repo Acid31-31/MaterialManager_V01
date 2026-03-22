@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
         Title="Material"
-        Height="620" Width="420" MinWidth="360" MinHeight="440"
+        Height="680" Width="440" MinWidth="360" MinHeight="460"
         WindowStartupLocation="CenterOwner"
         Background="#1E1E1E"
         KeyDown="OnKeyDown">
@@ -121,165 +121,277 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <!-- 0: Kategorie -->
+                <RowDefinition Height="Auto"/>
+                <!-- 1: MaterialArt -->
+                <RowDefinition Height="Auto"/>
+                <!-- 2: Legierung -->
+                <RowDefinition Height="Auto"/>
+                <!-- 3: Oberfläche -->
+                <RowDefinition Height="Auto"/>
+                <!-- 4: Güte -->
+                <RowDefinition Height="Auto"/>
+                <!-- 5: Blech-Felder -->
+                <RowDefinition Height="Auto"/>
+                <!-- 6: Rohr-Felder -->
+                <RowDefinition Height="Auto"/>
+                <!-- 7: Profil-Felder -->
+                <RowDefinition Height="Auto"/>
+                <!-- 8: Stückzahl + Restnummer -->
+                <RowDefinition Height="Auto"/>
+                <!-- 9: Datum -->
+                <RowDefinition Height="Auto"/>
+                <!-- 10: Lieferant / Lieferschein -->
+                <RowDefinition Height="Auto"/>
+                <!-- 11: Preis / Wert -->
+                <RowDefinition Height="Auto"/>
+                <!-- 12: Regal-Auslastung -->
+                <RowDefinition Height="Auto"/>
+                <!-- 13: Buttons -->
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <!-- ── Kategorie ───────────────────────────────────────────────── -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Kategorie:" VerticalAlignment="Center" Margin="0,5"
+                       FontWeight="Bold" Foreground="#FFD700"/>
+            <ComboBox Grid.Row="0" Grid.Column="1"
+                      ItemsSource="{Binding Kategorien}"
+                      SelectedItem="{Binding SelectedKategorie, Mode=TwoWay}"
+                      Margin="0,5"/>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Materialart:" VerticalAlignment="Center" Margin="0,5" />
-        <ComboBox Grid.Row="0" Grid.Column="1"
-                  ItemsSource="{Binding MaterialArten}"
-                  SelectedItem="{Binding SelectedMaterialArt, Mode=TwoWay}"
-                  Margin="0,5"/>
+            <!-- ── Gemeinsam ───────────────────────────────────────────────── -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Materialart:" VerticalAlignment="Center" Margin="0,5"/>
+            <ComboBox Grid.Row="1" Grid.Column="1"
+                      ItemsSource="{Binding MaterialArten}"
+                      SelectedItem="{Binding SelectedMaterialArt, Mode=TwoWay}"
+                      Margin="0,5"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Legierung:" VerticalAlignment="Center" Margin="0,5" />
-        <ComboBox Grid.Row="1" Grid.Column="1"
-                  ItemsSource="{Binding Legierungen}"
-                  SelectedItem="{Binding SelectedLegierung, Mode=TwoWay}"
-                  Margin="0,5"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Legierung:" VerticalAlignment="Center" Margin="0,5"/>
+            <ComboBox Grid.Row="2" Grid.Column="1"
+                      ItemsSource="{Binding Legierungen}"
+                      SelectedItem="{Binding SelectedLegierung, Mode=TwoWay}"
+                      Margin="0,5"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Oberfläche:" VerticalAlignment="Center" Margin="0,5" />
-        <ComboBox Grid.Row="2" Grid.Column="1"
-                  ItemsSource="{Binding Oberflaechen}"
-                  SelectedItem="{Binding SelectedOberflaeche, Mode=TwoWay}"
-                  Margin="0,5"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Oberfläche:" VerticalAlignment="Center" Margin="0,5"/>
+            <ComboBox Grid.Row="3" Grid.Column="1"
+                      ItemsSource="{Binding Oberflaechen}"
+                      SelectedItem="{Binding SelectedOberflaeche, Mode=TwoWay}"
+                      Margin="0,5"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Güte:" VerticalAlignment="Center" Margin="0,5" Visibility="{Binding GueteVisible}" />
-        <ComboBox Grid.Row="3" Grid.Column="1"
-                  ItemsSource="{Binding Gueten}"
-                  SelectedItem="{Binding SelectedGuete, Mode=TwoWay}"
-                  Visibility="{Binding GueteVisible}"
-                  Margin="0,5"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Güte:" VerticalAlignment="Center" Margin="0,5"
+                       Visibility="{Binding GueteVisible}"/>
+            <ComboBox Grid.Row="4" Grid.Column="1"
+                      ItemsSource="{Binding Gueten}"
+                      SelectedItem="{Binding SelectedGuete, Mode=TwoWay}"
+                      Visibility="{Binding GueteVisible}"
+                      Margin="0,5"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Form:" VerticalAlignment="Center" Margin="0,5" />
-        <ComboBox Grid.Row="4" Grid.Column="1"
-                  ItemsSource="{Binding Formen}"
-                  SelectedItem="{Binding SelectedForm, Mode=TwoWay}"
-                  Margin="0,5"/>
+            <!-- ── Blech-Felder ────────────────────────────────────────────── -->
+            <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Visibility="{Binding BlechFelderVisible}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Stärke (mm):" VerticalAlignment="Center" Margin="0,5" />
-        <ComboBox Grid.Row="5" Grid.Column="1"
-                  ItemsSource="{Binding Staerken}"
-                  SelectedItem="{Binding SelectedStaerke, Mode=TwoWay}"
-                  Margin="0,5">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource StaerkeFormat}}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Form:" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                              ItemsSource="{Binding Formen}"
+                              SelectedItem="{Binding SelectedForm, Mode=TwoWay}"
+                              Margin="0,5"/>
 
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Maß (LxB mm):" VerticalAlignment="Center" Margin="0,5" />
-        <TextBox Grid.Row="6" Grid.Column="1"
-                 Text="{Binding Mass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,5"
-                 IsEnabled="{Binding IsMassEditable}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Stärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1"
+                              ItemsSource="{Binding Staerken}"
+                              SelectedItem="{Binding SelectedStaerke, Mode=TwoWay}"
+                              Margin="0,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource StaerkeFormat}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-        <!-- Stückzahl - nur für GF, MF, KF sichtbar -->
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5" 
-                   Visibility="{Binding StueckzahlVisible}"/>
-        <TextBox Grid.Row="7" Grid.Column="1"
-                 Text="{Binding Stueckzahl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,5"
-                 Visibility="{Binding StueckzahlVisible}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Maß (LxB mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding Mass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsMassEditable}"
+                             Margin="0,5"/>
+                </Grid>
 
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="Restnummer:" VerticalAlignment="Center" Margin="0,5" />
-        <TextBlock Grid.Row="8" Grid.Column="1"
-                   Text="{Binding Restnummer}"
-                   Margin="0,5"/>
+                <!-- Stückzahl nur bei GF/MF/KF -->
+                <Grid Visibility="{Binding StueckzahlVisible}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Column="1" Text="{Binding Stueckzahl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5"/>
+                </Grid>
+            </StackPanel>
 
-        <!-- Lieferdatum - bei GF/MF/KF: Lieferdatum, bei Rest: Erstelldatum (nur Anzeige) -->
-        <TextBlock Grid.Row="9" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5" />
-        <DatePicker Grid.Row="9" Grid.Column="1"
-                    SelectedDate="{Binding SelectedDatum, Mode=TwoWay}"
-                    Margin="0,5"
-                    Background="#222" Foreground="White" BorderBrush="#444"/>
+            <!-- ── Rohr-Felder ─────────────────────────────────────────────── -->
+            <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Visibility="{Binding RohrFelderVisible}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-        <!-- Lieferant - nur bei Neuanlage GF/MF/KF -->
-        <TextBlock Grid.Row="10" Grid.Column="0" Text="Lieferant:" VerticalAlignment="Center" Margin="0,5"
-                   Visibility="{Binding LieferantVisible}"/>
-        <TextBox Grid.Row="10" Grid.Column="1"
-                 Text="{Binding SelectedLieferant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,5"
-                 Visibility="{Binding LieferantVisible}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Außen-Ø (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                              ItemsSource="{Binding RohrDurchmesser}"
+                              SelectedItem="{Binding SelectedDurchmesser, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
 
-        <!-- Lieferschein-Nr - nur bei GF/MF/KF -->
-        <TextBlock Grid.Row="11" Grid.Column="0" Text="Lieferschein-Nr:" VerticalAlignment="Center" Margin="0,5"
-                   Visibility="{Binding LieferantVisible}"/>
-        <TextBox Grid.Row="11" Grid.Column="1"
-                 Text="{Binding SelectedLieferscheinNr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,5"
-                 Visibility="{Binding LieferantVisible}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1"
+                              ItemsSource="{Binding RohrWandstaerken}"
+                              SelectedItem="{Binding SelectedRohrWand, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
 
-        <!-- Preis pro kg (NEU - Feature 8) -->
-        <TextBlock Grid.Row="12" Grid.Column="0" Text="Preis (€/kg):" VerticalAlignment="Center" Margin="0,5"/>
-        <StackPanel Grid.Row="12" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
-            <TextBox Text="{Binding PreisProKg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Width="80"
-                     Background="#222" Foreground="White" BorderBrush="#444" Padding="4"/>
-            <TextBlock Text="€/kg" Foreground="#888" VerticalAlignment="Center" Margin="4,0,8,0"/>
-            <TextBlock Text="{Binding GeschaetzterWert}" Foreground="#FFD700" FontWeight="Bold" VerticalAlignment="Center"/>
-        </StackPanel>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1"
+                              ItemsSource="{Binding StandardLaengen}"
+                              SelectedItem="{Binding SelectedLaenge, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
 
-        <!-- Shelf utilization -->
-        <TextBlock Grid.Row="13" Grid.Column="0" Text="Regal-Auslastung:" VerticalAlignment="Center" Margin="0,5" />
-        <StackPanel Grid.Row="13" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
-            <TextBlock Text="{Binding CurrentLoadKg, StringFormat={}{0:N2} kg}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <TextBlock Text="/" VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <TextBlock Text="{Binding CapacityKg, StringFormat={}{0:N0} kg}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <TextBlock Text="(" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding UtilizationPercent, StringFormat={}{0:N0}%}" VerticalAlignment="Center"/>
-            <TextBlock Text=")" VerticalAlignment="Center"/>
-            <TextBlock Text="  " />
-            <TextBlock Text="Gesamt: " VerticalAlignment="Center" Margin="8,0,2,0"/>
-            <TextBlock Text="{Binding TotalInventoryWeight, StringFormat={}{0:N2} kg}" VerticalAlignment="Center"/>
-        </StackPanel>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             Text="{Binding Stueckzahl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"/>
+                </Grid>
+            </StackPanel>
 
-        <StackPanel Grid.Row="14" Grid.ColumnSpan="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,15,0,0">
+            <!-- ── Profil-Felder ───────────────────────────────────────────── -->
+            <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Visibility="{Binding ProfilFelderVisible}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <Button Content="🏷️ Etikett"
-                    Width="80"
-                    Margin="5"
-                    Click="OnEtikett"
-                    Visibility="{Binding EtikettVisible}"
-                    Background="#795548"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Profiltyp:" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                              ItemsSource="{Binding ProfilTypen}"
+                              SelectedItem="{Binding SelectedProfilTyp, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
 
-            <Button Content="OK (Enter)"
-                    Width="100"
-                    Margin="5"
-                    Click="OnOk"
-                    IsDefault="True"
-                    IsEnabled="{Binding CanSave}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Höhe h (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1"
+                              ItemsSource="{Binding ProfilHoehen}"
+                              SelectedItem="{Binding SelectedProfilHoehe, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
 
-            <Button Content="Abbrechen"
-                    Width="80"
-                    Margin="5"
-                    Click="OnCancel"
-                    IsCancel="True"/>
-        </StackPanel>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Breite b (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding SelectedProfilBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"/>
 
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             Text="{Binding SelectedProfilWand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="4" Grid.Column="1"
+                              ItemsSource="{Binding StandardLaengen}"
+                              SelectedItem="{Binding SelectedProfilLaenge, Mode=TwoWay}"
+                              IsEditable="True"
+                              Margin="0,5"/>
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="5" Grid.Column="1"
+                             Text="{Binding Stueckzahl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- ── Restnummer (immer sichtbar) ────────────────────────────── -->
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Restnummer:" VerticalAlignment="Center" Margin="0,5"/>
+            <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding Restnummer}" Margin="0,5"/>
+
+            <!-- ── Datum ───────────────────────────────────────────────────── -->
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5"/>
+            <DatePicker Grid.Row="9" Grid.Column="1"
+                        SelectedDate="{Binding SelectedDatum, Mode=TwoWay}"
+                        Margin="0,5"
+                        Background="#222" Foreground="White" BorderBrush="#444"/>
+
+            <!-- ── Lieferant / Lieferschein ────────────────────────────────── -->
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Lieferant:" VerticalAlignment="Center" Margin="0,5"
+                       Visibility="{Binding LieferantVisible}"/>
+            <StackPanel Grid.Row="10" Grid.Column="1" Visibility="{Binding LieferantVisible}">
+                <TextBox Text="{Binding SelectedLieferant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Lieferschein-Nr:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Text="{Binding SelectedLieferscheinNr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="160"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- ── Preis / Wert ────────────────────────────────────────────── -->
+            <TextBlock Grid.Row="11" Grid.Column="0" Text="Preis (€/kg):" VerticalAlignment="Center" Margin="0,5"/>
+            <StackPanel Grid.Row="11" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
+                <TextBox Text="{Binding PreisProKg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"
+                         Background="#222" Foreground="White" BorderBrush="#444" Padding="4"/>
+                <TextBlock Text="€/kg" Foreground="#888" VerticalAlignment="Center" Margin="4,0,8,0"/>
+                <TextBlock Text="{Binding GeschaetzterWert}" Foreground="#FFD700" FontWeight="Bold" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- ── Regal-Auslastung (nur Bleche relevant) ─────────────────── -->
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Regal-Auslastung:" VerticalAlignment="Center" Margin="0,5"
+                       Visibility="{Binding BlechFelderVisible}"/>
+            <StackPanel Grid.Row="12" Grid.Column="1" Orientation="Horizontal" Margin="0,5"
+                        Visibility="{Binding BlechFelderVisible}">
+                <TextBlock Text="{Binding CurrentLoadKg, StringFormat={}{0:N2} kg}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Text="/" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Text="{Binding CapacityKg, StringFormat={}{0:N0} kg}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Text="(" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding UtilizationPercent, StringFormat={}{0:N0}%}" VerticalAlignment="Center"/>
+                <TextBlock Text=")" VerticalAlignment="Center"/>
+                <TextBlock Text="  "/>
+                <TextBlock Text="Gesamt: " VerticalAlignment="Center" Margin="8,0,2,0"/>
+                <TextBlock Text="{Binding TotalInventoryWeight, StringFormat={}{0:N2} kg}" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- ── Buttons ─────────────────────────────────────────────────── -->
+            <StackPanel Grid.Row="13" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,15,0,0">
+                <Button Content="🏷️ Etikett" Width="80" Margin="5" Click="OnEtikett"
+                        Visibility="{Binding EtiquetteVisible}" Background="#795548"/>
+                <Button Content="OK (Enter)" Width="100" Margin="5" Click="OnOk"
+                        IsDefault="True" IsEnabled="{Binding CanSave}"/>
+                <Button Content="Abbrechen" Width="80" Margin="5" Click="OnCancel" IsCancel="True"/>
+            </StackPanel>
         </Grid>
     </ScrollViewer>
 </Window>
