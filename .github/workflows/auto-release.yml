@@ -35,7 +35,7 @@ jobs:
         shell: pwsh
         run: |
           [xml]$proj = Get-Content "MaterialManager_V01.csproj"
-          $baseVersion = $proj.Project.PropertyGroup.Version
+          $baseVersion = ($proj.Project.PropertyGroup.Version).Trim()
           if ([string]::IsNullOrWhiteSpace($baseVersion)) { $baseVersion = "1.0.0" }
           $tag = "v$baseVersion.$env:GITHUB_RUN_NUMBER"
           $zip = "MaterialManager_V01_$tag.zip"
