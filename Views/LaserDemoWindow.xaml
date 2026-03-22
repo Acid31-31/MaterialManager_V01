@@ -126,7 +126,6 @@
                   AutoGenerateColumns="False"
                   Margin="10"
                   CanUserAddRows="False"
-                  IsReadOnly="True"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   MouseDoubleClick="OnEditRestClick">
@@ -138,19 +137,19 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90"/>
-                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
-                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60"/>
-                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
-                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
-                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60"/>
-                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95"/>
-                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="100"/>
-                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
-                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
-                <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110"/>
-                <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140"/>
-                <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="100"/>
+                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="100" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
