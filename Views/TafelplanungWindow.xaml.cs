@@ -14,7 +14,7 @@ namespace MaterialManager_V01.Views
     public partial class TafelplanungWindow : Window, INotifyPropertyChanged
     {
         private List<MaterialItem> _alleMaterialien = new();
-        private List<MaterialItem> _restMaterialienCache = new();
+        private List<MaterialItem> _materialienCache = new();
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
 
@@ -68,37 +68,44 @@ namespace MaterialManager_V01.Views
                     : new List<MaterialItem>();
 
                 _alleMaterialien = items;
-                _restMaterialienCache = _alleMaterialien
-                    .Where(m => string.Equals(m.Form, "Rest", StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
+                _materialienCache = _alleMaterialien.ToList();
                 ApplyFilter();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Restmaterialien:\n{ex.Message}", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var filtered = string.IsNullOrWhiteSpace(query)
-                ? _restMaterialienCache
-                : _restMaterialienCache.Where(m =>
-                    (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query)).ToList();
+            var selectedForm = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle";
+
+            var filtered = _materialienCache.Where(m =>
+            {
+                var formMatch = selectedForm == "Alle" || string.Equals(m.Form, selectedForm, StringComparison.OrdinalIgnoreCase);
+                if (!formMatch)
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(query))
+                    return true;
+
+                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
+            }).ToList();
 
             RestMaterialien.Clear();
             foreach (var item in filtered)
                 RestMaterialien.Add(item);
 
-            var reserviert = filtered.Count(m => !string.IsNullOrWhiteSpace(m.AuftragNr));
-            SummaryText = $"{RestMaterialien.Count} Restmaterial(ien), {reserviert} reserviert";
+            var gebucht = filtered.Count(m => !string.IsNullOrWhiteSpace(m.AuftragNr));
+            SummaryText = $"{RestMaterialien.Count} Material(ien), {gebucht} gebucht";
         }
 
         private void SaveAllMaterials()
@@ -129,6 +136,11 @@ namespace MaterialManager_V01.Views
             ApplyFilter();
         }
 
+        private void OnFormFilterChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
             LoadMaterials();
@@ -141,61 +153,77 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
-        private void OnSearchReserveClick(object sender, RoutedEventArgs e)
+        private void OnBookForOrderClick(object sender, RoutedEventArgs e)
         {
-            var dlg = new ResteSucheDialog { Owner = this };
-            if (dlg.ShowDialog() != true)
-                return;
-
-            var gefunden = _alleMaterialien.Where(m =>
-                RestMaterialSearchService.Matches(
-                    m,
-                    dlg.Material,
-                    dlg.Legierung,
-                    dlg.Staerke,
-                    dlg.Laenge,
-                    dlg.Breite,
-                    dlg.ToleranzProzent,
-                    dlg.Form,
-                    requireRest: true)).ToList();
-
-            if (!gefunden.Any())
+            var items = GetMarkedMaterials().Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            if (items.Count == 0)
             {
-                MessageBox.Show("Keine passenden Restmaterialien gefunden.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst ein verfügbares Material auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
-            if (auswahlDlg.ShowDialog() != true || auswahlDlg.SelectedMaterial == null)
-                return;
+            if (items.Count == 1)
+            {
+                var item = items[0];
+                var dlg = new AuftragBuchungDialog(item.Stueckzahl) { Owner = this };
+                if (dlg.ShowDialog() != true)
+                    return;
 
-            var reservierungDlg = new ResteReservierungDialog(auswahlDlg.SelectedMaterial.AuftragNr) { Owner = this };
-            if (reservierungDlg.ShowDialog() != true || string.IsNullOrWhiteSpace(reservierungDlg.AuftragNr))
-                return;
+                BookMaterialForOrder(item, dlg.AuftragNr, dlg.Menge);
+            }
+            else
+            {
+                var dlg = new ResteReservierungDialog(string.Empty) { Owner = this };
+                if (dlg.ShowDialog() != true || string.IsNullOrWhiteSpace(dlg.AuftragNr))
+                    return;
 
-            auswahlDlg.SelectedMaterial.AuftragNr = reservierungDlg.AuftragNr.Trim();
-            auswahlDlg.SelectedMaterial.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-            auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
+                foreach (var item in items.ToList())
+                {
+                    BookMaterialForOrder(item, dlg.AuftragNr.Trim(), item.Stueckzahl);
+                }
+            }
+
             SaveAllMaterials();
             LoadMaterials();
         }
 
+        private void BookMaterialForOrder(MaterialItem item, string auftragNr, int menge)
+        {
+            if (string.IsNullOrWhiteSpace(auftragNr) || menge <= 0 || menge > item.Stueckzahl)
+                return;
+
+            var bookedItem = CloneMaterial(item);
+            bookedItem.Stueckzahl = menge;
+            bookedItem.AuftragNr = auftragNr.Trim();
+            bookedItem.Lagerort = "Gebucht";
+            bookedItem.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            bookedItem.AenderungsDatum = DateTime.Now;
+            bookedItem.IsSelected = false;
+
+            item.Stueckzahl -= menge;
+            item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            item.AenderungsDatum = DateTime.Now;
+            item.IsSelected = false;
+
+            if (item.Stueckzahl <= 0)
+                _alleMaterialien.Remove(item);
+
+            _alleMaterialien.Add(bookedItem);
+        }
+
         private void OnReleaseReservationClick(object sender, RoutedEventArgs e)
         {
-            var items = GetMarkedMaterials()
-                .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
-                .ToList();
-
+            var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte ein reserviertes Restmaterial auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirm = MessageBox.Show(
                 items.Count == 1
                     ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' aufheben?"
-                    : $"Reservierung für {items.Count} markierte Restmaterialien aufheben?",
+                    : $"Reservierung für {items.Count} markierte Materialien aufheben?",
                 "Tafelplanung",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -203,16 +231,98 @@ namespace MaterialManager_V01.Views
             if (confirm != MessageBoxResult.Yes)
                 return;
 
-            foreach (var item in items)
+            foreach (var item in items.ToList())
             {
-                item.AuftragNr = string.Empty;
-                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-                item.AenderungsDatum = DateTime.Now;
-                item.IsSelected = false;
+                var existing = FindAvailableMaterial(item);
+                if (existing != null)
+                {
+                    existing.Stueckzahl += item.Stueckzahl;
+                    existing.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                    existing.AenderungsDatum = DateTime.Now;
+                }
+                else
+                {
+                    var restored = CloneMaterial(item);
+                    restored.AuftragNr = string.Empty;
+                    restored.Lagerort = RegalService.DetermineLagerort(restored.MaterialArt, restored.Legierung, restored.Form, restored.Staerke, restored.Mass, _alleMaterialien);
+                    restored.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                    restored.AenderungsDatum = DateTime.Now;
+                    restored.IsSelected = false;
+                    _alleMaterialien.Add(restored);
+                }
+
+                _alleMaterialien.Remove(item);
             }
 
             SaveAllMaterials();
             LoadMaterials();
+        }
+
+        private void OnCompleteProductionClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                items.Count == 1
+                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchte Menge entfernen?"
+                    : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchte Mengen entfernen?",
+                "Tafelplanung",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            foreach (var item in items.ToList())
+            {
+                BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
+                _alleMaterialien.Remove(item);
+            }
+
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private MaterialItem? FindAvailableMaterial(MaterialItem bookedItem)
+        {
+            return _alleMaterialien.FirstOrDefault(m =>
+                string.IsNullOrWhiteSpace(m.AuftragNr) &&
+                m.MaterialArt == bookedItem.MaterialArt &&
+                m.Legierung == bookedItem.Legierung &&
+                m.Oberflaeche == bookedItem.Oberflaeche &&
+                m.Guete == bookedItem.Guete &&
+                m.Form == bookedItem.Form &&
+                Math.Abs(m.Staerke - bookedItem.Staerke) < 0.0001 &&
+                m.Mass == bookedItem.Mass);
+        }
+
+        private static MaterialItem CloneMaterial(MaterialItem source)
+        {
+            return new MaterialItem
+            {
+                MaterialArt = source.MaterialArt,
+                Legierung = source.Legierung,
+                Oberflaeche = source.Oberflaeche,
+                Guete = source.Guete,
+                Form = source.Form,
+                Staerke = source.Staerke,
+                Mass = source.Mass,
+                Stueckzahl = source.Stueckzahl,
+                Restnummer = source.Restnummer,
+                Datum = source.Datum,
+                AenderungsDatum = source.AenderungsDatum,
+                Lagerort = source.Lagerort,
+                AngelegtVon = source.AngelegtVon,
+                GeaendertVon = source.GeaendertVon,
+                Lieferant = source.Lieferant,
+                LieferscheinNr = source.LieferscheinNr,
+                AuftragNr = source.AuftragNr
+            };
         }
 
         private void OnCloseClick(object sender, RoutedEventArgs e)
