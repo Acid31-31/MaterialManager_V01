@@ -1,4 +1,4 @@
-MaterialManager 1.0.x
-Erstellt: 05.03.2026 19:36:24
-Größe: 184.75 MB
-Version: Release Self-Contained
+﻿MaterialManager 1.2.0
+Erstellt: 22.03.2026 11:28:26
+Groesse: 186.06 MB
+Version: Release Self-Contained (UI-Freeze Bugfix)
