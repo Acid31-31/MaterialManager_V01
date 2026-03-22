@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -61,14 +62,17 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private void LoadMaterials()
+        private async void LoadMaterials()
         {
             try
             {
                 var savePath = NetzwerkService.GetSavePath();
-                var items = System.IO.File.Exists(savePath)
-                    ? ExcelService.Import(savePath)?.ToList() ?? new List<MaterialItem>()
-                    : new List<MaterialItem>();
+                var items = await Task.Run(() =>
+                {
+                    if (!System.IO.File.Exists(savePath))
+                        return new List<MaterialItem>();
+                    return ExcelService.Import(savePath)?.ToList() ?? new List<MaterialItem>();
+                });
 
                 _alleMaterialien = items;
                 _restMaterialienCache = _alleMaterialien

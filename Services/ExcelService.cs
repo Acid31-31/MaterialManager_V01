@@ -117,8 +117,6 @@ namespace MaterialManager_V01
                 if (wb != null)
                 {
                     wb.Dispose();
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
                 }
             }
             
@@ -258,8 +256,6 @@ namespace MaterialManager_V01
                     if (wb != null)
                     {
                         wb.Dispose();
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
                     }
                 }
             }
