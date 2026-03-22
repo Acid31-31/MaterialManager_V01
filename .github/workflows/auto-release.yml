@@ -61,11 +61,11 @@ jobs:
           dotnet publish Installer_Source/UpdateInstaller.csproj -c Release -r win-x64 --self-contained true -o $outputDir /p:PayloadZip="$payloadZip"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.meta.outputs.tag }}
-          name: "Release ${{ steps.meta.outputs.tag }}"
-          generate_release_notes: true
-          files: |
-            ${{ steps.meta.outputs.zip }}
-            ${{ steps.meta.outputs.update_installer_exe }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ steps.meta.outputs.tag }}"
+          $zip = "${{ steps.meta.outputs.zip }}"
+          $installerExe = "${{ steps.meta.outputs.update_installer_exe }}"
+          gh release create $tag --title "Release $tag" --generate-notes $zip $installerExe
