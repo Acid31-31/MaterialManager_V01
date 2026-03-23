@@ -35,6 +35,10 @@ namespace MaterialManager_V01.Views
                 var currentLoad = RegalService.CalculateCurrentLoad(_materialien, regal);
                 var percent = RegalService.ComputeUtilizationPercent(currentLoad, capacity);
                 var description = RegalService.GetRegalDescription(regal);
+                var currentLengthM = _materialien
+                    .Where(i => string.Equals(i.Lagerort, regal, StringComparison.OrdinalIgnoreCase) &&
+                                (i.Kategorie == MaterialKategorie.Rohr || i.Kategorie == MaterialKategorie.Profil))
+                    .Sum(i => (i.Laenge * i.Stueckzahl) / 1000.0);
 
                 var border = new Border
                 {
@@ -101,6 +105,18 @@ namespace MaterialManager_V01.Views
                 };
                 detailsPanel.Children.Add(freeText);
 
+                if (currentLengthM > 0)
+                {
+                    var lengthText = new TextBlock
+                    {
+                        Text = $"Länge: {currentLengthM:F2} m",
+                        FontSize = 13,
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD700")),
+                        Margin = new Thickness(15, 0, 0, 0)
+                    };
+                    detailsPanel.Children.Add(lengthText);
+                }
+
                 Grid.SetRow(detailsPanel, 2);
                 grid.Children.Add(detailsPanel);
 
@@ -111,6 +127,12 @@ namespace MaterialManager_V01.Views
             var totalLoad = regale.Sum(r => RegalService.CalculateCurrentLoad(_materialien, r));
             var totalCapacity = regale.Sum(r => RegalService.GetCapacity(r));
             var avgPercent = totalCapacity > 0 ? (totalLoad / totalCapacity) * 100 : 0;
+            var totalRohrLengthM = _materialien
+                .Where(i => i.Kategorie == MaterialKategorie.Rohr)
+                .Sum(i => (i.Laenge * i.Stueckzahl) / 1000.0);
+            var totalProfilLengthM = _materialien
+                .Where(i => i.Kategorie == MaterialKategorie.Profil)
+                .Sum(i => (i.Laenge * i.Stueckzahl) / 1000.0);
 
             var summaryBorder = new Border
             {
@@ -136,7 +158,9 @@ namespace MaterialManager_V01.Views
             {
                 Text = $"Gesamt belegt: {totalLoad:F2} kg / {totalCapacity:F0} kg\n" +
                        $"Durchschnittliche Auslastung: {avgPercent:F1}%\n" +
-                       $"Freie Kapazität: {(totalCapacity - totalLoad):F2} kg",
+                       $"Freie Kapazität: {(totalCapacity - totalLoad):F2} kg\n" +
+                       $"Rohr-Gesamtlänge: {totalRohrLengthM:F2} m\n" +
+                       $"Profil-Gesamtlänge: {totalProfilLengthM:F2} m",
                 FontSize = 14,
                 Foreground = Brushes.White,
                 LineHeight = 24

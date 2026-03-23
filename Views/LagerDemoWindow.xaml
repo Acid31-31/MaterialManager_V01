@@ -230,9 +230,11 @@
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
                 <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="120"/>
+                <DataGridTextColumn Header="Kategorie" Binding="{Binding Kategorie}" Width="80"/>
                 <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60"/>
                 <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
                 <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
+                <DataGridTextColumn Header="Länge (mm)" Binding="{Binding LaengeAnzeige}" Width="90"/>
                 <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60"/>
                 <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95"/>
                 <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90"/>

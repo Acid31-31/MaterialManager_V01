@@ -92,6 +92,8 @@ namespace MaterialManager_V01.Views
                        (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.Oberflaeche ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.ProfilTyp ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       m.Laenge.ToString().ToLowerInvariant().Contains(query) ||
                        (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);

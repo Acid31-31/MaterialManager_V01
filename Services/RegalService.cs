@@ -31,6 +31,8 @@ namespace MaterialManager_V01.Services
             { "Regal H", 600 },    // KF
             { "Regal I", 600 },    // KF
             { "Regal J", 800 },    // MF
+            { "Rohrlager", 5000 },
+            { "Profillager", 5000 },
             { "EU Palette", 2000 } // Kleine Materialien (Paletten-Regal)
         };
 
@@ -270,6 +272,7 @@ namespace MaterialManager_V01.Services
                 { "MF-Regale (A, F, J)", new List<string> { "Regal A", "Regal F", "Regal J" } },
                 { "KF-Regale (G, H, I)", new List<string> { "Regal G", "Regal H", "Regal I" } },
                 { "GF-Regale", new List<string> { "Regal B", "Regal C", "Regal D", "Regal E" } },
+                { "Rohr / Profile", new List<string> { "Rohrlager", "Profillager" } },
                 { "Sonstige", new List<string> { "EU Palette" } }
             };
         }
@@ -291,6 +294,8 @@ namespace MaterialManager_V01.Services
                 "Regal H" => "KF (Kleinformat)",
                 "Regal I" => "KF (Kleinformat)",
                 "Regal J" => "MF (Mittelformat)",
+                "Rohrlager" => "Rohrmaterial",
+                "Profillager" => "Profilmaterial",
                 "EU Palette" => "Reste und Kleine",
                 _ => lagerort
             };

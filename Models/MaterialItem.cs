@@ -41,6 +41,9 @@
         public string PdfPfad { get; set; } = "";
         public string PdfDateiname => string.IsNullOrWhiteSpace(PdfPfad) ? "" : System.IO.Path.GetFileName(PdfPfad);
         public bool HasPdf => !string.IsNullOrWhiteSpace(PdfPfad);
+        public string LaengeAnzeige => (Kategorie == MaterialKategorie.Rohr || Kategorie == MaterialKategorie.Profil) && Laenge > 0
+            ? Laenge.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+            : "";
         public decimal PreisProKg { get; set; } = 0m;
         public decimal Gesamtwert => (decimal)GewichtKg * PreisProKg;
 

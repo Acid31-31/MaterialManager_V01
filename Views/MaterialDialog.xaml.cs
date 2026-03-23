@@ -29,6 +29,7 @@ namespace MaterialManager_V01.Views
                 OnPropertyChanged(nameof(BlechFelderVisible));
                 OnPropertyChanged(nameof(RohrFelderVisible));
                 OnPropertyChanged(nameof(ProfilFelderVisible));
+                OnPropertyChanged(nameof(LengthInfoVisible));
                 OnPropertyChanged(nameof(GeschaetzterWert));
                 UpdateShelfStats();
             }
@@ -144,6 +145,8 @@ namespace MaterialManager_V01.Views
         // ── Profil-spezifisch ────────────────────────────────────────────────
         public string[] ProfilTypen  => MaterialDefinitions.ProfilTypen;
         public double[] ProfilHoehen => MaterialDefinitions.ProfilStandardHoehen;
+        public double[] ProfilBreiten => MaterialDefinitions.ProfilStandardBreiten;
+        public double[] ProfilWandstaerken => MaterialDefinitions.ProfilStandardWandstaerken;
 
         private string _selectedProfilTyp = "";
         public string SelectedProfilTyp { get => _selectedProfilTyp; set { _selectedProfilTyp = value; OnPropertyChanged(nameof(SelectedProfilTyp)); } }
@@ -227,6 +230,16 @@ namespace MaterialManager_V01.Views
 
         private double _totalInventoryWeight;
         public double TotalInventoryWeight { get => _totalInventoryWeight; set { _totalInventoryWeight = value; OnPropertyChanged(nameof(TotalInventoryWeight)); } }
+
+        private double _currentLoadLengthM;
+        public double CurrentLoadLengthM { get => _currentLoadLengthM; set { _currentLoadLengthM = value; OnPropertyChanged(nameof(CurrentLoadLengthM)); } }
+
+        private double _totalInventoryLengthM;
+        public double TotalInventoryLengthM { get => _totalInventoryLengthM; set { _totalInventoryLengthM = value; OnPropertyChanged(nameof(TotalInventoryLengthM)); } }
+
+        public Visibility LengthInfoVisible => _selectedKategorie == "Rohr" || _selectedKategorie == "Profil"
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
         public MaterialItem Material { get; private set; }
 
@@ -374,11 +387,38 @@ namespace MaterialManager_V01.Views
 
         private void UpdateShelfStats()
         {
-            var lagerort = SelectedForm == "Rest" ? "Restregal" : SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? "Tafelregal" : "Palette";
-            CapacityKg = Services.LagerService.GetCapacity(lagerort);
-            CurrentLoadKg = Services.LagerService.CalculateCurrentLoad(_inventory, lagerort);
-            UtilizationPercent = Services.LagerService.ComputeUtilizationPercent(CurrentLoadKg, CapacityKg);
+            string lagerort;
+            if (_selectedKategorie == "Rohr")
+            {
+                lagerort = "Rohrlager";
+            }
+            else if (_selectedKategorie == "Profil")
+            {
+                lagerort = "Profillager";
+            }
+            else
+            {
+                lagerort = Services.RegalService.DetermineLagerort(
+                    SelectedMaterialArt,
+                    SelectedLegierung,
+                    SelectedForm,
+                    SelectedStaerke,
+                    Mass,
+                    _inventory);
+            }
+
+            CapacityKg = Services.RegalService.GetCapacity(lagerort);
+            CurrentLoadKg = Services.RegalService.CalculateCurrentLoad(_inventory, lagerort);
+            UtilizationPercent = Services.RegalService.ComputeUtilizationPercent(CurrentLoadKg, CapacityKg);
             TotalInventoryWeight = _inventory?.Sum(i => i.GewichtKg) ?? 0;
+
+            CurrentLoadLengthM = _inventory?
+                .Where(i => string.Equals(i.Lagerort, lagerort, StringComparison.OrdinalIgnoreCase) && (i.Kategorie == MaterialKategorie.Rohr || i.Kategorie == MaterialKategorie.Profil))
+                .Sum(i => (i.Laenge * i.Stueckzahl) / 1000.0) ?? 0;
+
+            TotalInventoryLengthM = _inventory?
+                .Where(i => i.Kategorie == MaterialKategorie.Rohr || i.Kategorie == MaterialKategorie.Profil)
+                .Sum(i => (i.Laenge * i.Stueckzahl) / 1000.0) ?? 0;
         }
 
         private void Inventory_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

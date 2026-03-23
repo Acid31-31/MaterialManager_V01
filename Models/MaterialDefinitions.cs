@@ -57,6 +57,19 @@ namespace MaterialManager_V01.Models
             220, 240, 260, 280, 300, 320, 360, 400, 450, 500, 550, 600
         };
 
+        /// <summary>Standardbreiten für Profile in mm (Richtwerte)</summary>
+        public static readonly double[] ProfilStandardBreiten =
+        {
+            20, 25, 30, 40, 50, 60, 80, 100, 120, 140, 160, 180, 200,
+            220, 240, 260, 280, 300
+        };
+
+        /// <summary>Übliche Wandstärken für Profile in mm</summary>
+        public static readonly double[] ProfilStandardWandstaerken =
+        {
+            1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12
+        };
+
         // ── Gemeinsam ──────────────────────────────────────────────────────────
         public static readonly Dictionary<string, List<string>> Legierungen =
             new()
