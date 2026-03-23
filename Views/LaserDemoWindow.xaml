@@ -110,6 +110,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="320"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
                 <TextBox Grid.Column="1"
@@ -119,7 +121,23 @@
                          BorderBrush="#444"
                          Padding="8,5"
                          TextChanged="OnSearchTextChanged"/>
-                <TextBlock Grid.Column="2"
+                <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                <ComboBox Grid.Column="3"
+                          x:Name="FormFilterBox"
+                          Background="#222"
+                          Foreground="White"
+                          BorderBrush="#444"
+                          SelectionChanged="OnFilterChanged">
+                    <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                    <ComboBoxItem>Blech</ComboBoxItem>
+                    <ComboBoxItem>Rohr</ComboBoxItem>
+                    <ComboBoxItem>Profil</ComboBoxItem>
+                    <ComboBoxItem>GF</ComboBoxItem>
+                    <ComboBoxItem>MF</ComboBoxItem>
+                    <ComboBoxItem>KF</ComboBoxItem>
+                    <ComboBoxItem>Rest</ComboBoxItem>
+                </ComboBox>
+                <TextBlock Grid.Column="4"
                            Text="{Binding SummaryText}"
                            Foreground="#AAAAAA"
                            VerticalAlignment="Center"

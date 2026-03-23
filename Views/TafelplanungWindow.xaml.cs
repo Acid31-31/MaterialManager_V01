@@ -82,10 +82,22 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private string GetSelectedFilter()
+        {
+            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (!string.IsNullOrWhiteSpace(selected))
+                return selected.Trim();
+
+            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
+                return FormFilterBox.Text.Trim();
+
+            return "Alle";
+        }
+
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var selectedFilter = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle";
+            var selectedFilter = GetSelectedFilter();
 
             var filtered = _materialienCache.Where(m =>
             {
@@ -95,7 +107,8 @@ namespace MaterialManager_V01.Views
                     "Blech" => m.Kategorie == MaterialKategorie.Blech,
                     "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
                     "Profil" => m.Kategorie == MaterialKategorie.Profil,
-                    _ => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase)
+                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
+                    _ => true
                 };
 
                 if (!filterMatch)

@@ -87,19 +87,50 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private string GetSelectedFilter()
+        {
+            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (!string.IsNullOrWhiteSpace(selected))
+                return selected.Trim();
+
+            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
+                return FormFilterBox.Text.Trim();
+
+            return "Alle";
+        }
+
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var filtered = string.IsNullOrWhiteSpace(query)
-                ? _restMaterialienCache
-                : _restMaterialienCache.Where(m =>
-                    (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                    (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query)).ToList();
+            var selectedFilter = GetSelectedFilter();
+
+            var filtered = _restMaterialienCache.Where(m =>
+            {
+                var filterMatch = selectedFilter switch
+                {
+                    "Alle" => true,
+                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
+                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
+                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
+                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
+                    _ => true
+                };
+
+                if (!filterMatch)
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(query))
+                    return true;
+
+                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       m.Kategorie.ToString().ToLowerInvariant().Contains(query) ||
+                       (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
+            }).ToList();
 
             RestMaterialien.Clear();
             foreach (var item in filtered)
@@ -115,6 +146,11 @@ namespace MaterialManager_V01.Views
         }
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void OnFilterChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilter();
         }
