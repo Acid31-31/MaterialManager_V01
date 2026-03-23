@@ -77,12 +77,20 @@ namespace MaterialManager_V01.Views
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var selectedForm = (FormFilterBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle";
+            var selectedFilter = (FormFilterBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle";
 
             var filtered = _alleMaterialien.Where(m =>
             {
-                var formMatch = selectedForm == "Alle" || string.Equals(m.Form, selectedForm, StringComparison.OrdinalIgnoreCase);
-                if (!formMatch)
+                var filterMatch = selectedFilter switch
+                {
+                    "Alle" => true,
+                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
+                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
+                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
+                    _ => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase)
+                };
+
+                if (!filterMatch)
                     return false;
 
                 if (string.IsNullOrWhiteSpace(query))
@@ -91,6 +99,8 @@ namespace MaterialManager_V01.Views
                 return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.Oberflaeche ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                       m.Kategorie.ToString().ToLowerInvariant().Contains(query) ||
                        (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        (m.ProfilTyp ?? string.Empty).ToLowerInvariant().Contains(query) ||
                        m.Laenge.ToString().ToLowerInvariant().Contains(query) ||

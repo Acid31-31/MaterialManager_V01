@@ -178,9 +178,12 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
                 <TextBox Grid.Column="1" x:Name="SearchBox" Background="#222" Foreground="White" BorderBrush="#444" Padding="8,5" TextChanged="OnSearchTextChanged"/>
-                <TextBlock Grid.Column="2" Text="Form:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
                 <ComboBox Grid.Column="3" x:Name="FormFilterBox" Background="#222" Foreground="White" BorderBrush="#444" SelectionChanged="OnFormFilterChanged">
                     <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                    <ComboBoxItem>Blech</ComboBoxItem>
+                    <ComboBoxItem>Rohr</ComboBoxItem>
+                    <ComboBoxItem>Profil</ComboBoxItem>
                     <ComboBoxItem>GF</ComboBoxItem>
                     <ComboBoxItem>MF</ComboBoxItem>
                     <ComboBoxItem>KF</ComboBoxItem>
