@@ -180,6 +180,27 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnLowStockClick(object sender, RoutedEventArgs e)
+        {
+            var materialien = new ObservableCollection<MaterialItem>(_alleMaterialien);
+            var dlg = new NiedrigeBestaendeDialog(materialien) { Owner = this };
+            if (dlg.ShowDialog() == true && dlg.MaterialZumBearbeiten != null)
+            {
+                var editDlg = new MaterialDialog(_alleMaterialien) { Owner = this };
+                editDlg.SetEditMode(dlg.MaterialZumBearbeiten);
+                if (editDlg.ShowDialog() == true)
+                {
+                    var idx = _alleMaterialien.IndexOf(dlg.MaterialZumBearbeiten);
+                    if (idx >= 0)
+                    {
+                        _alleMaterialien[idx] = editDlg.Material;
+                        SaveAllMaterials();
+                        LoadMaterials();
+                    }
+                }
+            }
+        }
+
         private void OnBookForOrderClick(object sender, RoutedEventArgs e)
         {
             var items = GetMarkedMaterials().Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
