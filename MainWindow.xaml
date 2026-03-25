@@ -276,6 +276,8 @@
                         <MenuItem Header="🔖 Reservierte Reste" Click="OnReservierteReste"/>
                     </MenuItem>
                     <MenuItem Header="Hilfe">
+                        <MenuItem Header="📘 Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
+                        <Separator/>
                         <MenuItem Header="📄 Materialliste drucken" Click="OnPrintMaterialList"/>
                         <MenuItem Header="📊 Als Excel exportieren" Click="OnExportExcel"/>
                         <MenuItem Header="📋 Als CSV exportieren" Click="OnExportCSV"/>
