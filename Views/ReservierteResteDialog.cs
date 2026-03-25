@@ -39,6 +39,20 @@ namespace MaterialManager_V01.Views
             if (ReservierteResteGrid.SelectedItem is not MaterialItem item)
                 return;
 
+            OpenPdf(item);
+        }
+
+        private void OnPdfClick(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not MaterialItem item)
+                return;
+
+            OpenPdf(item);
+            e.Handled = true;
+        }
+
+        private static void OpenPdf(MaterialItem item)
+        {
             if (string.IsNullOrWhiteSpace(item.PdfPfad))
             {
                 MessageBox.Show("Für dieses reservierte Material ist keine PDF hinterlegt.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);

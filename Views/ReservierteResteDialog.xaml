@@ -72,14 +72,17 @@
                 <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg}" Width="100"/>
                 <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="120"/>
                 <DataGridTextColumn Header="🎯 Auftrag" Binding="{Binding AuftragNr}" Width="200"/>
-                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="180">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#FF9800"/>
-                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="PDF" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding PdfDateiname}"
+                                       Foreground="#FF9800"
+                                       ToolTip="{Binding PdfPfad}"
+                                       Cursor="Hand"
+                                       MouseLeftButtonUp="OnPdfClick"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Reserviert von" Binding="{Binding GeaendertVon}" Width="120"/>
                 <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="90"/>
             </DataGrid.Columns>
