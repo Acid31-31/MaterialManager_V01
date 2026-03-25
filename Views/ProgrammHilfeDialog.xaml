@@ -18,6 +18,15 @@
 
         <Border DockPanel.Dock="Bottom" Background="#111111" Padding="12">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Als PDF"
+                        Width="110"
+                        Height="34"
+                        Click="OnSavePdf"
+                        Background="#6A1B9A"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Margin="0,0,8,0"/>
                 <Button Content="Drucken"
                         Width="110"
                         Height="34"
