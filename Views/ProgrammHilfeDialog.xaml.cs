@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace MaterialManager_V01.Views
 {
@@ -81,6 +83,43 @@ Wenn das funktioniert, ist der Mehr-PC-Betrieb korrekt eingerichtet.
 Hinweis:
 Diese Hilfe beschreibt den empfohlenen Standardbetrieb mit gemeinsamer Excel-Datei im Netzwerk.
 """;
+        }
+
+        private void OnPrint(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var printDialog = new System.Windows.Controls.PrintDialog();
+                if (printDialog.ShowDialog() != true)
+                    return;
+
+                var document = new FlowDocument
+                {
+                    PagePadding = new Thickness(50),
+                    FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
+                    FontSize = 12,
+                    ColumnWidth = printDialog.PrintableAreaWidth
+                };
+
+                document.Blocks.Add(new Paragraph(new Bold(new Run("MaterialManager V01 – Programm- & Netzwerkanleitung")))
+                {
+                    Margin = new Thickness(0, 0, 0, 14),
+                    FontSize = 14
+                });
+
+                document.Blocks.Add(new Paragraph(new Run(HelpTextBox.Text))
+                {
+                    TextAlignment = TextAlignment.Left,
+                    Margin = new Thickness(0)
+                });
+
+                var paginator = ((IDocumentPaginatorSource)document).DocumentPaginator;
+                printDialog.PrintDocument(paginator, "Programm- und Netzwerkanleitung");
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Drucken fehlgeschlagen:\n{ex.Message}", "Drucken", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnClose(object sender, RoutedEventArgs e)

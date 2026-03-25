@@ -99,6 +99,10 @@
     <Compile Update="Views\NetzwerkEinstellungenDialog.xaml.cs">
       <DependentUpon>NetzwerkEinstellungenDialog.xaml</DependentUpon>
     </Compile>
+    <Page Update="Views\ProgrammHilfeDialog.xaml" />
+    <Compile Update="Views\ProgrammHilfeDialog.xaml.cs">
+      <DependentUpon>ProgrammHilfeDialog.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -127,6 +131,10 @@
   </ItemGroup>
 
 </Project>
+
+
+
+
 
 
 
