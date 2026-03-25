@@ -21,9 +21,22 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <DockPanel>

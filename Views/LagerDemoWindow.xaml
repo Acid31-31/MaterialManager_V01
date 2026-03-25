@@ -109,10 +109,18 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="#1E4E79"/>
                 </Trigger>
@@ -267,6 +275,14 @@
                 <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
                 <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110"/>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140"/>
+                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="170" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#FF9800"/>
+                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

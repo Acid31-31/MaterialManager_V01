@@ -215,11 +215,19 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
         
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IstReserviert}" Value="True">
+                    <Setter Property="Background" Value="#1B5E20"/>
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
                     <Setter Property="Background" Value="#1B5E20"/>
                 </DataTrigger>
@@ -451,6 +459,14 @@
                 <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="110" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="110" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="130" IsReadOnly="True"/>
+                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="150" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#FF9800"/>
+                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Lieferant" Binding="{Binding Lieferant}" Width="90" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Lieferschein-Nr" Binding="{Binding LieferscheinNr}" Width="110" IsReadOnly="True"/>
             </DataGrid.Columns>
