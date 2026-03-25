@@ -38,7 +38,14 @@
             <Button Content="Schließen" Click="OnSchliessen" Width="100" Background="#1976D2" Foreground="White" Padding="8"/>
         </Border>
         
-        <DataGrid ItemsSource="{Binding ReservierteReste}" AutoGenerateColumns="False" Margin="10" IsReadOnly="True" Background="#121212" Foreground="White">
+        <DataGrid x:Name="ReservierteResteGrid"
+                  ItemsSource="{Binding ReservierteReste}"
+                  AutoGenerateColumns="False"
+                  Margin="10"
+                  IsReadOnly="True"
+                  Background="#121212"
+                  Foreground="White"
+                  MouseDoubleClick="OnGridMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="100"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
