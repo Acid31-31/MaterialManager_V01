@@ -51,6 +51,15 @@ namespace MaterialManager_V01.Views
             e.Handled = true;
         }
 
+        private void OnPdfButtonClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not MaterialItem item)
+                return;
+
+            OpenPdf(item);
+            e.Handled = true;
+        }
+
         private static void OpenPdf(MaterialItem item)
         {
             if (string.IsNullOrWhiteSpace(item.PdfPfad))

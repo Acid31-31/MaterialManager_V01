@@ -75,11 +75,15 @@
                 <DataGridTemplateColumn Header="PDF" Width="180">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding PdfDateiname}"
-                                       Foreground="#FF9800"
-                                       ToolTip="{Binding PdfPfad}"
-                                       Cursor="Hand"
-                                       MouseLeftButtonUp="OnPdfClick"/>
+                            <Button Content="{Binding PdfDateiname}"
+                                    Click="OnPdfButtonClick"
+                                    ToolTip="{Binding PdfPfad}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#FF9800"
+                                    HorizontalContentAlignment="Left"
+                                    Padding="0"
+                                    Cursor="Hand"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
