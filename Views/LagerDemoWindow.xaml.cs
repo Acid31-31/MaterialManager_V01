@@ -239,6 +239,13 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnLowStockClick(object sender, RoutedEventArgs e)
+        {
+            var materialien = new ObservableCollection<MaterialItem>(_alleMaterialien);
+            var dlg = new NiedrigeBestaendeDialog(materialien) { Owner = this };
+            dlg.ShowDialog();
+        }
+
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
             var startWindow = new StartModeWindow();
