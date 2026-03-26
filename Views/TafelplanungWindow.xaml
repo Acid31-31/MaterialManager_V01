@@ -159,6 +159,12 @@
                             Foreground="White"
                             Padding="12,8"
                             Margin="0,0,8,0"/>
+                    <Button Content="Reste suchen"
+                            Click="OnSearchRestsClick"
+                            Background="#2E7D32"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
                     <Button Content="Niedrige Bestände"
                             Click="OnLowStockClick"
                             Background="#EF6C00"

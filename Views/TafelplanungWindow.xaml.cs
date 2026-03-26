@@ -201,6 +201,52 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private void OnSearchRestsClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ResteSucheDialog { Owner = this };
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var gefunden = _alleMaterialien.Where(m =>
+                RestMaterialSearchService.Matches(
+                    m,
+                    dlg.Material,
+                    dlg.Legierung,
+                    dlg.Staerke,
+                    dlg.Laenge,
+                    dlg.Breite,
+                    dlg.ToleranzProzent,
+                    dlg.Form,
+                    requireRest: false)).ToList();
+
+            foreach (var m in _alleMaterialien)
+                m.IsHighlighted = gefunden.Contains(m);
+
+            if (!gefunden.Any())
+            {
+                MessageBox.Show("Keine passenden Materialien gefunden.", "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            MessageBox.Show($"{gefunden.Count} passende(s) Material(ien) gefunden!\n\nDie Materialien sind grün markiert.",
+                "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
+            if (auswahlDlg.ShowDialog() != true || auswahlDlg.SelectedMaterial == null)
+                return;
+
+            var reservierungDlg = new ResteReservierungDialog(auswahlDlg.SelectedMaterial.AuftragNr) { Owner = this };
+            if (reservierungDlg.ShowDialog() != true || string.IsNullOrWhiteSpace(reservierungDlg.AuftragNr))
+                return;
+
+            auswahlDlg.SelectedMaterial.AuftragNr = reservierungDlg.AuftragNr.Trim();
+            auswahlDlg.SelectedMaterial.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
+
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
         private void OnBookForOrderClick(object sender, RoutedEventArgs e)
         {
             var items = GetMarkedMaterials().Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
