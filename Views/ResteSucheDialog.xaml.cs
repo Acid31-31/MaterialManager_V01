@@ -137,9 +137,17 @@ namespace MaterialManager_V01.Views
             }
 
             // Toleranz
-            if (!string.IsNullOrWhiteSpace(ToleranzBox.Text) && double.TryParse(ToleranzBox.Text, out var tol))
+            if (!string.IsNullOrWhiteSpace(ToleranzBox.Text))
             {
-                ToleranzProzent = tol;
+                var tolText = ToleranzBox.Text.Trim().Replace("%", string.Empty).Replace(',', '.');
+                if (double.TryParse(
+                    tolText,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var tol))
+                {
+                    ToleranzProzent = Math.Clamp(tol, 0, 30);
+                }
             }
 
             DialogResult = true;
