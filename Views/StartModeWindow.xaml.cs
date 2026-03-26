@@ -19,6 +19,60 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private async void OnCheckForUpdates(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var result = await GitHubUpdateService.CheckForUpdatesAsync();
+
+                if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
+                {
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
+                {
+                    MessageBox.Show($"Sie haben die neueste Version ({result.CurrentVersion}).", "Update", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var dlg = new UpdateDialog(result) { Owner = this };
+                dlg.ShowDialog();
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void OnProgrammHilfe(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ProgrammHilfeDialog { Owner = this };
+            dlg.ShowDialog();
+        }
+
+        private void OnSelectOperatorClick(object sender, RoutedEventArgs e)
+        {
+            _ = PromptForOperatorName();
+        }
+
+        private void OnMinimizeWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OnMaximizeRestoreWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void OnCloseWindow(object sender, RoutedEventArgs e)
+        {
+            OnCloseClick(sender, e);
+        }
+
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
             Close();

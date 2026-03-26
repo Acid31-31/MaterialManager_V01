@@ -10,17 +10,143 @@
         BorderBrush="#2A2A2A"
         BorderThickness="1"
         Icon="/Assets/app-icon.png">
+    <Window.Resources>
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2E2E2E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseTitleBarButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C42B1C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Menu">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderThickness="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="4,0,6,0" VerticalAlignment="Center"/>
+                                <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="20,0,6,0" VerticalAlignment="Center" Foreground="#888"/>
+                                <Path Grid.Column="3" x:Name="ArrowPath" Margin="4,0,0,0" VerticalAlignment="Center" Fill="White" Data="M 0 0 L 4 4 L 0 8 Z" Visibility="Collapsed"/>
+
+                                <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsSubmenuOpen}" Placement="Right" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade" VerticalOffset="-3">
+                                    <Border Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" Padding="2">
+                                        <ScrollViewer CanContentScroll="True" MaxHeight="400">
+                                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter TargetName="Border" Property="Background" Value="#1F1F1F"/>
+                                <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="TopLevelItem">
+                                <Setter TargetName="Border" Property="Background" Value="#1F1F1F"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#666"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="4,2"/>
+        </Style>
+    </Window.Resources>
+
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="44" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+        <Border DockPanel.Dock="Top" Background="#111111" Height="32" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="18" Height="18" Margin="12,0,10,0" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1" Text="MaterialManager V01 - Start" Foreground="White" VerticalAlignment="Center" FontSize="14"/>
-                <Button Grid.Column="2" Content="✕" Click="OnCloseClick" Width="50" Height="36" Margin="0,4,4,4" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+
+                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="18" Height="18" Margin="8,0,10,0" VerticalAlignment="Center"/>
+
+                <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
+                    <MenuItem Header="Datei">
+                        <MenuItem Header="Hauptprogramm" Click="OnStandardClick"/>
+                        <MenuItem Header="Lager" Click="OnLagerClick"/>
+                        <MenuItem Header="Tafelplanung" Click="OnTafelplanungClick"/>
+                        <MenuItem Header="Laser" Click="OnLaserClick"/>
+                        <Separator/>
+                        <MenuItem Header="Beenden" Click="OnCloseClick"/>
+                    </MenuItem>
+                    <MenuItem Header="Bearbeiten">
+                        <MenuItem Header="Bediener auswählen" Click="OnSelectOperatorClick"/>
+                    </MenuItem>
+                    <MenuItem Header="Ansicht">
+                        <MenuItem Header="Startseite" IsEnabled="False"/>
+                    </MenuItem>
+                    <MenuItem Header="Hilfe">
+                        <MenuItem Header="Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
+                        <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
+                    </MenuItem>
+                </Menu>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
+                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
+                </StackPanel>
             </Grid>
         </Border>
 
