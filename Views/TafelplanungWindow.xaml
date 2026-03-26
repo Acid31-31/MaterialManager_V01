@@ -8,6 +8,7 @@
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
+        ResizeMode="CanMinimize"
         WindowStyle="None"
         BorderBrush="#0B0B0B"
         BorderThickness="0"
