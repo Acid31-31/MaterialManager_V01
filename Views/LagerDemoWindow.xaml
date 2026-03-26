@@ -6,7 +6,7 @@
         Width="1500"
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
+        WindowState="Normal"
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
