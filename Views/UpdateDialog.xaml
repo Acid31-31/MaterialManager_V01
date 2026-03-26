@@ -47,7 +47,7 @@
                 
                 <Border Background="#1E1E1E" CornerRadius="6" Padding="15">
                     <StackPanel>
-                        <TextBlock Text="🎉 Neue Features:" Foreground="White" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="📝 Was wurde geändert:" Foreground="White" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
                         <TextBlock Text="{Binding Changelog}" Foreground="White" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>

@@ -257,6 +257,7 @@
                     </MenuItem>
                     <MenuItem Header="Bearbeiten">
                         <MenuItem Header="Für Auftrag buchen" Click="OnBookForOrderClick"/>
+                        <MenuItem Header="Material löschen" Click="OnDeleteMaterialClick"/>
                         <MenuItem Header="Reservierung aufheben" Click="OnReleaseReservationClick"/>
                         <MenuItem Header="Produktion abschließen" Click="OnCompleteProductionClick"/>
                         <MenuItem Header="PDF anhängen" Click="OnAttachPdfClick"/>
@@ -333,6 +334,12 @@
                             Foreground="White"
                             Padding="12,8"
                             Margin="0,0,8,0"/>
+                    <Button Content="Material löschen"
+                            Click="OnDeleteMaterialClick"
+                            Background="#C62828"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
                     <Button Content="Reservierung aufheben"
                             Click="OnReleaseReservationClick"
                             Background="#8B1E1E"
@@ -388,6 +395,7 @@
                   CanUserAddRows="False"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
+                  MouseDoubleClick="OnGridMouseDoubleClick"
                   PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="" Width="35">

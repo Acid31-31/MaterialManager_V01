@@ -457,6 +457,39 @@ namespace MaterialManager_V01.Views
             e.Handled = true;
         }
 
+        private void OnEditRestClick(object sender, RoutedEventArgs e)
+        {
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
+                return;
+
+            var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
+            dlg.SetEditMode(item);
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var index = _alleMaterialien.IndexOf(item);
+            if (index < 0)
+                return;
+
+            dlg.Material.Lagerort = RegalService.DetermineLagerort(
+                dlg.Material.MaterialArt,
+                dlg.Material.Legierung,
+                dlg.Material.Form,
+                dlg.Material.Staerke,
+                dlg.Material.Mass,
+                _alleMaterialien.Where(m => !ReferenceEquals(m, item)).ToList());
+            dlg.Material.IsSelected = false;
+            _alleMaterialien[index] = dlg.Material;
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            OnEditRestClick(sender, e);
+        }
+
         private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
         {
             while (child != null)
@@ -543,6 +576,33 @@ namespace MaterialManager_V01.Views
         private void OnCloseWindow(object sender, RoutedEventArgs e)
         {
             OnCloseClick(sender, e);
+        }
+
+        private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                items.Count == 1
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
+                "Tafelplanung",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            foreach (var item in items.ToList())
+                _alleMaterialien.Remove(item);
+
+            SaveAllMaterials();
+            LoadMaterials();
         }
     }
 }

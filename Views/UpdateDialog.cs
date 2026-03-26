@@ -57,7 +57,7 @@ namespace MaterialManager_V01.Views
         {
             VersionInfo = $"Aktuell: {_updateInfo.CurrentVersion} → Neu: {_updateInfo.LatestVersion}";
             Changelog = string.IsNullOrWhiteSpace(_updateInfo.Changelog)
-                ? "Kein Changelog verfügbar."
+                ? "Es wurden Änderungen in dieser Version veröffentlicht.\n\nDetaillierte Punkte sind im Release hinterlegt."
                 : _updateInfo.Changelog;
         }
 
