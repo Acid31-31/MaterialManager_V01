@@ -4,16 +4,18 @@
         Title="Tafelplanung - Materialbelegung"
         Height="820"
         Width="1500"
+        FontSize="13"
         Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         WindowStyle="None"
-        BorderBrush="#2A2A2A"
-        BorderThickness="1"
+        BorderBrush="#0B0B0B"
+        BorderThickness="0"
         Icon="/Assets/app-icon.png">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="White"/>
@@ -93,6 +95,7 @@
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#121212"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="RowBackground" Value="#1A1A1A"/>
             <Setter Property="AlternatingRowBackground" Value="#151515"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
@@ -102,6 +105,7 @@
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#1E1E1E"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="8,6"/>
         </Style>
@@ -370,6 +374,7 @@
                   ItemsSource="{Binding RestMaterialien}"
                   AutoGenerateColumns="False"
                   Margin="10"
+                  RowHeight="32"
                   CanUserAddRows="False"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
