@@ -106,14 +106,14 @@ namespace MaterialManager_V01.Services
         {
             return new PricingModel
             {
-                BasePriceFactor = 2.8m,
+                BasePriceFactor = 2.0m,
                 RoundingStep = 50m,
                 Multipliers = new PricingMultipliers
                 {
                     Single = 1.0m,
-                    Multi3 = 2.5m,
-                    Company10 = 7.0m,
-                    Enterprise = 15.0m
+                    Multi3 = 2.2m,
+                    Company10 = 4.5m,
+                    Enterprise = 8.0m
                 },
                 Modules = new List<PricingModule>
                 {
@@ -130,15 +130,15 @@ namespace MaterialManager_V01.Services
         private static void EnsureDefaults(PricingModel model)
         {
             if (model.BasePriceFactor <= 0m)
-                model.BasePriceFactor = 2.8m;
+                model.BasePriceFactor = 2.0m;
             if (model.RoundingStep <= 0m)
                 model.RoundingStep = 50m;
 
             model.Multipliers ??= new PricingMultipliers();
             if (model.Multipliers.Single <= 0m) model.Multipliers.Single = 1.0m;
-            if (model.Multipliers.Multi3 <= 0m) model.Multipliers.Multi3 = 2.5m;
-            if (model.Multipliers.Company10 <= 0m) model.Multipliers.Company10 = 7.0m;
-            if (model.Multipliers.Enterprise <= 0m) model.Multipliers.Enterprise = 15.0m;
+            if (model.Multipliers.Multi3 <= 0m) model.Multipliers.Multi3 = 2.2m;
+            if (model.Multipliers.Company10 <= 0m) model.Multipliers.Company10 = 4.5m;
+            if (model.Multipliers.Enterprise <= 0m) model.Multipliers.Enterprise = 8.0m;
 
             if (model.Modules == null || model.Modules.Count == 0)
                 model.Modules = CreateDefaultModel().Modules;
@@ -158,7 +158,7 @@ namespace MaterialManager_V01.Services
 
         private sealed class PricingModel
         {
-            public decimal BasePriceFactor { get; set; } = 2.8m;
+            public decimal BasePriceFactor { get; set; } = 2.0m;
             public decimal RoundingStep { get; set; } = 50m;
             public PricingMultipliers Multipliers { get; set; } = new();
             public List<PricingModule> Modules { get; set; } = new();
@@ -167,9 +167,9 @@ namespace MaterialManager_V01.Services
         private sealed class PricingMultipliers
         {
             public decimal Single { get; set; } = 1.0m;
-            public decimal Multi3 { get; set; } = 2.5m;
-            public decimal Company10 { get; set; } = 7.0m;
-            public decimal Enterprise { get; set; } = 15.0m;
+            public decimal Multi3 { get; set; } = 2.2m;
+            public decimal Company10 { get; set; } = 4.5m;
+            public decimal Enterprise { get; set; } = 8.0m;
         }
 
         private sealed class PricingModule
