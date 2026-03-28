@@ -6,14 +6,30 @@ namespace MaterialManager_V01.Views
     public partial class LicenseActivationDialog : Window
     {
         public string HardwareId { get; private set; }
+        public string HeadlinePriceText { get; private set; } = string.Empty;
+        public string SinglePriceText { get; private set; } = string.Empty;
+        public string MultiPriceText { get; private set; } = string.Empty;
+        public string CompanyPriceText { get; private set; } = string.Empty;
+        public string EnterprisePriceText { get; private set; } = string.Empty;
+        public string CalculationHintText { get; private set; } = string.Empty;
+
         private bool _isFormatting;
 
         public LicenseActivationDialog()
         {
             InitializeComponent();
-            DataContext = this;
+
+            var pricing = Services.PricingService.BuildForCurrentSoftware();
+            HeadlinePriceText = pricing.HeadlinePriceText;
+            SinglePriceText = pricing.SinglePriceText;
+            MultiPriceText = pricing.MultiPriceText;
+            CompanyPriceText = pricing.CompanyPriceText;
+            EnterprisePriceText = pricing.EnterprisePriceText;
+            CalculationHintText = pricing.CalculationHintText;
 
             HardwareId = Services.LicenseService.GetHardwareId();
+            DataContext = this;
+
             UpdateActivateButtonState();
         }
 

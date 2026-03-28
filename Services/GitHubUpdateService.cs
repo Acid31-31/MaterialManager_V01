@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -24,6 +25,16 @@ namespace MaterialManager_V01.Services
         public static async Task<UpdateCheckResult> CheckForUpdatesAsync()
         {
             var current = GetCurrentVersionTag();
+
+            if (IsDevelopmentPreviewRun())
+            {
+                return new UpdateCheckResult
+                {
+                    CurrentVersion = current,
+                    LatestVersion = current,
+                    IsUpdateAvailable = false
+                };
+            }
 
             try
             {
@@ -273,6 +284,39 @@ namespace MaterialManager_V01.Services
             {
                 return new PreparedUpdateResult { ErrorMessage = ex.Message };
             }
+        }
+
+        private static bool IsDevelopmentPreviewRun()
+        {
+            if (Debugger.IsAttached)
+                return true;
+
+            try
+            {
+                var baseDir = AppContext.BaseDirectory;
+                if (baseDir.IndexOf("\\bin\\Debug\\", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    baseDir.IndexOf("\\bin\\Release\\", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+
+                var dir = new DirectoryInfo(baseDir);
+                for (var i = 0; i < 6 && dir != null; i++)
+                {
+                    if (Directory.Exists(Path.Combine(dir.FullName, ".git")) ||
+                        File.Exists(Path.Combine(dir.FullName, "MaterialManager_V01.csproj")))
+                    {
+                        return true;
+                    }
+
+                    dir = dir.Parent;
+                }
+            }
+            catch
+            {
+            }
+
+            return false;
         }
 
         private static HttpClient CreateClient()

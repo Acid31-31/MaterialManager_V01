@@ -1010,9 +1010,17 @@ namespace MaterialManager_V01
             var dlg = new Views.LicenseActivationDialog { Owner = this };
             if (dlg.ShowDialog() == true)
             {
-                var status = Services.LicenseService.GetStatusMessage();
-                Title = $"MaterialManager V01 - {status}";
+                RefreshLicenseTitle();
             }
+        }
+
+        private void RefreshLicenseTitle()
+        {
+            var mode = Services.LicenseService.GetLicenseModeText();
+            var device = Services.LicenseService.GetDeviceUsageText();
+            Title = string.IsNullOrWhiteSpace(device)
+                ? $"MaterialManager V01 - {mode}"
+                : $"MaterialManager V01 - {mode} | {device}";
         }
 
         private void OnPrintMaterialList(object sender, RoutedEventArgs e)

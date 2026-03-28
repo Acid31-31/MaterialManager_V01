@@ -29,7 +29,9 @@ Empfohlene Reihenfolge:
 2. Auf jedem weiteren PC die gleiche Programmversion installieren.
 3. Auf allen PCs denselben Netzwerk-Speicherpfad für die Excel-Datei konfigurieren
    (Menü: Datei -> Netzwerk-Einstellungen).
-4. Alle PCs neu starten und einen Test mit einem neuen Materialeintrag durchführen.
+4. Zusätzlich auf allen PCs denselben Auftrags-Archivpfad konfigurieren
+   (Menü: Datei -> Netzwerk-Einstellungen).
+5. Alle PCs neu starten und einen Test mit einem neuen Materialeintrag durchführen.
 
 Wichtig:
 - Alle PCs müssen Zugriff auf denselben Netzwerkordner haben.
@@ -37,12 +39,16 @@ Wichtig:
 - Uhrzeit/Datum sollten auf allen PCs korrekt sein.
 
 
-3) NETZWERKVERBINDUNG – GLEICHZEITIGER BETRIEB
+3) NETZWERKVERBINDUNG - GLEICHZEITIGER BETRIEB
 
 Damit alle Programme gleichzeitig funktionieren:
 - Es darf nur EINE gemeinsame Excel-Datei genutzt werden.
 - Jeder PC muss in den Netzwerk-Einstellungen exakt denselben Pfad verwenden.
-- Beispielpfad: \\SERVER\MaterialManager\Daten\Materialien.xlsx
+- Für Auftragsabschlüsse und Nachproduktion muss zusätzlich derselbe Auftrags-Archivpfad
+  auf allen PCs eingetragen sein.
+- Beispielpfade:
+  \SERVER\MaterialManager\Daten
+  \SERVER\MaterialManager\Auftragsarchiv
 
 Empfehlung:
 - Ablage auf Server/NAS (nicht lokal auf C: eines einzelnen PCs).
@@ -50,40 +56,52 @@ Empfehlung:
 - Bei Verbindungsabbrüchen zuerst Freigabe und Rechte prüfen.
 
 
-4) WO SOLL DIE EXCEL-DATEI GESPEICHERT WERDEN?
+4) GEMEINSAMEN AUFTRAGS-ARCHIVORDNER ERSTELLEN
+
+1. Auf Server/NAS einen Ordner anlegen, z.B. MaterialManager.
+2. Darunter Unterordner erstellen:
+   - Daten
+   - Auftragsarchiv
+3. Freigabe aktivieren und allen relevanten Benutzern Lese-/Schreibrechte geben.
+4. Auf allen PCs denselben Pfad nutzen (UNC oder identisches Netzlaufwerk).
+5. Beide Pfade in den Netzwerk-Einstellungen eintragen und speichern.
+
+
+5) WO SOLL DIE EXCEL-DATEI GESPEICHERT WERDEN?
 
 Richtig:
 - In einem zentralen Netzwerkordner, den alle beteiligten PCs erreichen können.
 - Beispiel:
-  \\SERVER\MaterialManager\Daten\Materialien.xlsx
+  \SERVER\MaterialManager\Daten\materialbestand.xlsx
 
 Nicht empfohlen:
 - Lokaler Desktop oder Dokumente eines einzelnen Rechners.
 - USB-Stick als dauerhafte Live-Datenquelle.
 
 
-5) PRAKTISCHER SCHNELLTEST NACH DER EINRICHTUNG
+6) PRAKTISCHER SCHNELLTEST NACH DER EINRICHTUNG
 
 1. PC A: Material anlegen und speichern.
 2. PC B: Aktualisieren klicken -> Material muss sichtbar sein.
 3. PC C (Laser/Tafel): Reservieren/Ändern.
-4. PC A/B: Änderung muss nach Aktualisieren sichtbar sein.
+4. Auftrag abschließen und prüfen, ob Daten und PDFs im Auftragsarchiv erscheinen.
+5. PC A/B: Änderung muss nach Aktualisieren sichtbar sein.
 
 Wenn das funktioniert, ist der Mehr-PC-Betrieb korrekt eingerichtet.
 
 
-6) FEHLERSUCHE (KURZ)
+7) FEHLERSUCHE (KURZ)
 
 - Änderungen nicht sichtbar?
-  -> Auf "Aktualisieren" klicken und Netzwerkpfad vergleichen.
+  -> Auf "Aktualisieren" klicken und Netzwerkpfade vergleichen.
 - Speichern schlägt fehl?
   -> Schreibrechte im Freigabeordner prüfen.
 - Unterschiedliche Datenstände?
-  -> Prüfen, ob wirklich alle PCs dieselbe Excel-Datei benutzen.
+  -> Prüfen, ob wirklich alle PCs dieselbe Excel-Datei und denselben Archivpfad benutzen.
 
 
 Hinweis:
-Diese Hilfe beschreibt den empfohlenen Standardbetrieb mit gemeinsamer Excel-Datei im Netzwerk.
+Diese Hilfe beschreibt den empfohlenen Standardbetrieb mit gemeinsamer Excel-Datei und gemeinsamem Auftragsarchiv im Netzwerk.
 """;
         }
 

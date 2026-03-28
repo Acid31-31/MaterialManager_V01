@@ -24,6 +24,40 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <Style x:Key="DarkContextMenuStyle" TargetType="ContextMenu">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <StackPanel IsItemsHost="True"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DarkContextMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
             <Setter Property="Height" Value="30"/>
@@ -357,12 +391,29 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="200"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Aufträge mit reserviertem Material" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-                <TextBlock Grid.Row="1" Text="Doppelklick auf einen Auftrag öffnet die Produktionsverfolgung" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Aufträge der ausgewählten Kalenderwoche" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <Button Grid.Row="0"
+                        Grid.Column="1"
+                        Content="{Binding AuftragsKwText}"
+                        Click="OnAuftragKwAuswahlClick"
+                        Background="#455A64"
+                        Foreground="White"
+                        Padding="12,6"
+                        Height="30"
+                        MinWidth="140"
+                        Margin="8,0,0,8"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
 
                 <DataGrid x:Name="AuftraegeGrid"
                           Grid.Row="2"
+                          Grid.Column="0"
+                          Grid.ColumnSpan="2"
                           ItemsSource="{Binding AuftraegeView}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
@@ -377,6 +428,21 @@
                         <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
                         <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
                         <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>
+                        <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy}" Width="110"/>
+                        <DataGridTemplateColumn Header="PDF" Width="220">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding PdfDateiname}"
+                                            Click="OnAuftragPdfButtonClick"
+                                            ToolTip="{Binding PdfPfad}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="#FF9800"
+                                            HorizontalContentAlignment="Left"
+                                            Padding="0"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

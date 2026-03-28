@@ -41,8 +41,8 @@ namespace MaterialManager_V01.Views
 
             // 3. Lizenz
             var days = LicenseService.GetRemainingTrialDays();
-            if (days <= 7)
-                warnungen.Add(("⏰", $"Demo-Version: Noch {days} Tage verbleibend!", "#E91E63"));
+            if (!LicenseService.IsFullLicenseActive() && days <= 7)
+                warnungen.Add(("⏰", $"Testversion: Noch {days} Tage verbleibend!", "#E91E63"));
 
             // 4. Bestellvorschläge
             var vorschlaege = BestellService.BerechneVorschlaege(materialien);

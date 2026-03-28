@@ -1,5 +1,8 @@
 using System;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -7,13 +10,18 @@ namespace MaterialManager_V01.Views
 {
     public partial class ProduktionVerfolgungDialog : Window
     {
-        private Auftrag _auftrag;
+        private readonly Auftrag _auftrag;
+        private readonly int _aktuellesJahr;
+        private int _ausgewaehlteKalenderWoche;
 
         public ProduktionVerfolgungDialog(Auftrag auftrag)
         {
             InitializeComponent();
             _auftrag = auftrag;
+            _aktuellesJahr = DateTime.Now.Year;
+            _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
             AuftragTextBlock.Text = _auftrag.Auftragsnummer;
+            UpdateKwButtonText();
 
             UpdateDisplay();
             if (_auftrag.ProduktionStartDatum.HasValue)
@@ -47,11 +55,31 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            if (!CanStartProductionWithCompletePdfs(out var fehlendePdfsText))
+            {
+                MessageBox.Show(
+                    $"Produktion kann nicht gestartet werden. Für diesen Auftrag fehlen PDF-Dateien:\n\n{fehlendePdfsText}",
+                    "PDF-Pflicht vor Start",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             _auftrag.ProduktionStartDatum = DateTime.Now;
+            _auftrag.Status = AuftragStatus.InBearbeitung;
             StartButton.IsEnabled = false;
             EndButton.IsEnabled = true;
             UpdateDisplay();
             SaveChanges();
+
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "START",
+                "Auftrag",
+                _auftrag.Auftragsnummer,
+                oldValue: AuftragStatus.Offen.ToString(),
+                newValue: AuftragStatus.InBearbeitung.ToString(),
+                reason: "Produktion gestartet");
         }
 
         private void OnEndClick(object sender, RoutedEventArgs e)
@@ -67,6 +95,23 @@ namespace MaterialManager_V01.Views
             EndButton.IsEnabled = false;
             UpdateDisplay();
             SaveChanges();
+
+            var archivResult = AuftragArchivService.ArchiveCompletedOrder(_auftrag, _ausgewaehlteKalenderWoche, _aktuellesJahr);
+            if (!archivResult.Success)
+            {
+                MessageBox.Show(archivResult.Message, "Archivierung", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "STOP",
+                "Auftrag",
+                _auftrag.Auftragsnummer,
+                oldValue: AuftragStatus.InBearbeitung.ToString(),
+                newValue: AuftragStatus.Abgeschlossen.ToString(),
+                reason: archivResult.Success
+                    ? $"Produktion abgeschlossen. {archivResult.Message}"
+                    : $"Produktion abgeschlossen, Archivierung fehlgeschlagen: {archivResult.Message}");
         }
 
         private void SaveChanges()
@@ -96,6 +141,80 @@ namespace MaterialManager_V01.Views
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnKwAuswahlClick(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu
+            {
+                Background = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#111111")),
+                Foreground = System.Windows.Media.Brushes.White,
+                BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#333333")),
+                BorderThickness = new Thickness(1)
+            };
+
+            for (var kw = 1; kw <= 53; kw++)
+            {
+                var istAktiv = kw == _ausgewaehlteKalenderWoche;
+                var item = new MenuItem
+                {
+                    Header = istAktiv ? $"▶ KW {kw:D2} ({_aktuellesJahr})" : $"KW {kw:D2} ({_aktuellesJahr})",
+                    Tag = kw,
+                    Foreground = System.Windows.Media.Brushes.White,
+                    Background = System.Windows.Media.Brushes.Transparent
+                };
+                item.Click += OnKwAuswahlItemClick;
+                menu.Items.Add(item);
+            }
+
+            KwAuswahlButton.ContextMenu = menu;
+            menu.PlacementTarget = KwAuswahlButton;
+            menu.IsOpen = true;
+        }
+
+        private void OnKwAuswahlItemClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem item || item.Tag is not int kw)
+                return;
+
+            _ausgewaehlteKalenderWoche = kw;
+            UpdateKwButtonText();
+        }
+
+        private void UpdateKwButtonText()
+        {
+            KwAuswahlButton.Content = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
+            KwAuswahlButton.ToolTip = $"Archivansicht für Kalenderwoche {_ausgewaehlteKalenderWoche:D2} im Jahr {_aktuellesJahr}";
+        }
+
+        private bool CanStartProductionWithCompletePdfs(out string fehlendePdfsText)
+        {
+            fehlendePdfsText = string.Empty;
+
+            var materialien = MaterialDataService.LoadAllMaterials()
+                .Where(m => string.Equals(m.AuftragNr, _auftrag.Auftragsnummer, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (materialien.Count == 0)
+            {
+                fehlendePdfsText = "Keine zugeordneten Materialpositionen gefunden.";
+                return false;
+            }
+
+            var fehlende = AuftragRulesService.GetMaterialsWithoutValidPdf(materialien)
+                .Select(m => $"- {m.MaterialArt} {m.Mass} (Restnummer: {m.Restnummer})")
+                .ToList();
+
+            if (fehlende.Count == 0)
+                return true;
+
+            fehlendePdfsText = string.Join("\n", fehlende);
+            return false;
+        }
+
+        private static bool HasExistingPdf(MaterialItem material)
+        {
+            return AuftragRulesService.HasExistingPdf(material);
         }
     }
 }

@@ -65,6 +65,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="pricing-model.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include=".github\copilot-instructions.md" />
     <None Include=".github\workflows\auto-release.yml" />
     <None Include="bin\USB_Version\autorun.inf" />
@@ -109,6 +112,7 @@
 
   <ItemGroup>
     <Folder Include="Installer\" />
+    <Folder Include="MaterialManager_V01.Tests\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
@@ -116,6 +120,7 @@
   <ItemGroup>
     <Compile Remove="_ARCHIVE_TO_REVIEW\**\*.cs" />
     <Compile Remove="Backup*\**\*.cs" />
+    <Compile Remove="MaterialManager_V01.Tests\**\*.cs" />
     <Compile Remove="Installer_Source\UpdateInstaller.cs" />
     <Compile Remove="Installer_Source\obj\**\*.cs" />
     <Compile Remove="Installer_Source\bin\**\*.cs" />
@@ -128,11 +133,108 @@
     <ApplicationDefinition Remove="Backup*\**\*.xaml" />
     <None Remove="_ARCHIVE_TO_REVIEW\**\*.*" />
     <None Remove="Backup*\**\*.*" />
+    <None Remove="MaterialManager_V01.Tests\**\*.*" />
     <None Remove="Installer_Source\obj\**\*.*" />
     <None Remove="Installer_Source\bin\**\*.*" />
   </ItemGroup>
 
 </Project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

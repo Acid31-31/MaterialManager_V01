@@ -8,6 +8,8 @@
 - Nach Änderungen standardmäßig sowohl lokal als auch auf GitHub aktualisieren. Bei `komplett aktualisieren` den lokalen USB-Ordner inklusive `USB_Installation` und GitHub vollständig synchronisieren.
 - Immer den aktuellen `COPILOTWORKSPACE CONTEXT` und `IDESTATE CONTEXT` berücksichtigen.
 - Neue vom Benutzer genannte Arbeitsregeln nach Möglichkeit in diese Datei übernehmen, damit sie nicht wiederholt werden müssen.
+- Verbindliche UI-Regel: Bei allen neu erstellten UI-Elementen immer ein dunkles Design verwenden (Fenster, Dialoge, Dropdowns, ContextMenus, Popups); keine hellen Standard-Hintergründe oder helle Titelleisten verwenden.
+- **Neue UI-Regel:** Bei allen neu erstellten UI-Elementen (Fenster, Dialoge, Dropdowns, ContextMenus, Popups) immer durchgehend dunkles Design verwenden; keine hellen Standard-Elemente zulassen.
 - Keine neuen Verzeichnisse oder zusätzlichen Git-Branches ohne ausdrückliche Zustimmung anlegen.
 - Das bestehende `USB_Installation`-Layout beibehalten. Vorhandene Installationsdateien, Erklärungen und sonstige Inhalte nicht durch Publish ersetzen oder entfernen, außer mit ausdrücklicher Zustimmung.
 - Der `UpdateInstaller` soll den Installationspfad automatisch erkennen, damit Updates auf mehreren Rechnern und in unterschiedlichen Installationsordnern ohne manuelle Pfadangabe funktionieren.
@@ -21,8 +23,16 @@
 - Änderungen und notwendige Speichervorgänge sollen automatisch ausgeführt werden, ohne den Benutzer zu manuellen Speicherschritten aufzufordern.
 - Sichtbare UI-Texte dürfen keine Encoding-/Sonderzeichenfehler enthalten; sie sollen in deutscher Sprache korrekt mit Umlauten angezeigt werden und Umlaute dürfen nicht durch Ersatzschreibweisen wie ae/oe/ue ersetzt werden. Bei Meldungen und Beschriftungen sollen fehleranfällige Sonderzeichen vermieden bzw. robust dargestellt werden.
 
+## Auftragsanforderungen
+- Archivierung über Netzwerkpfad implementieren.
+- Start eines Laser-Auftrags nur, wenn alle Materialpositionen PDFs haben.
+- Bei Abschluss sowohl Auftragsdaten als auch PDF-Kopien in KW-Archiv (nur aktuelles Jahr) verschieben.
+- Automatische Löschung/Überschreibung von Archivdaten nach 12 Monaten.
+- KW-Auswahl im UI mit aktueller KW als Standard und Umschalten auf andere KWs des aktuellen Jahres ermöglichen.
+
 ## License Key Generation
 - Die beiden Lizenzschlüssel-Mechanismen müssen vereinheitlicht bleiben:
   - `LicenseKeyGenerator.cs` verwendet HMAC-SHA256 mit `MM_V01_MASTER_SECRET_2025_PRODUCTION` und erzeugt das Format `MM-XXXX-XXXX-XXXX-XXXX`.
   - `LicenseService.cs` darf keine abweichende eigene Schlüsselgenerierung mehr verwenden.
 - `LicenseService.ActivateFullLicense()` muss `LicenseKeyGenerator.GenerateLicenseKey()` verwenden.
+- **Preisdarstellung in der Lizenzaktivierung** soll auf professionelles Software-Niveau angehoben werden; die bisherigen niedrigen Beispielpreise sind nicht passend. Lizenzpreise sollen marktgerecht bleiben und klar unter ca. 30.000 EUR/Jahr für Firmenlizenz liegen; Wettbewerberpreise sollen als Referenz genutzt werden. Lizenzpreise sollen nicht pauschal sein, sondern abhängig vom Software-Umfang und den enthaltenen Funktionen bewertet und daraus berechnet werden.

@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace MaterialManager_V01.Models
 {
     public class Auftrag
@@ -16,6 +18,20 @@ namespace MaterialManager_V01.Models
         public string PdfPfadAngefangeneTafel { get; set; } = string.Empty;
         public DateTime? ProduktionStartDatum { get; set; }
         public DateTime? ProduktionEndDatum { get; set; }
+
+        public string PdfDateiname
+        {
+            get
+            {
+                var pfad = !string.IsNullOrWhiteSpace(PdfPfadAngefangeneTafel)
+                    ? PdfPfadAngefangeneTafel
+                    : PdfPfad;
+
+                return string.IsNullOrWhiteSpace(pfad)
+                    ? "Keine PDF"
+                    : Path.GetFileName(pfad);
+            }
+        }
 
         public string ProduktionsDauer
         {

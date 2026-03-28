@@ -57,10 +57,22 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Auftrag:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                <TextBlock Grid.Column="1" x:Name="AuftragTextBlock" FontSize="18" FontWeight="Bold" Foreground="#8EC5FF"/>
+                <TextBlock Grid.Column="1" x:Name="AuftragTextBlock" FontSize="18" FontWeight="Bold" Foreground="#8EC5FF" VerticalAlignment="Center"/>
+                <Button Grid.Column="2"
+                        x:Name="KwAuswahlButton"
+                        Content="KW --"
+                        Width="150"
+                        Height="36"
+                        Padding="12,6"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Background="#455A64"
+                        Margin="12,0,0,0"
+                        Click="OnKwAuswahlClick"/>
             </Grid>
         </Border>
 

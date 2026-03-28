@@ -38,14 +38,26 @@ namespace MaterialManager_V01
 
                 if (!Services.LicenseService.IsLicenseValid())
                 {
-                    File.AppendAllText(logPath, "Lizenz ungültig - zeige Dialog\n");
+                    File.AppendAllText(logPath, "Lizenz ungültig\n");
+
+                    if (Services.LicenseService.IsFullLicenseActive())
+                    {
+                        MessageBox.Show(
+                            Services.LicenseService.GetStatusMessage(),
+                            "Lizenzprüfung",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        Current.Shutdown();
+                        return;
+                    }
+
+                    File.AppendAllText(logPath, "Zeige Lizenzdialog\n");
                     var dlg = new LicenseActivationDialog();
                     if (dlg.ShowDialog() != true)
                     {
-                        File.AppendAllText(logPath, "Dialog abgebrochen oder Lizenz abgelaufen\n");
                         MessageBox.Show(
                             Services.LicenseService.GetStatusMessage(),
-                            "Demo-Version abgelaufen",
+                            "Testversion",
                             MessageBoxButton.OK,
                             MessageBoxImage.Warning);
                         Current.Shutdown();
@@ -58,11 +70,11 @@ namespace MaterialManager_V01
                 var remainingDays = Services.LicenseService.GetRemainingTrialDays();
                 File.AppendAllText(logPath, $"Verbleibende Tage: {remainingDays}\n");
 
-                if (remainingDays <= 7)
+                if (!Services.LicenseService.IsFullLicenseActive() && remainingDays <= 7)
                 {
                     MessageBox.Show(
                         Services.LicenseService.GetStatusMessage(),
-                        "Demo-Version",
+                        "Testversion",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
                 }

@@ -1,7 +1,6 @@
 ﻿using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -57,7 +56,7 @@ namespace MaterialManager_V01.Views
             e.Handled = true;
         }
 
-        private static void OpenPdf(MaterialItem item)
+        private void OpenPdf(MaterialItem item)
         {
             var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
                 ? item.PdfPfadAngefangeneTafel
@@ -65,27 +64,24 @@ namespace MaterialManager_V01.Views
 
             if (string.IsNullOrWhiteSpace(pdfPfad))
             {
-                MessageBox.Show("Für dieses reservierte Material ist keine PDF hinterlegt.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Für dieses reservierte Material ist keine PDF hinterlegt.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (!System.IO.File.Exists(pdfPfad))
             {
-                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             try
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = pdfPfad,
-                    UseShellExecute = true
-                });
+                var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+                dlg.ShowDialog();
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"PDF-Vorschau konnte nicht geöffnet werden:\n{ex.Message}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

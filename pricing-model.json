@@ -1,0 +1,36 @@
+{
+  "BasePriceFactor": 2.8,
+  "RoundingStep": 50,
+  "Multipliers": {
+    "Single": 1.0,
+    "Multi3": 2.5,
+    "Company10": 7.0,
+    "Enterprise": 15.0
+  },
+  "Modules": [
+    {
+      "Name": "Lager + Inventur + Materialdaten",
+      "Score": 220
+    },
+    {
+      "Name": "Netzwerk/Mehrbenutzer",
+      "Score": 180
+    },
+    {
+      "Name": "Aufträge + KW + Archiv",
+      "Score": 210
+    },
+    {
+      "Name": "Laser-/Tafelplanung-Workflows",
+      "Score": 260
+    },
+    {
+      "Name": "Audit + Lizenz + Sicherheit",
+      "Score": 190
+    },
+    {
+      "Name": "Update/Deployment/Supportfähigkeit",
+      "Score": 110
+    }
+  ]
+}

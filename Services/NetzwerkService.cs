@@ -20,6 +20,7 @@ namespace MaterialManager_V01.Services
         public static bool IsNetzwerkModus => TryGetValidatedNetworkPath(out _);
 
         public static string NetzwerkPfad => _config.NetzwerkPfad;
+        public static string AuftragsArchivPfad => _config.AuftragsArchivPfad;
 
         public static string GetSavePath()
         {
@@ -152,6 +153,23 @@ namespace MaterialManager_V01.Services
             SaveConfig();
         }
 
+        public static string GetAuftragsArchivBasisPfad()
+        {
+            if (TryGetValidatedAuftragsArchivPfad(out var archivPfad))
+                return archivPfad;
+
+            if (TryGetValidatedNetworkPath(out var netzwerkPfad))
+                return Path.Combine(netzwerkPfad, "Auftragsarchiv");
+
+            return string.Empty;
+        }
+
+        public static void SetAuftragsArchivPfad(string pfad)
+        {
+            _config.AuftragsArchivPfad = NormalizePath(pfad);
+            SaveConfig();
+        }
+
         public static string GetBenutzerName()
         {
             return string.IsNullOrWhiteSpace(_config.BenutzerName)
@@ -195,6 +213,28 @@ namespace MaterialManager_V01.Services
                     return false;
 
                 networkPath = Path.GetFullPath(normalized);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool TryGetValidatedAuftragsArchivPfad(out string archivePath)
+        {
+            archivePath = string.Empty;
+
+            var normalized = NormalizePath(_config.AuftragsArchivPfad);
+            if (string.IsNullOrWhiteSpace(normalized))
+                return false;
+
+            try
+            {
+                if (!Path.IsPathRooted(normalized))
+                    return false;
+
+                archivePath = Path.GetFullPath(normalized);
                 return true;
             }
             catch
@@ -249,5 +289,6 @@ namespace MaterialManager_V01.Services
         public bool Aktiviert { get; set; }
         public string NetzwerkPfad { get; set; } = "";
         public string BenutzerName { get; set; } = "";
+        public string AuftragsArchivPfad { get; set; } = "";
     }
 }

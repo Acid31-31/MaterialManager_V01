@@ -11,6 +11,7 @@ namespace MaterialManager_V01.Views
             AktivCheck.IsChecked = NetzwerkService.IsNetzwerkModus;
             PfadBox.Text = NetzwerkService.NetzwerkPfad;
             BenutzerBox.Text = NetzwerkService.GetBenutzerName();
+            ArchivPfadBox.Text = NetzwerkService.GetAuftragsArchivBasisPfad();
         }
 
         private void OnSave(object sender, RoutedEventArgs e)
@@ -18,6 +19,9 @@ namespace MaterialManager_V01.Views
             var aktiviert = AktivCheck.IsChecked == true;
             var pfad = PfadBox.Text?.Trim() ?? "";
             NetzwerkService.SetNetzwerkModus(aktiviert, pfad);
+
+            var archivPfad = ArchivPfadBox.Text?.Trim() ?? "";
+            NetzwerkService.SetAuftragsArchivPfad(archivPfad);
 
             var benutzer = BenutzerBox.Text?.Trim() ?? "";
             NetzwerkService.SetBenutzerName(benutzer);

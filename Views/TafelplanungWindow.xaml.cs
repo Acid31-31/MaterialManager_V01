@@ -6,11 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 using Microsoft.Win32;
+using System.Globalization;
 
 namespace MaterialManager_V01.Views
 {
@@ -18,8 +20,11 @@ namespace MaterialManager_V01.Views
     {
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _materialienCache = new();
+        private readonly int _aktuellesJahr = DateTime.Now.Year;
+        private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
+        public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
         public ObservableCollection<AuftragFilterItem> AuftragFilterItems { get; } = new();
 
         private string _headerText = string.Empty;
@@ -55,6 +60,28 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private string _auftragsKwText = string.Empty;
+        public string AuftragsKwText
+        {
+            get => _auftragsKwText;
+            set
+            {
+                _auftragsKwText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuftragsKwText)));
+            }
+        }
+
+        private string _auftragsKwInfoText = string.Empty;
+        public string AuftragsKwInfoText
+        {
+            get => _auftragsKwInfoText;
+            set
+            {
+                _auftragsKwInfoText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuftragsKwInfoText)));
+            }
+        }
+
         private AuftragFilterItem? _selectedAuftragFilter;
         public AuftragFilterItem? SelectedAuftragFilter
         {
@@ -74,6 +101,7 @@ namespace MaterialManager_V01.Views
             InitializeComponent();
             DataContext = this;
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName}";
+            UpdateAuftragsKwText();
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
@@ -106,6 +134,7 @@ namespace MaterialManager_V01.Views
                 _alleMaterialien = items;
                 _materialienCache = _alleMaterialien.ToList();
                 RefreshAuftragFilter();
+                LoadAuftraegeGridForSelectedKw();
                 ApplyFilter();
             }
             catch (Exception ex)
@@ -317,6 +346,7 @@ namespace MaterialManager_V01.Views
             var result = dlg.ShowDialog();
 
             RefreshAuftragFilter();
+            LoadAuftraegeGridForSelectedKw();
 
             if (result == true && !string.IsNullOrWhiteSpace(dlg.SelectedAuftragsnummer))
             {
@@ -327,6 +357,91 @@ namespace MaterialManager_V01.Views
             }
 
             ApplyFilter();
+        }
+
+        private void LoadAuftraegeGridForSelectedKw()
+        {
+            var gefilterteAuftraege = AuftragRulesService.FilterByIsoCalendarWeek(
+                AuftragDataService.LoadAllAuftraege(),
+                _aktuellesJahr,
+                _ausgewaehlteKalenderWoche);
+
+            AuftraegeView.Clear();
+            foreach (var auftrag in gefilterteAuftraege)
+                AuftraegeView.Add(auftrag);
+
+            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/Aufträge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
+        }
+
+        private void UpdateAuftragsKwText()
+        {
+            AuftragsKwText = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
+        }
+
+        private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu
+            {
+                Style = (Style)FindResource("DarkContextMenuStyle"),
+                ItemContainerStyle = (Style)FindResource("DarkContextMenuItemStyle")
+            };
+
+            for (var kw = 1; kw <= 53; kw++)
+            {
+                var istAktiv = kw == _ausgewaehlteKalenderWoche;
+                var item = new MenuItem
+                {
+                    Header = istAktiv
+                        ? $"▶ KW {kw:D2} ({_aktuellesJahr})"
+                        : $"KW {kw:D2} ({_aktuellesJahr})",
+                    Tag = kw
+                };
+                item.Click += OnAuftragKwAuswahlItemClick;
+                menu.Items.Add(item);
+            }
+
+            if (sender is Button button)
+            {
+                button.ContextMenu = menu;
+                menu.PlacementTarget = button;
+            }
+
+            menu.IsOpen = true;
+        }
+
+        private void OnAuftragKwAuswahlItemClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem item || item.Tag is not int kw)
+                return;
+
+            _ausgewaehlteKalenderWoche = kw;
+            UpdateAuftragsKwText();
+            LoadAuftraegeGridForSelectedKw();
+            RefreshAuftragFilter();
+            ApplyFilter();
+        }
+
+        private void OnAuftraegeGridDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (AuftraegeGrid.SelectedItem is not Auftrag auftrag)
+                return;
+
+            var dlg = new ProduktionVerfolgungDialog(auftrag) { Owner = this };
+            dlg.ShowDialog();
+            LoadAuftraegeGridForSelectedKw();
+        }
+
+        private void OnAuftragPdfButtonClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
+                return;
+
+            var pdfPfad = !string.IsNullOrWhiteSpace(auftrag.PdfPfadAngefangeneTafel)
+                ? auftrag.PdfPfadAngefangeneTafel
+                : auftrag.PdfPfad;
+
+            OpenPdfPreview(pdfPfad);
+            e.Handled = true;
         }
 
         private void OnSearchRestsClick(object sender, RoutedEventArgs e)
@@ -396,6 +511,9 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            string auftragNrForLog = string.Empty;
+            var gebuchteMenge = 0;
+
             if (items.Count == 1)
             {
                 var item = items[0];
@@ -405,6 +523,8 @@ namespace MaterialManager_V01.Views
 
                 PushUndoSnapshot("Für Auftrag buchen");
                 BookMaterialForOrder(item, dlg.AuftragNr, dlg.Menge, dlg.PdfPfad);
+                auftragNrForLog = dlg.AuftragNr;
+                gebuchteMenge = dlg.Menge;
             }
             else
             {
@@ -416,36 +536,22 @@ namespace MaterialManager_V01.Views
                 foreach (var item in items.ToList())
                 {
                     BookMaterialForOrder(item, dlg.AuftragNr.Trim(), item.Stueckzahl, string.Empty);
+                    gebuchteMenge += item.Stueckzahl;
                 }
+                auftragNrForLog = dlg.AuftragNr.Trim();
             }
+
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "RESERVE",
+                "MaterialItem",
+                string.IsNullOrWhiteSpace(auftragNrForLog) ? "MULTI" : auftragNrForLog,
+                oldValue: "Verfügbar",
+                newValue: $"Gebucht für Auftrag {auftragNrForLog}, Stück: {gebuchteMenge}",
+                reason: $"Reservierung in Tafelplanung ({items.Count} Positionen)");
 
             SaveAllMaterials();
             LoadMaterials();
-        }
-
-        private void BookMaterialForOrder(MaterialItem item, string auftragNr, int menge, string pdfPfad = "")
-        {
-            if (string.IsNullOrWhiteSpace(auftragNr) || menge <= 0 || menge > item.Stueckzahl)
-                return;
-
-            var bookedItem = CloneMaterial(item);
-            bookedItem.Stueckzahl = menge;
-            bookedItem.AuftragNr = auftragNr.Trim();
-            bookedItem.PdfPfad = string.IsNullOrWhiteSpace(pdfPfad) ? bookedItem.PdfPfad : pdfPfad.Trim();
-            bookedItem.Lagerort = "Gebucht";
-            bookedItem.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-            bookedItem.AenderungsDatum = DateTime.Now;
-            bookedItem.IsSelected = false;
-
-            item.Stueckzahl -= menge;
-            item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-            item.AenderungsDatum = DateTime.Now;
-            item.IsSelected = false;
-
-            if (item.Stueckzahl <= 0)
-                _alleMaterialien.Remove(item);
-
-            _alleMaterialien.Add(bookedItem);
         }
 
         private void OnReleaseReservationClick(object sender, RoutedEventArgs e)
@@ -456,6 +562,8 @@ namespace MaterialManager_V01.Views
                 MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+
+            var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
 
             var confirm = MessageBox.Show(
                 items.Count == 1
@@ -508,6 +616,15 @@ namespace MaterialManager_V01.Views
                 _alleMaterialien.Remove(item);
             }
 
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "RELEASE",
+                "MaterialItem",
+                string.Join(",", auftragsNummern),
+                oldValue: "Reserviert",
+                newValue: "Verfügbar",
+                reason: $"Reservierung aufgehoben ({items.Count} Positionen)");
+
             SaveAllMaterials();
             LoadMaterials();
         }
@@ -520,6 +637,8 @@ namespace MaterialManager_V01.Views
                 MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+
+            var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
 
             var confirm = MessageBox.Show(
                 items.Count == 1
@@ -538,6 +657,15 @@ namespace MaterialManager_V01.Views
                 BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
                 _alleMaterialien.Remove(item);
             }
+
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "COMPLETE",
+                "Auftrag",
+                string.Join(",", auftragsNummern),
+                oldValue: "Reserviert/In Bearbeitung",
+                newValue: "Abgeschlossen",
+                reason: $"Produktion abgeschlossen ({items.Count} Materialpositionen)");
 
             SaveAllMaterials();
             LoadMaterials();
@@ -606,13 +734,49 @@ namespace MaterialManager_V01.Views
             var cell = FindVisualParent<DataGridCell>(dep);
             if (cell == null) return;
 
-            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
-
             if (cell.DataContext is not MaterialItem item) return;
+
+            if (cell.Column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is Binding binding)
+            {
+                if (binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
+                {
+                    OpenPdfPreview(item.PdfPfad);
+                    e.Handled = true;
+                    return;
+                }
+
+                if (binding.Path?.Path == nameof(MaterialItem.PdfDateinameAngefangeneTafel))
+                {
+                    OpenPdfPreview(item.PdfPfadAngefangeneTafel);
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
 
             item.IsSelected = !item.IsSelected;
             RestMaterialGrid.SelectedItem = item;
             e.Handled = true;
+        }
+
+        private void OpenPdfPreview(string? pdfPfad)
+        {
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!System.IO.File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
         }
 
         private void OnEditRestClick(object sender, RoutedEventArgs e)
@@ -807,6 +971,31 @@ namespace MaterialManager_V01.Views
             return !string.IsNullOrWhiteSpace(item.AuftragNr) && item.Kategorie == MaterialKategorie.Blech && !string.IsNullOrWhiteSpace(item.PdfPfad)
                 ? "PDF-Datei für angefangene Tafel auswählen"
                 : "PDF-Datei für Auftrag auswählen";
+        }
+
+        private void BookMaterialForOrder(MaterialItem item, string auftragNr, int menge, string pdfPfad = "")
+        {
+            if (string.IsNullOrWhiteSpace(auftragNr) || menge <= 0 || menge > item.Stueckzahl)
+                return;
+
+            var bookedItem = CloneMaterial(item);
+            bookedItem.Stueckzahl = menge;
+            bookedItem.AuftragNr = auftragNr.Trim();
+            bookedItem.PdfPfad = string.IsNullOrWhiteSpace(pdfPfad) ? bookedItem.PdfPfad : pdfPfad.Trim();
+            bookedItem.Lagerort = "Gebucht";
+            bookedItem.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            bookedItem.AenderungsDatum = DateTime.Now;
+            bookedItem.IsSelected = false;
+
+            item.Stueckzahl -= menge;
+            item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            item.AenderungsDatum = DateTime.Now;
+            item.IsSelected = false;
+
+            if (item.Stueckzahl <= 0)
+                _alleMaterialien.Remove(item);
+
+            _alleMaterialien.Add(bookedItem);
         }
 
         public sealed record AuftragFilterItem(string Auftragsnummer, string DisplayText);

@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialManager_V01.Models;
@@ -18,6 +20,8 @@ namespace MaterialManager_V01.Views
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
         private List<Auftrag> _auftraegeCache = new();
+        private readonly int _aktuellesJahr = DateTime.Now.Year;
+        private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -48,11 +52,34 @@ namespace MaterialManager_V01.Views
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        private string _auftragsKwText = string.Empty;
+        public string AuftragsKwText
+        {
+            get => _auftragsKwText;
+            set
+            {
+                _auftragsKwText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuftragsKwText)));
+            }
+        }
+
+        private string _auftragsKwInfoText = string.Empty;
+        public string AuftragsKwInfoText
+        {
+            get => _auftragsKwInfoText;
+            set
+            {
+                _auftragsKwInfoText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuftragsKwInfoText)));
+            }
+        }
+
         public LaserDemoWindow()
         {
             InitializeComponent();
             DataContext = this;
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
+            UpdateAuftragsKwText();
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
@@ -100,18 +127,24 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                _auftraegeCache = AuftragDataService.LoadAllAuftraege()
-                    .Where(a => _restMaterialienCache.Any(m => m.AuftragNr == a.Auftragsnummer))
-                    .ToList();
-
-                AuftraegeView.Clear();
-                foreach (var auftrag in _auftraegeCache)
-                    AuftraegeView.Add(auftrag);
+                _auftraegeCache = AuftragDataService.LoadAllAuftraege();
+                ApplyAuftragsKwFilter();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Laden der Aufträge:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ApplyAuftragsKwFilter()
+        {
+            var gefilterteAuftraege = AuftragRulesService.FilterByIsoCalendarWeek(_auftraegeCache, _aktuellesJahr, _ausgewaehlteKalenderWoche);
+
+            AuftraegeView.Clear();
+            foreach (var auftrag in gefilterteAuftraege)
+                AuftraegeView.Add(auftrag);
+
+            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/Aufträge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
         }
 
         private string GetSelectedFilter()
@@ -461,6 +494,83 @@ namespace MaterialManager_V01.Views
             LoadAuftraege();
         }
 
+        private void OnAuftragPdfButtonClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
+                return;
+
+            OpenPdfPreviewForAuftrag(auftrag);
+            e.Handled = true;
+        }
+
+        private void OpenPdfPreviewForAuftrag(Auftrag auftrag)
+        {
+            var pdfPfad = !string.IsNullOrWhiteSpace(auftrag.PdfPfadAngefangeneTafel)
+                ? auftrag.PdfPfadAngefangeneTafel
+                : auftrag.PdfPfad;
+
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Diesem Auftrag ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!System.IO.File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
+        }
+
+        private void UpdateAuftragsKwText()
+        {
+            AuftragsKwText = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
+        }
+
+        private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu
+            {
+                Style = (Style)FindResource("DarkContextMenuStyle"),
+                ItemContainerStyle = (Style)FindResource("DarkContextMenuItemStyle")
+            };
+
+            for (var kw = 1; kw <= 53; kw++)
+            {
+                var istAktiv = kw == _ausgewaehlteKalenderWoche;
+                var item = new MenuItem
+                {
+                    Header = istAktiv
+                        ? $"▶ KW {kw:D2} ({_aktuellesJahr})"
+                        : $"KW {kw:D2} ({_aktuellesJahr})",
+                    Tag = kw
+                };
+                item.Click += OnAuftragKwAuswahlItemClick;
+                menu.Items.Add(item);
+            }
+
+            if (sender is Button button)
+            {
+                button.ContextMenu = menu;
+                menu.PlacementTarget = button;
+            }
+
+            menu.IsOpen = true;
+        }
+
+        private void OnAuftragKwAuswahlItemClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem item || item.Tag is not int kw)
+                return;
+
+            _ausgewaehlteKalenderWoche = kw;
+            UpdateAuftragsKwText();
+            ApplyAuftragsKwFilter();
+        }
+
         private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dep = e.OriginalSource as DependencyObject;
@@ -469,9 +579,18 @@ namespace MaterialManager_V01.Views
             var cell = FindVisualParent<DataGridCell>(dep);
             if (cell == null) return;
 
-            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
-
             if (cell.DataContext is not MaterialItem item) return;
+
+            if (cell.Column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is Binding binding &&
+                binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
+            {
+                OpenPdfPreviewForItem(item);
+                e.Handled = true;
+                return;
+            }
+
+            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
 
             item.IsSelected = !item.IsSelected;
             RestMaterialGrid.SelectedItem = item;
@@ -493,55 +612,33 @@ namespace MaterialManager_V01.Views
             var item = GetPrimarySelectedMaterial();
             if (item == null)
             {
-                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
+            OpenPdfPreviewForItem(item);
+        }
+
+        private void OpenPdfPreviewForItem(MaterialItem item)
+        {
             var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
                 ? item.PdfPfadAngefangeneTafel
                 : item.PdfPfad;
 
             if (string.IsNullOrWhiteSpace(pdfPfad))
             {
-                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (!System.IO.File.Exists(pdfPfad))
             {
-                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            try
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = pdfPfad,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (RestMaterialGrid.SelectedItem is not MaterialItem item)
-                return;
-
-            // Prüfe ob PDF vorhanden ist und zeige PDF-Dialog
-            if (!string.IsNullOrWhiteSpace(item.PdfPfad) && System.IO.File.Exists(item.PdfPfad))
-            {
-                var dlg = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
-                dlg.ShowDialog();
-                return;
-            }
-
-            // Sonst öffne Bearbeitungs-Dialog
-            OnEditRestClick(sender, null);
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
         }
     }
 }

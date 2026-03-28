@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
@@ -277,10 +278,14 @@ namespace MaterialManager_V01.Views
             if (MaterialGrid.SelectedItem is not MaterialItem item)
                 return;
 
+            var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
+                ? item.PdfPfadAngefangeneTafel
+                : item.PdfPfad;
+
             // Prüfe ob PDF vorhanden ist und zeige PDF-Dialog
-            if (!string.IsNullOrWhiteSpace(item.PdfPfad) && System.IO.File.Exists(item.PdfPfad))
+            if (!string.IsNullOrWhiteSpace(pdfPfad) && System.IO.File.Exists(pdfPfad))
             {
-                var dlg = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
+                var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
                 dlg.ShowDialog();
                 return;
             }
@@ -298,17 +303,41 @@ namespace MaterialManager_V01.Views
             if (cell == null) return;
 
             if (MaterialGrid.Columns.Count == 0) return;
+            if (cell.DataContext is not MaterialItem item) return;
 
-            // Prüfe ob auf PDF-Spalte geklickt wurde (letzte Spalte mit PDF-Dateien)
-            var columnIndex = cell.Column.DisplayIndex;
-            var isPdfColumn = columnIndex == MaterialGrid.Columns.Count - 1;
+            if (cell.Column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is Binding binding &&
+                binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
+            {
+                OpenPdfPreview(item.PdfPfad);
+                e.Handled = true;
+                return;
+            }
 
-            if (!isPdfColumn) return;
+            var isSelectionColumn = cell.Column == MaterialGrid.Columns[0];
+            if (!isSelectionColumn) return;
 
-            if (MaterialGrid.SelectedItem is not MaterialItem item) return;
+            item.IsSelected = !item.IsSelected;
+            MaterialGrid.SelectedItem = item;
+            e.Handled = true;
+        }
 
-            // Öffne PDF-Dialog bei Doppelklick auf PDF-Spalte
-            // Double-Click wird von OnGridMouseDoubleClick gehandhabt
+        private void OpenPdfPreview(string? pdfPfad)
+        {
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!System.IO.File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
         }
 
         private static T FindVisualParent<T>(System.Windows.DependencyObject child) where T : System.Windows.DependencyObject
@@ -320,7 +349,7 @@ namespace MaterialManager_V01.Views
             }
             return null;
         }
-        
+
         private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
         {
             var items = GetMarkedMaterials();

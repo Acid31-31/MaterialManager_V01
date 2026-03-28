@@ -40,7 +40,7 @@
                     </StackPanel>
                     
                     <!-- Preis -->
-                    <TextBlock Grid.Column="1" Text="ab 99€/Jahr" FontSize="16" FontWeight="Bold" Foreground="#FF9800" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding HeadlinePriceText}" FontSize="16" FontWeight="Bold" Foreground="#FF9800" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
                 
                 <Border Background="#1E1E1E" 
@@ -189,7 +189,7 @@
                                         <TextBlock Text="1 Arbeitsplatz" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="99,00 EUR" FontWeight="Bold" Foreground="#4CAF50" FontSize="13"/>
+                                        <TextBlock Text="{Binding SinglePriceText}" FontWeight="Bold" Foreground="#4CAF50" FontSize="13"/>
                                         <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -207,7 +207,7 @@
                                         <TextBlock Text="3 Arbeitsplätze" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="249,00 EUR" FontWeight="Bold" Foreground="#FF9800" FontSize="13"/>
+                                        <TextBlock Text="{Binding MultiPriceText}" FontWeight="Bold" Foreground="#FF9800" FontSize="13"/>
                                         <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -225,7 +225,7 @@
                                         <TextBlock Text="10 Arbeitsplätze + Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="699,00 EUR" FontWeight="Bold" Foreground="#F44336" FontSize="13"/>
+                                        <TextBlock Text="{Binding CompanyPriceText}" FontWeight="Bold" Foreground="#F44336" FontSize="13"/>
                                         <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -243,14 +243,14 @@
                                         <TextBlock Text="Unbegrenzte Arbeitsplätze + Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="Auf Anfrage" FontWeight="Bold" Foreground="#2196F3" FontSize="13"/>
-                                        <TextBlock Text="Individuell" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding EnterprisePriceText}" FontWeight="Bold" Foreground="#2196F3" FontSize="13"/>
+                                        <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             
                             <!-- Hinweis -->
-                            <TextBlock Text="ℹ️ 30 Tage kostenlose Testversion. Keine Kreditkarte erforderlich!" 
+                            <TextBlock Text="{Binding CalculationHintText}" 
                                        Foreground="#4CAF50" 
                                        FontSize="11"
                                        FontWeight="Bold"

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 
 namespace MaterialManager_V01.Views
 {
@@ -76,6 +77,14 @@ namespace MaterialManager_V01.Views
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Kopieren:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
             }
         }
 

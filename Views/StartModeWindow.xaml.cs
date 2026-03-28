@@ -9,7 +9,17 @@ namespace MaterialManager_V01.Views
         public StartModeWindow()
         {
             InitializeComponent();
+            RefreshLicenseTitle();
             FitToWorkArea();
+        }
+
+        private void RefreshLicenseTitle()
+        {
+            var mode = LicenseService.GetLicenseModeText();
+            var device = LicenseService.GetDeviceUsageText();
+            Title = string.IsNullOrWhiteSpace(device)
+                ? $"MaterialManager V01 - {mode}"
+                : $"MaterialManager V01 - {mode} | {device}";
         }
 
         private void FitToWorkArea()
