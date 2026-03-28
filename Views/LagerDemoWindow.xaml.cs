@@ -272,6 +272,55 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnGridMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (MaterialGrid.SelectedItem is not MaterialItem item)
+                return;
+
+            // Prüfe ob PDF vorhanden ist und zeige PDF-Dialog
+            if (!string.IsNullOrWhiteSpace(item.PdfPfad) && System.IO.File.Exists(item.PdfPfad))
+            {
+                var dlg = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
+                dlg.ShowDialog();
+                return;
+            }
+
+            // Sonst öffne Bearbeitungs-Dialog
+            OnEditMaterialClick(sender, null);
+        }
+
+        private void OnGridPreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var dep = e.OriginalSource as System.Windows.DependencyObject;
+            if (dep == null) return;
+
+            var cell = FindVisualParent<System.Windows.Controls.DataGridCell>(dep);
+            if (cell == null) return;
+
+            if (MaterialGrid.Columns.Count == 0) return;
+
+            // Prüfe ob auf PDF-Spalte geklickt wurde (letzte Spalte mit PDF-Dateien)
+            var columnIndex = cell.Column.DisplayIndex;
+            var isPdfColumn = columnIndex == MaterialGrid.Columns.Count - 1;
+
+            if (!isPdfColumn) return;
+
+            if (MaterialGrid.SelectedItem is not MaterialItem item) return;
+
+            // Öffne PDF-Dialog bei Doppelklick auf PDF-Spalte
+            // Double-Click wird von OnGridMouseDoubleClick gehandhabt
+        }
+
+        private static T FindVisualParent<T>(System.Windows.DependencyObject child) where T : System.Windows.DependencyObject
+        {
+            while (child != null)
+            {
+                if (child is T t) return t;
+                child = System.Windows.Media.VisualTreeHelper.GetParent(child);
+            }
+            return null;
+        }
+        
         private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
         {
             var items = GetMarkedMaterials();

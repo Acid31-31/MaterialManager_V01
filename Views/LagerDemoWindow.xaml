@@ -417,7 +417,8 @@
                   IsReadOnly="True"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
-                  MouseDoubleClick="OnEditMaterialClick">
+                  MouseDoubleClick="OnGridMouseDoubleClick"
+                  PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="" Width="35">
                     <DataGridTemplateColumn.CellTemplate>

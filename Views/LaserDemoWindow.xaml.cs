@@ -526,5 +526,22 @@ namespace MaterialManager_V01.Views
                 MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (RestMaterialGrid.SelectedItem is not MaterialItem item)
+                return;
+
+            // Prüfe ob PDF vorhanden ist und zeige PDF-Dialog
+            if (!string.IsNullOrWhiteSpace(item.PdfPfad) && System.IO.File.Exists(item.PdfPfad))
+            {
+                var dlg = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
+                dlg.ShowDialog();
+                return;
+            }
+
+            // Sonst öffne Bearbeitungs-Dialog
+            OnEditRestClick(sender, null);
+        }
     }
 }
