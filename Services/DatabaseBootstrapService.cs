@@ -39,6 +39,24 @@ CREATE TABLE IF NOT EXISTS ""Auftraege"" (
 );");
 
             db.Database.ExecuteSqlRaw("CREATE UNIQUE INDEX IF NOT EXISTS \"IX_Auftraege_Auftragsnummer\" ON \"Auftraege\" (\"Auftragsnummer\");");
+
+            try
+            {
+                db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Auftraege"" ADD COLUMN ""ProduktionStartDatum"" TEXT;");
+            }
+            catch
+            {
+                // Spalte existiert bereits
+            }
+
+            try
+            {
+                db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Auftraege"" ADD COLUMN ""ProduktionEndDatum"" TEXT;");
+            }
+            catch
+            {
+                // Spalte existiert bereits
+            }
         }
 
         private static void ImportExistingExcelData(MaterialManagerDbContext db)
