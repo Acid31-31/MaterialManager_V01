@@ -67,6 +67,12 @@ namespace MaterialManager_V01
 
                 File.AppendAllText(logPath, "Lizenz gültig\n");
 
+                if (!EnsureNetworkStartupReady(logPath))
+                {
+                    Current.Shutdown();
+                    return;
+                }
+
                 var remainingDays = Services.LicenseService.GetRemainingTrialDays();
                 File.AppendAllText(logPath, $"Verbleibende Tage: {remainingDays}\n");
 
@@ -94,6 +100,57 @@ namespace MaterialManager_V01
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Current.Shutdown();
+            }
+        }
+
+        private static bool EnsureNetworkStartupReady(string logPath)
+        {
+            try
+            {
+                if (!Services.NetzwerkService.HasConfiguredNetworkPath())
+                {
+                    File.AppendAllText(logPath, "Keine Netzwerk-Konfiguration gefunden. Starte Erstkonfiguration.\n");
+                    var setup = new NetzwerkSetupDialog();
+                    setup.ShowDialog();
+                }
+
+                var health = Services.NetzwerkService.CheckStartupHealth();
+                if (health.IsHealthy)
+                    return true;
+
+                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen: {health.Message}\n");
+
+                var result = MessageBox.Show(
+                    $"{health.Message}\n\nJa = Netzwerk-Einrichtung öffnen\nNein = lokal ohne Netzwerk starten\nAbbrechen = Programm beenden",
+                    "Netzwerkprüfung",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    var setup = new NetzwerkSetupDialog();
+                    setup.ShowDialog();
+                    health = Services.NetzwerkService.CheckStartupHealth();
+                    if (health.IsHealthy)
+                        return true;
+
+                    MessageBox.Show(health.Message, "Netzwerkprüfung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
+
+                if (result == MessageBoxResult.No)
+                {
+                    Services.NetzwerkService.SetNetzwerkModus(false, Services.NetzwerkService.NetzwerkPfad);
+                    File.AppendAllText(logPath, "Netzwerkmodus temporär deaktiviert. Start lokal.\n");
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(logPath, $"Fehler in EnsureNetworkStartupReady: {ex.Message}\n");
+                return true;
             }
         }
     }

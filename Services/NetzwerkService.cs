@@ -183,6 +183,112 @@ namespace MaterialManager_V01.Services
             SaveConfig();
         }
 
+        public static bool HasConfiguredNetworkPath()
+        {
+            var normalized = NormalizePath(_config.NetzwerkPfad);
+            return !string.IsNullOrWhiteSpace(normalized) && Path.IsPathRooted(normalized);
+        }
+
+        public static bool HasConfiguredArchivePath()
+        {
+            var normalized = NormalizePath(_config.AuftragsArchivPfad);
+            return !string.IsNullOrWhiteSpace(normalized) && Path.IsPathRooted(normalized);
+        }
+
+        public static void ConfigureNetworkMode(bool aktiviert, string netzwerkPfad, string auftragsArchivPfad, string? benutzer = null)
+        {
+            _config.Aktiviert = aktiviert;
+            _config.NetzwerkPfad = NormalizePath(netzwerkPfad);
+            _config.AuftragsArchivPfad = NormalizePath(auftragsArchivPfad);
+            if (!string.IsNullOrWhiteSpace(benutzer))
+                _config.BenutzerName = benutzer.Trim();
+            SaveConfig();
+        }
+
+        public static NetzwerkHealthStatus CheckStartupHealth()
+        {
+            if (!IsNetzwerkModus)
+            {
+                return new NetzwerkHealthStatus
+                {
+                    IsHealthy = true,
+                    Message = "Netzwerkmodus ist nicht aktiv."
+                };
+            }
+
+            if (!TryGetValidatedNetworkPath(out var netzPfad))
+            {
+                return new NetzwerkHealthStatus
+                {
+                    IsHealthy = false,
+                    Message = "Netzwerkpfad ist nicht gültig konfiguriert."
+                };
+            }
+
+            try
+            {
+                if (!Directory.Exists(netzPfad))
+                {
+                    return new NetzwerkHealthStatus
+                    {
+                        IsHealthy = false,
+                        Message = $"Netzwerkpfad nicht erreichbar:\n{netzPfad}"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new NetzwerkHealthStatus
+                {
+                    IsHealthy = false,
+                    Message = $"Netzwerkpfad kann nicht geprüft werden:\n{ex.Message}"
+                };
+            }
+
+            var savePath = GetSavePath();
+            var saveDir = Path.GetDirectoryName(savePath);
+            if (!string.IsNullOrWhiteSpace(saveDir))
+            {
+                try
+                {
+                    if (!Directory.Exists(saveDir))
+                        Directory.CreateDirectory(saveDir);
+                }
+                catch (Exception ex)
+                {
+                    return new NetzwerkHealthStatus
+                    {
+                        IsHealthy = false,
+                        Message = $"Speicherordner konnte nicht vorbereitet werden:\n{ex.Message}"
+                    };
+                }
+            }
+
+            var archiv = GetAuftragsArchivBasisPfad();
+            if (!string.IsNullOrWhiteSpace(archiv))
+            {
+                try
+                {
+                    if (!Directory.Exists(archiv))
+                        Directory.CreateDirectory(archiv);
+                }
+                catch (Exception ex)
+                {
+                    return new NetzwerkHealthStatus
+                    {
+                        IsHealthy = false,
+                        Message = $"Auftragsarchiv kann nicht vorbereitet werden:\n{ex.Message}"
+                    };
+                }
+            }
+
+            return new NetzwerkHealthStatus
+            {
+                IsHealthy = true,
+                Message = "Netzwerkverbindung ist verfügbar."
+            };
+        }
+
         private static string GetLocalDataDirectory()
         {
             var dataDir = Path.Combine(
@@ -282,6 +388,12 @@ namespace MaterialManager_V01.Services
             }
             catch { }
         }
+    }
+
+    public sealed class NetzwerkHealthStatus
+    {
+        public bool IsHealthy { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 
     public class NetzwerkConfig
