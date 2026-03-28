@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <title>MaterialManager V01 - Systemübersicht</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 36px;
+            color: #1f2937;
+            line-height: 1.45;
+            font-size: 11.5pt;
+        }
+        h1, h2, h3 {
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-size: 24pt;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        h2 {
+            font-size: 16pt;
+            margin-top: 28px;
+            border-left: 5px solid #2563eb;
+            padding-left: 10px;
+        }
+        h3 {
+            font-size: 12.5pt;
+            margin-top: 18px;
+        }
+        p, li {
+            margin: 5px 0;
+        }
+        ul {
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+        .meta {
+            color: #475569;
+            margin-bottom: 22px;
+        }
+        .box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin: 10px 0 16px 0;
+        }
+        .strong {
+            font-weight: 700;
+        }
+        .small {
+            color: #64748b;
+            font-size: 10pt;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0 16px 0;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            vertical-align: top;
+        }
+        th {
+            background: #e2e8f0;
+            text-align: left;
+        }
+        code {
+            background: #eef2ff;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 90%;
+        }
+        .footer {
+            margin-top: 30px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            color: #64748b;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>MaterialManager V01 - Vollständige Systemübersicht</h1>
+    <div class="meta">
+        Erstellt für externe Leser ohne Codezugriff. Zweck: funktionales, technisches und logisches Gesamtverständnis der Software.<br/>
+        Stand der Analyse: aktueller Projektstand im Workspace.
+    </div>
+
+    <h2>1. Architektur &amp; Aufbau</h2>
+    <h3>1.1 Gesamtstruktur</h3>
+    <p>Die Software ist ein Windows-Desktop-System zur Materialverwaltung mit Produktionsbezug. Sie ist in eine Hauptanwendung und mehrere Hilfsprojekte gegliedert.</p>
+    <ul>
+        <li><span class="strong">Hauptprojekt:</span> <code>MaterialManager_V01</code></li>
+        <li><span class="strong">Update-Installer:</span> separates Projekt zum Einspielen neuer Versionen</li>
+        <li><span class="strong">Lizenzgenerator:</span> separates Tool zur Erzeugung von Lizenzschlüsseln</li>
+        <li><span class="strong">Installations-/USB-Bestandteile:</span> Batch- und PowerShell-Dateien für Verteilung und lokale Installation</li>
+    </ul>
+
+    <h3>1.2 Projektstruktur</h3>
+    <table>
+        <tr><th>Bereich</th><th>Inhalt</th></tr>
+        <tr><td><code>Views</code></td><td>Fenster, Dialoge, Oberflächen und prozessnahe Bedienlogik</td></tr>
+        <tr><td><code>Models</code></td><td>Fachmodelle wie Material, Benutzer, Kategorien und Materialdefinitionen</td></tr>
+        <tr><td><code>Services</code></td><td>Fachlogik, Persistenz, Update, Lizenz, Audit, Exporte, Suche, Regalregeln</td></tr>
+        <tr><td><code>Converters</code></td><td>WPF-Konverter für Darstellung</td></tr>
+        <tr><td><code>Installer_Source</code></td><td>UpdateInstaller-Projekt</td></tr>
+        <tr><td><code>Tools</code></td><td>Lizenzgenerator</td></tr>
+    </table>
+
+    <h3>1.3 Architekturstil</h3>
+    <p>Die Anwendung verwendet keinen strikt umgesetzten MVVM-Stil, sondern einen hybriden WPF-Ansatz:</p>
+    <ul>
+        <li>UI mit <code>XAML</code> und <code>Code-Behind</code></li>
+        <li>Datenbindung über <code>INotifyPropertyChanged</code> und <code>ObservableCollection</code></li>
+        <li>Geschäftslogik zentral in statischen Services</li>
+        <li>Dialoggesteuerte Abläufe statt komplexer Navigations-Frameworks</li>
+    </ul>
+
+    <h3>1.4 Erkennbare Design Patterns</h3>
+    <ul>
+        <li><span class="strong">Service Layer</span> für Fach- und Infrastrukturthemen</li>
+        <li><span class="strong">Code-Behind Pattern</span> für Fensterlogik</li>
+        <li><span class="strong">Snapshot Undo/Redo</span> über den <code>UndoService</code></li>
+        <li><span class="strong">Rule-based Logic</span> für Lagerorte, Restesuche und Materialzuordnung</li>
+        <li><span class="strong">Dialog Workflow Pattern</span> für reservieren, buchen, suchen, bearbeiten</li>
+    </ul>
+
+    <h3>1.5 Datenfluss</h3>
+    <div class="box">
+        Laden -&gt; Excel einlesen -&gt; Materialobjekte aufbauen -&gt; UI bindet Daten -&gt; Benutzer ändert Zustand -&gt; Services verarbeiten Logik -&gt; Daten werden wieder in Excel und Zusatzdateien gespeichert -&gt; UI lädt neu.
+    </div>
+    <p>Neben dem Materialbestand werden weitere technische Daten separat gespeichert, z. B. Audit-Logs, Benutzer, Operatoren, Buchungsjournal, Netzwerkkonfiguration und Lizenzen.</p>
+
+    <h3>1.6 Wichtige Abhängigkeiten</h3>
+    <ul>
+        <li><code>ExcelService</code> als zentrale Persistenz für Materialdaten</li>
+        <li><code>MaterialItem</code> als Kernmodell</li>
+        <li><code>RegalService</code> für Lagerlogik</li>
+        <li><code>RestMaterialSearchService</code> für Such- und Trefferlogik</li>
+        <li><code>GitHubUpdateService</code> und <code>UpdateInstaller</code> für Updates</li>
+        <li><code>LicenseService</code> und <code>LicenseKeyGenerator</code> für Lizenzierung</li>
+    </ul>
+
+    <h2>2. Technologien</h2>
+    <ul>
+        <li><span class="strong">Programmiersprache:</span> C#</li>
+        <li><span class="strong">UI-Definition:</span> XAML</li>
+        <li><span class="strong">Framework:</span> .NET 8 / <code>net8.0-windows</code></li>
+        <li><span class="strong">UI-Technologie:</span> WPF</li>
+        <li><span class="strong">Zusatztechnologien:</span> Windows Forms im UpdateInstaller, PowerShell/Batch für Installation</li>
+    </ul>
+
+    <h3>2.1 Verwendete Bibliotheken / Packages</h3>
+    <ul>
+        <li><code>ClosedXML</code> - Excel Import/Export</li>
+        <li><code>QRCoder</code> - QR-/Etikett-Umfeld</li>
+        <li><code>System.Text.Json</code> - JSON-Konfiguration und Speicherdateien</li>
+        <li><code>HttpClient</code> - Updateprüfung über GitHub API</li>
+    </ul>
+
+    <h2>3. Kernfunktionen</h2>
+    <h3>3.1 Materialverwaltung</h3>
+    <p>Verwaltet Bleche, Rohre, Profile und Restmaterialien in einem gemeinsamen Bestand. Je Material werden Merkmale wie Materialart, Legierung, Oberfläche, Güte, Stärke, Maß, Stückzahl, Lagerort, Lieferant, Auftragsnummer, PDFs und Änderungsinformationen gepflegt.</p>
+
+    <h3>3.2 Modusbasierte Startlogik</h3>
+    <p>Beim Start wählt der Benutzer einen Arbeitsmodus:</p>
+    <ul>
+        <li>Hauptprogramm</li>
+        <li>Lager</li>
+        <li>Tafelplanung</li>
+        <li>Laser</li>
+    </ul>
+    <p>Dadurch wird dieselbe Datenbasis aus unterschiedlichen fachlichen Sichten genutzt.</p>
+
+    <h3>3.3 Lager-Sicht</h3>
+    <ul>
+        <li>neues Material anlegen</li>
+        <li>Material bearbeiten und löschen</li>
+        <li>Suche und Filter</li>
+        <li>Regalauslastung</li>
+        <li>Inventur</li>
+        <li>niedrige Bestände</li>
+        <li>Undo/Redo</li>
+    </ul>
+
+    <h3>3.4 Tafelplanung</h3>
+    <p>Die Tafelplanung dient der Materialbelegung für Aufträge. Hier werden freie Materialien gesucht, reserviert, freigegeben oder als verbraucht abgeschlossen.</p>
+    <ul>
+        <li>Rest- und Tafelsuche</li>
+        <li>Reservierung über Auftragsnummer</li>
+        <li>Teilbuchung von Tafeln nach Stückzahl</li>
+        <li>PDF-Zuordnung zum Auftrag</li>
+        <li>Workflow für <span class="strong">angefangene Tafeln</span></li>
+        <li>Produktion abschließen</li>
+    </ul>
+
+    <h3>3.5 Laser-Sicht</h3>
+    <p>Die Laser-Sicht ist eine reduzierte Produktionssicht. Sie zeigt vor allem reservierte Materialien und erlaubt deren Bearbeitung bzw. Verbrauch innerhalb eines engeren Anwendungsfalls.</p>
+
+    <h3>3.6 Restmaterialsuche</h3>
+    <p>Die Suchlogik ist ein Kernmerkmal des Systems. Sie berücksichtigt:</p>
+    <ul>
+        <li>Materialart</li>
+        <li>Legierung</li>
+        <li>Stärke</li>
+        <li>Maß</li>
+        <li>Form</li>
+        <li>Toleranz</li>
+    </ul>
+    <p>Die Trefferlogik zeigt zuerst exakte Maßtreffer, danach nur größere passende Materialien - geordnet von klein nach groß.</p>
+
+    <h3>3.7 Teilbuchung von Tafeln</h3>
+    <p>Wenn kein passender Rest existiert, kann eine Tafel als Alternative gewählt werden. Es wird nicht mehr der komplette Bestand reserviert, sondern nur die gewünschte Menge. Dabei werden Auftragsnummer und PDF direkt mit erfasst.</p>
+
+    <h3>3.8 Angefangene Tafel</h3>
+    <p>Ein reserviertes Blech kann nach Bearbeitung als <code>Angefangene Tafel</code> weitergeführt werden. Dabei:</p>
+    <ul>
+        <li>bleibt die ursprüngliche Auftrags-PDF erhalten</li>
+        <li>kann eine zweite PDF für den Bearbeitungszustand gespeichert werden</li>
+        <li>bleibt der Materialzustand als eigener Lagerstatus erhalten</li>
+    </ul>
+
+    <h3>3.9 Lagerort- und Regalautomatik</h3>
+    <p>Der <code>RegalService</code> ordnet Materialien regelbasiert Lagerorten zu. Berücksichtigt werden Form, Materialart, Legierung, Stärke und Maß. Zusätzlich wird die Auslastung einzelner Regale einbezogen.</p>
+
+    <h3>3.10 Regalauslastung</h3>
+    <p>Die Software visualisiert Kapazitäten und aktuelle Belegung je Regal, inklusive Gewichten, Auslastungsgrad und bei Rohren/Profilen auch Längeninformationen.</p>
+
+    <h3>3.11 Niedrige Bestände / Nachbestellung</h3>
+    <p>Freie Tafelbestände werden gruppiert und auf niedrige Mengen geprüft. Kritische Bestände können als Nachbestellliste exportiert werden. Über den <code>BestellService</code> gibt es zusätzlich Mindestbestände und Bestellvorschläge.</p>
+
+    <h3>3.12 Inventur</h3>
+    <p>Die Inventur ist als Soll-/Ist-Vergleich aufgebaut und zeigt Bestände nach Lagerort. Dabei können Inventurberichte erzeugt werden.</p>
+
+    <h3>3.13 Buchungsjournal</h3>
+    <p>Ein- und Ausgänge werden in einem separaten Buchungsjournal gespeichert. Das schafft Grundlage für Verbrauchsstatistiken und spätere Auswertungen.</p>
+
+    <h3>3.14 Audit-Log</h3>
+    <p>Änderungen, Anmeldungen und Benutzeraktionen können protokolliert werden. Das ist relevant für nachvollziehbare Prozesse und spätere Compliance-Anforderungen.</p>
+
+    <h3>3.15 Etiketten / Barcode / Druck</h3>
+    <p>Materialien können als Etikett dargestellt und gedruckt werden. Zusätzlich existieren Druck- und HTML/PDF-nahe Ausgabefunktionen für Bestands- und Auditberichte.</p>
+
+    <h3>3.16 Export- und ERP-Schnittstellen</h3>
+    <ul>
+        <li>CSV</li>
+        <li>XML</li>
+        <li>JSON</li>
+        <li>SAP CSV</li>
+        <li>SAGE CSV</li>
+        <li>BMEcat XML</li>
+    </ul>
+
+    <h3>3.17 Lizenzierung</h3>
+    <p>Die Software enthält eine 30-Tage-Testlizenz und kann auf Vollversion per hardwaregebundenem Lizenzschlüssel umgestellt werden.</p>
+
+    <h3>3.18 Update-System</h3>
+    <p>Updates werden über GitHub Releases erkannt, geladen und mit einem separaten Installer eingespielt.</p>
+
+    <h2>4. Datenmodell</h2>
+    <h3>4.1 Zentrale Entität: Material</h3>
+    <p><code>MaterialItem</code> ist das zentrale Fachobjekt. Es vereint Bestandsdaten, Lagerdaten und Produktionsstatus in einem Modell.</p>
+
+    <h3>4.2 Gespeicherte Materialdaten</h3>
+    <ul>
+        <li>Kategorie: Blech, Rohr, Profil</li>
+        <li>Materialart, Legierung, Oberfläche, Güte</li>
+        <li>Form, Stärke, Maß, Durchmesser, Länge, Profilmaße</li>
+        <li>Stückzahl, Lagerort, Restnummer</li>
+        <li>Lieferant, Lieferschein</li>
+        <li>Auftragsnummer</li>
+        <li>PDF und PDF der angefangenen Tafel</li>
+        <li>Angelegt von, geändert von, Datum, Änderungsdatum</li>
+        <li>Preis pro kg, berechnetes Gewicht</li>
+    </ul>
+
+    <h3>4.3 Weitere Datenobjekte</h3>
+    <ul>
+        <li><span class="strong">Benutzer</span> mit Rollen und Login-Informationen</li>
+        <li><span class="strong">AuditLogEntry</span> für Änderungsnachweise</li>
+        <li><span class="strong">BuchungsEintrag</span> für Wareneingang/-ausgang</li>
+        <li><span class="strong">NetzwerkConfig</span> für Mehr-PC-Betrieb</li>
+    </ul>
+
+    <h3>4.4 Beziehungen</h3>
+    <p>Das Modell ist flach aufgebaut. Ein Auftrag ist derzeit kein eigenes Objekt, sondern primär ein Attribut am Material über <code>AuftragNr</code>. Reservierungen ergeben sich daraus direkt.</p>
+
+    <h3>4.5 Speicherung</h3>
+    <p>Die zentrale Materialpersistenz erfolgt über eine Excel-Datei <code>materialbestand.xlsx</code> mit separaten Arbeitsblättern für Bleche, Rohre und Profile.</p>
+    <p>Zusätzliche technische Daten werden lokal in <code>LocalAppData\MaterialManager_V01</code> abgelegt:</p>
+    <ul>
+        <li>Benutzerdatei</li>
+        <li>Operatoridentität</li>
+        <li>Audit-Log</li>
+        <li>Buchungsjournal</li>
+        <li>Netzwerkkonfiguration</li>
+        <li>Regalkapazitäten</li>
+        <li>Lizenzdaten</li>
+        <li>Update-Einstellungen</li>
+        <li>Backups</li>
+    </ul>
+
+    <h2>5. Workflows</h2>
+    <h3>5.1 Startworkflow</h3>
+    <ol>
+        <li>Programmstart</li>
+        <li>Lizenzprüfung</li>
+        <li>ggf. Aktivierungsdialog</li>
+        <li>Moduswahl</li>
+        <li>Operatorauswahl</li>
+        <li>Öffnen der gewünschten Fachsicht</li>
+    </ol>
+
+    <h3>5.2 Wareneingang / neues Material</h3>
+    <ol>
+        <li>Lager-Sicht öffnen</li>
+        <li>neues Material anlegen</li>
+        <li>Materialdaten erfassen</li>
+        <li>Lagerort wird automatisch bestimmt</li>
+        <li>Speichern in den Bestand</li>
+    </ol>
+
+    <h3>5.3 Restmaterial für Auftrag suchen</h3>
+    <ol>
+        <li>Tafelplanung öffnen</li>
+        <li>Restsuche starten</li>
+        <li>Suchkriterien eingeben</li>
+        <li>Treffer auswählen</li>
+        <li>Auftragsnummer, Menge und PDF erfassen</li>
+        <li>Material reservieren</li>
+    </ol>
+
+    <h3>5.4 Fallback auf Tafel</h3>
+    <ol>
+        <li>Kein passender Rest vorhanden</li>
+        <li>Passende Tafel wird angeboten</li>
+        <li>Nur Teilmenge wird gebucht</li>
+        <li>Restlicher Bestand bleibt frei im Lager</li>
+    </ol>
+
+    <h3>5.5 Bearbeitung einer reservierten Tafel</h3>
+    <ol>
+        <li>reserviertes Material öffnen</li>
+        <li>Maße bzw. Zustand anpassen</li>
+        <li>Material wird als angefangene Tafel weitergeführt</li>
+        <li>Original-PDF und Bearbeitungs-PDF bleiben getrennt erhalten</li>
+    </ol>
+
+    <h3>5.6 Reservierung aufheben</h3>
+    <p>Normale reservierte Tafeln können zurück in den freien Bestand laufen. Eine angefangene Tafel bleibt hingegen als eigener Zustand erhalten und verliert nur die Auftragsnummer.</p>
+
+    <h3>5.7 Laser-Workflow</h3>
+    <p>Der Laser sieht reservierte Materialien, kann sie öffnen, prüfen, bearbeiten oder als verbraucht entfernen. Das System ist damit auf die Produktionssicht reduziert.</p>
+
+    <h2>6. Benutzerrollen &amp; Rechte</h2>
+    <h3>6.1 Tatsächlich genutzte Zugriffstrennung</h3>
+    <p>Der operative Zugriff erfolgt derzeit vor allem über die Auswahl des Arbeitsmodus. Das ist der praktisch wichtigste Steuerungsmechanismus.</p>
+
+    <h3>6.2 Vorhandenes Rollenmodell</h3>
+    <ul>
+        <li>Admin</li>
+        <li>Manager</li>
+        <li>Lagerarbeiter</li>
+        <li>ReadOnly</li>
+        <li>LaserProgrammierer</li>
+        <li>LaserBediener</li>
+    </ul>
+    <p>Das Rollenmodell ist im Code vorhanden, aber nicht überall vollständig bis in die UI-Funktionalität durchgezogen.</p>
+
+    <h3>6.3 Operator-System</h3>
+    <p>Zusätzlich gibt es ein leichtgewichtiges Operator-System mit dauerhaft gespeicherten Namen für schnelle Auswahl an Maschine und Arbeitsplatz.</p>
+
+    <h2>7. Update-System</h2>
+    <h3>7.1 Funktionsprinzip</h3>
+    <ol>
+        <li>Abfrage des neuesten GitHub Releases</li>
+        <li>Versionsvergleich</li>
+        <li>Auswahl des besten Release-Assets</li>
+        <li>Download in temporären Ordner</li>
+        <li>Start des Installers</li>
+        <li>Schließen der Anwendung</li>
+        <li>Einspielen der neuen Version</li>
+        <li>Neustart der Anwendung</li>
+    </ol>
+
+    <h3>7.2 Technische Besonderheiten</h3>
+    <ul>
+        <li>Bevorzugte Asset-Auswahl: <code>UpdateInstaller.exe</code>, dann MSI, dann ZIP</li>
+        <li>Installationspfad kann automatisch erkannt werden</li>
+        <li>Update-Dialog mit Changelog und Fortschritt</li>
+    </ul>
+
+    <h2>8. UI / UX Struktur</h2>
+    <h3>8.1 Charakter der Oberfläche</h3>
+    <p>Die Oberfläche ist dunkel, funktionsorientiert und klar an Produktions- und Lagerarbeitsplätzen ausgerichtet. Sie wirkt moderner als eine reine Standard-WPF-Oberfläche, bleibt aber klar im industriellen Business-Stil.</p>
+
+    <h3>8.2 Grundaufbau</h3>
+    <ul>
+        <li>eigene Fensterleiste</li>
+        <li>Menüstruktur</li>
+        <li>Aktionsbuttons</li>
+        <li>Such- und Filterbereich</li>
+        <li>tabellarische Hauptansicht</li>
+        <li>Dialoge für Detailaktionen</li>
+    </ul>
+
+    <h3>8.3 Wichtige Fenster</h3>
+    <ul>
+        <li>Startmodus-Fenster</li>
+        <li>Hauptprogramm</li>
+        <li>Lager</li>
+        <li>Tafelplanung</li>
+        <li>Laser</li>
+        <li>Materialdialog</li>
+        <li>Restsuche / Auswahl / Reservierung</li>
+        <li>Reservierte Reste</li>
+        <li>Regalauslastung</li>
+        <li>Niedrige Bestände</li>
+        <li>Inventur</li>
+        <li>Update-Dialog</li>
+        <li>Programmhilfe</li>
+    </ul>
+
+    <h2>9. Stärken &amp; Besonderheiten</h2>
+    <ul>
+        <li>sehr praxisnahe Fachlogik für Metallmaterialien</li>
+        <li>Rest- und Tafel-Suche mit sinnvoller Trefferpriorität</li>
+        <li>Teilbuchung von Tafeln statt Komplettreservierung</li>
+        <li>angefangene Tafeln als eigener Lagerzustand</li>
+        <li>PDF-Bezug direkt am Material und am Bearbeitungszustand</li>
+        <li>starke Trennung der Arbeitsmodi nach Fachbereich</li>
+        <li>Regalautomatik mit echter Lagerlogik</li>
+        <li>Updates, Backups, Audit und Buchungsjournal bereits vorhanden</li>
+    </ul>
+
+    <h2>10. Schwächen / offene Punkte</h2>
+    <ul>
+        <li>kein streng umgesetztes MVVM, dadurch steigender Wartungsaufwand</li>
+        <li>Excel als Primärspeicher ist einfach, aber begrenzt für größere Mehrbenutzerszenarien</li>
+        <li>Rollenmodell ist vorhanden, aber nicht überall vollständig durchgesetzt</li>
+        <li>Mehrbenutzerbetrieb ist eher pragmatisch als vollständig transaktionssicher</li>
+        <li>einige Funktionen wirken produktionsreif, andere eher vorbereitet oder teilintegriert</li>
+        <li>für Enterprise-Verkauf wären Datenbank, Rollen, Setup und UI-Konsistenz weiter auszubauen</li>
+    </ul>
+
+    <div class="box">
+        <span class="strong">Kurzfazit:</span><br/>
+        MaterialManager V01 ist eine spezialisierte Desktop-Software für Materialverwaltung, Lagersteuerung und produktionsnahe Materialbelegung in metallverarbeitenden Betrieben. Die besondere Stärke liegt in der Fachpraxis: Restmaterialsuche, Tafelreservierung, Lagerlogik und Produktionssicht sind klar auf reale Betriebsabläufe zugeschnitten.
+    </div>
+
+    <div class="footer">
+        MaterialManager V01 - Systemübersicht / PDF-Fassung<br/>
+        Erstellt automatisch aus der Projektanalyse.
+    </div>
+</body>
+</html>

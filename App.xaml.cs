@@ -33,6 +33,9 @@ namespace MaterialManager_V01
                 File.AppendAllText(logPath, $"\n\n=== START {DateTime.Now} ===\n");
                 File.AppendAllText(logPath, "App.OnStartup() gestartet\n");
 
+                Services.DatabaseBootstrapService.Initialize();
+                File.AppendAllText(logPath, $"Datenbank initialisiert: {Services.PathService.DatabasePath}\n");
+
                 if (!Services.LicenseService.IsLicenseValid())
                 {
                     File.AppendAllText(logPath, "Lizenz ungültig - zeige Dialog\n");

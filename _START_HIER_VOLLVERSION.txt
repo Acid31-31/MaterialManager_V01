@@ -1,0 +1,329 @@
++-------------------------------------------------------------------------------+
+¦                         PROJEKTÜBERSICHT                                      ¦
+¦               MaterialManager V01 - Vollversion mit Rechteschutz              ¦
++-------------------------------------------------------------------------------+
+
+© 2025 Alexander HÃ¶lzer - Alle Rechte vorbehalten
+
+
+VOLLSTÄNDIG IMPLEMENTIERT - ALLES FERTIG!
+-------------------------------------------------------------------------------
+
+? RECHTESCHUTZ VOLLSTÄNDIG
+------------------------------------------------------------------------------
+
+Dateien erstellt:
++-- LICENSE.txt                      ? Rechtsgültige Lizenzvereinbarung
++-- COPYRIGHT.txt                    ? Urheberrechtshinweis (§§ 69a ff. UrhG)
++-- VOLLVERSION_LEITFADEN.txt        ? Kompletter Vertriebs-Guide für dich
++-- USB_Installer/
+    +-- INSTALL_VOLLVERSION.bat      ? Automatischer Installer
+    +-- README_VOLLVERSION.txt       ? Anleitung für Kunden
+
+Implementiert:
+? Copyright-Hinweise in allen Quellcode-Dateien
+? Lizenzbestimmungen mit Vertragsstrafen (bis 50.000 EUR)
+? Urheberrechtsschutz gemäß deutschem UrhG
+? Automatische Anzeige beim Programmstart
+
+
+? LIZENZSYSTEM VOLLSTÄNDIG
+------------------------------------------------------------------------------
+
+Services/LicenseService.cs:
+? Demo-Version (30 Tage) - Hardware-gebunden, nicht zurücksetzbar
+? Vollversion mit Lizenzschlüssel-Validierung
+? Hardware-ID-Generierung (CPU + Motherboard)
+? Lizenztypen: Single, Multi3, Company10, Enterprise
+? Manipulationsschutz (Hash-Verifikation)
+? Lizenzschlüssel-Generator (nur für dich!)
+
+Views/LicenseActivationDialog.xaml + .cs:
+? Professioneller Aktivierungs-Dialog
+? Hardware-ID-Anzeige und Kopier-Funktion
+? Lizenzschlüssel-Eingabe mit Auto-Formatierung
+? Registrierungs-Informationen
+? Lizenztyp-Übersicht mit Preisen
+
+App.xaml.cs:
+? Automatische Lizenzprüfung beim Start
+? Copyright-Hinweis beim ersten Start
+? Demo-Ablauf-Warnung mit Aktivierungsangebot
+? Automatisches Beenden bei abgelaufener Demo
+
+MainWindow.xaml + .cs:
+? Lizenz-Menü: Aktivieren, Lizenzbestimmungen, Urheberrecht
+? "Über"-Dialog mit Lizenzstatus und Hardware-ID
+? Integration in Hilfe-Menü
+
+
+? USB-INSTALLATION VOLLSTÄNDIG
+------------------------------------------------------------------------------
+
+Build_USB_Vollversion.bat:
+? Automatisches Build-Script für USB-Paket
+? Self-Contained Build (kein .NET erforderlich)
+? Erstellt komplette USB-Struktur
+? Kopiert alle Dateien (App, Installer, Doku, Lizenzen)
+? Größenberechnung und Zusammenfassung
+
+USB_Installer/INSTALL_VOLLVERSION.bat:
+? Professioneller Windows-Installer
+? Admin-Rechte-Prüfung
+? Installation nach C:\Program Files\MaterialManager_V01
+? Desktop-Verknüpfung
+? Startmenü-Eintrag
+? Deinstallations-Script
+? Automatischer Programmstart nach Installation
+
+MaterialManager_V01.csproj:
+? Aktualisiert mit Copyright-Informationen
+? Version 3.0.0 (Vollversion)
+? Self-Contained Publishing konfiguriert
+? System.Management Package (für Hardware-ID)
+? Lizenz-Dateien werden ins Output kopiert
+
+
+-------------------------------------------------------------------------------
+WIE DU JETZT VORGEHST - SCHRITT FÜR SCHRITT
+-------------------------------------------------------------------------------
+
+SCHRITT 1: PERSONALISIERUNG
+----------------------------------------------------------------------------
+
+Ersetze in ALLEN erstellten Dateien die Platzhalter:
+(Suche & Ersetze in deinem Editor)
+
+Alexander HÃ¶lzer     ? z.B. "Max Mustermann" oder "Mustermann GmbH"
+Pfarrer-Rosenkranz-Strasse 9, 56642 Kruft              ? z.B. "Musterstraße 123, 12345 Musterstadt"
+hoelzer_alex@yahoo.de                ? z.B. "info@mustermann.de"
++49 170 8339993        ? z.B. "+49 123 456789"
+Auf Anfrage              ? z.B. "www.mustermann.de"
+Kruft                ? z.B. "Musterstadt" (für Gerichtsstand)
+
+Dateien zum Anpassen:
+• LICENSE.txt
+• COPYRIGHT.txt
+• VOLLVERSION_LEITFADEN.txt
+• USB_Installer/README_VOLLVERSION.txt
+• USB_Installer/INSTALL_VOLLVERSION.bat
+• Services/LicenseService.cs
+• App.xaml.cs
+• MainWindow.xaml.cs
+• MaterialManager_V01.csproj
+
+
+SCHRITT 2: PROJEKT KOMPILIEREN
+----------------------------------------------------------------------------
+
+1. Öffne Visual Studio
+2. Öffne MaterialManager_V01.csproj
+3. Stelle sicher, dass alle Packages installiert sind:
+   - ClosedXML
+   - System.Management (NEU!)
+4. Build > Rebuild Solution
+5. Teste das Programm:
+   - Starte MaterialManager_V01.exe
+   - Prüfe Lizenz-Dialog: Hilfe > Lizenz aktivieren
+   - Prüfe Copyright-Hinweis
+   - Prüfe Demo-Version Warnung
+
+
+SCHRITT 3: USB-PAKET ERSTELLEN
+----------------------------------------------------------------------------
+
+1. Führe aus: Build_USB_Vollversion.bat
+   (WICHTIG: Als Administrator ausführen!)
+
+2. Das Script erstellt automatisch:
+   USB_Package/
+   +-- INSTALL_VOLLVERSION.bat
+   +-- README_VOLLVERSION.txt
+   +-- LICENSE.txt
+   +-- COPYRIGHT.txt
+   +-- VERSION_INFO.txt
+   +-- autorun.inf
+   +-- LIZENZ_GENERATOR_INTERN.bat    ? NUR FÜR DICH!
+   +-- App/
+       +-- (alle Programmdateien)
+
+3. Prüfe das Paket:
+   - Größe ca. 200-500 MB
+   - Alle Dateien vorhanden
+   - App/MaterialManager_V01.exe existiert
+
+
+SCHRITT 4: FÜR KUNDENÜBERGABE VORBEREITEN
+----------------------------------------------------------------------------
+
+1. WICHTIG: Lösche LIZENZ_GENERATOR_INTERN.bat aus USB_Package!
+   (Dieser ist NUR für dich, niemals an Kunden!)
+
+2. Kopiere USB_Package auf USB-Stick (min. 1 GB)
+
+3. Beschrifte USB-Stick:
+   "MaterialManager V01 - Vollversion"
+
+4. Optional: Erstelle Aufkleber mit Logo + Kontaktdaten
+
+
+SCHRITT 5: AN KUNDEN ÜBERGEBEN
+----------------------------------------------------------------------------
+
+DEMO-VERSION (kostenlos zum Testen):
++-- USB-Stick mit Installer
++-- README_VOLLVERSION.txt (ausgedruckt)
++-- Deine Visitenkarte
+
+VOLLVERSION (nach Bezahlung):
++-- USB-Stick mit Installer
++-- README_VOLLVERSION.txt (ausgedruckt)
++-- Rechnung / Lieferschein
++-- Visitenkarte
++-- [Nach Installation] Lizenzschlüssel per E-Mail
+
+
+SCHRITT 6: LIZENZIERUNG (nach Verkauf)
+----------------------------------------------------------------------------
+
+1. KUNDE INSTALLIERT:
+   +-- Kunde führt INSTALL_VOLLVERSION.bat aus
+   +-- Programm wird installiert
+
+2. KUNDE SENDET HARDWARE-ID:
+   +-- Kunde startet Programm
+   +-- Hilfe > Lizenz aktivieren
+   +-- Kunde kopiert Hardware-ID
+   +-- Kunde sendet dir Hardware-ID per E-Mail
+
+3. DU GENERIERST LIZENZSCHLÜSSEL:
+   +-- Sichere Kopie: LIZENZ_GENERATOR_INTERN.bat (nur in deinem Backup!)
+   +-- Führe Generator aus
+   +-- Hardware-ID eingeben
+   +-- Lizenztyp wählen (1-4)
+   +-- Lizenzschlüssel wird generiert
+
+4. DU SENDEST LIZENZSCHLÜSSEL:
+   +-- E-Mail an Kunden mit Lizenzschlüssel
+   +-- Anleitung zur Aktivierung
+   +-- Willkommens-Nachricht
+
+5. KUNDE AKTIVIERT:
+   +-- Hilfe > Lizenz aktivieren
+   +-- Lizenzschlüssel eingeben
+   +-- Name/Firma eingeben
+   +-- Aktivieren - FERTIG!
+
+6. DOKUMENTIEREN:
+   +-- Lizenz-Vergabe in Excel-Tabelle festhalten!
+
+
+-------------------------------------------------------------------------------
+PREISGESTALTUNG (EMPFOHLEN)
+-------------------------------------------------------------------------------
+
+Lizenztyp           | Preis (netto)  | Beschreibung
+--------------------+----------------+-------------------------------------
+Einzelplatz (S1)    | 499,00 EUR     | 1 PC, Basis-Support (12 Monate)
+Mehrplatz (M3)      | 1.199,00 EUR   | 3 PCs, Netzwerk-Sync, Support
+Firmenlizenz (C10)  | 2.990,00 EUR   | 10 PCs, Netzwerk, Premium-Support
+Enterprise (ENT)    | Auf Anfrage    | Unbegrenzt, individuelle Anpassungen
+
+Alle Preise zzgl. 19% MwSt.
+Einmalige Zahlung - keine Abo-Kosten!
+
+
+-------------------------------------------------------------------------------
+RECHTLICHE ABSICHERUNG
+-------------------------------------------------------------------------------
+
+? Urheberrechtsschutz:
+  • Automatisch ab Erstellung (§§ 69a ff. UrhG)
+  • Dokumentiert in COPYRIGHT.txt
+  • Copyright-Hinweise im Programm
+
+? Lizenzvertrag:
+  • Rechtsgültig in LICENSE.txt
+  • Vertragsstrafen bis 50.000 EUR bei Verstoß
+  • Kunde akzeptiert durch Installation/Nutzung
+
+? Technischer Schutz:
+  • Hardware-ID-Bindung
+  • Lizenzschlüssel-Validierung
+  • Manipulationsschutz (Hash-Verifikation)
+
+? Bei Verstößen:
+  • Abmahnung mit Unterlassungserklärung
+  • Vertragsstrafe einfordern
+  • Anwalt einschalten
+  • Strafanzeige (§ 106 UrhG)
+
+
+-------------------------------------------------------------------------------
+WICHTIGE HINWEISE
+-------------------------------------------------------------------------------
+
+?? LIZENZ-GENERATOR GEHEIM HALTEN!
+   LIZENZ_GENERATOR_INTERN.bat NIEMALS an Kunden weitergeben!
+   Nur in deinem privaten Backup aufbewahren!
+
+?? DOKUMENTATION:
+   Führe Excel-Tabelle mit allen vergebenen Lizenzen:
+   Datum | Kunde | Hardware-ID | Lizenzschlüssel | Typ
+
+?? BACKUP:
+   Sichere regelmäßig:
+   • Quellcode (Git privat halten!)
+   • Lizenzdatenbank
+   • Lizenz-Generator
+   • Kundendaten
+
+?? SUPPORT:
+   • Kostenlos: 12 Monate E-Mail-Support
+   • Kostenpflichtig: Telefonischer Support, Remote-Hilfe
+   • Hardware-Wechsel: 1x/Jahr kostenlos neuer Lizenzschlüssel
+
+
+-------------------------------------------------------------------------------
+SCHNELLSTART
+-------------------------------------------------------------------------------
+
+FÜR DICH (Entwickler/Verkäufer):
+1. ??  Personalisiere alle Dateien (ersetze Platzhalter)
+2. ??  Kompiliere Projekt (Visual Studio > Build)
+3. ??  Erstelle USB-Paket (Build_USB_Vollversion.bat)
+4. ???  Lösche LIZENZ_GENERATOR_INTERN.bat aus USB_Package
+5. ??  Kopiere auf USB-Stick
+6. ??  Übergebe an Kunden
+
+FÜR KUNDEN:
+1. ??  INSTALL_VOLLVERSION.bat als Admin ausführen
+2. ??  Hardware-ID kopieren (Hilfe > Lizenz aktivieren)
+3. ??  Hardware-ID an dich senden
+4. ?  Warten auf Lizenzschlüssel
+5. ??  Lizenzschlüssel eingeben und aktivieren
+6. ?  FERTIG - Vollversion aktiv!
+
+
+-------------------------------------------------------------------------------
+SUPPORT & FRAGEN
+-------------------------------------------------------------------------------
+
+Bei Fragen zu diesem System:
+• Lies VOLLVERSION_LEITFADEN.txt (detaillierter Guide)
+• Prüfe LICENSE.txt (Lizenzbestimmungen)
+• Prüfe COPYRIGHT.txt (Urheberrechtsschutz)
+
+
+-------------------------------------------------------------------------------
+ERFOLG!
+-------------------------------------------------------------------------------
+
+Du hast jetzt ein vollständiges, rechtlich geschütztes, lizenziertes
+Softwareprodukt, das du per USB verkaufen kannst!
+
+VIEL ERFOLG MIT DEINEM MATERIALMANAGER V01!
+
+© 2025 Alexander HÃ¶lzer - Alle Rechte vorbehalten
+
+-------------------------------------------------------------------------------

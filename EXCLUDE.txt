@@ -1,0 +1,12 @@
+bin
+obj
+.git
+.vs
+.vscode
+*.vsdbg*
+*.tmp
+*.lock
+.gitignore
+.github
+node_modules
+package-lock.json

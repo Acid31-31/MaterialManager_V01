@@ -22,7 +22,7 @@ namespace MaterialManager_V01
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Form","Staerke","Mass",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel"
         };
 
         // Rohre (19 Spalten)
@@ -30,7 +30,7 @@ namespace MaterialManager_V01
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Durchmesser","Wandstaerke","Laenge",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel"
         };
 
         // Profile (21 Spalten)
@@ -38,7 +38,7 @@ namespace MaterialManager_V01
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","ProfilTyp","Hoehe","Breite","Wandstaerke","Laenge",
             "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
-            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad"
+            "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel"
         };
 
         public static void Export(string filePath, IEnumerable<Models.MaterialItem> materialien)
@@ -132,6 +132,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 17).Value = m.AngelegtVon;
                 ws.Cell(r, 18).Value = m.GeaendertVon;
                 ws.Cell(r, 19).Value = m.PdfPfad;
+                ws.Cell(r, 20).Value = m.PdfPfadAngefangeneTafel;
                 r++;
             }
 
@@ -166,6 +167,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 17).Value = m.AngelegtVon;
                 ws.Cell(r, 18).Value = m.GeaendertVon;
                 ws.Cell(r, 19).Value = m.PdfPfad;
+                ws.Cell(r, 20).Value = m.PdfPfadAngefangeneTafel;
                 r++;
             }
 
@@ -202,6 +204,7 @@ namespace MaterialManager_V01
                 ws.Cell(r, 19).Value = m.AngelegtVon;
                 ws.Cell(r, 20).Value = m.GeaendertVon;
                 ws.Cell(r, 21).Value = m.PdfPfad;
+                ws.Cell(r, 22).Value = m.PdfPfadAngefangeneTafel;
                 r++;
             }
 
@@ -303,6 +306,7 @@ namespace MaterialManager_V01
                 var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
                 var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
                 var pdfPfad      = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
+                var pdfPfadAngefangeneTafel = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
 
                 result.Add(new Models.MaterialItem
                 {
@@ -325,7 +329,8 @@ namespace MaterialManager_V01
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    PdfPfad        = pdfPfad
+                    PdfPfad        = pdfPfad,
+                    PdfPfadAngefangeneTafel = pdfPfadAngefangeneTafel
                 });
             }
             return result;
@@ -359,6 +364,7 @@ namespace MaterialManager_V01
                 var angelegtVon  = lastCol >= 17 ? ws.Cell(r, 17).GetString() : "";
                 var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
                 var pdfPfad    = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
+                var pdfPfadAngefangeneTafel = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
 
                 if (string.IsNullOrWhiteSpace(matArt) && dm == 0) continue;
 
@@ -383,7 +389,8 @@ namespace MaterialManager_V01
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    PdfPfad        = pdfPfad
+                    PdfPfad        = pdfPfad,
+                    PdfPfadAngefangeneTafel = pdfPfadAngefangeneTafel
                 });
             }
             return result;
@@ -419,6 +426,7 @@ namespace MaterialManager_V01
                 var angelegtVon  = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
                 var geaendertVon = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
                 var pdfPfad    = lastCol >= 21 ? ws.Cell(r, 21).GetString() : "";
+                var pdfPfadAngefangeneTafel = lastCol >= 22 ? ws.Cell(r, 22).GetString() : "";
 
                 if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(profilTyp)) continue;
 
@@ -445,7 +453,8 @@ namespace MaterialManager_V01
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    PdfPfad        = pdfPfad
+                    PdfPfad        = pdfPfad,
+                    PdfPfadAngefangeneTafel = pdfPfadAngefangeneTafel
                 });
             }
             return result;

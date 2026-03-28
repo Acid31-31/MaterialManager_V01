@@ -17,8 +17,10 @@ namespace MaterialManager_V01.Views
     {
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
+        private List<Auftrag> _auftraegeCache = new();
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
+        public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
 
         private string _headerText = string.Empty;
         public string HeaderText
@@ -53,6 +55,7 @@ namespace MaterialManager_V01.Views
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
+            PreviewKeyDown += OnWindowPreviewKeyDown;
         }
 
         private void FitToWorkArea()
@@ -78,24 +81,36 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var savePath = NetzwerkService.GetSavePath();
-                var items = await Task.Run(() =>
-                {
-                    if (!System.IO.File.Exists(savePath))
-                        return new List<MaterialItem>();
-                    return ExcelService.Import(savePath)?.ToList() ?? new List<MaterialItem>();
-                });
-
+                var items = await MaterialDataService.LoadAllMaterialsAsync();
                 _alleMaterialien = items;
                 _restMaterialienCache = _alleMaterialien
                     .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
                     .ToList();
 
+                LoadAuftraege();
                 ApplyFilter();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Laden der Auftragsmaterialien:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoadAuftraege()
+        {
+            try
+            {
+                _auftraegeCache = AuftragDataService.LoadAllAuftraege()
+                    .Where(a => _restMaterialienCache.Any(m => m.AuftragNr == a.Auftragsnummer))
+                    .ToList();
+
+                AuftraegeView.Clear();
+                foreach (var auftrag in _auftraegeCache)
+                    AuftraegeView.Add(auftrag);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der Aufträge:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -153,8 +168,71 @@ namespace MaterialManager_V01.Views
 
         private void SaveAllMaterials()
         {
-            var savePath = NetzwerkService.GetSavePath();
-            ExcelService.Export(savePath, _alleMaterialien);
+            MaterialDataService.SaveAllMaterials(_alleMaterialien);
+        }
+
+        private void PushUndoSnapshot(string beschreibung)
+        {
+            UndoService.PushSnapshot($"Laser: {beschreibung}", _alleMaterialien);
+        }
+
+        private void RestoreMaterials(List<MaterialItem> materialien)
+        {
+            _alleMaterialien = materialien;
+            _restMaterialienCache = _alleMaterialien.Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void ExecuteUndo()
+        {
+            var materialien = UndoService.Undo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
+        }
+
+        private void ExecuteRedo()
+        {
+            var materialien = UndoService.Redo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
+        }
+
+        private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
+                return;
+
+            if (e.Key == Key.Z)
+            {
+                ExecuteUndo();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Y)
+            {
+                ExecuteRedo();
+                e.Handled = true;
+            }
+        }
+
+        private void OnUndoClick(object sender, RoutedEventArgs e)
+        {
+            ExecuteUndo();
+        }
+
+        private void OnRedoClick(object sender, RoutedEventArgs e)
+        {
+            ExecuteRedo();
         }
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
@@ -188,17 +266,16 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
-            var gefunden = _alleMaterialien.Where(m =>
-                RestMaterialSearchService.Matches(
-                    m,
-                    dlg.Material,
-                    dlg.Legierung,
-                    dlg.Staerke,
-                    dlg.Laenge,
-                    dlg.Breite,
-                    dlg.ToleranzProzent,
-                    dlg.Form,
-                    requireRest: true)).ToList();
+            var gefunden = RestMaterialSearchService.SearchBestMatches(
+                _alleMaterialien,
+                dlg.Material,
+                dlg.Legierung,
+                dlg.Staerke,
+                dlg.Laenge,
+                dlg.Breite,
+                dlg.ToleranzProzent,
+                dlg.Form,
+                requireRest: true);
 
             if (!gefunden.Any())
             {
@@ -214,6 +291,7 @@ namespace MaterialManager_V01.Views
             if (reservierungDlg.ShowDialog() != true || string.IsNullOrWhiteSpace(reservierungDlg.AuftragNr))
                 return;
 
+            PushUndoSnapshot("Rest reservieren");
             auswahlDlg.SelectedMaterial.AuftragNr = reservierungDlg.AuftragNr.Trim();
             auswahlDlg.SelectedMaterial.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
             auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
@@ -231,6 +309,7 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
+            PushUndoSnapshot("Rest neu");
             dlg.Material.Form = "Rest";
             _alleMaterialien.Add(dlg.Material);
             SaveAllMaterials();
@@ -269,6 +348,7 @@ namespace MaterialManager_V01.Views
             if (index < 0)
                 return;
 
+            PushUndoSnapshot("Reserviertes Material bearbeiten");
             dlg.Material.AuftragNr = string.Empty;
             dlg.Material.Lagerort = RegalService.DetermineLagerort(
                 dlg.Material.MaterialArt,
@@ -303,6 +383,7 @@ namespace MaterialManager_V01.Views
             if (confirm != MessageBoxResult.Yes)
                 return;
 
+            PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material löschen" : "Reservierte Materialien löschen");
             foreach (var item in items)
             {
                 BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
@@ -370,6 +451,16 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnAuftraegeGridDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (AuftraegeGrid.SelectedItem is not Auftrag auftrag)
+                return;
+
+            var dlg = new ProduktionVerfolgungDialog(auftrag) { Owner = this };
+            dlg.ShowDialog();
+            LoadAuftraege();
+        }
+
         private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dep = e.OriginalSource as DependencyObject;
@@ -406,15 +497,19 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(item.PdfPfad))
+            var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
+                ? item.PdfPfadAngefangeneTafel
+                : item.PdfPfad;
+
+            if (string.IsNullOrWhiteSpace(pdfPfad))
             {
                 MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            if (!System.IO.File.Exists(item.PdfPfad))
+            if (!System.IO.File.Exists(pdfPfad))
             {
-                MessageBox.Show($"PDF-Datei nicht gefunden:\n{item.PdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -422,7 +517,7 @@ namespace MaterialManager_V01.Views
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = item.PdfPfad,
+                    FileName = pdfPfad,
                     UseShellExecute = true
                 });
             }

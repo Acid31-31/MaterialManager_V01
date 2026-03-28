@@ -257,6 +257,9 @@
                         <MenuItem Header="Schließen" Click="OnCloseClick"/>
                     </MenuItem>
                     <MenuItem Header="Bearbeiten">
+                        <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
+                        <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
+                        <Separator/>
                         <MenuItem Header="Material bearbeiten" Click="OnEditMaterialClick"/>
                         <MenuItem Header="Material löschen" Click="OnDeleteMaterialClick"/>
                     </MenuItem>
@@ -331,6 +334,18 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
+                    <Button Content="← Zurück"
+                            Click="OnUndoClick"
+                            Background="#5D4037"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
+                    <Button Content="→ Vorwärts"
+                            Click="OnRedoClick"
+                            Background="#6D4C41"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
                     <Button Content="Material neu"
                             Click="OnNewMaterialClick"
                             Background="#2E7D32"

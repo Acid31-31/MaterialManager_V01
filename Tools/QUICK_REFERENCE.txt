@@ -1,0 +1,112 @@
+╔════════════════════════════════════════════════════════════════╗
+║        MaterialManager V01 - Lizenzgenerator Quick Reference    ║
+╚════════════════════════════════════════════════════════════════╝
+
+█ SUPER SCHNELL (2 SCHRITTE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCHRITT 1: Hardware-ID vom Kunden erhalten
+  ◉ Im MaterialManager: Menü → Hilfe → Lizenzinformationen
+  ◉ Hardware-ID kopieren (z.B. "ABC123...")
+
+SCHRITT 2: Lizenzschlüssel generieren
+  ◉ PowerShell/CMD: cd Tools
+  ◉ Eingeben: dotnet run "ABC123..." "Firmenname" 1
+  ◉ Lizenzschlüssel kopieren: MM-XXXX-XXXX-XXXX-XXXX
+  ◉ An Kunde versenden
+
+
+█ KOMMANDOZEILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Standard (1 Jahr gültig)
+dotnet run "HardwareID" "Firmenname"
+
+# Mit Laufzeit (z.B. 3 Jahre)
+dotnet run "HardwareID" "Firmenname" 3
+
+# Beispiel
+dotnet run "ABC123DEF456GHI789JKL012" "Musterfirma GmbH" 1
+
+
+█ GUI-MODUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Doppelklick: Tools\START_LICENSE_GENERATOR.bat
+→ Menü anzeigen
+→ Option 1 wählen
+→ Daten eingeben
+→ Lizenz generieren
+
+
+█ VERWALTUNG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Lizenz-Archiv starten
+python license_manager.py
+
+# Lizenz hinzufügen
+Menü 1 → Daten eingeben
+
+# CSV exportieren
+Menü 5 → Excel-kompatibel
+
+
+█ LIZENZSCHLÜSSEL FORMAT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MM-4A7F-9B2E-C5D1-8K3L
+├─ MM = MaterialManager
+└─ 16 Zeichen = SHA256-Hash
+
+
+█ AKTIVIERUNG (IM PROGRAMM)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MaterialManager öffnen
+→ Menü → Hilfe → Lizenz aktivieren
+→ Lizenzschlüssel eingeben: MM-4A7F-...
+→ Firmenname eingeben: Musterfirma GmbH
+→ Aktivieren
+
+
+█ FEHLERBEHEBUNG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "dotnet: command not found"
+→ .NET 8.0 SDK installieren (https://dot.net/download)
+
+❌ "Python not found"
+→ Python 3 installieren (https://python.org)
+
+❌ "Hardware-ID ungültig"
+→ Vom Kunden direkt kopieren, keine Typos
+
+❌ "Lizenzschlüssel funktioniert nicht"
+→ Gleiche Hardware-ID und Firmenname verwenden
+
+
+█ DATEIEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tools/
+├─ LicenseGenerator.cs ................. Quellcode
+├─ LicenseGenerator.csproj ............. Projekt
+├─ license_manager.py .................. Verwaltung
+├─ START_LICENSE_GENERATOR.bat ......... GUI-Starter
+├─ LIZENZGENERATOR_ANLEITUNG.txt ....... Doku
+└─ README.md ........................... Technisch
+
+
+█ MASTER SECRET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Speicherort: Services\LicenseKeyGenerator.cs
+"MM_V01_MASTER_SECRET_2025_PRODUCTION"
+
+⚠️ NICHT ÄNDERN! ⚠️
+
+
+═══════════════════════════════════════════════════════════════════
+
+Für vollständige Anleitung: Tools\LIZENZGENERATOR_ANLEITUNG.txt

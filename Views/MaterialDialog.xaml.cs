@@ -123,7 +123,8 @@ namespace MaterialManager_V01.Views
         public string Mass { get => _mass; set { _mass = value; OnPropertyChanged(nameof(Mass)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
         public string DatumLabel => SelectedForm == "Rest" ? "Erstelldatum:" : "Lieferdatum:";
-        public bool IsMassEditable => SelectedForm == "Rest";
+        public bool IsMassEditable => SelectedForm == "Rest"
+            || (_isEdit && _selectedKategorie == "Blech" && !string.IsNullOrWhiteSpace(_originalAuftragNr));
         public Visibility StueckzahlVisible => SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? Visibility.Visible : Visibility.Collapsed;
         public Visibility LieferantVisible  => SelectedForm == "GF" || SelectedForm == "MF" || SelectedForm == "KF" ? Visibility.Visible : Visibility.Collapsed;
         public Visibility EtiquetteVisible  => SelectedForm == "Rest" ? Visibility.Visible : Visibility.Collapsed;
@@ -252,6 +253,8 @@ namespace MaterialManager_V01.Views
         private string _originalGeaendertVon = "";
         private string _originalAuftragNr = "";
         private string _originalLagerort = "";
+        private string _originalPdfPfad = "";
+        private string _originalPdfPfadAngefangeneTafel = "";
 
         private bool _canSave = true;
         public bool CanSave { get => _canSave; set { _canSave = value; OnPropertyChanged(nameof(CanSave)); } }
@@ -298,6 +301,8 @@ namespace MaterialManager_V01.Views
             _originalGeaendertVon = original.GeaendertVon;
             _originalAuftragNr = original.AuftragNr;
             _originalLagerort = original.Lagerort;
+            _originalPdfPfad = original.PdfPfad;
+            _originalPdfPfadAngefangeneTafel = original.PdfPfadAngefangeneTafel;
 
             SelectedKategorie = original.Kategorie.ToString();
             SelectedMaterialArt = original.MaterialArt;
@@ -333,6 +338,7 @@ namespace MaterialManager_V01.Views
             }
 
             Title = "Material bearbeiten";
+            OnPropertyChanged(nameof(IsMassEditable));
             OnPropertyChanged(nameof(EtiquetteVisible));
         }
 
@@ -478,7 +484,9 @@ namespace MaterialManager_V01.Views
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
+                    PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };
             }
             else if (kat == MaterialKategorie.Rohr)
@@ -506,7 +514,9 @@ namespace MaterialManager_V01.Views
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
+                    PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };
             }
             else
@@ -537,7 +547,9 @@ namespace MaterialManager_V01.Views
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty
+                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
+                    PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };
             }
 

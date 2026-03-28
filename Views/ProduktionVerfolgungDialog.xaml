@@ -1,0 +1,88 @@
+<Window x:Class="MaterialManager_V01.Views.ProduktionVerfolgungDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Produktionsverfolgung"
+        Height="400"
+        Width="600"
+        Background="#0B0B0B"
+        Foreground="White"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontSize="13">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinWidth" Value="140"/>
+            <Setter Property="Height" Value="45"/>
+        </Style>
+        <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#2E7D32"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#388E3C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#C62828"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D32F2F"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Produktionsverfolgung" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <Border Grid.Row="1" Background="#1E1E1E" Padding="16" CornerRadius="4" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Auftrag:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                <TextBlock Grid.Column="1" x:Name="AuftragTextBlock" FontSize="18" FontWeight="Bold" Foreground="#8EC5FF"/>
+            </Grid>
+        </Border>
+
+        <TextBlock Grid.Row="2" Text="Produktionsbeginn:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
+        <Border Grid.Row="3" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+            <TextBlock x:Name="StartZeitTextBlock" FontSize="16" Text="Nicht gestartet" Foreground="White"/>
+        </Border>
+
+        <TextBlock Grid.Row="4" Text="Produktionsende:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
+        <Border Grid.Row="5" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+            <TextBlock x:Name="EndZeitTextBlock" FontSize="16" Text="Nicht beendet" Foreground="White"/>
+        </Border>
+
+        <Border Grid.Row="6" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+            <TextBlock x:Name="DauerTextBlock" FontSize="14" Text="Dauer: –" Foreground="White"/>
+        </Border>
+
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="▶ Start" Style="{StaticResource GreenButtonStyle}" Click="OnStartClick" x:Name="StartButton"/>
+            <Button Content="⏹ Ende" Style="{StaticResource RedButtonStyle}" Click="OnEndClick" x:Name="EndButton" IsEnabled="False" Margin="12,0,0,0"/>
+            <Button Content="Schließen" Background="#555" Click="OnCloseClick" Margin="24,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

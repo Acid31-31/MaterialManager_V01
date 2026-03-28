@@ -101,7 +101,7 @@ namespace MaterialManager_V01
 
         public MainWindow()
         {
-            // Ô£à ROBUSTES LOGGING in APPDATA (nicht C:\Program Files!)
+            // ROBUSTES LOGGING in APPDATA (nicht C:\Program Files!)
             StreamWriter logWriter = null;
             try
             {
@@ -179,13 +179,13 @@ namespace MaterialManager_V01
                 
                 this.Loaded += (s, e) =>
                 {
-                    Log("MainWindow.Loaded Event ausgel+Âst - Fenster ist sichtbar!");
+                    Log("MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!");
                     ApplyResponsiveWindowLayout();
                     _ = CheckForUpdatesOnStartupAsync();
                     StartPeriodicUpdateChecks();
                 };
-                
-                // Ô£à Cleanup beim Beenden
+
+                // Cleanup beim Beenden
                 this.Closed += (s, e) =>
                 {
                     Log("MainWindow wird geschlossen");
@@ -349,7 +349,7 @@ namespace MaterialManager_V01
                 
                 Services.FileWatcherService.OnFileChanged += (path) => 
                 {
-                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] +änderung erkannt: {path}");
+                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] Änderung erkannt: {path}");
                     ReloadMaterialienAsync();
                 };
                 System.Diagnostics.Debug.WriteLine($"[InitializeAutoSync] FileWatcher Event registriert");
@@ -384,7 +384,7 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                // Ô£à VERBESSERT: K++rzere Window f++r lokale Saves (500ms f++r sicheres Debouncing)
+                // VERBESSERT: Kürzere Window für lokale Saves (500ms für sicheres Debouncing)
                 bool isLocalSave = (DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds < 500;
                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] isLocalSave: {isLocalSave}, Zeit: {(DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds}ms");
                 
@@ -394,15 +394,15 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe +änderung erkannt!");
+                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe Änderung erkannt!");
                 
-                // Ô£à Versuche bis zu 30x zu laden
+                // Versuche bis zu 30x zu laden
                 for (var attempt = 0; attempt < 30; attempt++)
                 {
                     try
                     {
                         System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] Versuch {attempt + 1}/30");
-                        var externalItems = ExcelService.Import(savePath);
+                        var externalItems = MaterialDataService.LoadFromExcelFile(savePath);
                         
                         System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] Import erfolgreich! {externalItems?.Count()} Materialien");
                         
@@ -412,7 +412,7 @@ namespace MaterialManager_V01
                             {
                                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] INTELLIGENTER MERGE startet...");
                                 
-                                // Ô£à INTELLIGENT MERGE: Aktualisiere/F++ge hinzu statt alles zu ersetzen
+                                // INTELLIGENTER MERGE: Aktualisiere/Füge hinzu statt alles zu ersetzen
                                 var currentRestNummern = Materialien.Where(m => !string.IsNullOrEmpty(m.Restnummer))
                                     .Select(m => m.Restnummer)
                                     .ToHashSet();
@@ -421,7 +421,7 @@ namespace MaterialManager_V01
                                     .Select(m => m.Restnummer)
                                     .ToHashSet();
 
-                                // 1. Entferne gel+Âschte Items (existieren nicht mehr in Excel)
+                                // 1. Entferne gelöschte Items (existieren nicht mehr in Excel)
                                 var toRemove = Materialien.Where(m => 
                                     !string.IsNullOrEmpty(m.Restnummer) && 
                                     !externalRestNummern.Contains(m.Restnummer)
@@ -429,7 +429,7 @@ namespace MaterialManager_V01
                                 
                                 foreach (var item in toRemove)
                                 {
-                                    System.Diagnostics.Debug.WriteLine($"[MERGE] Entferne gel+Âschtes: {item.Restnummer}");
+                                    System.Diagnostics.Debug.WriteLine($"[MERGE] Entferne gelöschtes: {item.Restnummer}");
                                     Materialien.Remove(item);
                                 }
 
@@ -450,17 +450,19 @@ namespace MaterialManager_V01
                                         }
                                         else
                                         {
-                                            // 3. F++ge neue Items hinzu
-                                            System.Diagnostics.Debug.WriteLine($"[MERGE] Neu hinzuf++gen: {externalItem.Restnummer}");
+                                            // 3. Füge neue Items hinzu
+                                            System.Diagnostics.Debug.WriteLine($"[MERGE] Neu hinzufügen: {externalItem.Restnummer}");
                                             Materialien.Add(externalItem);
                                         }
                                     }
                                 }
                                 
                                 UpdateStats();
+                                MaterialDataService.SaveAllMaterials(Materialien.ToList(), syncExcel: false);
+                                _lastSaveUtc = DateTime.UtcNow;
                                 
-                                // Ô£à VISUELLES FEEDBACK
-                                Title = $"MaterialManager V01 - ­ƒöä Synchronisiert {DateTime.Now:HH:mm:ss}";
+                                // VISUELLES FEEDBACK
+                                Title = $"MaterialManager V01 - Synchronisiert {DateTime.Now:HH:mm:ss}";
                                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] MERGE FERTIG!");
                             });
                             
@@ -488,11 +490,11 @@ namespace MaterialManager_V01
             var dlg = new MaterialDialog(Materialien) { Owner = this };
             if (dlg.ShowDialog() == true) 
             { 
-                // Ô£à SOFORT zur UI hinzuf++gen (keine Verz+Âgerung!)
+                // SOFORT zur UI hinzufügen (keine Verzögerung!)
                 Materialien.Add(dlg.Material);
                 UpdateStats();
                 
-                // Ô£à DANN asynchron speichern (blockiert UI nicht)
+                // DANN asynchron speichern (blockiert UI nicht)
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -508,11 +510,11 @@ namespace MaterialManager_V01
                     var idx = Materialien.IndexOf(item);
                     if (idx >= 0 && idx < Materialien.Count)
                     {
-                        // Ô£à SOFORT in UI aktualisieren
+                        // SOFORT in UI aktualisieren
                         Materialien[idx] = dlg.Material;
                         UpdateStats();
                         
-                        // Ô£à DANN asynchron speichern
+                        // DANN asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -522,12 +524,12 @@ namespace MaterialManager_V01
         private void OnMaterialLoeschen(object sender, RoutedEventArgs e)
         {
             var selected = Materialien.Where(m => m.IsSelected).ToList();
-            if (!selected.Any()) { MessageBox.Show("Bitte Material ausw+ñhlen."); return; }
-            if (MessageBox.Show($"{selected.Count} Material(ien) l+Âschen?", "Best+ñtigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (!selected.Any()) { MessageBox.Show("Bitte Material auswählen."); return; }
+            if (MessageBox.Show($"{selected.Count} Material(ien) löschen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Services.UndoService.Push($"{selected.Count} Material(ien) gel+Âscht", selected);
+                Services.UndoService.Push($"{selected.Count} Material(ien) gelöscht", selected);
                 
-                // Ô£à SOFORT aus UI entfernen
+                // SOFORT aus UI entfernen
                 foreach (var item in selected) 
                 { 
                     Services.BuchungsService.BucheAusgang(item); 
@@ -535,7 +537,7 @@ namespace MaterialManager_V01
                 }
                 UpdateStats();
                 
-                // Ô£à DANN asynchron speichern
+                // DANN asynchron speichern
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -556,15 +558,15 @@ namespace MaterialManager_V01
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Pr++fung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Pr++fung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
+                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!result.IsUpdateAvailable)
                 {
                     MessageBox.Show($"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Pr++fung", MessageBoxButton.OK, MessageBoxImage.Information);
+                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -572,7 +574,7 @@ namespace MaterialManager_V01
                 {
                     MessageBox.Show(
                         $"Neue Version {result.LatestVersion} gefunden, aber kein Update-Asset (.msi/.exe/.zip) in der Release.",
-                        "Update-Pr++fung",
+                        "Update-Prüfung",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
@@ -583,7 +585,7 @@ namespace MaterialManager_V01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler bei Update-Pr++fung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -638,7 +640,7 @@ namespace MaterialManager_V01
                 var dlg = new TafelVerbrauchDialog(item, Materialien) { Owner = this };
                 if (dlg.ShowDialog() == true) 
                 { 
-                    // Ô£à SOFORT UI aktualisieren
+                    // SOFORT UI aktualisieren
                     if (item.Stueckzahl <= 1) 
                     { 
                         Services.BuchungsService.BucheAusgang(item); 
@@ -650,7 +652,7 @@ namespace MaterialManager_V01
                     }
                     UpdateStats();
                     
-                    // Ô£à Asynchron speichern
+                    // Asynchron speichern
                     System.Threading.Tasks.Task.Run(() => SaveNow());
                 }
             }
@@ -668,11 +670,11 @@ namespace MaterialManager_V01
                     var idx = Materialien.IndexOf(dlg.MaterialZumBearbeiten);
                     if (idx >= 0)
                     {
-                        // Ô£à SOFORT aktualisieren
+                        // SOFORT aktualisieren
                         Materialien[idx] = editDlg.Material;
                         UpdateStats();
                         
-                        // Ô£à Asynchron speichern
+                        // Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -685,10 +687,10 @@ namespace MaterialManager_V01
             dlg.ShowDialog();
             if (dlg.HasChanges)
             {
-                // Ô£à SOFORT Stats aktualisieren
+                // SOFORT Stats aktualisieren
                 UpdateStats();
                 
-                // Ô£à Asynchron speichern
+                // Asynchron speichern
                 System.Threading.Tasks.Task.Run(() => SaveNow());
             }
         }
@@ -710,18 +712,18 @@ namespace MaterialManager_V01
                         dlg.Form,
                         requireRest: false)).ToList();
 
-                // Markiere gefundene Materialien GR+£N
+                // Markiere gefundene Materialien grün
                 foreach (var m in Materialien)
                     m.IsHighlighted = gefunden.Contains(m);
 
                 if (!gefunden.Any())
                 {
-                    MessageBox.Show("ÔØî Keine passenden Materialien gefunden.",
+                    MessageBox.Show("Keine passenden Materialien gefunden.",
                         "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                MessageBox.Show($"Ô£à {gefunden.Count} passende(s) Material(ien) gefunden!  \n\nDie Materialien sind GR+£N markiert.",
+                MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grün markiert.",
                     "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
@@ -736,13 +738,13 @@ namespace MaterialManager_V01
                     {
                         var user = Services.OperatorIdentityService.CurrentOperatorName;
                         
-                        // Ô£à SOFORT in UI aktualisieren
+                        // SOFORT in UI aktualisieren
                         auswahlDlg.SelectedMaterial.AuftragNr = auftragNr.Trim();
                         auswahlDlg.SelectedMaterial.GeaendertVon = user;
                         auswahlDlg.SelectedMaterial.AenderungsDatum = DateTime.Now;
                         UpdateStats();
                         
-                        // Ô£à Asynchron speichern
+                        // Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                     }
                 }
@@ -754,7 +756,7 @@ namespace MaterialManager_V01
         private void OnExport(object sender, RoutedEventArgs e)
         {
             var dlg = new SaveFileDialog { Filter = "Excel (*.xlsx)|*.xlsx" };
-            if (dlg.ShowDialog() == true) { try { ExcelService.Export(dlg.FileName, Materialien); MessageBox.Show("Ô£à Export erfolgreich"); } catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); } }
+            if (dlg.ShowDialog() == true) { try { ExcelService.Export(dlg.FileName, Materialien); MessageBox.Show("Export erfolgreich"); } catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); } }
         }
 
         private void OnImport(object sender, RoutedEventArgs e)
@@ -764,19 +766,19 @@ namespace MaterialManager_V01
             {
                 try
                 {
-                    var items = ExcelService.Import(dlg.FileName);
+                    var items = MaterialDataService.LoadFromExcelFile(dlg.FileName);
                     if (items?.Any() != true) { MessageBox.Show("Keine Materialien gefunden"); return; }
                     if (MessageBox.Show($"{items.Count()} Materialien. Ersetzen?", "Import", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-                        // Ô£à SOFORT UI aktualisieren
+                        // SOFORT UI aktualisieren
                         Materialien.Clear();
                         foreach (var item in items) Materialien.Add(item);
                         UpdateStats();
                         
-                        // Ô£à Asynchron speichern
+                        // Asynchron speichern
                         System.Threading.Tasks.Task.Run(() => SaveNow());
                         
-                        MessageBox.Show("Ô£à Import erfolgreich");
+                        MessageBox.Show("Import erfolgreich");
                     }
                 }
                 catch (Exception ex) { MessageBox.Show($"Fehler: {ex.Message}"); }
@@ -790,28 +792,28 @@ namespace MaterialManager_V01
                 var geloeschteItems = Services.UndoService.Undo();
                 if (geloeschteItems != null)
                 {
-                    // Ô£à SOFORT in UI wiederherstellen
+                    // SOFORT in UI wiederherstellen
                     foreach (var item in geloeschteItems)
                     {
                         Materialien.Add(item);
                     }
                     UpdateStats();
                     
-                    // Ô£à Asynchron speichern
+                    // Asynchron speichern
                     System.Threading.Tasks.Task.Run(() => SaveNow());
                     
-                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "R++ckg+ñngig", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "Rückgängig", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Keine Aktion zum R++ckg+ñngig machen verf++gbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Keine Aktion zum Rückgängigmachen verfügbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         
         private void OnRedo(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Redo-Funktion ist nicht verf++gbar.\n\nVerwendet Ctrl+Z oder Alt+Pfeil Links zum R++ckg+ñngigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Redo-Funktion ist nicht verfügbar.\n\nVerwendet Strg+Z oder Alt+Pfeil links zum Rückgängigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnUeber(object sender, RoutedEventArgs e) { MessageBox.Show("MaterialManager V01 v1.0\n.NET 8.0 | WPF\n\nMit Reservierungs-Funktion"); }
@@ -852,7 +854,7 @@ namespace MaterialManager_V01
         
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            // Ô£à DELETE - Material l+Âschen
+            // DELETE - Material löschen
             if (e.Key == Key.Delete)
             {
                 OnMaterialLoeschen(null, null);
@@ -860,7 +862,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // Ô£à CTRL+Z - Undo (Zur++ck)
+            // CTRL+Z - Undo (Zurück)
             if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnUndo(null, null);
@@ -868,7 +870,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // Ô£à CTRL+Y - Redo (Vorw+ñrts)
+            // CTRL+Y - Redo (Vorwärts)
             if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnRedo(null, null);
@@ -876,7 +878,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // Ô£à ALT+LINKS - Browser-+ñhnliche Zur++ck-Navigation
+            // ALT+LINKS - Browser-ähnliche Zurück-Navigation
             if (e.Key == Key.Left && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnUndo(null, null);
@@ -884,7 +886,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // Ô£à ALT+RECHTS - Browser-+ñhnliche Vorw+ñrts-Navigation
+            // ALT+RECHTS - Browser-ähnliche Vorwärts-Navigation
             if (e.Key == Key.Right && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnRedo(null, null);
@@ -915,26 +917,15 @@ namespace MaterialManager_V01
         
         private void SaveNow()
         {
-            // Ô£à Thread-Safe: Nur ein Speichervorgang gleichzeitig
             lock (_saveLock)
             {
                 try
                 {
-                    var savePath = Services.NetzwerkService.GetSavePath();
-                    
-                    var dir = Path.GetDirectoryName(savePath);
-                    if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                    {
-                        Directory.CreateDirectory(dir);
-                        System.Diagnostics.Debug.WriteLine($"[SaveNow] Verzeichnis erstellt: {dir}");
-                    }
-                    
-                    System.Diagnostics.Debug.WriteLine($"[SaveNow] Speichere zu: {savePath}");
-                    
-                    // Ô£à Erstelle Snapshot der aktuellen Daten (Thread-Safe)
+                    System.Diagnostics.Debug.WriteLine("[SaveNow] Speichere Materialdaten über MaterialDataService");
+
                     var snapshot = Materialien.ToList();
-                    ExcelService.Export(savePath, snapshot);
-                    
+                    MaterialDataService.SaveAllMaterials(snapshot);
+
                     _lastSaveUtc = DateTime.UtcNow;
                     System.Diagnostics.Debug.WriteLine($"[SaveNow] FERTIG gespeichert um {DateTime.Now:HH:mm:ss}!");
                 }
@@ -949,25 +940,16 @@ namespace MaterialManager_V01
         {
             try
             {
-                var savePath = Services.NetzwerkService.GetSavePath();
-                System.Diagnostics.Debug.WriteLine($"[LoadAutosave] Versuche zu laden: {savePath}");
-                
-                // Wenn Datei nicht existiert ÔåÆ Nicht laden, einfach leer starten
-                if (!File.Exists(savePath))
-                {
-                    System.Diagnostics.Debug.WriteLine($"[LoadAutosave] Datei existiert NICHT - starte mit leerer Liste");
-                    return;
-                }
-                
-                System.Diagnostics.Debug.WriteLine($"[LoadAutosave] Datei existiert, lade sie...");
-                var items = ExcelService.Import(savePath);
+                System.Diagnostics.Debug.WriteLine("[LoadAutosave] Lade Materialdaten über MaterialDataService");
+
+                var items = MaterialDataService.LoadAllMaterials();
                 Materialien.Clear();
-                foreach (var item in items ?? Enumerable.Empty<MaterialItem>())
+                foreach (var item in items)
                     Materialien.Add(item);
-                
-                // Ô£à Registriere dass wir gerade geladen haben
+
+                var savePath = Services.NetzwerkService.GetSavePath();
                 Services.ReloadService.RegisterLoad(savePath);
-                
+
                 System.Diagnostics.Debug.WriteLine($"[LoadAutosave] FERTIG! {Materialien.Count} Materialien geladen");
             }
             catch (Exception ex)

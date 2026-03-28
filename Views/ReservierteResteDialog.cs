@@ -1,4 +1,5 @@
 ﻿using MaterialManager_V01.Models;
+using MaterialManager_V01.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -24,14 +25,10 @@ namespace MaterialManager_V01.Views
 
         private void LoadReservierteReste()
         {
-            var savePath = Services.NetzwerkService.GetSavePath();
-            if (System.IO.File.Exists(savePath))
-            {
-                var alleMaterialien = ExcelService.Import(savePath);
-                ReservierteReste.Clear();
-                foreach (var item in alleMaterialien.Where(m => !string.IsNullOrEmpty(m.AuftragNr)))
-                    ReservierteReste.Add(item);
-            }
+            var alleMaterialien = MaterialDataService.LoadAllMaterials();
+            ReservierteReste.Clear();
+            foreach (var item in alleMaterialien.Where(m => !string.IsNullOrEmpty(m.AuftragNr)))
+                ReservierteReste.Add(item);
         }
 
         private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -62,15 +59,19 @@ namespace MaterialManager_V01.Views
 
         private static void OpenPdf(MaterialItem item)
         {
-            if (string.IsNullOrWhiteSpace(item.PdfPfad))
+            var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
+                ? item.PdfPfadAngefangeneTafel
+                : item.PdfPfad;
+
+            if (string.IsNullOrWhiteSpace(pdfPfad))
             {
                 MessageBox.Show("Für dieses reservierte Material ist keine PDF hinterlegt.", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            if (!System.IO.File.Exists(item.PdfPfad))
+            if (!System.IO.File.Exists(pdfPfad))
             {
-                MessageBox.Show($"PDF-Datei nicht gefunden:\n{item.PdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF öffnen", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -78,7 +79,7 @@ namespace MaterialManager_V01.Views
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = item.PdfPfad,
+                    FileName = pdfPfad,
                     UseShellExecute = true
                 });
             }

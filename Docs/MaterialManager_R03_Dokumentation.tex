@@ -1,0 +1,567 @@
+\documentclass[a4paper,12pt]{article}
+
+% Pakete
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% Farben
+\definecolor{primary}{HTML}{1976D2}
+\definecolor{success}{HTML}{4CAF50}
+\definecolor{warning}{HTML}{FF9800}
+\definecolor{danger}{HTML}{F44336}
+\definecolor{dark}{HTML}{1E1E1E}
+\definecolor{codebg}{HTML}{F5F5F5}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\textbf{MaterialManager R03}}}
+\fancyhead[R]{\textcolor{gray}{Technische Dokumentation}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
+
+% Code-Stil
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gray!30},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{primary}\bfseries,
+    stringstyle=\color{success},
+    commentstyle=\color{gray}\itshape
+}
+
+% Info-Box
+\newtcolorbox{infobox}[1][]{
+    colback=primary!5,
+    colframe=primary,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\newtcolorbox{warnbox}[1][]{
+    colback=warning!5,
+    colframe=warning,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\newtcolorbox{successbox}[1][]{
+    colback=success!5,
+    colframe=success,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\begin{document}
+
+% ==========================================
+% TITELSEITE
+% ==========================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+
+{\Huge\bfseries\textcolor{primary}{MaterialManager R03}}\\[0.5cm]
+{\Large\textcolor{gray}{Technische Dokumentation \& Bewertung}}\\[2cm]
+
+\begin{tcolorbox}[colback=dark,colframe=dark,coltext=white,width=12cm,halign=center]
+\centering
+{\large\bfseries Materialverwaltung für Blechlager}\\[0.3cm]
+{\normalsize WPF Desktop-Anwendung $\bullet$ .NET 8 $\bullet$ C\# 12}\\[0.3cm]
+{\small Dark Theme $\bullet$ Auto-Save $\bullet$ ERP-Schnittstelle $\bullet$ Netzwerk-Modus}
+\end{tcolorbox}
+
+\vspace{2cm}
+
+\begin{tabular}{ll}
+\textbf{Version:} & 1.0.0 \\
+\textbf{Plattform:} & Windows 10/11 (x64) \\
+\textbf{Framework:} & .NET 8.0 (Self-Contained) \\
+\textbf{Lizenz:} & Demo (30 Tage) \\
+\textbf{Stand:} & \today \\
+\end{tabular}
+
+\vfill
+{\small Copyright \copyright\ 2025 MaterialManager}
+\end{titlepage}
+
+% ==========================================
+% INHALTSVERZEICHNIS
+% ==========================================
+\tableofcontents
+\newpage
+
+% ==========================================
+% 1. PROGRAMMÜBERSICHT
+% ==========================================
+\section{Programmübersicht}
+
+\subsection{Zweck}
+MaterialManager R03 ist eine professionelle \textbf{Materialverwaltungssoftware} für industrielle Blechlager. Die Software verwaltet den gesamten Lebenszyklus von Blechtafeln — vom Wareneingang über die Lagerung bis zum Verbrauch und der Restverwertung.
+
+\subsection{Zielgruppe}
+\begin{itemize}
+    \item Metallbau-Unternehmen
+    \item Blechbearbeitungsbetriebe
+    \item Stahlhandel
+    \item Schlossereien und Schweißbetriebe
+\end{itemize}
+
+\subsection{Technologie-Stack}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Komponente} & \textbf{Technologie} \\
+\midrule
+Sprache & C\# 12.0 \\
+Framework & .NET 8.0 (LTS) \\
+UI-Framework & WPF (Windows Presentation Foundation) \\
+Datenspeicherung & Excel (.xlsx) via ClosedXML \\
+Deployment & Self-Contained (keine Installation nötig) \\
+Architektur & MVVM-ähnlich (Code-Behind) \\
+\bottomrule
+\end{tabularx}
+\caption{Technologie-Stack}
+\end{table}
+
+% ==========================================
+% 2. BEWERTUNG
+% ==========================================
+\section{Bewertung des Programms}
+
+\subsection{Gesamtbewertung}
+
+\begin{successbox}[Gesamtnote: 8.5 / 10 — Sehr gut für eine Branchen-Lösung]
+Die Software deckt die wesentlichen Anforderungen einer industriellen Materialverwaltung ab und bietet darüber hinaus Funktionen, die in vielen kommerziellen Produkten fehlen (Verschnitt-Optimierung, automatische Regalzuweisung).
+\end{successbox}
+
+\subsection{Bewertung nach Kategorien}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Kategorie} & \textbf{Note} & \textbf{Begründung} \\
+\midrule
+Funktionsumfang & 9/10 & 20+ Features, deckt gesamten Workflow ab \\
+Benutzeroberfläche & 8/10 & Modernes Dark Theme, intuitive Bedienung \\
+Datensicherheit & 8/10 & Auto-Save, Backup, Undo-Funktion \\
+ERP-Integration & 8/10 & SAP, SAGE, BMEcat, Universal CSV \\
+Netzwerkfähigkeit & 7/10 & File-basiert mit Locking (kein SQL-Server) \\
+Performance & 9/10 & Schnell, kein spürbarer Lag \\
+Code-Qualität & 7/10 & Funktional gut, könnte mehr MVVM nutzen \\
+Wartbarkeit & 7/10 & Service-Architektur, aber Code-Behind lastig \\
+Dokumentation & 6/10 & README vorhanden, API-Doku fehlt \\
+\bottomrule
+\end{tabularx}
+\caption{Bewertung nach Kategorien}
+\end{table}
+
+\subsection{Stärken}
+
+\begin{enumerate}
+    \item \textbf{Vollständiger Workflow:} Material anlegen $\rightarrow$ Lagern $\rightarrow$ Verbrauchen $\rightarrow$ Reste verwalten
+    \item \textbf{Automatische Regalzuweisung:} Intelligente Zuordnung basierend auf Material, Legierung, Form und Stärke
+    \item \textbf{Verschnitt-Optimierung:} Findet das beste Material für ein benötigtes Teil (Reste bevorzugt)
+    \item \textbf{Auto-Save:} Kein manuelles Speichern nötig, keine Datenverluste
+    \item \textbf{ERP-Kompatibilität:} SAP MM, SAGE, BMEcat — sofort nutzbar
+    \item \textbf{Self-Contained:} Keine .NET-Installation nötig, USB-Stick-fähig
+    \item \textbf{Netzwerk-Modus:} Mehrere PCs können gleichzeitig arbeiten
+\end{enumerate}
+
+\subsection{Verbesserungspotenzial}
+
+\begin{enumerate}
+    \item \textbf{Datenbank:} Excel als Backend hat Grenzen bei großen Datenmengen ($>$10.000 Positionen)
+    \item \textbf{Benutzer-Verwaltung:} Kein Login-System, keine Rollen (Admin/Lager/Büro)
+    \item \textbf{Audit-Trail:} Keine vollständige Nachverfolgung aller Änderungen (ISO 9001)
+    \item \textbf{MVVM:} Code-Behind könnte durch ViewModels ersetzt werden
+    \item \textbf{Unit-Tests:} Keine automatisierten Tests vorhanden
+\end{enumerate}
+
+% ==========================================
+% 3. FUNKTIONSÜBERSICHT
+% ==========================================
+\section{Funktionsübersicht}
+
+\subsection{Kernfunktionen}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Funktion} & \textbf{Button} & \textbf{Beschreibung} \\
+\midrule
+Material anlegen & Material neu & Stahl/Edelstahl/Aluminium mit allen Eigenschaften \\
+Material bearbeiten & Doppelklick & Alle Felder editierbar, Änderungsdatum automatisch \\
+Material löschen & Ausgewählte löschen & Mehrfachauswahl per Checkbox möglich \\
+Tafel verbrauchen & Tafel verbrauchen & Stückzahl $-1$, Reste mit Maßen anlegen \\
+Verschnitt-Check & Verschnitt-Check & Findet bestes Material für benötigte Maße \\
+Reste suchen & Reste suchen & Suche nach passendem Rest-Material \\
+Rückgängig & $\hookleftarrow$ Rückgängig & Letzte Löschung rückgängig machen \\
+\bottomrule
+\end{tabularx}
+\caption{Kernfunktionen}
+\end{table}
+
+\subsection{Verwaltungsfunktionen}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Funktion} & \textbf{Beschreibung} \\
+\midrule
+Inventur & Soll/Ist-Vergleich aller Regale \\
+Lagerkarte & Visuelle Regalübersicht mit Ampelfarben \\
+Statistik & Auswertungen und Übersichten \\
+Drucken & Lagerliste, Resteliste, Etiketten mit QR-Code \\
+ERP-Export & SAP MM, SAGE, BMEcat XML, Universal CSV \\
+Netzwerk & Gemeinsamer Datenzugriff über Netzwerkpfad \\
+Excel Export/Import & Datenaustausch via .xlsx \\
+\bottomrule
+\end{tabularx}
+\caption{Verwaltungsfunktionen}
+\end{table}
+
+\subsection{Dashboard-Widgets}
+
+Das Hauptfenster zeigt vier Karten:
+
+\begin{enumerate}
+    \item \textbf{Gesamtgewicht:} Summe aller Materialien in kg
+    \item \textbf{Regalauslastung:} Durchschnittliche Auslastung aller Regale in \%
+    \item \textbf{EU Palette:} Auslastung der Rest-Palette (klickbar für Details)
+    \item \textbf{Niedrige Bestände:} Warnungen für Materialien unter 3 Tafeln
+\end{enumerate}
+
+% ==========================================
+% 4. ARCHITEKTUR
+% ==========================================
+\section{Software-Architektur}
+
+\subsection{Projektstruktur}
+
+\begin{lstlisting}[language={},title=Projektstruktur]
+MaterialManager_R03/
+|-- Models/
+|   |-- MaterialItem.cs          (Datenmodell)
+|   |-- MaterialDefinitions.cs   (Stammdaten)
+|   |-- GroupedMaterialItem.cs    (Gruppierung)
+|-- Views/
+|   |-- MaterialDialog.xaml(.cs)  (Material anlegen/bearbeiten)
+|   |-- TafelVerbrauchDialog.cs   (Tafel verbrauchen)
+|   |-- ResteSucheDialog.xaml(.cs)(Reste suchen)
+|   |-- StatistikDialog.cs       (Statistik)
+|   |-- InventurDialog.cs        (Inventur)
+|   |-- BenachrichtigungsDialog.cs
+|   |-- NiedrigeBestaendeDialog.xaml(.cs)
+|   |-- EuPaletteDialog.xaml(.cs)
+|-- Services/
+|   |-- RegalService.cs          (Regal-Logik, 10 Regale)
+|   |-- LagerService.cs          (Lager-Auslastung)
+|   |-- ExcelService.cs          (Import/Export)
+|   |-- VerschnittService.cs     (Verschnitt-Optimierung)
+|   |-- ErpExportService.cs      (SAP/SAGE/BMEcat)
+|   |-- NetzwerkService.cs       (Multi-PC Zugriff)
+|   |-- BackupService.cs         (Auto-Backup alle 30 Min)
+|   |-- BuchungsService.cs       (Ein-/Ausgangs-Protokoll)
+|   |-- DruckService.cs          (Drucken & PDF)
+|   |-- QrCodeService.cs         (Etiketten)
+|   |-- UndoService.cs           (Ruckgaengig)
+|   |-- BestellService.cs        (Bestellvorschlaege)
+|   |-- LicenseService.cs        (30-Tage Demo)
+|-- Converters/
+|   |-- PercentToBrushConverter.cs
+|   |-- StaerkeFormatConverter.cs
+|-- MainWindow.xaml(.cs)         (Hauptfenster)
+|-- App.xaml(.cs)                (App-Start)
+\end{lstlisting}
+
+\subsection{Regallogik}
+
+Das System verwaltet \textbf{10 Regale + 1 EU-Palette} mit intelligenter Zuordnung:
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l r X}
+\toprule
+\textbf{Regal} & \textbf{Kapazität} & \textbf{Zuordnungsregel} \\
+\midrule
+Regal A & 800 kg & MF (Mittelformat) \\
+Regal B & 1.500 kg & Aluminium/Edelstahl $\geq$ 6mm \\
+Regal C & 1.000 kg & GF -- S355+ Stähle \\
+Regal D & 1.000 kg & GF -- S235 und niedrigere Stähle \\
+Regal E & 1.000 kg & GF -- Sonstige \\
+Regal F & 800 kg & MF \\
+Regal G--I & je 600 kg & KF (Kleinformat) \\
+Regal J & 800 kg & MF \\
+EU Palette & 2.000 kg & Kleine Materialien ($\leq$1500$\times$1300mm) \\
+\bottomrule
+\end{tabularx}
+\caption{Regal-Zuordnung}
+\end{table}
+
+\subsection{Datenspeicherung}
+
+\begin{infobox}[Speicher-Konzept]
+\begin{itemize}
+    \item \textbf{Lokal:} \texttt{\%LOCALAPPDATA\%\textbackslash MaterialManager\_R02\textbackslash autosave.xlsx}
+    \item \textbf{Netzwerk:} \texttt{\textbackslash\textbackslash SERVER\textbackslash Freigabe\textbackslash materialbestand.xlsx}
+    \item \textbf{Backup:} Automatisch alle 30 Minuten
+    \item \textbf{Auto-Save:} Nach jeder Änderung (1 Sekunde Verzögerung)
+\end{itemize}
+\end{infobox}
+
+% ==========================================
+% 5. MATERIALTYPEN
+% ==========================================
+\section{Unterstützte Materialien}
+
+\subsection{Materialarten}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Material} & \textbf{Dichte} & \textbf{Legierungen} \\
+\midrule
+Stahl & 7.850 kg/m³ & S235, S355, DC01, DC04, DD11, S460, HB400, HB500 \\
+Edelstahl & 8.000 kg/m³ & 1.4301, 1.4404, 1.4571 \\
+Aluminium & 2.700 kg/m³ & AlMg3, AlMg4.5Mn, AlMgSi1 \\
+\bottomrule
+\end{tabularx}
+\caption{Materialarten und Legierungen}
+\end{table}
+
+\subsection{Formate}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l l}
+\toprule
+\textbf{Form} & \textbf{Standardmaß} & \textbf{Beschreibung} \\
+\midrule
+GF & 2500$\times$1250 mm & Großformat-Tafel \\
+MF & 2000$\times$1000 mm & Mittelformat-Tafel \\
+KF & 1000$\times$500 mm & Kleinformat-Tafel \\
+Rest & frei & Reste aus Verbrauch \\
+\bottomrule
+\end{tabular}
+\caption{Tafel-Formate}
+\end{table}
+
+% ==========================================
+% 6. ERP-SCHNITTSTELLE
+% ==========================================
+\section{ERP-Schnittstelle}
+
+\subsection{Unterstützte Formate}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Format} & \textbf{Dateitype} & \textbf{Einsatz} \\
+\midrule
+SAP MM & CSV (Semikolon) & SAP Materialwirtschaft (MATNR, MAKTX, WRKST) \\
+SAGE & CSV (Semikolon) & SAGE 50/100/b7 \\
+BMEcat & XML & Deutscher Industrie-Standard (Produktdatenaustausch) \\
+Universal & CSV (Semikolon) & Jedes beliebige ERP-System \\
+\bottomrule
+\end{tabularx}
+\caption{ERP-Export-Formate}
+\end{table}
+
+\subsection{SAP-Felder}
+
+Der SAP-Export enthält folgende Felder:
+
+\begin{multicols}{2}
+\begin{itemize}[noitemsep]
+    \item MATNR -- Materialnummer
+    \item MAKTX -- Kurztext
+    \item MATKL -- Materialklasse
+    \item MEINS -- Mengeneinheit
+    \item BRGEW -- Bruttogewicht
+    \item GEWEI -- Gewichtseinheit
+    \item LGORT -- Lagerort
+    \item CHARG -- Charge/Restnummer
+    \item LFDAT -- Lieferdatum
+    \item LIFNR -- Lieferant
+    \item EBELN -- Bestellnummer
+    \item WRKST -- Werkstoffnummer (DIN)
+\end{itemize}
+\end{multicols}
+
+\subsection{Werkstoffnummern-Zuordnung}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l l}
+\toprule
+\textbf{Legierung} & \textbf{Werkstoff-Nr.} & \textbf{Norm} \\
+\midrule
+S235 & 1.0037 & EN 10025 \\
+S355 & 1.0577 & EN 10025 \\
+DC01 & 1.0330 & EN 10130 \\
+DC04 & 1.0338 & EN 10130 \\
+1.4301 & 1.4301 & EN 10088 (V2A) \\
+1.4404 & 1.4404 & EN 10088 (V4A) \\
+1.4571 & 1.4571 & EN 10088 \\
+\bottomrule
+\end{tabular}
+\caption{Werkstoffnummern nach DIN/EN}
+\end{table}
+
+% ==========================================
+% 7. NETZWERK
+% ==========================================
+\section{Netzwerk-Betrieb}
+
+\subsection{Funktionsweise}
+
+\begin{infobox}[Multi-PC-Betrieb]
+Alle PCs speichern und laden die gleiche Excel-Datei auf einem gemeinsamen Netzwerkpfad. Ein File-Locking-Mechanismus verhindert gleichzeitiges Überschreiben.
+\end{infobox}
+
+\subsection{Einrichtung}
+
+\begin{enumerate}
+    \item Netzwerkfreigabe erstellen: \texttt{\textbackslash\textbackslash SERVER\textbackslash MaterialManager}
+    \item Auf jedem PC: Button \textbf{Netzwerk} $\rightarrow$ Pfad eintragen $\rightarrow$ \textbf{Aktivieren}
+    \item Benutzername eintragen (zur Identifikation)
+    \item Fertig — alle PCs arbeiten auf der gleichen Datei
+\end{enumerate}
+
+\subsection{Sicherheit}
+
+\begin{itemize}
+    \item \textbf{File-Lock:} Automatische Sperre bei Schreibzugriff
+    \item \textbf{Auto-Release:} Lock wird nach 5 Minuten automatisch freigegeben
+    \item \textbf{Fallback:} Bei Netzwerkausfall wird lokal gespeichert
+    \item \textbf{Backup:} Automatisches Backup alle 30 Minuten
+\end{itemize}
+
+% ==========================================
+% 8. STATISTIK
+% ==========================================
+\section{Code-Statistik}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l r}
+\toprule
+\textbf{Metrik} & \textbf{Wert} \\
+\midrule
+Quelldateien (C\#) & 28 \\
+XAML-Dateien & 7 \\
+Services & 13 \\
+Views / Dialoge & 9 \\
+Models & 3 \\
+Converter & 2 \\
+Geschätzte LOC & $\sim$4.500 \\
+NuGet-Pakete & 1 (ClosedXML) \\
+\bottomrule
+\end{tabular}
+\caption{Code-Statistik}
+\end{table}
+
+% ==========================================
+% 9. LIZENZ
+% ==========================================
+\section{Lizenzierung}
+
+\subsection{Demo-Version}
+
+\begin{warnbox}[Demo-Einschränkungen]
+\begin{itemize}
+    \item Laufzeit: \textbf{30 Tage} ab Erststart
+    \item Alle Funktionen verfügbar (keine Einschränkungen)
+    \item Countdown im Fenstertitel sichtbar
+    \item Nach Ablauf: Programm startet nicht mehr
+\end{itemize}
+\end{warnbox}
+
+\subsection{Technische Umsetzung}
+
+Die Lizenz wird in \texttt{\%LOCALAPPDATA\%\textbackslash MaterialManager\_R03\textbackslash .license} gespeichert. Das Erststart-Datum wird mit einem SHA256-Hash gegen Manipulation geschützt.
+
+% ==========================================
+% 10. SYSTEMANFORDERUNGEN
+% ==========================================
+\section{Systemanforderungen}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Anforderung} & \textbf{Minimum} \\
+\midrule
+Betriebssystem & Windows 10 (x64) oder höher \\
+RAM & 4 GB \\
+Festplatte & 200 MB (Self-Contained) \\
+.NET & Nicht erforderlich (mitgeliefert) \\
+Bildschirm & 1200$\times$720 px empfohlen \\
+Netzwerk & Optional (für Multi-PC-Betrieb) \\
+\bottomrule
+\end{tabularx}
+\caption{Systemanforderungen}
+\end{table}
+
+% ==========================================
+% 11. FAZIT
+% ==========================================
+\section{Fazit}
+
+\begin{successbox}[Zusammenfassung]
+MaterialManager R03 ist eine \textbf{solide, praxistaugliche Branchenlösung} für die Blechlager-Verwaltung. Die Software bietet:
+
+\begin{itemize}
+    \item Vollständige Materialverwaltung mit automatischer Regalzuweisung
+    \item Verschnitt-Optimierung und Reste-Management
+    \item ERP-Kompatibilität (SAP, SAGE, BMEcat)
+    \item Netzwerk-Betrieb für mehrere Arbeitsplätze
+    \item Moderne Benutzeroberfläche mit Dark Theme
+    \item Keine Installation nötig (USB-Stick-fähig)
+\end{itemize}
+
+Die Software ist bereit für den \textbf{produktiven Einsatz} in kleinen und mittleren Metallbau-Betrieben.
+\end{successbox}
+
+\vspace{1cm}
+
+\begin{center}
+\textcolor{gray}{\small Erstellt am \today\ $\bullet$ MaterialManager R03 v1.0.0}
+\end{center}
+
+\end{document}

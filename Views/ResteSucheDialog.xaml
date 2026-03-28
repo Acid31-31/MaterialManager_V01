@@ -167,12 +167,12 @@
             <ComboBoxItem>25,0</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="4" Text="Ungefähre Maße (z.B. 1000x550):"/>
+        <TextBlock Grid.Row="4" Text="Maße (z.B. 1000x550):"/>
         <TextBox Grid.Row="4" x:Name="MassBox" Margin="0,32,0,0" 
-                 ToolTip="Format: LängexBreite (in mm)&#x0a;Es werden ähnliche Maße mit ±10% Toleranz gefunden"/>
+                 ToolTip="Format: LängexBreite (in mm)&#x0a;Zuerst werden exakte Maßtreffer gesucht.&#x0a;Wenn kein exakter Rest vorhanden ist, werden größere Reste angezeigt.&#x0a;Wenn keine Reste passen, werden passende Tafeln angezeigt."/>
 
-        <TextBlock Grid.Row="5" Text="Toleranz (%):"/>
-        <ComboBox Grid.Row="5" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1">
+        <TextBlock Grid.Row="5" Text="Toleranz (%):" Visibility="Collapsed"/>
+        <ComboBox Grid.Row="5" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1" Visibility="Collapsed">
             <ComboBoxItem>5%</ComboBoxItem>
             <ComboBoxItem>10%</ComboBoxItem>
             <ComboBoxItem>15%</ComboBoxItem>

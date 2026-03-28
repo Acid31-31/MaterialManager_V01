@@ -48,6 +48,7 @@ namespace MaterialManager_V01.Views
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager";
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
+            PreviewKeyDown += OnWindowPreviewKeyDown;
         }
 
         private void FitToWorkArea()
@@ -73,11 +74,7 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var savePath = NetzwerkService.GetSavePath();
-                _alleMaterialien = System.IO.File.Exists(savePath)
-                    ? ExcelService.Import(savePath)?.ToList() ?? new List<MaterialItem>()
-                    : new List<MaterialItem>();
-
+                _alleMaterialien = MaterialDataService.LoadAllMaterials();
                 ApplyFilter();
             }
             catch (Exception ex)
@@ -143,8 +140,70 @@ namespace MaterialManager_V01.Views
 
         private void SaveAllMaterials()
         {
-            var savePath = NetzwerkService.GetSavePath();
-            ExcelService.Export(savePath, _alleMaterialien);
+            MaterialDataService.SaveAllMaterials(_alleMaterialien);
+        }
+
+        private void PushUndoSnapshot(string beschreibung)
+        {
+            UndoService.PushSnapshot($"Lager: {beschreibung}", _alleMaterialien);
+        }
+
+        private void RestoreMaterials(List<MaterialItem> materialien)
+        {
+            _alleMaterialien = materialien;
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void ExecuteUndo()
+        {
+            var materialien = UndoService.Undo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
+        }
+
+        private void ExecuteRedo()
+        {
+            var materialien = UndoService.Redo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
+        }
+
+        private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
+                return;
+
+            if (e.Key == Key.Z)
+            {
+                ExecuteUndo();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Y)
+            {
+                ExecuteRedo();
+                e.Handled = true;
+            }
+        }
+
+        private void OnUndoClick(object sender, RoutedEventArgs e)
+        {
+            ExecuteUndo();
+        }
+
+        private void OnRedoClick(object sender, RoutedEventArgs e)
+        {
+            ExecuteRedo();
         }
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
@@ -168,6 +227,7 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
+            PushUndoSnapshot("Material neu");
             _alleMaterialien.Add(dlg.Material);
             SaveAllMaterials();
             LoadMaterials();
@@ -205,6 +265,7 @@ namespace MaterialManager_V01.Views
             if (index < 0)
                 return;
 
+            PushUndoSnapshot("Material bearbeiten");
             dlg.Material.IsSelected = item.IsSelected;
             _alleMaterialien[index] = dlg.Material;
             SaveAllMaterials();
@@ -228,6 +289,7 @@ namespace MaterialManager_V01.Views
             if (confirm != MessageBoxResult.Yes)
                 return;
 
+            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
             foreach (var item in items)
             {
                 _alleMaterialien.Remove(item);

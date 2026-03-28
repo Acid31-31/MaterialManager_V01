@@ -19,6 +19,7 @@
 - In der Laser-Sicht müssen gebuchte Reste trotz reduzierter Auftragsansicht per Doppelklick bearbeitbar bleiben, damit nach der Bearbeitung verbleibende Restmaße gespeichert werden können. Nach Änderung von reservierten Resten im Laser soll die Auftragsnummer gelöscht werden und das Material nicht mehr in der Laser-Sicht erscheinen. Der Laser soll nur reservierte Tafeln und Reste sehen und diese ändern oder löschen können.
 - Bei der Materialsuche sollen zuerst exakte Maßtreffer angezeigt werden; nur wenn kein exakter Treffer vorhanden ist, sollen größere Materialien aufsteigend von klein nach groß angezeigt werden – überall, wo Materialsuche verwendet wird.
 - Änderungen und notwendige Speichervorgänge sollen automatisch ausgeführt werden, ohne den Benutzer zu manuellen Speicherschritten aufzufordern.
+- Sichtbare UI-Texte dürfen keine Encoding-/Sonderzeichenfehler enthalten; sie sollen in deutscher Sprache korrekt mit Umlauten angezeigt werden und Umlaute dürfen nicht durch Ersatzschreibweisen wie ae/oe/ue ersetzt werden. Bei Meldungen und Beschriftungen sollen fehleranfällige Sonderzeichen vermieden bzw. robust dargestellt werden.
 
 ## License Key Generation
 - Die beiden Lizenzschlüssel-Mechanismen müssen vereinheitlicht bleiben:

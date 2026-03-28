@@ -1,0 +1,120 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         QUICK START - LIZENZIERUNGS-TEST                      ║
+║                                                                                  ║
+║                              So testen Sie den Fix                             ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+█ ⚡ SCHNELLSTART (2 Minuten)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCHRITT 1: Test starten
+  TEST_LICENSE_BUGFIX_V2.bat doppelklicken
+
+SCHRITT 2: Lizenzschlüssel notieren
+  Das Skript zeigt: MM-XXXX-XXXX-XXXX-XXXX
+  (in die Zwischenablage kopiert)
+
+SCHRITT 3: MaterialManager starten
+  bin\Debug\net8.0-windows\win-x64\MaterialManager_V01.exe
+
+SCHRITT 4: Lizenzschlüssel aktivieren
+  Menü → Hilfe → Lizenz aktivieren
+  Lizenzschlüssel: MM-XXXX-... (aus Schritt 2 einfügen)
+  Firma: TestFirma
+  → Aktivieren klicken
+
+SCHRITT 5: Erfolg!
+  ✓ "Lizenz erfolgreich aktiviert!" MessageBox
+  ✓ Oder im Debug Output: [License] ✓ Lizenz erfolgreich aktiviert!
+
+
+█ 🎯 ERWARTET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ERFOLG:
+  ✓ "Lizenz erfolgreich aktiviert!"
+  ✓ Fenster schließt sich
+  ✓ Vollversion funktioniert
+
+FEHLER:
+  ❌ "Lizenzschlüssel ungültig!"
+  → Hardware-ID prüfen (muss exakt sein)
+  → Firmenname prüfen (muss TestFirma sein)
+  → Alte Lizenz löschen: %APPDATA%\MaterialManager_V01\.license
+
+
+█ 🔧 DEBUG-AUSGABE ANSCHAUEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Für detaillierte Fehlerdiagnose:
+
+1. Visual Studio öffnen
+2. Menü: Debug → Windows → Output
+   (oder: Ctrl+Alt+O)
+3. Lizenzaktivierung versuchen
+4. In Output Fenster nach [License] suchen
+
+Beispiel erfolgreich:
+  [License] Hardware-ID: wz8g9cF1d1FYzdjC2Gb8bN
+  [License] Registered To: TestFirma
+  [License] Input Key: MM-ABCD-EFGH-IJKL-MNOP
+  [License] ✓ Lizenz erfolgreich aktiviert!
+
+Beispiel Fehler:
+  [License] Hardware-ID: wz8g9cF1d1FYzdjC2Gb8bN
+  [License] Registered To: TestFirma
+  [License] Input Key: MM-ABCD-EFGH-IJKL-MNOP
+  [License] FEHLER: Lizenzschlüssel stimmt nicht überein!
+
+
+█ ✅ CHECKLISTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Vor dem Test:
+  ☐ MaterialManager läuft NICHT (nicht doppelt starten)
+  ☐ %APPDATA%\MaterialManager_V01\.license ist gelöscht
+  ☐ Build war erfolgreich (kein Compiler-Fehler)
+
+Während des Tests:
+  ☐ TEST_LICENSE_BUGFIX_V2.bat läuft
+  ☐ Lizenzschlüssel wird angezeigt (MM-XXXX-...)
+  ☐ Zwischenablage wird mit Schlüssel gefüllt
+
+Nach dem Test:
+  ☐ MaterialManager startet ohne Fehler
+  ☐ Lizenzierungsdialog öffnet sich
+  ☐ Lizenzschlüssel wird akzeptiert
+  ☐ Success Message erscheint
+
+
+█ 📞 SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: Lizenzschlüssel wird nicht akzeptiert
+
+Lösung 1 - Hardware-ID prüfen:
+  1. MaterialManager → Hilfe → Lizenzinformationen
+  2. Hardware-ID kopieren
+  3. Mit TEST_LICENSE_BUGFIX_V2.bat Output vergleichen
+  4. Müssen EXAKT gleich sein!
+
+Lösung 2 - Alte Lizenz löschen:
+  1. Explorer öffnen
+  2. In Adressleiste: %APPDATA%
+  3. Ordner MaterialManager_V01 → .license Datei
+  4. Löschen
+  5. Test erneut versuchen
+
+Lösung 3 - Debug Output prüfen:
+  1. Visual Studio öffnen
+  2. Debug → Windows → Output
+  3. Nach [License] Meldungen suchen
+  4. Zeigt exakte Problemursache
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Viel Erfolg beim Test! 🚀
+
+═══════════════════════════════════════════════════════════════════════════════════

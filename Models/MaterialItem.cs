@@ -2,6 +2,8 @@
 {
     public class MaterialItem : System.ComponentModel.INotifyPropertyChanged
     {
+        public int Id { get; set; }
+
         // ── Kategorie ──────────────────────────────────────────────────────────
         public MaterialKategorie Kategorie { get; set; } = MaterialKategorie.Blech;
 
@@ -9,6 +11,7 @@
         public string Legierung { get; set; } = "";
         public string Oberflaeche { get; set; } = "";
         public string Guete { get; set; } = "";
+        public string SuchTrefferArt { get; set; } = "";
 
         // ── Blech-spezifisch ───────────────────────────────────────────────────
         public string Form { get; set; } = "";
@@ -41,6 +44,9 @@
         public string PdfPfad { get; set; } = "";
         public string PdfDateiname => string.IsNullOrWhiteSpace(PdfPfad) ? "" : System.IO.Path.GetFileName(PdfPfad);
         public bool HasPdf => !string.IsNullOrWhiteSpace(PdfPfad);
+        public string PdfPfadAngefangeneTafel { get; set; } = "";
+        public string PdfDateinameAngefangeneTafel => string.IsNullOrWhiteSpace(PdfPfadAngefangeneTafel) ? "" : System.IO.Path.GetFileName(PdfPfadAngefangeneTafel);
+        public bool HasPdfAngefangeneTafel => !string.IsNullOrWhiteSpace(PdfPfadAngefangeneTafel);
         public string LaengeAnzeige => (Kategorie == MaterialKategorie.Rohr || Kategorie == MaterialKategorie.Profil) && Laenge > 0
             ? Laenge.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
             : "";

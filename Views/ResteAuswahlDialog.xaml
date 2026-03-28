@@ -1,7 +1,7 @@
 ﻿<Window x:Class="MaterialManager_V01.Views.ResteAuswahlDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Reste auswählen" Height="500" Width="900" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
+        Title="Material auswählen" Height="500" Width="900" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="DataGrid">
             <Setter Property="RowBackground" Value="#151515" />
@@ -32,9 +32,10 @@
         </Style>
     </Window.Resources>
     <DockPanel Margin="10">
-        <TextBlock DockPanel.Dock="Top" Text="Gefundene Reste auswählen" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" />
+        <TextBlock DockPanel.Dock="Top" Text="Gefundene Materialien auswählen" FontSize="16" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" />
         <DataGrid x:Name="ResteGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="OnDoubleClick">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Trefferart" Binding="{Binding SuchTrefferArt}" Width="140"/>
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="100"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
                 <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="70"/>

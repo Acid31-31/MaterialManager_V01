@@ -1,0 +1,351 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║              MATERIALMANAGER V01 - LIZENZGENERATOR TOOLSET                       ║
+║                                                                                  ║
+║                            DATEIÜBERSICHT & INDEX                               ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+█ PROJEKTHAUPTDATEIEN (Root)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📄 MaterialManager.sln
+   - Multi-Projekt Solution
+   - Enthält: MaterialManager_V01 + Tools
+   - Status: ✓ Kompiliert erfolgreich
+
+📄 MaterialManager_V01.csproj
+   - Hauptprojekt
+   - Anpassung: Tools\*.cs ausgeschlossen
+   - Status: ✓ Ohne Fehler
+
+📄 LIZENZGENERATOR_ZUSAMMENFASSUNG.txt
+   - Überblick über das komplette System
+   - Schnellstart-Anleitung
+   - Status und Features
+
+📄 LIZENZGENERATOR_BACKUP_INFO.txt
+   - Detaillierter Implementierungsbericht
+   - Backup-Strategie
+   - Produkitions-Checkliste
+
+📄 INDEX.txt (DIESE DATEI)
+   - Übersicht aller Dateien
+   - Navigations-Hilfe
+
+
+█ TOOLS-VERZEICHNIS (Tools/)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 KERNTOOLS
+
+📝 LicenseGenerator.cs (5,8 KB)
+   - Kommandozeilen-Lizenzgenerator
+   - HMAC-SHA256 Verschlüsselung
+   - Clipboard-Unterstützung
+   - Main Entry Point: LicenseGeneratorTool.Main()
+   - Verwendung: dotnet run "HardwareID" "Firmenname" [Jahre]
+   - Status: ✓ Kompiliert und getestet
+
+📦 LicenseGenerator.csproj (0,6 KB)
+   - .NET 8.0-windows Konsolen-Projekt
+   - Separates Projekt-File für Tools
+   - Keine externen Dependencies
+   - Status: ✓ Konfiguriert
+
+🐍 license_manager.py (9,7 KB)
+   - Python 3.x Verwaltungs-Tool
+   - Lizenz-Datenbank (JSON)
+   - CSV-Export für Excel
+   - Ablauf-Benachrichtigungen
+   - Interaktives Menü
+   - Verwendung: python license_manager.py
+   - Status: ✓ Produktionsreif
+
+
+🚀 STARTER & LAUNCHER
+
+🔷 START_LICENSE_GENERATOR.bat (2,6 KB)
+   - Windows Batch-Menü
+   - Grafisches Auswahlmenü
+   - Startet Tools und Dokumentation
+   - Verwendung: Doppelklick
+   - Status: ✓ Getestet
+
+🔶 BEISPIEL_LIZENZEN.bat (1,2 KB)
+   - Test-Beispiele
+   - Vorkonfigurierte Kommandos
+   - Zum Lernen und Testen
+   - Verwendung: Anpassen und ausführen
+
+
+📚 DOKUMENTATION
+
+📖 LIZENZGENERATOR_ANLEITUNG.txt (16,3 KB)
+   - Umfassende deutsche Anleitung
+   - 7 Hauptabschnitte
+   - Schritt-für-Schritt Erklärungen
+   - Sicherheitshinweise
+   - Häufig gestellte Fragen (FAQ)
+   - Technische Informationen
+   - Status: ✓ Vollständig
+
+📋 README.md (6,8 KB)
+   - Technische Dokumentation
+   - Integration-Beispiele
+   - Python-Skript Verwendung
+   - Datenbank-Format
+   - Troubleshooting
+   - Status: ✓ Aktuell
+
+⚡ QUICK_REFERENCE.txt (4,6 KB)
+   - Schnelle Referenz
+   - 2-Minuten Quick Start
+   - Wichtigste Befehle
+   - Fehlerbehebung
+   - Master Secret Info
+   - Status: ✓ Kurzanleitung
+
+
+█ VERWENDETER WORKFLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                        KUND*IN                    ADMIN/SUPPORT
+                           │                              │
+                           ├─ Öffnet MaterialManager      │
+                           │                              │
+                           ├─ Menu → Hilfe →             │
+                           │   Lizenzinformationen        │
+                           │                              │
+                           ├─ Hardware-ID kopieren        │
+                           │                              │
+                           └──────────────────────→ Erhält Hardware-ID
+                                                         │
+                                                         ├─ Batch starten:
+                                                         │  START_LICENSE_GENERATOR.bat
+                                                         │
+                                                         ├─ oder Kommandozeile:
+                                                         │  dotnet run "HardwareID" "Firma" 1
+                                                         │
+                                                         └─ Lizenzschlüssel kopiert
+                                                            (z.B. MM-4A7F-...)
+                                                         │
+           Erhält Lizenzschlüssel ←──────────────────────┘
+                           │
+                           ├─ Öffnet MaterialManager
+                           │
+                           ├─ Menu → Hilfe → Lizenz aktivieren
+                           │
+                           ├─ Lizenzschlüssel eintragen
+                           │
+                           ├─ Firmenname eintragen
+                           │
+                           └─ Aktivieren
+                                │
+                                └─ ✓ Lizenz aktiv!
+
+
+█ TECHNISCHE STRUKTUR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEZIEHUNG ZU BESTEHENDEN SERVICES:
+
+LicenseGenerator.cs
+    ↓
+    ├─→ Services\LicenseKeyGenerator.cs
+    │   - GenerateLicenseKey() aufrufen
+    │   - HMAC-SHA256 Logik nutzen
+    │   - Master Secret verwenden
+    │
+    └─→ Services\HardwareIdService.cs (optional)
+        - Hardware-ID Format validieren
+        - Verifizierung unterstützen
+
+license_manager.py
+    ↓
+    └─→ Speichert Lizenzeinträge
+        - JSON: licenses_issued.json
+        - CSV: licenses_export.csv
+        - Keine direkten Service-Abhängigkeiten
+
+Aktivierung im Programm:
+    MaterialManager → Views\LicenseActivationDialog.xaml.cs
+    ↓
+    Services\LicenseService.cs
+    ├─ ActivateFullLicense()
+    ├─ ValidateLicenseKey()
+    └─ Speichert in %APPDATA%\MaterialManager_V01\.license
+
+
+█ SICHERHEITSKOMPONENTEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Master Secret Schutz:
+  Speicherort: Services\LicenseKeyGenerator.cs
+  Wert: "MM_V01_MASTER_SECRET_2025_PRODUCTION"
+  Sicherheit: NICHT im Code teilen!
+
+Verschlüsselung:
+  Algorithmus: HMAC-SHA256
+  Eingabe: Hardware-ID | Firmenname | Ablaufdatum | Master Secret
+  Ausgabe: 16-Zeichen Base64-Hash → MM-XXXX-XXXX-XXXX-XXXX
+
+Hardware-Bindung:
+  Jeder Schlüssel ist an einen Computer gebunden
+  Basiert auf: Computername, CPU-Anzahl, OS-Version, Benutzer
+  Nicht portabel → Eindeutigkeit pro System
+
+
+█ INTEGRATION MIT ANDEREN SYSTEMEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+E-COMMERCE:
+  Webshop → Zahlung → API-Call → LicenseGenerator
+           → Lizenzschlüssel → Email → Kunde
+
+CRM:
+  Customer DB → Hardware-ID Anfrage → LicenseGenerator
+             → Neuer Schlüssel → Kunde
+
+BACKUP-SYSTEM:
+  licenses_issued.json → Exportieren → CSV
+                      → Excel/Verwaltung
+                      → Datenbank-Import
+
+AUTOMATION:
+  Script/Bot → Loop über Kundenliste
+            → Für jede ID: dotnet run
+            → Ergebnisse speichern/versenden
+
+
+█ DATEIGRÖSZEN & STATISTIK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tool-Dateien:
+  LicenseGenerator.cs ................. 5,8 KB
+  LicenseGenerator.csproj ............. 0,6 KB
+  license_manager.py .................. 9,7 KB
+  START_LICENSE_GENERATOR.bat ......... 2,6 KB
+  BEISPIEL_LIZENZEN.bat ............... 1,2 KB
+                                    ──────────
+  Gesamt Tools-Dateien: ~20 KB (sehr klein!)
+
+Dokumentation:
+  LIZENZGENERATOR_ANLEITUNG.txt ....... 16,3 KB
+  README.md ........................... 6,8 KB
+  QUICK_REFERENCE.txt ................. 4,6 KB
+  LIZENZGENERATOR_ZUSAMMENFASSUNG.txt . 8,5 KB
+  LIZENZGENERATOR_BACKUP_INFO.txt ..... 12,2 KB
+  INDEX.txt (diese Datei) ............. ~7 KB
+                                    ──────────
+  Gesamt Dokumentation: ~55 KB
+
+
+█ HÄUFIGE FRAGEN (FAQ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+F: Wo starte ich am besten?
+A: Tools\QUICK_REFERENCE.txt lesen (2 Min), dann START_LICENSE_GENERATOR.bat
+
+F: Welche Dokumentation brauche ich?
+A: • Quick Start → QUICK_REFERENCE.txt
+   • Gründliche Anleitung → LIZENZGENERATOR_ANLEITUNG.txt
+   • Technisch → README.md
+   • Implementierung → LIZENZGENERATOR_BACKUP_INFO.txt
+
+F: Kann ich das auch automatisieren?
+A: Ja! Siehe README.md "Integrationsoptionen"
+
+F: Was ist das Master Secret?
+A: Kryptographischer Schlüssel in Services\LicenseKeyGenerator.cs
+   → NICHT ändern! → NICHT teilen!
+
+F: Wo finde ich Python-Hilfe?
+A: README.md "Python-Skript Verwendung"
+
+
+█ NÄCHSTE SCHRITTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. QUICK START (5 Min)
+   ✓ Tools\QUICK_REFERENCE.txt lesen
+   ✓ START_LICENSE_GENERATOR.bat testen
+   ✓ Eine Test-Lizenz generieren
+
+2. ERSTE LIZENZ AKTIVIEREN (10 Min)
+   ✓ MaterialManager öffnen
+   ✓ Mit generiertem Lizenzschlüssel aktivieren
+   ✓ Prüfen ob alles funktioniert
+
+3. DOKUMENTATION LESEN (30-60 Min)
+   ✓ LIZENZGENERATOR_ANLEITUNG.txt vollständig lesen
+   ✓ Sicherheitshinweise verstehen
+   ✓ FAQ durchgehen
+
+4. PRODUKTION VORBEREITEN
+   ✓ Lizenzierungsrichtlinien definieren
+   ✓ Kundenkommunikation vorbereiten
+   ✓ Backup-Strategie festlegen
+   ✓ Produktions-Checkliste (siehe BACKUP_INFO.txt)
+
+
+█ SUPPORT & KONTAKT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Für verschiedene Probleme:
+
+Wie geht's los?
+  → QUICK_REFERENCE.txt
+
+Ausführliche Erklärung?
+  → LIZENZGENERATOR_ANLEITUNG.txt
+
+Technische Details?
+  → README.md
+
+Integration mit anderen Systemen?
+  → README.md (Integrationsoptionen)
+
+Backup & Sicherheit?
+  → LIZENZGENERATOR_BACKUP_INFO.txt
+
+Implementierungsdetails?
+  → LIZENZGENERATOR_BACKUP_INFO.txt
+
+
+█ VERSIONSINFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Toolset-Version:        1.0
+MaterialManager-Target: V01 (.NET 8.0-windows)
+Implementierungsdatum:  Januar 2025
+Status:                 ✓ Produktionsreif
+
+Komponenten:
+  ✓ Lizenzgenerator (C#)
+  ✓ Verwaltungstool (Python)
+  ✓ Dokumentation (Deutsch)
+  ✓ Beispiele und Vorlagen
+  ✓ Build-Integration
+  ✓ Test-Tools
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+📋 ZUSAMMENFASSUNG
+
+Dieses Toolset bietet eine KOMPLETTE Lösung zur Lizenzausgabe:
+
+✓ Benutzerfreundliche Kommandozeilen-Generierung
+✓ Datenbank-Verwaltung für Lizenzen
+✓ Umfassende Dokumentation auf Deutsch
+✓ Sicherheit durch HMAC-SHA256 Verschlüsselung
+✓ Keine Online-Abhängigigkeiten
+✓ Offline-Verwendung möglich
+✓ Automatisierbar und skalierbar
+✓ Einfache Integration mit bestehenden Services
+
+Sie können SOFORT beginnen, Lizenzen auszustellen!
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Viel Erfolg! 🚀

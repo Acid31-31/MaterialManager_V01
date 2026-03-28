@@ -256,6 +256,9 @@
                         <MenuItem Header="Schließen" Click="OnCloseClick"/>
                     </MenuItem>
                     <MenuItem Header="Bearbeiten">
+                        <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
+                        <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
+                        <Separator/>
                         <MenuItem Header="Für Auftrag buchen" Click="OnBookForOrderClick"/>
                         <MenuItem Header="Material löschen" Click="OnDeleteMaterialClick"/>
                         <MenuItem Header="Reservierung aufheben" Click="OnReleaseReservationClick"/>
@@ -263,6 +266,7 @@
                         <MenuItem Header="PDF anhängen" Click="OnAttachPdfClick"/>
                     </MenuItem>
                     <MenuItem Header="Ansicht">
+                        <MenuItem Header="Auftragsliste" Click="OnOrderListClick"/>
                         <MenuItem Header="Gebuchte Materialien" Click="OnReservedRestsClick"/>
                         <MenuItem Header="Reste suchen" Click="OnSearchRestsClick"/>
                         <MenuItem Header="Niedrige Bestände" Click="OnLowStockClick"/>
@@ -302,6 +306,12 @@
         <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
             <DockPanel LastChildFill="True">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="Auftragsliste"
+                            Click="OnOrderListClick"
+                            Background="#455A64"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
                     <Button Content="Gebuchte Materialien"
                             Click="OnReservedRestsClick"
                             Background="#1976D2"
@@ -328,6 +338,18 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
+                    <Button Content="← Zurück"
+                            Click="OnUndoClick"
+                            Background="#5D4037"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
+                    <Button Content="→ Vorwärts"
+                            Click="OnRedoClick"
+                            Background="#6D4C41"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,8,0"/>
                     <Button Content="Für Auftrag buchen"
                             Click="OnBookForOrderClick"
                             Background="#00897B"
@@ -363,12 +385,18 @@
 
         <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="320"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
                 <TextBox Grid.Column="1" x:Name="SearchBox" Background="#222" Foreground="White" BorderBrush="#444" Padding="8,5" TextChanged="OnSearchTextChanged"/>
@@ -383,7 +411,21 @@
                     <ComboBoxItem>KF</ComboBoxItem>
                     <ComboBoxItem>Rest</ComboBoxItem>
                 </ComboBox>
-                <TextBlock Grid.Column="4" Text="{Binding SummaryText}" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                <TextBlock Grid.Column="4" Text="Auftrag:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                <ComboBox Grid.Column="5"
+                          ItemsSource="{Binding AuftragFilterItems}"
+                          SelectedItem="{Binding SelectedAuftragFilter}"
+                          DisplayMemberPath="DisplayText"
+                          Background="#222"
+                          Foreground="White"
+                          BorderBrush="#444"/>
+                <TextBlock Grid.Column="6" Text="{Binding SummaryText}" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="16,0,0,0"/>
+
+                <TextBlock Grid.Row="1"
+                           Grid.ColumnSpan="7"
+                           Text="{Binding AuftragOverviewText}"
+                           Foreground="#8EC5FF"
+                           Margin="0,10,0,0"/>
             </Grid>
         </Border>
 
@@ -422,6 +464,14 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="#FF9800"/>
                             <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="PDF angefangene Tafel" Binding="{Binding PdfDateinameAngefangeneTafel}" Width="190" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#FFD54F"/>
+                            <Setter Property="ToolTip" Value="{Binding PdfPfadAngefangeneTafel}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

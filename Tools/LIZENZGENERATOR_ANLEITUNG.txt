@@ -1,0 +1,292 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║           MATERIALMANAGER V01 - LIZENZGENERATOR ANLEITUNG                        ║
+║                      Lizenzschlüssel ausstellen                                  ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+█ INHALT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Überblick über das Lizenzierungssystem
+2. Wie man eine Hardware-ID erhält
+3. Lizenzgenerator verwenden (GUI-Version)
+4. Lizenzgenerator verwenden (Kommandozeilen-Version)
+5. Lizenzschlüssel im Programm aktivieren
+6. Lizenzinformationen einsehen
+7. Häufig gestellte Fragen (FAQ)
+
+
+█ 1. ÜBERBLICK ÜBER DAS LIZENZIERUNGSSYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MaterialManager V01 verfügt über ein flexibles Lizenzierungssystem mit zwei Modi:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ DEMO-MODUS (30 Tage kostenlos)                                              │
+│                                                                               │
+│ • Automatisch beim ersten Start aktiviert                                    │
+│ • 30-Tage Testzeitraum                                                       │
+│ • Keine Hardware-ID erforderlich                                             │
+│ • Läuft automatisch ab                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ VOLLVERSION (unbegrenzte Nutzung)                                            │
+│                                                                               │
+│ • Mit Lizenzschlüssel aktivierbar                                            │
+│ • Hardware-gebunden (eindeutig pro Computer)                                 │
+│ • Abonnement-basiert (1 Jahr, 2 Jahre, 3 Jahre, etc.)                       │
+│ • Registriert auf Firmennamen                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+█ 2. WIE MAN EINE HARDWARE-ID ERHÄLT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jeder Computer hat eine eindeutige Hardware-ID. Diese ist notwendig, um einen
+Lizenzschlüssel zu generieren.
+
+SCHRITT 1: Programm starten
+   → MaterialManager V01 öffnen
+
+SCHRITT 2: Hardware-ID anzeigen
+   → Menu "Hilfe" → "Lizenzinformationen"
+   oder
+   → Im Lizenzaktivierungs-Dialog auf "Hardware-ID kopieren" klicken
+
+SCHRITT 3: Hardware-ID kopieren
+   → Die Hex-Zeichenkette (z.B. "ABC123DEF456GHI789JKL012...") 
+   → Mit Rechtsklick → "Kopieren" oder Ctrl+C in die Zwischenablage kopieren
+
+Die Hardware-ID sieht etwa so aus:
+   ABC123DEF456GHI789JKL012MNO345PQR
+
+
+█ 3. LIZENZGENERATOR VERWENDEN (GUI-VERSION)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dies ist die einfachste Methode für die grafische Benutzeroberfläche:
+
+SCHRITT 1: Tool öffnen
+   a) Visual Studio öffnen
+   b) Tools/LicenseGeneratorForm.cs öffnen
+   c) F5 drücken zum Starten (oder: dotnet run)
+
+SCHRITT 2: Daten eingeben
+   
+   Hardware-ID:        [Aus Schritt 2 kopierte ID eingeben]
+   Firmenname:         [Name der Firma, z.B. "Musterfirma GmbH"]
+   Lizenzlaufzeit:     [Auswählen: 1, 2, 3... Jahre]
+
+SCHRITT 3: Generieren
+   → "Lizenz generieren" Button anklicken
+
+SCHRITT 4: Lizenzschlüssel kopieren
+   → "Kopieren" Button anklicken
+   → Der Schlüssel ist jetzt in der Zwischenablage (z.B. "MM-ABCD-EFGH-IJKL-MNOP")
+
+Beispiel:
+
+   ┌─────────────────────────────────────────────────────────┐
+   │ Hardware-ID:  ABC123DEF456GHI789JKL012MNO345PQR        │
+   │ Firmenname:   Musterfirma GmbH                          │
+   │ Lizenzlaufzeit: 3 Jahre                                 │
+   │                                                          │
+   │    [Lizenz generieren]                                  │
+   │                                                          │
+   │ Generierter Lizenzschlüssel:                            │
+   │ MM-4A7F-9B2E-C5D1-8K3L          [Kopieren]             │
+   └─────────────────────────────────────────────────────────┘
+
+
+█ 4. LIZENZGENERATOR VERWENDEN (KOMMANDOZEILEN-VERSION)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Für fortgeschrittene Benutzer und Automatisierung:
+
+SCHRITT 1: PowerShell/Terminal öffnen
+   → Windows + R → "powershell" oder "cmd" eingeben → Enter
+
+SCHRITT 2: In das Tools-Verzeichnis navigieren
+   cd C:\Pfad\zum\Projekt\Tools
+
+SCHRITT 3: Lizenzschlüssel generieren
+   
+   dotnet run "ABC123DEF456GHI789JKL012MNO345PQR" "Musterfirma GmbH" 3
+
+   Parameter:
+   - 1. Parameter: Hardware-ID (in Anführungszeichen!)
+   - 2. Parameter: Firmenname (in Anführungszeichen!)
+   - 3. Parameter: Lizenzlaufzeit in Jahren (optional, Standard: 1)
+
+Beispiel-Ausgabe:
+
+   ╔════════════════════════════════════════════════════════════════╗
+   ║       MaterialManager V01 - Lizenzgenerator                    ║
+   ╚════════════════════════════════════════════════════════════════╝
+   
+   ✓ Lizenzschlüssel erfolgreich generiert!
+   
+   Hardware-ID:        ABC123DEF456GHI789JKL012MNO345PQR
+   Registriert auf:    Musterfirma GmbH
+   Lizenzlaufzeit:     3 Jahr(e)
+   Ablaufdatum:        15.01.2028
+   
+   ────────────────────────────────────────────────────────────────
+   LIZENZSCHLÜSSEL:    MM-4A7F-9B2E-C5D1-8K3L
+   ────────────────────────────────────────────────────────────────
+   
+   ✓ Lizenzschlüssel wurde in die Zwischenablage kopiert!
+   
+   ◉ Dieser Schlüssel kann sofort im Programm aktiviert werden.
+
+
+█ 5. LIZENZSCHLÜSSEL IM PROGRAMM AKTIVIEREN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCHRITT 1: MaterialManager öffnen (falls noch nicht offen)
+
+SCHRITT 2: Lizenzaktivierungs-Dialog öffnen
+   → Menu "Hilfe" → "Lizenz aktivieren"
+   oder
+   → Bei Demo-Modus-Ablauf: Automatischer Dialog
+
+SCHRITT 3: Daten eingeben
+
+   ┌─────────────────────────────────────────────────────────┐
+   │ Lizenzschlüssel: [MM-4A7F-9B2E-C5D1-8K3L]              │
+   │ Firmenname:      [Musterfirma GmbH]                     │
+   │                                                          │
+   │                          [Aktivieren]                    │
+   └─────────────────────────────────────────────────────────┘
+
+SCHRITT 4: Validierung
+   → Programm prüft:
+     ✓ Hardware-ID matches
+     ✓ Lizenzschlüssel ist korrekt
+     ✓ Firmenname entspricht
+
+   → Erfolgreiche Meldung:
+     "✓ Lizenz erfolgreich aktiviert!"
+     "Gültig bis: 15.01.2028"
+
+
+█ 6. LIZENZINFORMATIONEN EINSEHEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Um die aktuellen Lizenzinformationen anzuzeigen:
+
+   → Menu "Hilfe" → "Lizenzinformationen"
+
+Sie sehen dann:
+
+   ┌─────────────────────────────────────────────────────────┐
+   │ LIZENZINFORMATIONEN                                     │
+   │                                                          │
+   │ Lizenztyp:    Vollversion                               │
+   │ Modus:        Aktiviert                                 │
+   │                                                          │
+   │ Hardware-ID:  ABC123DEF456GHI789JKL012MNO345PQR        │
+   │ Firmenname:   Musterfirma GmbH                          │
+   │ Gültig bis:   15.01.2028                                │
+   │                                                          │
+   │ Verbleibende Tage: 730 Tage                             │
+   │                                                          │
+   │ [Hardware-ID kopieren] [Schließen]                      │
+   └─────────────────────────────────────────────────────────┘
+
+
+█ 7. HÄUFIG GESTELLTE FRAGEN (FAQ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+F: Kann ich einen Lizenzschlüssel auf mehreren Computern verwenden?
+A: Nein. Jeder Lizenzschlüssel ist an die Hardware-ID des Computers gebunden.
+   Für mehrere Computer benötigen Sie mehrere Lizenzen.
+
+F: Was passiert, wenn die Lizenz abläuft?
+A: Das Programm wechselt automatisch in den Demo-Modus zurück und zeigt eine
+   Meldung an, dass die Lizenz abgelaufen ist. Sie können dann eine neue
+   Lizenz aktivieren.
+
+F: Kann ich eine Lizenz verlängern/erneuern?
+A: Ja. Generieren Sie einfach einen neuen Lizenzschlüssel mit der gleichen
+   Hardware-ID und einem längeren Zeitraum und aktivieren Sie diesen.
+
+F: Ist die Hardware-ID portabel?
+A: Nein. Die Hardware-ID basiert auf eindeutigen Computer-Eigenschaften
+   (Computername, Prozessoranzahl, Betriebssystem-Version, Benutzername).
+   Bei signifikanten Hardware-Änderungen kann sich die ID ändern.
+
+F: Was ist das Master Secret?
+A: Das ist ein Sicherheitsschlüssel, der zur Generierung von Lizenzschlüsseln
+   verwendet wird. Halten Sie ihn geheim und ändern Sie ihn nicht, wenn Sie
+   bereits Lizenzen ausgegeben haben (es würde alte Lizenzen ungültig machen).
+
+F: Kann ich das Ablaufdatum ändern?
+A: Nein. Das Ablaufdatum ist kryptographisch in den Lizenzschlüssel eingebettet
+   und kann nicht nachträglich geändert werden. Sie müssen einen neuen
+   Lizenzschlüssel generieren.
+
+F: Wo werden die Lizenzinformationen gespeichert?
+A: Lokal in: %APPDATA%\MaterialManager_V01\.license
+   Diese Datei ist versteckt und verschlüsselt.
+
+F: Kann ich die Lizenz ohne Internet aktivieren?
+A: Ja. Das gesamte Lizenzierungssystem ist offline. Kein Internet erforderlich.
+
+F: Wie sicher ist das Lizenzierungssystem?
+A: Das System verwendet HMAC-SHA256 mit einem Master Secret. Ohne den Master
+   Secret können Lizenzschlüssel nicht gefälscht werden. Die lokale
+   Lizenzdatei ist mit zusätzlicher Machine-Authentifizierung geschützt.
+
+
+█ TECHNISCHE INFORMATIONEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lizenzschlüssel-Format:  MM-XXXX-XXXX-XXXX-XXXX
+                         ├─ Präfix (MM = MaterialManager)
+                         └─ 16 Zeichen Base64-Hash (oben und unten gekürzt)
+
+Algorithmus:             HMAC-SHA256
+Hashfunktion:            SHA256
+Eingabe-Daten:           Hardware-ID | Firmenname | Ablaufdatum | Master Secret
+
+Lizenzverifikation:      Beim Start wird die lokale Lizenzdatei überprüft.
+                         Die Gültigkeit wird anhand des Ablaufdatums in dem
+                         Lizenzschlüssel überprüft.
+
+Datenfluss:
+   1. Benutzer gibt Hardware-ID an
+   2. Lizenzgenerator erstellt Ablaufdatum (heute + Jahre)
+   3. HMAC-SHA256 Hash wird berechnet
+   4. Hash wird in das Lizenzschlüssel-Format konvertiert
+   5. Benutzer aktiviert den Schlüssel im Programm
+   6. Programm validiert: GeneratedKey(HW-ID, Company) == Activated Key
+
+
+█ SICHERHEITSHINWEISE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. MASTER SECRET schützen
+   - Das Master Secret (in LicenseKeyGenerator.cs) ist sehr wichtig
+   - Ändern Sie es nicht nach Ausstellung von Lizenzen
+   - Speichern Sie es sicher
+
+2. Lizenzschlüssel dokumentieren
+   - Führen Sie ein Verzeichnis aller ausgegebenen Lizenzen
+   - Speichern Sie: Hardware-ID, Firmenname, Ablaufdatum, Lizenzschlüssel
+   - Dies hilft bei Support-Anfragen
+
+3. Kundenvertrag
+   - Klären Sie die Lizenzierungsbedingungen vertraglich
+   - Definieren Sie Nutzungsregeln und Gültigkeit
+
+4. Backups
+   - Sichern Sie Ihre Lizenzierungsaufzeichnungen
+   - Behalten Sie mehrere Kopien
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Bei Fragen oder Problemen kontaktieren Sie den Support.
+
+Version: 1.0 (MaterialManager V01)
+Letztes Update: Januar 2025

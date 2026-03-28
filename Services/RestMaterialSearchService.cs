@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MaterialManager_V01.Models;
 
 namespace MaterialManager_V01.Services
@@ -9,12 +11,61 @@ namespace MaterialManager_V01.Services
 
         public static bool Matches(MaterialItem materialItem, string materialArt, string legierung, double? staerke, int? laenge, int? breite, double toleranzProzent, string form, bool requireRest)
         {
+            return SearchBestMatches(new[] { materialItem }, materialArt, legierung, staerke, laenge, breite, toleranzProzent, form, requireRest).Any();
+        }
+
+        public static List<MaterialItem> SearchBestMatches(IEnumerable<MaterialItem> materialien, string materialArt, string legierung, double? staerke, int? laenge, int? breite, double toleranzProzent, string form, bool requireRest)
+        {
+            if (materialien == null)
+                return new List<MaterialItem>();
+
+            var kandidaten = materialien
+                .Where(m => MatchesBaseCriteria(m, materialArt, legierung, staerke))
+                .ToList();
+
+            if (!laenge.HasValue || !breite.HasValue)
+                return ApplyTrefferArt(OrderWithoutDimensionFallback(kandidaten, form, requireRest), requireRest ? "Restmaterial" : "Material");
+
+            if (string.Equals(form, "GF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(form, "MF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(form, "KF", StringComparison.OrdinalIgnoreCase))
+            {
+                var formKandidaten = kandidaten.Where(m => string.Equals(m.Form, form, StringComparison.OrdinalIgnoreCase));
+                var exakteFormTreffer = GetExactDimensionMatches(formKandidaten, laenge.Value, breite.Value);
+                if (exakteFormTreffer.Any())
+                    return ApplyTrefferArt(exakteFormTreffer, "Exakte Tafel");
+
+                return ApplyTrefferArt(GetLargerDimensionMatches(formKandidaten, laenge.Value, breite.Value), "Größere Tafel");
+            }
+
+            var restKandidaten = kandidaten.Where(IsRest).ToList();
+            var exakteReste = GetExactDimensionMatches(restKandidaten, laenge.Value, breite.Value);
+            if (exakteReste.Any())
+                return ApplyTrefferArt(exakteReste, "Exakter Rest");
+
+            var groessereReste = GetLargerDimensionMatches(restKandidaten, laenge.Value, breite.Value);
+            if (groessereReste.Any())
+                return ApplyTrefferArt(groessereReste, "Größerer Rest");
+
+            var tafelKandidaten = kandidaten.Where(IsTafel).ToList();
+            var exakteTafeln = GetExactDimensionMatches(tafelKandidaten, laenge.Value, breite.Value);
+            if (exakteTafeln.Any())
+                return ApplyTrefferArt(exakteTafeln, "Exakte Tafel");
+
+            return ApplyTrefferArt(GetLargerDimensionMatches(tafelKandidaten, laenge.Value, breite.Value), "Größere Tafel");
+        }
+
+        private static List<MaterialItem> ApplyTrefferArt(List<MaterialItem> materialien, string trefferArt)
+        {
+            foreach (var material in materialien)
+                material.SuchTrefferArt = trefferArt;
+
+            return materialien;
+        }
+
+        private static bool MatchesBaseCriteria(MaterialItem materialItem, string materialArt, string legierung, double? staerke)
+        {
             if (materialItem == null)
-                return false;
-
-            var normalizedTolerancePercent = NormalizeTolerancePercent(toleranzProzent);
-
-            if (requireRest && !string.Equals(materialItem.Form, "Rest", StringComparison.OrdinalIgnoreCase))
                 return false;
 
             if (!string.IsNullOrEmpty(materialArt) && materialItem.MaterialArt != materialArt)
@@ -23,40 +74,119 @@ namespace MaterialManager_V01.Services
             if (!string.IsNullOrEmpty(legierung) && materialItem.Legierung != legierung)
                 return false;
 
-            if (staerke.HasValue)
-            {
-                var toleranz = normalizedTolerancePercent / 100.0;
-                var minStaerke = staerke.Value * (1 - toleranz);
-                var maxStaerke = staerke.Value * (1 + toleranz);
-                if (materialItem.Staerke < minStaerke || materialItem.Staerke > maxStaerke)
-                    return false;
-            }
-
-            if (laenge.HasValue && breite.HasValue)
-            {
-                if (!TryParseMass(materialItem.Mass, out var materialLaenge, out var materialBreite))
-                    return false;
-
-                if (!MatchesRequestedDimensions(materialLaenge, materialBreite, laenge.Value, breite.Value, normalizedTolerancePercent))
-                    return false;
-            }
-
-            if (form != "Alle" && materialItem.Form != form)
+            if (staerke.HasValue && Math.Abs(materialItem.Staerke - staerke.Value) > 0.0001)
                 return false;
 
             return true;
         }
 
-        private static bool MatchesRequestedDimensions(int materialLaenge, int materialBreite, int requestedLaenge, int requestedBreite, double toleranzProzent)
+        private static List<MaterialItem> OrderWithoutDimensionFallback(IEnumerable<MaterialItem> kandidaten, string form, bool requireRest)
         {
-            var toleranz = toleranzProzent / 100.0;
-            var minLaenge = requestedLaenge * (1 - toleranz);
-            var maxLaenge = requestedLaenge * (1 + toleranz);
-            var minBreite = requestedBreite * (1 - toleranz);
-            var maxBreite = requestedBreite * (1 + toleranz);
+            IEnumerable<MaterialItem> gefiltert = kandidaten;
 
-            return (materialLaenge >= minLaenge && materialLaenge <= maxLaenge && materialBreite >= minBreite && materialBreite <= maxBreite)
-                || (materialLaenge >= minBreite && materialLaenge <= maxBreite && materialBreite >= minLaenge && materialBreite <= maxLaenge);
+            if (string.Equals(form, "GF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(form, "MF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(form, "KF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase))
+            {
+                gefiltert = gefiltert.Where(m => string.Equals(m.Form, form, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (requireRest)
+            {
+                var reste = gefiltert.Where(IsRest).ToList();
+                if (reste.Any())
+                    return OrderByDimension(reste);
+            }
+
+            return OrderByDimension(gefiltert);
+        }
+
+        private static List<MaterialItem> GetExactDimensionMatches(IEnumerable<MaterialItem> kandidaten, int requestedLaenge, int requestedBreite)
+        {
+            var suchMass = NormalizeDimensions(requestedLaenge, requestedBreite);
+
+            return kandidaten
+                .Where(m => TryParseMass(m.Mass, out var laenge, out var breite)
+                    && NormalizeDimensions(laenge, breite) == suchMass)
+                .OrderBy(m => GetFormPriority(m.Form))
+                .ThenBy(m => m.MaterialArt)
+                .ThenBy(m => m.Legierung)
+                .ThenBy(m => m.Staerke)
+                .ToList();
+        }
+
+        private static List<MaterialItem> GetLargerDimensionMatches(IEnumerable<MaterialItem> kandidaten, int requestedLaenge, int requestedBreite)
+        {
+            var suchMass = NormalizeDimensions(requestedLaenge, requestedBreite);
+
+            return kandidaten
+                .Select(m => new
+                {
+                    Material = m,
+                    Mass = TryParseMass(m.Mass, out var laenge, out var breite)
+                        ? NormalizeDimensions(laenge, breite)
+                        : (Laenge: 0, Breite: 0)
+                })
+                .Where(x => x.Mass.Laenge > 0
+                    && x.Mass.Laenge >= suchMass.Laenge
+                    && x.Mass.Breite >= suchMass.Breite
+                    && x.Mass != suchMass)
+                .OrderBy(x => x.Mass.Laenge * x.Mass.Breite)
+                .ThenBy(x => x.Mass.Laenge - suchMass.Laenge)
+                .ThenBy(x => x.Mass.Breite - suchMass.Breite)
+                .ThenBy(x => GetFormPriority(x.Material.Form))
+                .ThenBy(x => x.Material.MaterialArt)
+                .ThenBy(x => x.Material.Legierung)
+                .ThenBy(x => x.Material.Staerke)
+                .Select(x => x.Material)
+                .ToList();
+        }
+
+        private static List<MaterialItem> OrderByDimension(IEnumerable<MaterialItem> kandidaten)
+        {
+            return kandidaten
+                .Select(m => new
+                {
+                    Material = m,
+                    Mass = TryParseMass(m.Mass, out var laenge, out var breite)
+                        ? NormalizeDimensions(laenge, breite)
+                        : (Laenge: int.MaxValue, Breite: int.MaxValue)
+                })
+                .OrderBy(x => GetFormPriority(x.Material.Form))
+                .ThenBy(x => x.Mass.Laenge * x.Mass.Breite)
+                .ThenBy(x => x.Mass.Laenge)
+                .ThenBy(x => x.Mass.Breite)
+                .ThenBy(x => x.Material.MaterialArt)
+                .ThenBy(x => x.Material.Legierung)
+                .ThenBy(x => x.Material.Staerke)
+                .Select(x => x.Material)
+                .ToList();
+        }
+
+        private static (int Laenge, int Breite) NormalizeDimensions(int laenge, int breite)
+        {
+            return laenge >= breite ? (laenge, breite) : (breite, laenge);
+        }
+
+        private static bool IsRest(MaterialItem materialItem)
+        {
+            return string.Equals(materialItem.Form, "Rest", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsTafel(MaterialItem materialItem)
+        {
+            return string.Equals(materialItem.Form, "GF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(materialItem.Form, "MF", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(materialItem.Form, "KF", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static int GetFormPriority(string? form)
+        {
+            if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase))
+                return 0;
+
+            return 1;
         }
 
         private static bool TryParseMass(string? mass, out int laenge, out int breite)
@@ -70,17 +200,6 @@ namespace MaterialManager_V01.Services
 
             return int.TryParse(parts[0].Trim(), out laenge)
                 && int.TryParse(parts[1].Trim(), out breite);
-        }
-
-        private static double NormalizeTolerancePercent(double toleranzProzent)
-        {
-            if (double.IsNaN(toleranzProzent) || double.IsInfinity(toleranzProzent))
-                return 10.0;
-
-            if (toleranzProzent < 0)
-                return 0;
-
-            return Math.Min(toleranzProzent, MaxTolerancePercent);
         }
     }
 }

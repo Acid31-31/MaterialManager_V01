@@ -1,5 +1,6 @@
 ﻿using MaterialManager_V01.Models;
 using Microsoft.Win32;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace MaterialManager_V01.Views
     {
         private ObservableCollection<MaterialItem> _alleMaterialien;
         private ICollectionView _view;
+        private readonly Dictionary<MaterialItem, MaterialItem?> _anzeigeZuQuelle = new();
 
         public MaterialItem? MaterialZumBearbeiten { get; private set; }
 
@@ -21,19 +23,70 @@ namespace MaterialManager_V01.Views
 
             _alleMaterialien = materialien;
 
-            // Filtere nur Tafeln mit 3 oder weniger Stück
-            var niedrig = materialien
-                .Where(m => (m.Form == "GF" || m.Form == "MF" || m.Form == "KF") && m.Stueckzahl <= 3)
-                .OrderBy(m => m.Stueckzahl)
-                .ThenBy(m => m.MaterialArt)
-                .ThenBy(m => m.Legierung)
-                .ToList();
-
+            var niedrig = ErmittleNiedrigeBestaende(materialien);
             var filtered = new ObservableCollection<MaterialItem>(niedrig);
             BestandGrid.ItemsSource = filtered;
 
             _view = System.Windows.Data.CollectionViewSource.GetDefaultView(filtered);
             _view.Filter = FilterMaterial;
+        }
+
+        private List<MaterialItem> ErmittleNiedrigeBestaende(IEnumerable<MaterialItem> materialien)
+        {
+            _anzeigeZuQuelle.Clear();
+
+            return materialien
+                .Where(m => m.Form == "GF" || m.Form == "MF" || m.Form == "KF")
+                .GroupBy(m => new
+                {
+                    m.Kategorie,
+                    m.MaterialArt,
+                    m.Legierung,
+                    m.Oberflaeche,
+                    m.Guete,
+                    m.Form,
+                    m.Staerke,
+                    m.Mass
+                })
+                .Select(gruppe =>
+                {
+                    var freieMaterialien = gruppe.Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+                    var freierBestand = freieMaterialien.Sum(m => m.Stueckzahl);
+                    var quelle = freieMaterialien.FirstOrDefault();
+                    var basis = quelle ?? gruppe.First();
+
+                    var anzeigeItem = new MaterialItem
+                    {
+                        Kategorie = basis.Kategorie,
+                        MaterialArt = basis.MaterialArt,
+                        Legierung = basis.Legierung,
+                        Oberflaeche = basis.Oberflaeche,
+                        Guete = basis.Guete,
+                        Form = basis.Form,
+                        Staerke = basis.Staerke,
+                        Mass = basis.Mass,
+                        Stueckzahl = freierBestand,
+                        Restnummer = basis.Restnummer,
+                        Datum = basis.Datum,
+                        AenderungsDatum = basis.AenderungsDatum,
+                        Lagerort = freierBestand == 0 ? "Kein freier Bestand" : basis.Lagerort,
+                        AngelegtVon = basis.AngelegtVon,
+                        GeaendertVon = basis.GeaendertVon,
+                        Lieferant = basis.Lieferant,
+                        LieferscheinNr = basis.LieferscheinNr,
+                        PdfPfad = basis.PdfPfad,
+                        PreisProKg = basis.PreisProKg
+                    };
+
+                    _anzeigeZuQuelle[anzeigeItem] = quelle;
+
+                    return anzeigeItem;
+                })
+                .Where(m => m.Stueckzahl <= 3)
+                .OrderBy(m => m.Stueckzahl)
+                .ThenBy(m => m.MaterialArt)
+                .ThenBy(m => m.Legierung)
+                .ToList();
         }
 
         private bool FilterMaterial(object obj)
@@ -66,11 +119,17 @@ namespace MaterialManager_V01.Views
 
         private void OnMaterialDoppelklick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (BestandGrid.SelectedItem is MaterialItem item)
+            if (BestandGrid.SelectedItem is not MaterialItem item)
+                return;
+
+            if (!_anzeigeZuQuelle.TryGetValue(item, out var quelle) || quelle == null)
             {
-                MaterialZumBearbeiten = item;
-                DialogResult = true;
+                MessageBox.Show("Für dieses Material ist aktuell kein freier Lagerbestand zum Bearbeiten vorhanden.", "Niedrige Bestände", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
+
+            MaterialZumBearbeiten = quelle;
+            DialogResult = true;
         }
 
         private void OnExportNachbestellung(object sender, RoutedEventArgs e)
