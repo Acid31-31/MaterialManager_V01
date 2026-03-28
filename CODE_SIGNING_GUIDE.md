@@ -157,3 +157,33 @@ Bei Problemen mit Code-Signing:
 **Version:** 1.0.0  
 **Stand:** 2025-02-28  
 **Autor:** MaterialManager Development Team
+
+## 🚀 Neuer Ein-Klick Signier-Workflow (empfohlen)
+
+Im Projekt gibt es jetzt zwei Helfer:
+
+- `SIGN_RELEASE.ps1`
+- `SIGN_RELEASE.bat`
+
+Damit werden standardmäßig diese Dateien signiert:
+
+- `USB_Installation\MaterialManager\MaterialManager_V01.exe`
+- `USB_Installation\UpdateInstaller.exe`
+- `USB_Installation\Installer.exe`
+
+### Aufruf
+
+```bat
+SIGN_RELEASE.bat "C:\Pfad\zu\deinem_cert.pfx" "DEIN_PASSWORT"
+```
+
+### Hinweise
+
+- Der Workflow nutzt `SHA256` + Timestamp (`http://timestamp.digicert.com`).
+- Mit `-RemoveExistingSignature` werden alte Test-Signaturen vorher entfernt.
+- Nach dem Signieren wird die Signatur je Datei geprüft und ausgegeben.
+
+### Sicherheits-Hinweis
+
+- Nutze für produktive Auslieferung ein echtes OV/EV-Code-Signing-Zertifikat.
+- Selbstsignierte Zertifikate sind nur für interne Tests geeignet.
