@@ -107,45 +107,23 @@ namespace MaterialManager_V01
         {
             try
             {
+                // Keine erzwungene Einrichtung beim Start.
+                // Benutzer richtet Netzwerk später manuell über Einstellungen ein.
                 if (!Services.NetzwerkService.HasConfiguredNetworkPath())
                 {
-                    File.AppendAllText(logPath, "Keine Netzwerk-Konfiguration gefunden. Starte Erstkonfiguration.\n");
-                    var setup = new NetzwerkSetupDialog();
-                    setup.ShowDialog();
+                    File.AppendAllText(logPath, "Keine Netzwerk-Konfiguration vorhanden. Starte ohne Netzwerkmodus.\n");
+                    return true;
                 }
 
                 var health = Services.NetzwerkService.CheckStartupHealth();
                 if (health.IsHealthy)
                     return true;
 
-                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen: {health.Message}\n");
+                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen. Starte lokal: {health.Message}\n");
 
-                var result = MessageBox.Show(
-                    $"{health.Message}\n\nJa = Netzwerk-Einrichtung öffnen\nNein = lokal ohne Netzwerk starten\nAbbrechen = Programm beenden",
-                    "Netzwerkprüfung",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    var setup = new NetzwerkSetupDialog();
-                    setup.ShowDialog();
-                    health = Services.NetzwerkService.CheckStartupHealth();
-                    if (health.IsHealthy)
-                        return true;
-
-                    MessageBox.Show(health.Message, "Netzwerkprüfung", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return false;
-                }
-
-                if (result == MessageBoxResult.No)
-                {
-                    Services.NetzwerkService.SetNetzwerkModus(false, Services.NetzwerkService.NetzwerkPfad);
-                    File.AppendAllText(logPath, "Netzwerkmodus temporär deaktiviert. Start lokal.\n");
-                    return true;
-                }
-
-                return false;
+                // Still auf lokalen Modus zurückfallen, kein Blockieren und kein Zwangs-Dialog.
+                Services.NetzwerkService.SetNetzwerkModus(false, Services.NetzwerkService.NetzwerkPfad);
+                return true;
             }
             catch (Exception ex)
             {
