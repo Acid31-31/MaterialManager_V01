@@ -17,6 +17,7 @@ namespace MaterialManager_V01.Services
     public static class GitHubUpdateService
     {
         private const string LatestReleaseApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest";
+        private const string LatestReleasePage = "https://github.com/Acid31-31/MaterialManager_V01/releases/latest";
         private const string CompareApiBase = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/compare/";
         private const string CommitsApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/commits?per_page=20";
         private static readonly HttpClient Http = CreateClient();
@@ -45,6 +46,14 @@ namespace MaterialManager_V01.Services
                 using var response = await Http.GetAsync(LatestReleaseApi);
                 if (!response.IsSuccessStatusCode)
                 {
+                    if (response.StatusCode == HttpStatusCode.Forbidden ||
+                        response.StatusCode == HttpStatusCode.TooManyRequests)
+                    {
+                        var fallback = await TryCheckForUpdatesViaReleasePageAsync(current);
+                        if (fallback != null)
+                            return fallback;
+                    }
+
                     var msg = $"GitHub-API Fehler: {(int)response.StatusCode}";
                     if (response.StatusCode == HttpStatusCode.NotFound)
                         msg = "Kein GitHub Release vorhanden. Bitte erst ein Release veröffentlichen.";
@@ -157,6 +166,45 @@ namespace MaterialManager_V01.Services
                     IsUpdateAvailable = false,
                     ErrorMessage = ex.Message
                 };
+            }
+        }
+
+        private static async Task<UpdateCheckResult?> TryCheckForUpdatesViaReleasePageAsync(string current)
+        {
+            try
+            {
+                using var response = await Http.GetAsync(LatestReleasePage, HttpCompletionOption.ResponseHeadersRead);
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var finalUri = response.RequestMessage?.RequestUri?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(finalUri) || !finalUri.Contains("/releases/tag/", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                var tag = finalUri.Split('/').LastOrDefault()?.Trim();
+                if (string.IsNullOrWhiteSpace(tag))
+                    return null;
+
+                var updateAvailable = ParseVersion(tag) > ParseVersion(current);
+                var releasePageUrl = $"https://github.com/Acid31-31/MaterialManager_V01/releases/tag/{tag}";
+                var downloadUrl = $"https://github.com/Acid31-31/MaterialManager_V01/releases/download/{tag}/UpdateInstaller.exe";
+
+                return new UpdateCheckResult
+                {
+                    CurrentVersion = current,
+                    LatestVersion = tag,
+                    Changelog = "Änderungsdetails werden wegen API-Limit aus dem Release geladen.",
+                    DownloadUrl = downloadUrl,
+                    AssetName = "UpdateInstaller.exe",
+                    AssetType = "update-exe",
+                    ReleasePageUrl = releasePageUrl,
+                    IsUpdateAvailable = updateAvailable,
+                    ErrorMessage = null
+                };
+            }
+            catch
+            {
+                return null;
             }
         }
 
