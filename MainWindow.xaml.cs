@@ -1157,5 +1157,57 @@ namespace MaterialManager_V01
             }
             catch { }
         }
+
+        private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dep = e.OriginalSource as DependencyObject;
+            if (dep == null)
+                return;
+
+            var cell = FindVisualParent<DataGridCell>(dep);
+            if (cell == null)
+                return;
+
+            if (cell.DataContext is not MaterialItem item)
+                return;
+
+            if (cell.Column is DataGridBoundColumn boundColumn &&
+                boundColumn.Binding is System.Windows.Data.Binding binding &&
+                binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
+            {
+                OpenPdfPreview(item.PdfPfad);
+                e.Handled = true;
+            }
+        }
+
+        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
+        {
+            while (child != null)
+            {
+                if (child is T t)
+                    return t;
+                child = System.Windows.Media.VisualTreeHelper.GetParent(child);
+            }
+
+            return null;
+        }
+
+        private void OpenPdfPreview(string? pdfPfad)
+        {
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
+        }
     }
 }

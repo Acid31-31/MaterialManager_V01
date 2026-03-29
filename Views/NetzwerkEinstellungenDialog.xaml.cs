@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -12,6 +13,18 @@ namespace MaterialManager_V01.Views
             PfadBox.Text = NetzwerkService.NetzwerkPfad;
             BenutzerBox.Text = NetzwerkService.GetBenutzerName();
             ArchivPfadBox.Text = NetzwerkService.GetAuftragsArchivBasisPfad();
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
+        private void OnCloseWindowClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
 
         private void OnSave(object sender, RoutedEventArgs e)
