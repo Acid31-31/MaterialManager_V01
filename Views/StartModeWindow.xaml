@@ -9,7 +9,7 @@
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
-        Icon="pack://application:,,,/Assets/app.ico">
+        Icon="/Assets/app-icon.png">
     <Window.Resources>
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
