@@ -1,4 +1,4 @@
-﻿MaterialManager 1.2.0
-Erstellt: 22.03.2026 17:54:02
-Groesse: 186.11 MB
-Version: Release Self-Contained (Tablet-Modus + PDF-Funktion)
+MaterialManager 1.2.1
+Erstellt: 29.03.2026 13:11:16
+Version: GUI Installer automatisch aktualisiert
+Hinweis: INSTALL.bat startet immer INSTALL_GUI.ps1 als aktuellen Installationsstand

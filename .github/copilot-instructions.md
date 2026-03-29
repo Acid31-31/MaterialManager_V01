@@ -23,6 +23,7 @@
 - Änderungen und notwendige Speichervorgänge sollen automatisch ausgeführt werden, ohne den Benutzer zu manuellen Speicherschritten aufzufordern.
 - Sichtbare UI-Texte dürfen keine Encoding-/Sonderzeichenfehler enthalten; sie sollen in deutscher Sprache korrekt mit Umlauten angezeigt werden und Umlaute dürfen nicht durch Ersatzschreibweisen wie ae/oe/ue ersetzt werden. Bei Meldungen und Beschriftungen sollen fehleranfällige Sonderzeichen vermieden bzw. robust dargestellt werden.
 - Netzwerk-Synchronisation soll beim Start nicht erzwungen werden; zuerst Programm testen, Einrichtung später manuell über Einstellungen.
+- **Installer-/USB-Stand:** Der Installer- und USB-Stand soll nach Änderungen immer aktualisiert sein, damit in der Firma keine veraltete Installation verwendet wird.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.
