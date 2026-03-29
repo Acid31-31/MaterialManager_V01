@@ -4,12 +4,40 @@
         Title="⚠️ Niedrige Bestände - Übersicht"
         Height="700" Width="1000"
         WindowStartupLocation="CenterOwner"
-        Background="#0B0B0B">
+        Background="#0B0B0B"
+        Foreground="White"
+        WindowStyle="None"
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Margin" Value="0,4" />
+        </Style>
+
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2E2E2E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="FilterComboBox" TargetType="ComboBox">
@@ -156,96 +184,116 @@
         </Style>
     </Window.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border BorderBrush="#2A2A2A" BorderThickness="1" Background="#0B0B0B">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!-- Header mit Legende -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-            <TextBlock Text="⚠️ Materialien mit niedrigen Beständen" FontSize="18" FontWeight="Bold"/>
-            <TextBlock Text="Nur Tafeln (GF, MF, KF) mit 3 oder weniger Stück" FontSize="12" Foreground="#888" Margin="0,4,0,8"/>
-            
-            <StackPanel Orientation="Horizontal">
-                <Border Background="#661111" Width="20" Height="20" Margin="0,0,8,0"/>
-                <TextBlock Text="0-1 Stück = Kritisch (Rot)" Margin="0,0,24,0" VerticalAlignment="Center"/>
-                
-                <Border Background="#4D1616" Width="20" Height="20" Margin="0,0,8,0"/>
-                <TextBlock Text="2 Stück = Niedrig (Orange)" Margin="0,0,24,0" VerticalAlignment="Center"/>
-                
-                <Border Background="#333" Width="20" Height="20" Margin="0,0,8,0"/>
-                <TextBlock Text="3 Stück = Warnung (Gelb)" VerticalAlignment="Center"/>
-            </StackPanel>
-        </StackPanel>
+            <Border Grid.Row="0" Background="#1F1F1F" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="⚠️ Niedrige Bestände - Übersicht" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"/>
+                    <Button Grid.Column="1" Style="{StaticResource TitleBarButtonStyle}" Content="✕" Click="OnCloseWindowClick"/>
+                </Grid>
+            </Border>
 
-        <!-- Filter -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
-            <TextBlock Text="Filter:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,12,0"/>
-            
-            <ComboBox x:Name="MaterialFilterBox" Style="{StaticResource FilterComboBox}" Width="150" SelectionChanged="OnFilterChanged">
-                <ComboBoxItem IsSelected="True">Alle Materialien</ComboBoxItem>
-                <ComboBoxItem>Stahl</ComboBoxItem>
-                <ComboBoxItem>Edelstahl</ComboBoxItem>
-                <ComboBoxItem>Aluminium</ComboBoxItem>
-            </ComboBox>
+            <Grid Grid.Row="1" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <ComboBox x:Name="FormFilterBox" Style="{StaticResource FilterComboBox}" Width="120" SelectionChanged="OnFilterChanged">
-                <ComboBoxItem IsSelected="True">Alle Formen</ComboBoxItem>
-                <ComboBoxItem>GF</ComboBoxItem>
-                <ComboBoxItem>MF</ComboBoxItem>
-                <ComboBoxItem>KF</ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
+                <!-- Header mit Legende -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="⚠️ Materialien mit niedrigen Beständen" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Text="Nur Tafeln (GF, MF, KF) mit 3 oder weniger Stück" FontSize="12" Foreground="#888" Margin="0,4,0,8"/>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="#661111" Width="20" Height="20" Margin="0,0,8,0"/>
+                        <TextBlock Text="0-1 Stück = Kritisch (Rot)" Margin="0,0,24,0" VerticalAlignment="Center"/>
+                        
+                        <Border Background="#4D1616" Width="20" Height="20" Margin="0,0,8,0"/>
+                        <TextBlock Text="2 Stück = Niedrig (Orange)" Margin="0,0,24,0" VerticalAlignment="Center"/>
+                        
+                        <Border Background="#333" Width="20" Height="20" Margin="0,0,8,0"/>
+                        <TextBlock Text="3 Stück = Warnung (Gelb)" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
 
-        <!-- DataGrid -->
-        <DataGrid Grid.Row="2" x:Name="BestandGrid"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  MouseDoubleClick="OnMaterialDoppelklick"
-                  RowHeight="36">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="120"/>
-                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="120"/>
-                <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="140"/>
-                <DataGridTextColumn Header="Güte" Binding="{Binding Guete}" Width="100"/>
-                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="80"/>
-                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
-                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
-                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="80">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="Foreground" Value="White"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Stueckzahl}" Value="0">
-                                    <Setter Property="Foreground" Value="#F44336"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Stueckzahl}" Value="1">
-                                    <Setter Property="Foreground" Value="#F44336"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Stueckzahl}" Value="2">
-                                    <Setter Property="Foreground" Value="#FF9800"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Stueckzahl}" Value="3">
-                                    <Setter Property="Foreground" Value="#FFC107"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
-                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
-                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <!-- Filter -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+                    <TextBlock Text="Filter:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,12,0"/>
+                    
+                    <ComboBox x:Name="MaterialFilterBox" Style="{StaticResource FilterComboBox}" Width="150" SelectionChanged="OnFilterChanged">
+                        <ComboBoxItem IsSelected="True">Alle Materialien</ComboBoxItem>
+                        <ComboBoxItem>Stahl</ComboBoxItem>
+                        <ComboBoxItem>Edelstahl</ComboBoxItem>
+                        <ComboBoxItem>Aluminium</ComboBoxItem>
+                    </ComboBox>
 
-        <!-- Buttons -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-            <Button Content="📄 Nachbestell-Liste exportieren" Click="OnExportNachbestellung" Width="240"/>
-            <Button Content="Schließen" Click="OnSchliessen" Width="120" Background="#555"/>
-        </StackPanel>
-    </Grid>
+                    <ComboBox x:Name="FormFilterBox" Style="{StaticResource FilterComboBox}" Width="120" SelectionChanged="OnFilterChanged">
+                        <ComboBoxItem IsSelected="True">Alle Formen</ComboBoxItem>
+                        <ComboBoxItem>GF</ComboBoxItem>
+                        <ComboBoxItem>MF</ComboBoxItem>
+                        <ComboBoxItem>KF</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- DataGrid -->
+                <DataGrid Grid.Row="2" x:Name="BestandGrid"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          MouseDoubleClick="OnMaterialDoppelklick"
+                          RowHeight="36">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="120"/>
+                        <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="120"/>
+                        <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="140"/>
+                        <DataGridTextColumn Header="Güte" Binding="{Binding Guete}" Width="100"/>
+                        <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="80"/>
+                        <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
+                        <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
+                        <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Stueckzahl}" Value="0">
+                                            <Setter Property="Foreground" Value="#F44336"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Stueckzahl}" Value="1">
+                                            <Setter Property="Foreground" Value="#F44336"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Stueckzahl}" Value="2">
+                                            <Setter Property="Foreground" Value="#FF9800"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Stueckzahl}" Value="3">
+                                            <Setter Property="Foreground" Value="#FFC107"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
+                        <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
+                        <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                    <Button Content="📄 Nachbestell-Liste exportieren" Click="OnExportNachbestellung" Width="240"/>
+                    <Button Content="Schließen" Click="OnSchliessen" Width="120" Background="#555"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
