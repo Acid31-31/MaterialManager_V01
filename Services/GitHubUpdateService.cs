@@ -236,7 +236,7 @@ namespace MaterialManager_V01.Services
             if (string.IsNullOrWhiteSpace(body))
                 return null;
 
-            var match = Regex.Match(body, "compare/(?<base>[^.\\s]+)\\.\\.\\.(?<head>[^\\s)]+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(body, "compare/(?<base>[^/\\s]+)\\.\\.\\.(?<head>[^\\s)]+)", RegexOptions.IgnoreCase);
             if (!match.Success)
                 return null;
 
