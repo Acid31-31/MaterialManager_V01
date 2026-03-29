@@ -32,9 +32,57 @@ namespace MaterialManager_V01.Views
             WindowState = WindowState.Minimized;
         }
 
+        private void OnMaximizeRestoreWindow(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
         private void OnCloseWindow(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnRefreshClick(object sender, RoutedEventArgs e)
+        {
+            LoadItems();
+        }
+
+        private async void OnCheckForUpdates(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var result = await GitHubUpdateService.CheckForUpdatesAsync();
+
+                if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
+                {
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
+                {
+                    MessageBox.Show($"Sie haben die neueste Version ({result.CurrentVersion}).", "Update", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var dlg = new UpdateDialog(result) { Owner = this };
+                dlg.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void OnProgrammHilfe(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ProgrammHilfeDialog { Owner = this };
+            dlg.ShowDialog();
         }
 
         private void OnAddClick(object sender, RoutedEventArgs e)
@@ -84,6 +132,8 @@ namespace MaterialManager_V01.Views
         {
             try
             {
+                Items.Clear();
+
                 if (!File.Exists(StorePath))
                     return;
 
@@ -92,7 +142,6 @@ namespace MaterialManager_V01.Views
                 if (parsed == null)
                     return;
 
-                Items.Clear();
                 foreach (var item in parsed)
                     Items.Add(item);
             }
