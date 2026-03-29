@@ -127,6 +127,7 @@
                         <MenuItem Header="Lager" Click="OnLagerClick"/>
                         <MenuItem Header="Tafelplanung" Click="OnTafelplanungClick"/>
                         <MenuItem Header="Laser" Click="OnLaserClick"/>
+                        <MenuItem Header="Kunden Material" Click="OnKundenMaterialClick"/>
                         <Separator/>
                         <MenuItem Header="Beenden" Click="OnCloseClick"/>
                     </MenuItem>
@@ -178,7 +179,7 @@
                 <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
             </StackPanel>
 
-            <UniformGrid Grid.Row="2" Columns="4" Margin="48,0">
+            <UniformGrid Grid.Row="2" Columns="5" Margin="48,0">
                 <Button Click="OnStandardClick" Margin="0,0,8,0" Height="150" Background="#1976D2" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="🏠" FontSize="40" HorizontalAlignment="Center"/>
@@ -197,10 +198,16 @@
                         <TextBlock Text="Tafelplanung" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
-                <Button Click="OnLaserClick" Margin="8,0,0,0" Height="150" Background="#2E7D32" Foreground="White" Cursor="Hand" BorderThickness="0">
+                <Button Click="OnLaserClick" Margin="4,0,4,0" Height="150" Background="#2E7D32" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="⚡" FontSize="40" HorizontalAlignment="Center"/>
                         <TextBlock Text="Laser" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="OnKundenMaterialClick" Margin="8,0,0,0" Height="150" Background="#455A64" Foreground="White" Cursor="Hand" BorderThickness="0">
+                    <StackPanel>
+                        <TextBlock Text="🧾" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Kunden Material" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </UniformGrid>

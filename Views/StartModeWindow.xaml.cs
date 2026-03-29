@@ -161,5 +161,16 @@ namespace MaterialManager_V01.Views
             window.Show();
             Close();
         }
+
+        private void OnKundenMaterialClick(object sender, RoutedEventArgs e)
+        {
+            if (!PromptForOperatorName())
+                return;
+
+            var window = new KundenMaterialWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+        }
     }
 }
