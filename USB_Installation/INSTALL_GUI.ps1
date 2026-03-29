@@ -47,6 +47,30 @@ function Get-PackageVersion {
     return $Script:FallbackVersion
 }
 
+function Convert-ToDouble {
+    param(
+        [object]$Value,
+        [double]$Default = 0.0
+    )
+
+    if ($null -eq $Value) { return $Default }
+
+    $raw = [string]$Value
+    if ([string]::IsNullOrWhiteSpace($raw)) { return $Default }
+
+    $styles = [System.Globalization.NumberStyles]::Float -bor [System.Globalization.NumberStyles]::AllowThousands
+    $invariant = [System.Globalization.CultureInfo]::InvariantCulture
+    $de = [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')
+    $en = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
+
+    $parsed = 0.0
+    if ([double]::TryParse($raw, $styles, $invariant, [ref]$parsed)) { return $parsed }
+    if ([double]::TryParse($raw, $styles, $de, [ref]$parsed)) { return $parsed }
+    if ([double]::TryParse($raw, $styles, $en, [ref]$parsed)) { return $parsed }
+
+    return $Default
+}
+
 $Script:PackageVersion = Get-PackageVersion
 
 function Get-InstallerPricing {
@@ -75,24 +99,21 @@ function Get-InstallerPricing {
 
         $score = 0.0
         foreach ($m in $model.Modules) {
-            $s = 0.0
-            [double]::TryParse([string]$m.Score, [ref]$s) | Out-Null
+            $s = Convert-ToDouble $m.Score 0.0
             if ($s -gt 0) { $score += $s }
         }
 
-        $baseFactor = 2.0
-        $roundStep = 50.0
-        [double]::TryParse([string]$model.BasePriceFactor, [ref]$baseFactor) | Out-Null
-        [double]::TryParse([string]$model.RoundingStep, [ref]$roundStep) | Out-Null
+        $baseFactor = Convert-ToDouble $model.BasePriceFactor 2.0
+        $roundStep = Convert-ToDouble $model.RoundingStep 50.0
         if ($baseFactor -le 0) { $baseFactor = 2.0 }
         if ($roundStep -le 0) { $roundStep = 50.0 }
 
         $singleMul = 1.0; $multiMul = 2.2; $companyMul = 4.5; $enterpriseMul = 8.0
         if ($null -ne $model.Multipliers) {
-            [double]::TryParse([string]$model.Multipliers.Single, [ref]$singleMul) | Out-Null
-            [double]::TryParse([string]$model.Multipliers.Multi3, [ref]$multiMul) | Out-Null
-            [double]::TryParse([string]$model.Multipliers.Company10, [ref]$companyMul) | Out-Null
-            [double]::TryParse([string]$model.Multipliers.Enterprise, [ref]$enterpriseMul) | Out-Null
+            $singleMul = Convert-ToDouble $model.Multipliers.Single 1.0
+            $multiMul = Convert-ToDouble $model.Multipliers.Multi3 2.2
+            $companyMul = Convert-ToDouble $model.Multipliers.Company10 4.5
+            $enterpriseMul = Convert-ToDouble $model.Multipliers.Enterprise 8.0
         }
 
         function Round-Step([double]$value, [double]$step) {
