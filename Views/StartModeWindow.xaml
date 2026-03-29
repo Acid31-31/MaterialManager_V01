@@ -159,8 +159,10 @@
             </Grid.RowDefinitions>
 
             <Image Source="/Assets/logo.png"
-                   Opacity="0.10"
-                   Stretch="UniformToFill"
+                   Opacity="0.18"
+                   Stretch="Uniform"
+                   Width="820"
+                   Height="820"
                    IsHitTestVisible="False"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
