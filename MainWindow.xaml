@@ -4,13 +4,15 @@
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="MaterialManager V01" Height="800" Width="1600" MinWidth="640" MinHeight="480"
-        Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None"
         ResizeMode="CanResize"
         BorderBrush="#2A2A2A"
         BorderThickness="1">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
+    </Window.Background>
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="32"
                             ResizeBorderThickness="6"

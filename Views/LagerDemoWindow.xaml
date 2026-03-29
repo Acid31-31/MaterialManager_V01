@@ -6,7 +6,6 @@
         Height="840"
         Width="1500"
         FontSize="13"
-        Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         ResizeMode="CanMinimize"
@@ -14,6 +13,9 @@
         BorderBrush="#2A2A2A"
         BorderThickness="1"
         Icon="/Assets/app-icon.png">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
+    </Window.Background>
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             ResizeBorderThickness="0"

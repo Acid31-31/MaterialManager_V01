@@ -3,13 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MaterialManager V01 - Start"
         WindowState="Normal"
-        Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
         Icon="/Assets/app-icon.png">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
+    </Window.Background>
     <Window.Resources>
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
