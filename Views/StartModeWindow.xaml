@@ -159,6 +159,12 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
+                <Image Source="/Assets/logo.png"
+                       Width="220"
+                       Height="70"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,12"/>
                 <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
             </StackPanel>
