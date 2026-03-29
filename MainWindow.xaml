@@ -10,10 +10,8 @@
         WindowStyle="None"
         ResizeMode="CanResize"
         BorderBrush="#2A2A2A"
-        BorderThickness="1">
-    <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
-    </Window.Background>
+        BorderThickness="1"
+        Background="#0B0B0B">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="32"
                             ResizeBorderThickness="6"
@@ -241,276 +239,288 @@
         </Style>
     </Window.Resources>
     
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="32" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Background="#111111" Height="32" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0"
-                       Source="pack://application:,,,/Assets/app-icon.png"
-                       Height="18"
-                       Width="18"
-                       Margin="8,0,10,0"
-                       VerticalAlignment="Center"
-                       Stretch="Uniform"
-                       SnapsToDevicePixels="True"
-                       shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
-
-                <Menu Grid.Column="1"
-                      VerticalAlignment="Center"
-                      FontSize="13"
-                      shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                    <MenuItem Header="Datei">
-                        <MenuItem Header="Material neu" Click="OnMaterialNeu"/>
-                        <Separator/>
-                        <MenuItem Header="Import" Click="OnImport"/>
-                        <MenuItem Header="Export" Click="OnExport"/>
-                        <Separator/>
-                        <MenuItem Header="Netzwerk‑Einstellungen" Click="OnNetzwerkEinstellungen"/>
-                        <Separator/>
-                        <MenuItem Header="Beenden" Click="OnBeenden"/>
-                    </MenuItem>
-                    <MenuItem Header="Bearbeiten">
-                        <MenuItem Header="↶ Rückgängig (Ctrl+Z)" Click="OnUndo"/>
-                        <MenuItem Header="↷ Wiederherstellen" Click="OnRedo" IsEnabled="False"/>
-                        <Separator/>
-                        <MenuItem Header="Löschen" Click="OnMaterialLoeschen"/>
-                        <Separator/>
-                        <MenuItem Header="Tafel verbrauchen" Click="OnTafelVerbrauchen"/>
-                    </MenuItem>
-                    <MenuItem Header="Ansicht">
-                        <MenuItem Header="Inventur" Click="OnInventur"/>
-                        <MenuItem Header="Statistik" Click="OnStatistik"/>
-                        <MenuItem Header="Reste suchen" Click="OnResteSuchen"/>
-                        <MenuItem Header="🔖 Reservierte Reste" Click="OnReservierteReste"/>
-                    </MenuItem>
-                    <MenuItem Header="Hilfe">
-                        <MenuItem Header="📘 Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
-                        <Separator/>
-                        <MenuItem Header="📄 Materialliste drucken" Click="OnPrintMaterialList"/>
-                        <MenuItem Header="📊 Als Excel exportieren" Click="OnExportExcel"/>
-                        <MenuItem Header="📋 Als CSV exportieren" Click="OnExportCSV"/>
-                        <Separator/>
-                        <MenuItem Header="Lizenz aktivieren" Click="OnLizenzAktivieren"/>
-                        <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
-                    </MenuItem>
-                </Menu>
-
-                <TextBlock Grid.Column="2"
-                           Text="{Binding LicenseTrialDisplayText}"
-                           Foreground="{Binding LicenseTrialDisplayBrush}"
-                           FontWeight="Bold"
-                           FontSize="12"
+                    <Image Grid.Column="0"
+                           Source="pack://application:,,,/Assets/app-icon.png"
+                           Height="18"
+                           Width="18"
+                           Margin="8,0,10,0"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Right"
-                           Margin="0,0,12,0"
-                           TextTrimming="CharacterEllipsis"/>
+                           Stretch="Uniform"
+                           SnapsToDevicePixels="True"
+                           shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
 
-                <StackPanel Grid.Column="3"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
-                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+                    <Menu Grid.Column="1"
+                          VerticalAlignment="Center"
+                          FontSize="13"
+                          shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <MenuItem Header="Datei">
+                            <MenuItem Header="Material neu" Click="OnMaterialNeu"/>
+                            <Separator/>
+                            <MenuItem Header="Import" Click="OnImport"/>
+                            <MenuItem Header="Export" Click="OnExport"/>
+                            <Separator/>
+                            <MenuItem Header="Netzwerk‑Einstellungen" Click="OnNetzwerkEinstellungen"/>
+                            <Separator/>
+                            <MenuItem Header="Beenden" Click="OnBeenden"/>
+                        </MenuItem>
+                        <MenuItem Header="Bearbeiten">
+                            <MenuItem Header="↶ Rückgängig (Ctrl+Z)" Click="OnUndo"/>
+                            <MenuItem Header="↷ Wiederherstellen" Click="OnRedo" IsEnabled="False"/>
+                            <Separator/>
+                            <MenuItem Header="Löschen" Click="OnMaterialLoeschen"/>
+                            <Separator/>
+                            <MenuItem Header="Tafel verbrauchen" Click="OnTafelVerbrauchen"/>
+                        </MenuItem>
+                        <MenuItem Header="Ansicht">
+                            <MenuItem Header="Inventur" Click="OnInventur"/>
+                            <MenuItem Header="Statistik" Click="OnStatistik"/>
+                            <MenuItem Header="Reste suchen" Click="OnResteSuchen"/>
+                            <MenuItem Header="🔖 Reservierte Reste" Click="OnReservierteReste"/>
+                        </MenuItem>
+                        <MenuItem Header="Hilfe">
+                            <MenuItem Header="📘 Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
+                            <Separator/>
+                            <MenuItem Header="📄 Materialliste drucken" Click="OnPrintMaterialList"/>
+                            <MenuItem Header="📊 Als Excel exportieren" Click="OnExportExcel"/>
+                            <MenuItem Header="📋 Als CSV exportieren" Click="OnExportCSV"/>
+                            <Separator/>
+                            <MenuItem Header="Lizenz aktivieren" Click="OnLizenzAktivieren"/>
+                            <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
+                        </MenuItem>
+                    </Menu>
 
-        <Border DockPanel.Dock="Top" Background="#1F1F1F" Height="58">
-            <Grid Margin="8,6,8,6">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding LicenseTrialDisplayText}"
+                               Foreground="{Binding LicenseTrialDisplayBrush}"
+                               FontWeight="Bold"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right"
+                               Margin="0,0,12,0"
+                               TextTrimming="CharacterEllipsis"/>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,15,0">
-                    <Button Content="↶" Click="OnUndo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Rückgängig (Ctrl+Z)"/>
-                    <Button Content="↷" Click="OnRedo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Wiederherstellen (Ctrl+Y)"/>
-                    <Separator Background="#555" Width="1" Margin="5,0"/>
-                    <Button Content="🔄" Click="OnCheckForUpdates" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Nach Programm-Updates suchen"/>
-                </StackPanel>
-                
-                <DockPanel Grid.Column="1" VerticalAlignment="Center">
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <ComboBox x:Name="FormFilterBox" Width="100" Margin="0,0,8,0" SelectionChanged="OnMainFilterChanged">
-                            <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
-                            <ComboBoxItem>Blech</ComboBoxItem>
-                            <ComboBoxItem>Rohr</ComboBoxItem>
-                            <ComboBoxItem>Profil</ComboBoxItem>
-                            <ComboBoxItem>GF</ComboBoxItem>
-                            <ComboBoxItem>MF</ComboBoxItem>
-                            <ComboBoxItem>KF</ComboBoxItem>
-                            <ComboBoxItem>Rest</ComboBoxItem>
-                        </ComboBox>
-                        <ComboBox x:Name="WeightModeBox" Width="100" Margin="0,0,8,0" SelectionChanged="OnWeightModeChanged">
-                            <ComboBoxItem IsSelected="True">Gesamt</ComboBoxItem>
-                            <ComboBoxItem>Gefiltert</ComboBoxItem>
-                        </ComboBox>
-                        <Button Content="🗑️ Löschen" Click="OnMaterialLoeschen" Background="#F44336" Foreground="White" Padding="10,5" Cursor="Hand"/>
+                    <StackPanel Grid.Column="3"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
+                        <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
                     </StackPanel>
-                    <TextBox x:Name="SearchBox" Background="#222" Foreground="White" Padding="6,4" TextChanged="OnMainSearchChanged" VerticalContentAlignment="Center" Height="28" FontSize="13" Margin="0,0,10,0" Width="320"/>
-                </DockPanel>
-            </Grid>
-        </Border>
-        
-        <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="8">
-            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" ItemHeight="90">
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="140" Height="80" Cursor="Hand" MouseLeftButtonDown="OnMaterialNeu">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="➕" FontSize="30" Foreground="#4CAF50" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Material neu" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,3,0,0" FontSize="11"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="150" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenLagerView">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="📦" FontSize="28" Foreground="#BA68C8" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Lager" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="170" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenTafelplanungView">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="📐" FontSize="28" Foreground="#26A69A" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Tafelplanung" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="140" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenLaserView">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="✂" FontSize="28" Foreground="#66BB6A" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Laser" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75">
-                    <StackPanel>
-                        <TextBlock Text="Gesamtgewicht" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <TextBlock Text="{Binding GesamtGewichtText}" Foreground="#4CAF50" FontSize="20" FontWeight="Bold" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75" Cursor="Hand" MouseLeftButtonDown="OnRegalauslastungClick">
-                    <StackPanel>
-                        <TextBlock Text="Regalauslastung" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <ProgressBar Value="{Binding DurchschnittAuslastung}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#00A651"/>
-                        <TextBlock Text="{Binding AuslastungText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="230" Height="75" Cursor="Hand" MouseLeftButtonDown="OnEuPaletteClick">
-                    <StackPanel>
-                        <TextBlock Text="EU Palette (Rest Material)" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <ProgressBar Value="{Binding EuPalettePct}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#FF9800"/>
-                        <TextBlock Text="{Binding EuPaletteDisplayText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="180" Height="75" Cursor="Hand" MouseLeftButtonDown="OnNiedrigeBestaendeClick">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="⚠️ Niedrige Bestände" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <TextBlock Text="{Binding NiedrigeBestaendeText}" Foreground="{Binding NiedrigeBestaendeFarbe}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="180" Height="75" Cursor="Hand" MouseLeftButtonDown="OnReservierteReste">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="🔖 Reservierte Reste" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <TextBlock Text="{Binding ReservierteResteCount}" Foreground="#4CAF50" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
-                
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="160" Height="85" Cursor="Hand" MouseLeftButtonDown="OnResteSuchen">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="🔍" FontSize="28" Foreground="#4CAF50" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Reste suchen" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
-                    </StackPanel>
-                </Border>
-                
-                <!-- ✅ ONLINE-BENUTZER ANZEIGE -->
-                <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="220" Height="85" Cursor="Hand" MouseLeftButtonDown="OnOnlineUsersClick" x:Name="OnlineUsersBorder">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="👥 Online Jetzt" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                        <TextBlock x:Name="OnlineUsersDisplay" Text="👤 hoelz" Foreground="#4CAF50" FontSize="13" FontWeight="Bold" Margin="0,8,0,0" TextWrapping="Wrap" MaxHeight="60"/>
-                    </StackPanel>
-                </Border>
-            </WrapPanel>
-        </Border>
-        
-        <DataGrid x:Name="MaterialGrid"
-                  ItemsSource="{Binding Materialien}"
-                  AutoGenerateColumns="False"
-                  Margin="10"
-                  CanUserAddRows="False"
-                  MouseDoubleClick="OnMaterialBearbeiten"
-                  PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown"
-                  RowHeight="32">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="" Width="35">
-                    <DataGridTemplateColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <CheckBox HorizontalAlignment="Center" Checked="OnSelectAllChecked" Unchecked="OnSelectAllUnchecked"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.HeaderTemplate>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Click="CheckBox_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Güte" Binding="{Binding Guete}" Width="70" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="70" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="100" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="50" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00} kg}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="100" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat=dd.MM.yyyy}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="110" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="110" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="130" IsReadOnly="True"/>
-                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="150" IsReadOnly="True">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#FF9800"/>
-                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Lieferant" Binding="{Binding Lieferant}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Lieferschein-Nr" Binding="{Binding LieferscheinNr}" Width="110" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        
-        <!-- ✅ EXPANDABLES ONLINE-USERS POPUP -->
-        <Popup x:Name="OnlineUsersPopup" IsOpen="False" Placement="Mouse" AllowsTransparency="True" PopupAnimation="Fade">
-            <Border Background="#1E1E1E" BorderBrush="#4CAF50" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
-                <StackPanel>
-                    <TextBlock Text="👥 Online Benutzer" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,12"/>
-                    <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
-                        <ListBox x:Name="OnlineUsersList" Background="Transparent" BorderThickness="0" Foreground="White">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" Foreground="#4CAF50" FontSize="12" Margin="0,5,0,5"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </ScrollViewer>
-                    <TextBlock Text="(Klick irgendwo zum Schließen)" Foreground="#888" FontSize="9" Margin="0,10,0,0" FontStyle="Italic"/>
-                </StackPanel>
+                </Grid>
             </Border>
-        </Popup>
-    </DockPanel>
+
+            <Border DockPanel.Dock="Top" Background="#1F1F1F" Height="58">
+                <Grid Margin="8,6,8,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,15,0">
+                        <Button Content="↶" Click="OnUndo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Rückgängig (Ctrl+Z)"/>
+                        <Button Content="↷" Click="OnRedo" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Wiederherstellen (Ctrl+Y)"/>
+                        <Separator Background="#555" Width="1" Margin="5,0"/>
+                        <Button Content="🔄" Click="OnCheckForUpdates" Background="#333" Foreground="White" Padding="12,6" Margin="0,0,5,0" Cursor="Hand" ToolTip="Nach Programm-Updates suchen"/>
+                    </StackPanel>
+                    
+                    <DockPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <ComboBox x:Name="FormFilterBox" Width="100" Margin="0,0,8,0" SelectionChanged="OnMainFilterChanged">
+                                <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                                <ComboBoxItem>Blech</ComboBoxItem>
+                                <ComboBoxItem>Rohr</ComboBoxItem>
+                                <ComboBoxItem>Profil</ComboBoxItem>
+                                <ComboBoxItem>GF</ComboBoxItem>
+                                <ComboBoxItem>MF</ComboBoxItem>
+                                <ComboBoxItem>KF</ComboBoxItem>
+                                <ComboBoxItem>Rest</ComboBoxItem>
+                            </ComboBox>
+                            <ComboBox x:Name="WeightModeBox" Width="100" Margin="0,0,8,0" SelectionChanged="OnWeightModeChanged">
+                                <ComboBoxItem IsSelected="True">Gesamt</ComboBoxItem>
+                                <ComboBoxItem>Gefiltert</ComboBoxItem>
+                            </ComboBox>
+                            <Button Content="🗑️ Löschen" Click="OnMaterialLoeschen" Background="#F44336" Foreground="White" Padding="10,5" Cursor="Hand"/>
+                        </StackPanel>
+                        <TextBox x:Name="SearchBox" Background="#222" Foreground="White" Padding="6,4" TextChanged="OnMainSearchChanged" VerticalContentAlignment="Center" Height="28" FontSize="13" Margin="0,0,10,0" Width="320"/>
+                    </DockPanel>
+                </Grid>
+            </Border>
+            
+            <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="8">
+                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" ItemHeight="90">
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="140" Height="80" Cursor="Hand" MouseLeftButtonDown="OnMaterialNeu">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="➕" FontSize="30" Foreground="#4CAF50" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Material neu" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,3,0,0" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="150" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenLagerView">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📦" FontSize="28" Foreground="#BA68C8" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Lager" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="170" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenTafelplanungView">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📐" FontSize="28" Foreground="#26A69A" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Tafelplanung" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="140" Height="80" Cursor="Hand" MouseLeftButtonDown="OnOpenLaserView">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="✂" FontSize="28" Foreground="#66BB6A" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Laser" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75">
+                        <StackPanel>
+                            <TextBlock Text="Gesamtgewicht" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="{Binding GesamtGewichtText}" Foreground="#4CAF50" FontSize="20" FontWeight="Bold" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75" Cursor="Hand" MouseLeftButtonDown="OnRegalauslastungClick">
+                        <StackPanel>
+                            <TextBlock Text="Regalauslastung" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <ProgressBar Value="{Binding DurchschnittAuslastung}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#00A651"/>
+                            <TextBlock Text="{Binding AuslastungText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="230" Height="75" Cursor="Hand" MouseLeftButtonDown="OnEuPaletteClick">
+                        <StackPanel>
+                            <TextBlock Text="EU Palette (Rest Material)" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <ProgressBar Value="{Binding EuPalettePct}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#FF9800"/>
+                            <TextBlock Text="{Binding EuPaletteDisplayText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="180" Height="75" Cursor="Hand" MouseLeftButtonDown="OnNiedrigeBestaendeClick">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="⚠️ Niedrige Bestände" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="{Binding NiedrigeBestaendeText}" Foreground="{Binding NiedrigeBestaendeFarbe}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="180" Height="75" Cursor="Hand" MouseLeftButtonDown="OnReservierteReste">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="🔖 Reservierte Reste" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="{Binding ReservierteResteCount}" Foreground="#4CAF50" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="10" Margin="0,0,8,8" Width="160" Height="85" Cursor="Hand" MouseLeftButtonDown="OnResteSuchen">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="🔍" FontSize="28" Foreground="#4CAF50" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Reste suchen" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- ✅ ONLINE-BENUTZER ANZEIGE -->
+                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="220" Height="85" Cursor="Hand" MouseLeftButtonDown="OnOnlineUsersClick" x:Name="OnlineUsersBorder">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="👥 Online Jetzt" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock x:Name="OnlineUsersDisplay" Text="👤 hoelz" Foreground="#4CAF50" FontSize="13" FontWeight="Bold" Margin="0,8,0,0" TextWrapping="Wrap" MaxHeight="60"/>
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+            </Border>
+            
+            <DataGrid x:Name="MaterialGrid"
+                      ItemsSource="{Binding Materialien}"
+                      AutoGenerateColumns="False"
+                      Margin="10"
+                      CanUserAddRows="False"
+                      MouseDoubleClick="OnMaterialBearbeiten"
+                      PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown"
+                      RowHeight="32">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="" Width="35">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center" Checked="OnSelectAllChecked" Unchecked="OnSelectAllUnchecked"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Click="CheckBox_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Oberfläche" Binding="{Binding Oberflaeche}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Güte" Binding="{Binding Guete}" Width="70" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="70" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="50" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00} kg}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat=dd.MM.yyyy}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="130" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="150" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#FF9800"/>
+                                <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Lieferant" Binding="{Binding Lieferant}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Lieferschein-Nr" Binding="{Binding LieferscheinNr}" Width="110" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!-- ✅ EXPANDABLES ONLINE-USERS POPUP -->
+            <Popup x:Name="OnlineUsersPopup" IsOpen="False" Placement="Mouse" AllowsTransparency="True" PopupAnimation="Fade">
+                <Border Background="#1E1E1E" BorderBrush="#4CAF50" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
+                    <StackPanel>
+                        <TextBlock Text="👥 Online Benutzer" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,12"/>
+                        <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                            <ListBox x:Name="OnlineUsersList" Background="Transparent" BorderThickness="0" Foreground="White">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" Foreground="#4CAF50" FontSize="12" Margin="0,5,0,5"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                        <TextBlock Text="(Klick irgendwo zum Schließen)" Foreground="#888" FontSize="9" Margin="0,10,0,0" FontStyle="Italic"/>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </DockPanel>
+
+        <Image Source="/Assets/logo.png"
+               Opacity="0.10"
+               Stretch="Uniform"
+               Width="520"
+               Height="520"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"
+               Panel.ZIndex="1"/>
+    </Grid>
 </Window>
 

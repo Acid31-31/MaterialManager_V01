@@ -12,10 +12,8 @@
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
-        Icon="/Assets/app-icon.png">
-    <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
-    </Window.Background>
+        Icon="/Assets/app-icon.png"
+        Background="#0B0B0B">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             ResizeBorderThickness="0"
@@ -274,263 +272,275 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="32">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Background="#111111" Height="32">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="8,0,10,0" VerticalAlignment="Center"/>
+                    <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="8,0,10,0" VerticalAlignment="Center"/>
 
-                <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
-                    <MenuItem Header="Datei">
-                        <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
-                        <Separator/>
-                        <MenuItem Header="Schließen" Click="OnCloseClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Bearbeiten">
-                        <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
-                        <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
-                        <Separator/>
-                        <MenuItem Header="Material bearbeiten" Click="OnEditRestClick"/>
-                        <MenuItem Header="Material löschen" Click="OnDeleteReservedClick"/>
-                        <MenuItem Header="PDF öffnen" Click="OnOpenPdfClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Ansicht">
-                        <MenuItem Header="Reservierte Reste" Click="OnReservedRestsClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Hilfe">
-                        <MenuItem Header="Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
-                        <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
-                    </MenuItem>
-                </Menu>
+                    <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
+                        <MenuItem Header="Datei">
+                            <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
+                            <Separator/>
+                            <MenuItem Header="Schließen" Click="OnCloseClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Bearbeiten">
+                            <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
+                            <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
+                            <Separator/>
+                            <MenuItem Header="Material bearbeiten" Click="OnEditRestClick"/>
+                            <MenuItem Header="Material löschen" Click="OnDeleteReservedClick"/>
+                            <MenuItem Header="PDF öffnen" Click="OnOpenPdfClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Ansicht">
+                            <MenuItem Header="Reservierte Reste" Click="OnReservedRestsClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Hilfe">
+                            <MenuItem Header="Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
+                            <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
+                        </MenuItem>
+                    </Menu>
 
-                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
-                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
+                        <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-        <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="Laser – Auftragsübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
-                </StackPanel>
+                    <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Laser – Auftragsübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
+                    </StackPanel>
 
-                <Button Grid.Column="2"
-                        Content="Schließen"
-                        Click="OnCloseClick"
-                        Background="#C42B1C"
-                        Foreground="White"
-                        Padding="14,8"/>
-            </Grid>
-        </Border>
-
-        <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
-            <DockPanel LastChildFill="True">
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Content="Aktualisieren"
-                            Click="OnRefreshClick"
-                            Background="#555"
+                    <Button Grid.Column="2"
+                            Content="Schließen"
+                            Click="OnCloseClick"
+                            Background="#C42B1C"
                             Foreground="White"
-                            Padding="16,12"/>
-                </StackPanel>
+                            Padding="14,8"/>
+                </Grid>
+            </Border>
 
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="← Zurück"
-                            Click="OnUndoClick"
-                            Background="#5D4037"
-                            Foreground="White"
-                            Padding="16,12"
-                            Margin="0,0,8,0"/>
-                    <Button Content="→ Vorwärts"
-                            Click="OnRedoClick"
-                            Background="#6D4C41"
-                            Foreground="White"
-                            Padding="16,12"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Material bearbeiten"
-                            Click="OnEditRestClick"
+            <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Aktualisieren"
+                                Click="OnRefreshClick"
+                                Background="#555"
+                                Foreground="White"
+                                Padding="16,12"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="← Zurück"
+                                Click="OnUndoClick"
+                                Background="#5D4037"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
+                        <Button Content="→ Vorwärts"
+                                Click="OnRedoClick"
+                                Background="#6D4C41"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Material bearbeiten"
+                                Click="OnEditRestClick"
+                                Background="#455A64"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Material löschen"
+                                Click="OnDeleteReservedClick"
+                                Background="#8B1E1E"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
+                        <Button Content="📄 PDF öffnen"
+                                Click="OnOpenPdfClick"
+                                Background="#E65100"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,12,0"/>
+                        <TextBlock Text="Nur gebuchte Materialien mit Auftragsnummer – Änderung hebt die Reservierung auf" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <Border DockPanel.Dock="Top" Background="#0B0B0B" Padding="12" BorderBrush="#333" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Aufträge der ausgewählten Kalenderwoche" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <Button Grid.Row="0"
+                            Grid.Column="1"
+                            Content="{Binding AuftragsKwText}"
+                            Click="OnAuftragKwAuswahlClick"
                             Background="#455A64"
                             Foreground="White"
-                            Padding="16,12"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Material löschen"
-                            Click="OnDeleteReservedClick"
-                            Background="#8B1E1E"
-                            Foreground="White"
-                            Padding="16,12"
-                            Margin="0,0,8,0"/>
-                    <Button Content="📄 PDF öffnen"
-                            Click="OnOpenPdfClick"
-                            Background="#E65100"
-                            Foreground="White"
-                            Padding="16,12"
-                            Margin="0,0,12,0"/>
-                    <TextBlock Text="Nur gebuchte Materialien mit Auftragsnummer – Änderung hebt die Reservierung auf" Foreground="#AAAAAA" VerticalAlignment="Center"/>
-                </StackPanel>
-            </DockPanel>
-        </Border>
+                            Padding="12,6"
+                            Height="30"
+                            MinWidth="140"
+                            Margin="8,0,0,8"/>
 
-        <Border DockPanel.Dock="Top" Background="#0B0B0B" Padding="12" BorderBrush="#333" BorderThickness="0,1,0,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Aufträge der ausgewählten Kalenderwoche" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-                <Button Grid.Row="0"
-                        Grid.Column="1"
-                        Content="{Binding AuftragsKwText}"
-                        Click="OnAuftragKwAuswahlClick"
-                        Background="#455A64"
-                        Foreground="White"
-                        Padding="12,6"
-                        Height="30"
-                        MinWidth="140"
-                        Margin="8,0,0,8"/>
+                    <DataGrid x:Name="AuftraegeGrid"
+                              Grid.Row="2"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              ItemsSource="{Binding AuftraegeView}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              MouseDoubleClick="OnAuftraegeGridDoubleClick"
+                              RowHeight="28">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                            <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
+                            <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
+                            <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>
+                            <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy}" Width="110"/>
+                            <DataGridTemplateColumn Header="PDF" Width="220">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding PdfDateiname}"
+                                                Click="OnAuftragPdfButtonClick"
+                                                ToolTip="{Binding PdfPfad}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="#FF9800"
+                                                HorizontalContentAlignment="Left"
+                                                Padding="0"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
+            <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Suchen Material:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBox Grid.Column="1"
+                             x:Name="SearchBox"
+                             Background="#222"
+                             Foreground="White"
+                             BorderBrush="#444"
+                             Padding="8,5"
+                             TextChanged="OnSearchTextChanged"/>
+                    <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                    <ComboBox Grid.Column="3"
+                              x:Name="FormFilterBox"
+                              Background="#222"
+                              Foreground="White"
+                              BorderBrush="#444"
+                              SelectionChanged="OnFilterChanged">
+                        <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                        <ComboBoxItem>Blech</ComboBoxItem>
+                        <ComboBoxItem>Rohr</ComboBoxItem>
+                        <ComboBoxItem>Profil</ComboBoxItem>
+                        <ComboBoxItem>GF</ComboBoxItem>
+                        <ComboBoxItem>MF</ComboBoxItem>
+                        <ComboBoxItem>KF</ComboBoxItem>
+                        <ComboBoxItem>Rest</ComboBoxItem>
+                    </ComboBox>
+                    <TextBlock Grid.Column="4"
+                               Text="{Binding SummaryText}"
+                               Foreground="#AAAAAA"
+                               VerticalAlignment="Center"
+                               Margin="16,0,0,0"/>
+                </Grid>
+            </Border>
 
-                <DataGrid x:Name="AuftraegeGrid"
-                          Grid.Row="2"
-                          Grid.Column="0"
-                          Grid.ColumnSpan="2"
-                          ItemsSource="{Binding AuftraegeView}"
-                          AutoGenerateColumns="False"
-                          CanUserAddRows="False"
-                          IsReadOnly="True"
-                          SelectionMode="Single"
-                          SelectionUnit="FullRow"
-                          MouseDoubleClick="OnAuftraegeGridDoubleClick"
-                          RowHeight="28">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-                        <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
-                        <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
-                        <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>
-                        <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy}" Width="110"/>
-                        <DataGridTemplateColumn Header="PDF" Width="220">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="{Binding PdfDateiname}"
-                                            Click="OnAuftragPdfButtonClick"
-                                            ToolTip="{Binding PdfPfad}"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Foreground="#FF9800"
-                                            HorizontalContentAlignment="Left"
-                                            Padding="0"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </Border>
+            <DataGrid x:Name="RestMaterialGrid"
+                      ItemsSource="{Binding RestMaterialien}"
+                      AutoGenerateColumns="False"
+                      Margin="10"
+                      RowHeight="32"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      MouseDoubleClick="OnEditRestClick"
+                      PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="" Width="35">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="160" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#FF9800"/>
+                                <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="100" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
 
-        <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="320"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Suchen Material:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                <TextBox Grid.Column="1"
-                         x:Name="SearchBox"
-                         Background="#222"
-                         Foreground="White"
-                         BorderBrush="#444"
-                         Padding="8,5"
-                         TextChanged="OnSearchTextChanged"/>
-                <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
-                <ComboBox Grid.Column="3"
-                          x:Name="FormFilterBox"
-                          Background="#222"
-                          Foreground="White"
-                          BorderBrush="#444"
-                          SelectionChanged="OnFilterChanged">
-                    <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
-                    <ComboBoxItem>Blech</ComboBoxItem>
-                    <ComboBoxItem>Rohr</ComboBoxItem>
-                    <ComboBoxItem>Profil</ComboBoxItem>
-                    <ComboBoxItem>GF</ComboBoxItem>
-                    <ComboBoxItem>MF</ComboBoxItem>
-                    <ComboBoxItem>KF</ComboBoxItem>
-                    <ComboBoxItem>Rest</ComboBoxItem>
-                </ComboBox>
-                <TextBlock Grid.Column="4"
-                           Text="{Binding SummaryText}"
-                           Foreground="#AAAAAA"
-                           VerticalAlignment="Center"
-                           Margin="16,0,0,0"/>
-            </Grid>
-        </Border>
-
-        <DataGrid x:Name="RestMaterialGrid"
-                  ItemsSource="{Binding RestMaterialien}"
-                  AutoGenerateColumns="False"
-                  Margin="10"
-                  RowHeight="32"
-                  CanUserAddRows="False"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  MouseDoubleClick="OnEditRestClick"
-                  PreviewMouseLeftButtonDown="OnGridPreviewMouseLeftButtonDown">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="" Width="35">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="90" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="60" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GewichtKg, StringFormat={}{0:0.00}}" Width="95" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="100" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140" IsReadOnly="True"/>
-                <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="160" IsReadOnly="True">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#FF9800"/>
-                            <Setter Property="ToolTip" Value="{Binding PdfPfad}"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Geändert" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy}" Width="100" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+        <Image Source="/Assets/logo.png"
+               Opacity="0.10"
+               Stretch="Uniform"
+               Width="500"
+               Height="500"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"
+               Panel.ZIndex="1"/>
+    </Grid>
 </Window>

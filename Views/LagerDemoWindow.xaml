@@ -12,10 +12,8 @@
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
-        Icon="/Assets/app-icon.png">
-    <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
-    </Window.Background>
+        Icon="/Assets/app-icon.png"
+        Background="#0B0B0B">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             ResizeBorderThickness="0"
@@ -239,155 +237,156 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="32">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Background="#111111" Height="32">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="8,0,10,0" VerticalAlignment="Center"/>
+                    <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="8,0,10,0" VerticalAlignment="Center"/>
 
-                <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
-                    <MenuItem Header="Datei">
-                        <MenuItem Header="Material neu" Click="OnNewMaterialClick"/>
-                        <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
-                        <Separator/>
-                        <MenuItem Header="Schließen" Click="OnCloseClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Bearbeiten">
-                        <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
-                        <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
-                        <Separator/>
-                        <MenuItem Header="Material bearbeiten" Click="OnEditMaterialClick"/>
-                        <MenuItem Header="Material löschen" Click="OnDeleteMaterialClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Ansicht">
-                        <MenuItem Header="Regalauslastung" Click="OnShelfUtilizationClick"/>
-                        <MenuItem Header="Inventur" Click="OnInventoryClick"/>
-                        <MenuItem Header="Niedrige Bestände" Click="OnLowStockClick"/>
-                    </MenuItem>
-                    <MenuItem Header="Hilfe">
-                        <MenuItem Header="Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
-                        <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
-                    </MenuItem>
-                </Menu>
+                    <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
+                        <MenuItem Header="Datei">
+                            <MenuItem Header="Material neu" Click="OnNewMaterialClick"/>
+                            <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
+                            <Separator/>
+                            <MenuItem Header="Schließen" Click="OnCloseClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Bearbeiten">
+                            <MenuItem Header="Zurück" InputGestureText="Strg+Z" Click="OnUndoClick"/>
+                            <MenuItem Header="Vorwärts" InputGestureText="Strg+Y" Click="OnRedoClick"/>
+                            <Separator/>
+                            <MenuItem Header="Material bearbeiten" Click="OnEditMaterialClick"/>
+                            <MenuItem Header="Material löschen" Click="OnDeleteMaterialClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Ansicht">
+                            <MenuItem Header="Regalauslastung" Click="OnShelfUtilizationClick"/>
+                            <MenuItem Header="Inventur" Click="OnInventoryClick"/>
+                            <MenuItem Header="Niedrige Bestände" Click="OnLowStockClick"/>
+                        </MenuItem>
+                        <MenuItem Header="Hilfe">
+                            <MenuItem Header="Programm- &amp; Netzwerkanleitung" Click="OnProgrammHilfe"/>
+                            <MenuItem Header="Nach Updates suchen" Click="OnCheckForUpdates"/>
+                        </MenuItem>
+                    </Menu>
 
-                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
-                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
+                        <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-        <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="Lager – Materialübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
-                </StackPanel>
+                    <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Lager – Materialübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
+                    </StackPanel>
 
-                <Button Grid.Column="2"
-                        Content="Schließen"
-                        Click="OnCloseClick"
-                        Background="#C42B1C"
-                        Foreground="White"
-                        Padding="14,8"/>
-            </Grid>
-        </Border>
+                    <Button Grid.Column="2"
+                            Content="Schließen"
+                            Click="OnCloseClick"
+                            Background="#C42B1C"
+                            Foreground="White"
+                            Padding="14,8"/>
+                </Grid>
+            </Border>
 
-        <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
-            <DockPanel LastChildFill="True">
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <Button Content="Regalauslastung"
-                            Click="OnShelfUtilizationClick"
-                            Background="#1976D2"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Niedrige Bestände"
-                            Click="OnLowStockClick"
-                            Background="#EF6C00"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Inventur"
-                            Click="OnInventoryClick"
-                            Background="#00897B"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Aktualisieren"
-                            Click="OnRefreshClick"
-                            Background="#555"
-                            Foreground="White"
-                            Padding="12,8"/>
-                </StackPanel>
+            <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Regalauslastung"
+                                Click="OnShelfUtilizationClick"
+                                Background="#1976D2"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Niedrige Bestände"
+                                Click="OnLowStockClick"
+                                Background="#EF6C00"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Inventur"
+                                Click="OnInventoryClick"
+                                Background="#00897B"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Aktualisieren"
+                                Click="OnRefreshClick"
+                                Background="#555"
+                                Foreground="White"
+                                Padding="12,8"/>
+                    </StackPanel>
 
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="← Zurück"
-                            Click="OnUndoClick"
-                            Background="#5D4037"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="→ Vorwärts"
-                            Click="OnRedoClick"
-                            Background="#6D4C41"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Material neu"
-                            Click="OnNewMaterialClick"
-                            Background="#2E7D32"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Material bearbeiten"
-                            Click="OnEditMaterialClick"
-                            Background="#455A64"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,8,0"/>
-                    <Button Content="Material löschen"
-                            Click="OnDeleteMaterialClick"
-                            Background="#C62828"
-                            Foreground="White"
-                            Padding="12,8"/>
-                </StackPanel>
-            </DockPanel>
-        </Border>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="← Zurück"
+                                Click="OnUndoClick"
+                                Background="#5D4037"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="→ Vorwärts"
+                                Click="OnRedoClick"
+                                Background="#6D4C41"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Material neu"
+                                Click="OnNewMaterialClick"
+                                Background="#2E7D32"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Material bearbeiten"
+                                Click="OnEditMaterialClick"
+                                Background="#455A64"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Material löschen"
+                                Click="OnDeleteMaterialClick"
+                                Background="#C62828"
+                                Foreground="White"
+                                Padding="12,8"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
 
-        <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="300"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                <TextBox Grid.Column="1"
+            <Border DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Suchen:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBox Grid.Column="1"
                          x:Name="SearchBox"
                          Background="#222"
                          Foreground="White"
                          BorderBrush="#444"
                          Padding="8,5"
                          TextChanged="OnSearchTextChanged"/>
-                <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
-                <ComboBox Grid.Column="3"
+                    <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                    <ComboBox Grid.Column="3"
                           x:Name="FormFilterBox"
                           Background="#222"
                           Foreground="White"
@@ -455,4 +454,15 @@
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
+
+        <Image Source="/Assets/logo.png"
+               Opacity="0.10"
+               Stretch="Uniform"
+               Width="500"
+               Height="500"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"
+               Panel.ZIndex="1"/>
+    </Grid>
 </Window>
