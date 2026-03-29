@@ -49,6 +49,78 @@ function Get-PackageVersion {
 
 $Script:PackageVersion = Get-PackageVersion
 
+function Get-InstallerPricing {
+    $fallback = @{
+        Single = 3300.0
+        Multi3 = 8250.0
+        Company10 = 14850.0
+        Enterprise = 26400.0
+    }
+
+    try {
+        $modelPaths = @(
+            (Join-Path $Script:SourcePath 'MaterialManager\pricing-model.json'),
+            (Join-Path (Split-Path -Parent $Script:SourcePath) 'pricing-model.json')
+        )
+
+        $modelPath = $modelPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+        if ([string]::IsNullOrWhiteSpace($modelPath)) {
+            return $fallback
+        }
+
+        $model = Get-Content $modelPath -Raw | ConvertFrom-Json
+        if ($null -eq $model -or $null -eq $model.Modules -or $model.Modules.Count -eq 0) {
+            return $fallback
+        }
+
+        $score = 0.0
+        foreach ($m in $model.Modules) {
+            $s = 0.0
+            [double]::TryParse([string]$m.Score, [ref]$s) | Out-Null
+            if ($s -gt 0) { $score += $s }
+        }
+
+        $baseFactor = 2.0
+        $roundStep = 50.0
+        [double]::TryParse([string]$model.BasePriceFactor, [ref]$baseFactor) | Out-Null
+        [double]::TryParse([string]$model.RoundingStep, [ref]$roundStep) | Out-Null
+        if ($baseFactor -le 0) { $baseFactor = 2.0 }
+        if ($roundStep -le 0) { $roundStep = 50.0 }
+
+        $singleMul = 1.0; $multiMul = 2.2; $companyMul = 4.5; $enterpriseMul = 8.0
+        if ($null -ne $model.Multipliers) {
+            [double]::TryParse([string]$model.Multipliers.Single, [ref]$singleMul) | Out-Null
+            [double]::TryParse([string]$model.Multipliers.Multi3, [ref]$multiMul) | Out-Null
+            [double]::TryParse([string]$model.Multipliers.Company10, [ref]$companyMul) | Out-Null
+            [double]::TryParse([string]$model.Multipliers.Enterprise, [ref]$enterpriseMul) | Out-Null
+        }
+
+        function Round-Step([double]$value, [double]$step) {
+            if ($value -le 0) { return 0.0 }
+            return [Math]::Ceiling($value / $step) * $step
+        }
+
+        $basePrice = Round-Step ($score * $baseFactor) $roundStep
+
+        return @{
+            Single = (Round-Step ($basePrice * $singleMul) $roundStep)
+            Multi3 = (Round-Step ($basePrice * $multiMul) $roundStep)
+            Company10 = (Round-Step ($basePrice * $companyMul) $roundStep)
+            Enterprise = (Round-Step ($basePrice * $enterpriseMul) $roundStep)
+        }
+    }
+    catch {
+        return $fallback
+    }
+}
+
+function Format-Euro([double]$value) {
+    $culture = [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')
+    return ($value.ToString('N2', $culture) + ' EUR/Jahr')
+}
+
+$Script:Pricing = Get-InstallerPricing
+
 function Get-LatestOnlineVersion {
     try {
         $response = Invoke-RestMethod -Uri $Script:VersionApiUrl -Headers @{ 'User-Agent' = 'MaterialManager-V01-Installer'; 'Accept' = 'application/vnd.github+json' } -TimeoutSec 8
@@ -253,7 +325,16 @@ Klicken Sie auf 'Weiter' um fortzufahren.
 function Show-PricingScreen {
     Clear-Content
     Update-Progress 2
-    
+
+    $singlePriceText = Format-Euro([double]$Script:Pricing.Single)
+    $multiPriceText = Format-Euro([double]$Script:Pricing.Multi3)
+    $companyPriceText = Format-Euro([double]$Script:Pricing.Company10)
+    $multiPerSeat = 0.0
+    if ([double]$Script:Pricing.Multi3 -gt 0) {
+        $multiPerSeat = [Math]::Round(([double]$Script:Pricing.Multi3 / 3.0), 2)
+    }
+    $multiPerSeatText = ($multiPerSeat.ToString('N2', [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')) + ' EUR/PC')
+
     $titleLabel = New-Object System.Windows.Forms.Label
     $titleLabel.Text = 'Lizenzmodell waehlen'
     $titleLabel.Font = New-Object System.Drawing.Font('Segoe UI', 20, [System.Drawing.FontStyle]::Bold)
@@ -290,7 +371,7 @@ function Show-PricingScreen {
     
     # RADIO BUTTON 2: EINZELPLATZ
     $Script:radioSINGLE = New-Object System.Windows.Forms.RadioButton
-    $Script:radioSINGLE.Text = 'EINZELPLATZ-LIZENZ - 299,00 EUR'
+    $Script:radioSINGLE.Text = "EINZELPLATZ-LIZENZ - $singlePriceText"
     $Script:radioSINGLE.ForeColor = [System.Drawing.Color]::White
     $Script:radioSINGLE.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
     $Script:radioSINGLE.Location = New-Object System.Drawing.Point(50, 190)
@@ -307,7 +388,7 @@ function Show-PricingScreen {
     
     # RADIO BUTTON 3: MEHRPLATZ
     $Script:radioMULTI = New-Object System.Windows.Forms.RadioButton
-    $Script:radioMULTI.Text = 'MEHRPLATZ-LIZENZ (5 PCs) - 1.199,00 EUR'
+    $Script:radioMULTI.Text = "MEHRPLATZ-LIZENZ (3 PCs) - $multiPriceText"
     $Script:radioMULTI.ForeColor = [System.Drawing.Color]::White
     $Script:radioMULTI.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
     $Script:radioMULTI.Location = New-Object System.Drawing.Point(50, 260)
@@ -315,7 +396,7 @@ function Show-PricingScreen {
     $contentPanel.Controls.Add($Script:radioMULTI)
     
     $multiInfo = New-Object System.Windows.Forms.Label
-    $multiInfo.Text = '   5 Lizenzen (je 239,80 EUR/PC) | 12 Monate Support | Netzwerk-Modus'
+    $multiInfo.Text = "   3 Lizenzen (je $multiPerSeatText) | 12 Monate Support | Netzwerk-Modus"
     $multiInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
     $multiInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
     $multiInfo.Location = New-Object System.Drawing.Point(50, 290)
@@ -324,7 +405,7 @@ function Show-PricingScreen {
     
     # RADIO BUTTON 4: UNTERNEHMEN
     $Script:radioENT = New-Object System.Windows.Forms.RadioButton
-    $Script:radioENT.Text = 'UNTERNEHMENSLIZENZ (10+ PCs) - Auf Anfrage'
+    $Script:radioENT.Text = "UNTERNEHMENSLIZENZ (10+ PCs) - $companyPriceText"
     $Script:radioENT.ForeColor = [System.Drawing.Color]::White
     $Script:radioENT.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
     $Script:radioENT.Location = New-Object System.Drawing.Point(50, 330)
