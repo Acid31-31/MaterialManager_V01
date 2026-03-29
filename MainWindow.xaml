@@ -4,6 +4,7 @@
         xmlns:conv="clr-namespace:MaterialManager_V01.Converters"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="MaterialManager V01" Height="800" Width="1600" MinWidth="640" MinHeight="480"
+        Icon="pack://application:,,,/Assets/app.ico"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None"

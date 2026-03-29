@@ -12,7 +12,7 @@
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
-        Icon="pack://application:,,,/Assets/app-icon.png">
+        Icon="pack://application:,,,/Assets/app.ico">
     <Window.Background>
         <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
     </Window.Background>
