@@ -133,6 +133,10 @@
 
             <Border DockPanel.Dock="Top" Background="#1B1B1B" Padding="12">
                 <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="300"/>
@@ -149,8 +153,14 @@
                     <TextBlock Grid.Column="2" Text="Stückzahl:" Foreground="White" VerticalAlignment="Center" Margin="12,0,10,0"/>
                     <TextBox Grid.Column="3" x:Name="QuantityBox" Text="1" />
 
-                    <Button Grid.Column="4" Content="Hinzufügen" Click="OnAddClick" Margin="12,0,8,0" Padding="14,6" Background="#2E7D32" Foreground="White"/>
-                    <Button Grid.Column="5" Content="Löschen" Click="OnDeleteClick" Padding="14,6" Background="#C62828" Foreground="White"/>
+                    <Button Grid.Column="4" Content="PDF suchen" Click="OnSearchPdfClick" Margin="12,0,8,0" Padding="14,6" Background="#1565C0" Foreground="White"/>
+                    <Button Grid.Column="5" Content="Hinzufügen" Click="OnAddClick" Margin="0,0,8,0" Padding="14,6" Background="#2E7D32" Foreground="White"/>
+                    <Button Grid.Column="6" Content="Löschen" Click="OnDeleteClick" Padding="14,6" Background="#C62828" Foreground="White" HorizontalAlignment="Left"/>
+
+                    <TextBlock Grid.Row="1" Text="PDF-Ordner:" Foreground="White" VerticalAlignment="Center" Margin="0,10,10,0"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" x:Name="PdfFolderBox" Margin="0,10,0,0" Text=""/>
+                    <Button Grid.Row="1" Grid.Column="4" Content="Pfad wählen" Click="OnChoosePdfFolderClick" Margin="12,10,8,0" Padding="14,6" Background="#455A64" Foreground="White"/>
+                    <TextBlock Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2" x:Name="FoundPdfText" Margin="0,10,0,0" Foreground="#AAAAAA" VerticalAlignment="Center" Text="Keine PDF gesucht."/>
                 </Grid>
             </Border>
 
@@ -162,10 +172,12 @@
                       SelectionMode="Single"
                       SelectionUnit="FullRow"
                       IsReadOnly="True"
+                      MouseDoubleClick="OnGridMouseDoubleClick"
                       RowHeight="30">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Zeichnungsnummer" Binding="{Binding Zeichnungsnummer}" Width="*"/>
-                    <DataGridTextColumn Header="Stückzahl" Binding="{Binding Stueckzahl}" Width="140"/>
+                    <DataGridTextColumn Header="Stückzahl" Binding="{Binding Stueckzahl}" Width="120"/>
+                    <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="260"/>
                     <DataGridTextColumn Header="Erfasst am" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="180"/>
                 </DataGrid.Columns>
             </DataGrid>

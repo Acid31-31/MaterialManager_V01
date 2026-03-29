@@ -1,9 +1,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -11,6 +13,7 @@ namespace MaterialManager_V01.Views
     public partial class KundenMaterialWindow : Window
     {
         private static readonly string StorePath = Path.Combine(PathService.DataDirectory, "kundenmaterial.json");
+        private static readonly string SettingsPath = Path.Combine(PathService.DataDirectory, "kundenmaterial.settings.json");
 
         public ObservableCollection<KundenMaterialItem> Items { get; } = new();
 
@@ -18,6 +21,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
+            LoadSettings();
             LoadItems();
         }
 
@@ -85,6 +89,47 @@ namespace MaterialManager_V01.Views
             dlg.ShowDialog();
         }
 
+        private void OnChoosePdfFolderClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
+            {
+                Title = "PDF-Datei aus gewünschtem Ordner wählen",
+                Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (!string.IsNullOrWhiteSpace(PdfFolderBox.Text) && Directory.Exists(PdfFolderBox.Text))
+                dlg.InitialDirectory = PdfFolderBox.Text;
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var folder = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+            PdfFolderBox.Text = folder;
+            SaveSettings();
+        }
+
+        private void OnSearchPdfClick(object sender, RoutedEventArgs e)
+        {
+            var zeichnungsnummer = DrawingNumberBox.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(zeichnungsnummer))
+            {
+                MessageBox.Show("Bitte zuerst eine Zeichnungsnummer eingeben.", "PDF-Suche", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var path = FindPdfByDrawingNumber(zeichnungsnummer);
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                FoundPdfText.Text = "Keine passende PDF gefunden.";
+                return;
+            }
+
+            FoundPdfText.Text = Path.GetFileName(path);
+            var preview = new PdfPreviewDialog(path) { Owner = this };
+            preview.ShowDialog();
+        }
+
         private void OnAddClick(object sender, RoutedEventArgs e)
         {
             var zeichnungsnummer = DrawingNumberBox.Text?.Trim() ?? string.Empty;
@@ -100,12 +145,20 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            var pdfPath = FindPdfByDrawingNumber(zeichnungsnummer);
+
             Items.Add(new KundenMaterialItem
             {
                 Zeichnungsnummer = zeichnungsnummer,
                 Stueckzahl = stueckzahl,
+                PdfPfad = pdfPath ?? string.Empty,
+                PdfDateiname = string.IsNullOrWhiteSpace(pdfPath) ? string.Empty : Path.GetFileName(pdfPath),
                 ErstelltAm = DateTime.Now
             });
+
+            FoundPdfText.Text = string.IsNullOrWhiteSpace(pdfPath)
+                ? "Keine passende PDF gefunden."
+                : Path.GetFileName(pdfPath);
 
             SaveItems();
             DrawingNumberBox.Clear();
@@ -126,6 +179,46 @@ namespace MaterialManager_V01.Views
 
             Items.Remove(item);
             SaveItems();
+        }
+
+        private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (KundenMaterialGrid.SelectedItem is not KundenMaterialItem item)
+                return;
+
+            if (string.IsNullOrWhiteSpace(item.PdfPfad) || !File.Exists(item.PdfPfad))
+            {
+                MessageBox.Show("Für diesen Eintrag ist keine gültige PDF-Datei hinterlegt.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var preview = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
+            preview.ShowDialog();
+        }
+
+        private string? FindPdfByDrawingNumber(string zeichnungsnummer)
+        {
+            var folder = PdfFolderBox.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+                return null;
+
+            try
+            {
+                var normalized = zeichnungsnummer.Trim();
+                var files = Directory.EnumerateFiles(folder, "*.pdf", SearchOption.AllDirectories)
+                    .Select(p => new { Path = p, Name = Path.GetFileNameWithoutExtension(p) ?? string.Empty })
+                    .Where(x => x.Name.Contains(normalized, StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(x => string.Equals(x.Name, normalized, StringComparison.OrdinalIgnoreCase))
+                    .ThenByDescending(x => x.Name.StartsWith(normalized, StringComparison.OrdinalIgnoreCase))
+                    .ThenBy(x => x.Name.Length)
+                    .ToList();
+
+                return files.FirstOrDefault()?.Path;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private void LoadItems()
@@ -166,12 +259,55 @@ namespace MaterialManager_V01.Views
                 MessageBox.Show($"Speichern fehlgeschlagen:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+        private void LoadSettings()
+        {
+            try
+            {
+                if (!File.Exists(SettingsPath))
+                    return;
+
+                var json = File.ReadAllText(SettingsPath);
+                var settings = JsonSerializer.Deserialize<KundenMaterialSettings>(json);
+                if (settings == null)
+                    return;
+
+                PdfFolderBox.Text = settings.PdfFolder ?? string.Empty;
+            }
+            catch
+            {
+            }
+        }
+
+        private void SaveSettings()
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(SettingsPath);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var settings = new KundenMaterialSettings { PdfFolder = PdfFolderBox.Text?.Trim() ?? string.Empty };
+                var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(SettingsPath, json);
+            }
+            catch
+            {
+            }
+        }
     }
 
     public sealed class KundenMaterialItem
     {
         public string Zeichnungsnummer { get; set; } = string.Empty;
         public int Stueckzahl { get; set; }
+        public string PdfDateiname { get; set; } = string.Empty;
+        public string PdfPfad { get; set; } = string.Empty;
         public DateTime ErstelltAm { get; set; }
+    }
+
+    public sealed class KundenMaterialSettings
+    {
+        public string PdfFolder { get; set; } = string.Empty;
     }
 }
