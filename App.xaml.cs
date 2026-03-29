@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using MaterialManager_V01.Views;
 
@@ -8,9 +10,22 @@ namespace MaterialManager_V01
 {
     public partial class App : Application
     {
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int dwAttribute, ref int pvAttribute, int cbAttribute);
+
+        private const int DwmaUseImmersiveDarkMode = 20;
+        private const int DwmaUseImmersiveDarkModeLegacy = 19;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent,
+                new RoutedEventHandler((sender, _) =>
+                {
+                    if (sender is Window window)
+                        ApplyDarkTitleBar(window);
+                }));
 
             var logPath = Services.PathService.LogPath;
 
@@ -100,6 +115,27 @@ namespace MaterialManager_V01
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Current.Shutdown();
+            }
+        }
+
+        private static void ApplyDarkTitleBar(Window window)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(window).Handle;
+                if (hwnd == IntPtr.Zero)
+                    return;
+
+                var useDark = 1;
+                var result = DwmSetWindowAttribute(hwnd, DwmaUseImmersiveDarkMode, ref useDark, sizeof(int));
+                if (result != 0)
+                {
+                    DwmSetWindowAttribute(hwnd, DwmaUseImmersiveDarkModeLegacy, ref useDark, sizeof(int));
+                }
+            }
+            catch
+            {
+                // Nicht kritisch: Fenster bleibt funktional.
             }
         }
 

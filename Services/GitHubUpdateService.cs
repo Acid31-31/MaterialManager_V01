@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +17,7 @@ namespace MaterialManager_V01.Services
     public static class GitHubUpdateService
     {
         private const string LatestReleaseApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest";
+        private const string CompareApiBase = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/compare/";
         private static readonly HttpClient Http = CreateClient();
 
         private static readonly string UpdateSettingsFile = Path.Combine(
@@ -124,6 +127,7 @@ namespace MaterialManager_V01.Services
                 }
 
                 var updateAvailable = ParseVersion(tag) > ParseVersion(current);
+                var changelog = await BuildReadableChangelogAsync(body, current, tag);
 
                 var assetError = selectedUrl == null
                     ? "Kein UpdateInstaller/MSI/ZIP Asset im Release gefunden."
@@ -133,7 +137,7 @@ namespace MaterialManager_V01.Services
                 {
                     CurrentVersion = current,
                     LatestVersion = tag,
-                    Changelog = string.IsNullOrWhiteSpace(body) ? "Kein Changelog verfügbar." : body,
+                    Changelog = changelog,
                     MsiDownloadUrl = msiUrl,
                     DownloadUrl = selectedUrl,
                     AssetName = selectedName,
@@ -153,6 +157,95 @@ namespace MaterialManager_V01.Services
                     ErrorMessage = ex.Message
                 };
             }
+        }
+
+        private static async Task<string> BuildReadableChangelogAsync(string body, string currentTag, string latestTag)
+        {
+            var cleanBody = string.IsNullOrWhiteSpace(body) ? string.Empty : body.Trim();
+
+            var commits = await TryGetCompareCommitsAsync(currentTag, latestTag);
+            if (commits.Count == 0)
+            {
+                var compareFromBody = ParseCompareTagsFromBody(cleanBody);
+                if (compareFromBody != null)
+                    commits = await TryGetCompareCommitsAsync(compareFromBody.Value.baseTag, compareFromBody.Value.headTag);
+            }
+
+            if (commits.Count == 0)
+                return string.IsNullOrWhiteSpace(cleanBody) ? "Kein Changelog verfügbar." : cleanBody;
+
+            var lines = new List<string>
+            {
+                "Änderungen in dieser Version:"
+            };
+
+            foreach (var msg in commits.Take(20))
+                lines.Add($"• {msg}");
+
+            if (commits.Count > 20)
+                lines.Add($"• ... und {commits.Count - 20} weitere Commits");
+
+            lines.Add(string.Empty);
+            lines.Add($"Vergleich: https://github.com/Acid31-31/MaterialManager_V01/compare/{currentTag}...{latestTag}");
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static async Task<List<string>> TryGetCompareCommitsAsync(string baseTag, string headTag)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(baseTag) || string.IsNullOrWhiteSpace(headTag))
+                    return new List<string>();
+
+                var url = CompareApiBase + $"{Uri.EscapeDataString(baseTag)}...{Uri.EscapeDataString(headTag)}";
+                using var response = await Http.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                    return new List<string>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+
+                if (!doc.RootElement.TryGetProperty("commits", out var commitsElement) || commitsElement.ValueKind != JsonValueKind.Array)
+                    return new List<string>();
+
+                var result = new List<string>();
+                foreach (var c in commitsElement.EnumerateArray())
+                {
+                    if (!c.TryGetProperty("commit", out var commitObj))
+                        continue;
+                    if (!commitObj.TryGetProperty("message", out var messageObj))
+                        continue;
+
+                    var raw = messageObj.GetString() ?? string.Empty;
+                    var firstLine = raw.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)[0].Trim();
+                    if (!string.IsNullOrWhiteSpace(firstLine))
+                        result.Add(firstLine);
+                }
+
+                return result;
+            }
+            catch
+            {
+                return new List<string>();
+            }
+        }
+
+        private static (string baseTag, string headTag)? ParseCompareTagsFromBody(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body))
+                return null;
+
+            var match = Regex.Match(body, "compare/(?<base>[^.\\s]+)\\.\\.\\.(?<head>[^\\s)]+)", RegexOptions.IgnoreCase);
+            if (!match.Success)
+                return null;
+
+            var baseTag = match.Groups["base"].Value.Trim();
+            var headTag = match.Groups["head"].Value.Trim();
+            if (string.IsNullOrWhiteSpace(baseTag) || string.IsNullOrWhiteSpace(headTag))
+                return null;
+
+            return (baseTag, headTag);
         }
 
         public static bool ShouldRunAutoCheckToday()

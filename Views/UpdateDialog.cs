@@ -227,5 +227,17 @@ namespace MaterialManager_V01.Views
             _cts?.Cancel();
             Close();
         }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
+        private void OnCloseWindowClick(object sender, RoutedEventArgs e)
+        {
+            _cts?.Cancel();
+            Close();
+        }
     }
 }
