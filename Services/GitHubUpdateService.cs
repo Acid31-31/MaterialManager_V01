@@ -193,13 +193,43 @@ namespace MaterialManager_V01.Services
                 return string.Join(Environment.NewLine, lines);
             }
 
-            if (LooksLikeOnlyCompareLink(cleanBody))
+            var parsedBodyLines = ParseBodyToBulletLines(cleanBody);
+            if (parsedBodyLines.Count > 0)
             {
-                return "Änderungsdetails sind im Release hinterlegt, konnten aber aktuell nicht automatisch geladen werden. " +
-                       "Bitte kurz später erneut auf 'Nach Updates suchen' klicken.";
+                var lines = new List<string> { "Änderungen in dieser Version:" };
+                lines.AddRange(parsedBodyLines.Select(x => $"• {x}"));
+                return string.Join(Environment.NewLine, lines);
             }
 
-            return string.IsNullOrWhiteSpace(cleanBody) ? "Kein Changelog verfügbar." : cleanBody;
+            return "Änderungsdetails konnten gerade nicht geladen werden. Bitte später erneut auf 'Nach Updates suchen' klicken.";
+        }
+
+        private static List<string> ParseBodyToBulletLines(string body)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrWhiteSpace(body))
+                return result;
+
+            var lines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(l => l.Trim())
+                            .ToList();
+
+            foreach (var line in lines)
+            {
+                var cleaned = line.Replace("**", string.Empty).Replace("__", string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(cleaned))
+                    continue;
+
+                if (cleaned.StartsWith("Full Changelog", StringComparison.OrdinalIgnoreCase) ||
+                    cleaned.Contains("/compare/"))
+                    continue;
+
+                cleaned = cleaned.TrimStart('-', '*', '•').Trim();
+                if (!string.IsNullOrWhiteSpace(cleaned))
+                    result.Add(cleaned);
+            }
+
+            return result;
         }
 
         private static async Task<List<string>> TryGetCompareCommitsAsync(string baseTag, string headTag)
