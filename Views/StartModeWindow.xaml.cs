@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Input;
 using MaterialManager_V01.Services;
@@ -63,6 +64,10 @@ namespace MaterialManager_V01.Views
                 var dlg = new UpdateDialog(result) { Owner = this };
                 dlg.ShowDialog();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             finally
             {
                 Mouse.OverrideCursor = null;
@@ -108,13 +113,20 @@ namespace MaterialManager_V01.Views
 
         private void OnStandardClick(object sender, RoutedEventArgs e)
         {
-            if (!PromptForOperatorName())
-                return;
+            try
+            {
+                if (!PromptForOperatorName())
+                    return;
 
-            var window = new MainWindow();
-            Application.Current.MainWindow = window;
-            window.Show();
-            Close();
+                var window = new MainWindow();
+                Application.Current.MainWindow = window;
+                window.Show();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Hauptprogramm konnte nicht geöffnet werden:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnLagerClick(object sender, RoutedEventArgs e)
