@@ -43,6 +43,11 @@ namespace MaterialManager_V01.Views
                 "update_ui.log");
             LoadUpdateInfo();
 
+            Loaded += async (_, __) =>
+            {
+                await RefreshChangelogDisplayAsync();
+            };
+
             if (_autoStartInstall)
             {
                 Loaded += async (_, __) =>
@@ -56,9 +61,27 @@ namespace MaterialManager_V01.Views
         private void LoadUpdateInfo()
         {
             VersionInfo = $"Aktuell: {_updateInfo.CurrentVersion} → Neu: {_updateInfo.LatestVersion}";
-            Changelog = string.IsNullOrWhiteSpace(_updateInfo.Changelog)
-                ? "Es wurden Änderungen in dieser Version veröffentlicht.\n\nDetaillierte Punkte sind im Release hinterlegt."
-                : _updateInfo.Changelog;
+            Changelog = "Änderungen werden geladen...";
+        }
+
+        private async System.Threading.Tasks.Task RefreshChangelogDisplayAsync()
+        {
+            try
+            {
+                var normalized = await GitHubUpdateService.NormalizeChangelogAsync(
+                    _updateInfo.Changelog,
+                    _updateInfo.CurrentVersion,
+                    _updateInfo.LatestVersion);
+
+                Changelog = string.IsNullOrWhiteSpace(normalized)
+                    ? "Änderungsdetails konnten nicht geladen werden."
+                    : normalized;
+            }
+            catch (Exception ex)
+            {
+                AppendUiLog($"Changelog-Refresh Fehler: {ex.Message}");
+                Changelog = "Änderungsdetails konnten nicht geladen werden.";
+            }
         }
 
         private async void OnInstallieren(object sender, RoutedEventArgs e)

@@ -160,6 +160,11 @@ namespace MaterialManager_V01.Services
             }
         }
 
+        public static async Task<string> NormalizeChangelogAsync(string rawChangelog, string currentTag, string latestTag)
+        {
+            return await BuildReadableChangelogAsync(rawChangelog, currentTag, latestTag);
+        }
+
         private static async Task<string> BuildReadableChangelogAsync(string body, string currentTag, string latestTag)
         {
             var cleanBody = string.IsNullOrWhiteSpace(body) ? string.Empty : body.Trim();
