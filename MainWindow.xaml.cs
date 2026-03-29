@@ -106,6 +106,28 @@ namespace MaterialManager_V01
         private int _reservierteResteCount = 0;
         public int ReservierteResteCount { get => _reservierteResteCount; set { _reservierteResteCount = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReservierteResteCount))); } }
 
+        private string _licenseTrialDisplayText = string.Empty;
+        public string LicenseTrialDisplayText
+        {
+            get => _licenseTrialDisplayText;
+            set
+            {
+                _licenseTrialDisplayText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LicenseTrialDisplayText)));
+            }
+        }
+
+        private Brush _licenseTrialDisplayBrush = Brushes.White;
+        public Brush LicenseTrialDisplayBrush
+        {
+            get => _licenseTrialDisplayBrush;
+            set
+            {
+                _licenseTrialDisplayBrush = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LicenseTrialDisplayBrush)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -137,6 +159,7 @@ namespace MaterialManager_V01
 
                 var status = Services.LicenseService.GetStatusMessage();
                 Title = $"MaterialManager V01 - {status}";
+                RefreshLicenseTrialDisplay();
                 Log($"Titel gesetzt: {Title}");
 
                 Materialien.CollectionChanged += (_, __) => UpdateStats();
@@ -1217,6 +1240,25 @@ namespace MaterialManager_V01
 
             var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
             dlg.ShowDialog();
+        }
+
+        private void RefreshLicenseTrialDisplay()
+        {
+            if (Services.LicenseService.IsFullLicenseActive())
+            {
+                LicenseTrialDisplayText = "Vollversion aktiv";
+                LicenseTrialDisplayBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                return;
+            }
+
+            var remainingDays = Services.LicenseService.GetRemainingTrialDays();
+            var expiration = Services.LicenseService.GetExpirationDate();
+            var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
+
+            LicenseTrialDisplayText = $"Testversion: {remainingDays} Tage{expiryText}";
+            LicenseTrialDisplayBrush = remainingDays <= 7
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
         }
     }
 }
