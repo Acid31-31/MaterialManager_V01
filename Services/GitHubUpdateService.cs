@@ -18,6 +18,7 @@ namespace MaterialManager_V01.Services
     {
         private const string LatestReleaseApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest";
         private const string CompareApiBase = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/compare/";
+        private const string CommitsApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/commits?per_page=20";
         private static readonly HttpClient Http = CreateClient();
 
         private static readonly string UpdateSettingsFile = Path.Combine(
@@ -172,23 +173,33 @@ namespace MaterialManager_V01.Services
             }
 
             if (commits.Count == 0)
-                return string.IsNullOrWhiteSpace(cleanBody) ? "Kein Changelog verfügbar." : cleanBody;
+                commits = await TryGetLatestCommitsAsync(12);
 
-            var lines = new List<string>
+            if (commits.Count > 0)
             {
-                "Änderungen in dieser Version:"
-            };
+                var lines = new List<string>
+                {
+                    "Änderungen in dieser Version:"
+                };
 
-            foreach (var msg in commits.Take(20))
-                lines.Add($"• {msg}");
+                foreach (var msg in commits.Take(20))
+                    lines.Add($"• {msg}");
 
-            if (commits.Count > 20)
-                lines.Add($"• ... und {commits.Count - 20} weitere Commits");
+                if (commits.Count > 20)
+                    lines.Add($"• ... und {commits.Count - 20} weitere Commits");
 
-            lines.Add(string.Empty);
-            lines.Add($"Vergleich: https://github.com/Acid31-31/MaterialManager_V01/compare/{currentTag}...{latestTag}");
+                lines.Add(string.Empty);
+                lines.Add($"Vergleich: https://github.com/Acid31-31/MaterialManager_V01/compare/{currentTag}...{latestTag}");
+                return string.Join(Environment.NewLine, lines);
+            }
 
-            return string.Join(Environment.NewLine, lines);
+            if (LooksLikeOnlyCompareLink(cleanBody))
+            {
+                return "Änderungsdetails sind im Release hinterlegt, konnten aber aktuell nicht automatisch geladen werden. " +
+                       "Bitte kurz später erneut auf 'Nach Updates suchen' klicken.";
+            }
+
+            return string.IsNullOrWhiteSpace(cleanBody) ? "Kein Changelog verfügbar." : cleanBody;
         }
 
         private static async Task<List<string>> TryGetCompareCommitsAsync(string baseTag, string headTag)
@@ -229,6 +240,54 @@ namespace MaterialManager_V01.Services
             {
                 return new List<string>();
             }
+        }
+
+        private static async Task<List<string>> TryGetLatestCommitsAsync(int maxItems)
+        {
+            try
+            {
+                using var response = await Http.GetAsync(CommitsApi);
+                if (!response.IsSuccessStatusCode)
+                    return new List<string>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                    return new List<string>();
+
+                var result = new List<string>();
+                foreach (var c in doc.RootElement.EnumerateArray())
+                {
+                    if (!c.TryGetProperty("commit", out var commitObj))
+                        continue;
+                    if (!commitObj.TryGetProperty("message", out var messageObj))
+                        continue;
+
+                    var raw = messageObj.GetString() ?? string.Empty;
+                    var firstLine = raw.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)[0].Trim();
+                    if (!string.IsNullOrWhiteSpace(firstLine))
+                        result.Add(firstLine);
+
+                    if (result.Count >= maxItems)
+                        break;
+                }
+
+                return result;
+            }
+            catch
+            {
+                return new List<string>();
+            }
+        }
+
+        private static bool LooksLikeOnlyCompareLink(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body))
+                return false;
+
+            var compact = body.Replace("**", string.Empty).Trim();
+            return compact.StartsWith("Full Changelog", StringComparison.OrdinalIgnoreCase)
+                   && compact.Contains("/compare/");
         }
 
         private static (string baseTag, string headTag)? ParseCompareTagsFromBody(string body)
