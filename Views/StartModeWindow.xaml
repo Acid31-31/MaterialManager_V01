@@ -3,15 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MaterialManager V01 - Start"
         WindowState="Normal"
+        Background="#0B0B0B"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
-        Icon="pack://application:,,,/Assets/app-icon.png">
-    <Window.Background>
-        <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
-    </Window.Background>
+        Icon="/Assets/app-icon.png">
     <Window.Resources>
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
@@ -121,7 +119,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="pack://application:,,,/Assets/app-icon.png" Width="18" Height="18" Margin="8,0,10,0" VerticalAlignment="Center"/>
+                <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="18" Height="18" Margin="8,0,10,0" VerticalAlignment="Center"/>
 
                 <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
                     <MenuItem Header="Datei">
@@ -160,8 +158,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <Image Source="/Assets/logo.png"
+                   Opacity="0.10"
+                   Stretch="UniformToFill"
+                   IsHitTestVisible="False"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
-                <Image Source="pack://application:,,,/Assets/logo.png"
+                <Image Source="/Assets/logo.png"
                        Width="220"
                        Height="70"
                        Stretch="Uniform"
