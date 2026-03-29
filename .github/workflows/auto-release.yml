@@ -66,6 +66,45 @@ jobs:
           New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
           dotnet publish Installer_Source/UpdateInstaller.csproj -c Release -r win-x64 --self-contained true -o $outputDir /p:PayloadZip="$payloadZip"
 
+      - name: Prepare release notes
+        id: notes
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.meta.outputs.tag }}"
+          $allTags = git tag --sort=-v:refname
+          $previousTag = $allTags | Select-Object -First 1
+
+          $notesFile = Join-Path $env:RUNNER_TEMP "release_notes.md"
+          $lines = New-Object System.Collections.Generic.List[string]
+          $lines.Add("## 📝 Was wurde geändert")
+          $lines.Add("")
+
+          if (-not [string]::IsNullOrWhiteSpace($previousTag)) {
+            $commitLines = git log "$previousTag..HEAD" --pretty=format:"- %s" --no-merges
+          } else {
+            $commitLines = git log -n 20 --pretty=format:"- %s" --no-merges
+          }
+
+          if ($null -eq $commitLines -or $commitLines.Count -eq 0) {
+            $lines.Add("- Technische Aktualisierung ohne detaillierte Einzelpunkte.")
+          } else {
+            foreach ($c in $commitLines) {
+              if (-not [string]::IsNullOrWhiteSpace($c)) {
+                $lines.Add($c)
+              }
+            }
+          }
+
+          $lines.Add("")
+          if (-not [string]::IsNullOrWhiteSpace($previousTag)) {
+            $lines.Add("**Full Changelog:** https://github.com/${{ github.repository }}/compare/$previousTag...$tag")
+          } else {
+            $lines.Add("**Repository:** https://github.com/${{ github.repository }}")
+          }
+
+          Set-Content -Path $notesFile -Value $lines -Encoding UTF8
+          "notes_file=$notesFile" >> $env:GITHUB_OUTPUT
+
       - name: Create GitHub Release
         shell: pwsh
         env:
@@ -74,4 +113,5 @@ jobs:
           $tag = "${{ steps.meta.outputs.tag }}"
           $zip = "${{ steps.meta.outputs.zip }}"
           $installerExe = "${{ steps.meta.outputs.update_installer_exe }}"
-          gh release create $tag --title "Release $tag" --generate-notes $zip $installerExe
+          $notesFile = "${{ steps.notes.outputs.notes_file }}"
+          gh release create $tag --title "Release $tag" --notes-file $notesFile $zip $installerExe
