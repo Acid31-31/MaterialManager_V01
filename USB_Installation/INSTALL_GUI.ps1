@@ -133,6 +133,24 @@ function Get-LatestOnlineVersion {
 }
 
 $Script:LatestOnlineVersion = Get-LatestOnlineVersion
+
+function Update-UsbVersionMetadata {
+    try {
+        $versionFile = Join-Path $Script:SourcePath 'VERSION.txt'
+        $created = Get-Date -Format 'dd.MM.yyyy HH:mm:ss'
+        $content = @(
+            "MaterialManager $($Script:PackageVersion)",
+            "Erstellt: $created",
+            "Version: GUI Installer automatisch aktualisiert",
+            "Hinweis: INSTALL.bat startet immer INSTALL_GUI.ps1 als aktuellen Installationsstand"
+        )
+        [System.IO.File]::WriteAllLines($versionFile, $content)
+    }
+    catch { }
+}
+
+Update-UsbVersionMetadata
+
 $Script:DesignWidth = 1000
 $Script:DesignHeight = 750
 $workingArea = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
