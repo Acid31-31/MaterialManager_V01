@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace MaterialManager_V01
 {
@@ -85,8 +86,16 @@ namespace MaterialManager_V01
         private string _niedrigeBestaendeText = "Alle OK ?";
         public string NiedrigeBestaendeText { get => _niedrigeBestaendeText; set { _niedrigeBestaendeText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeText))); } }
 
-        private string _niedrigeBestaendeFarbe = "#4CAF50";
-        public string NiedrigeBestaendeFarbe { get => _niedrigeBestaendeFarbe; set { _niedrigeBestaendeFarbe = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeFarbe))); } }
+        private Brush _niedrigeBestaendeFarbe = Brushes.LimeGreen;
+        public Brush NiedrigeBestaendeFarbe
+        {
+            get => _niedrigeBestaendeFarbe;
+            set
+            {
+                _niedrigeBestaendeFarbe = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NiedrigeBestaendeFarbe)));
+            }
+        }
 
         private double _euPalettePct = 0;
         public double EuPalettePct { get => _euPalettePct; set { _euPalettePct = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EuPalettePct))); } }
@@ -908,7 +917,7 @@ namespace MaterialManager_V01
             
             var niedrig = Materialien.Count(m => (m.Form == "GF" || m.Form == "MF" || m.Form == "KF") && m.Stueckzahl <= 3);
             NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ?";
-            NiedrigeBestaendeFarbe = niedrig > 0 ? "#FF9800" : "#4CAF50";
+            NiedrigeBestaendeFarbe = niedrig > 0 ? Brushes.Orange : Brushes.LimeGreen;
             
             ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
         }
