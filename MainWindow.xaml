@@ -11,7 +11,7 @@
         BorderBrush="#2A2A2A"
         BorderThickness="1">
     <Window.Background>
-        <ImageBrush ImageSource="/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
+        <ImageBrush ImageSource="pack://application:,,,/Assets/logo.png" Stretch="UniformToFill" Opacity="0.10" AlignmentX="Center" AlignmentY="Center"/>
     </Window.Background>
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="32"
