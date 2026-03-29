@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MaterialManager_V01.Views
 {
@@ -314,6 +315,17 @@ namespace MaterialManager_V01.Views
                 HasChanges = true;
                 AktualisiereAnzeige();
             }
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
+        private void OnCloseWindowClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
