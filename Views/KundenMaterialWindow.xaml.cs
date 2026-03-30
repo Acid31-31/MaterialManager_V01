@@ -21,8 +21,20 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
+            FitToWorkArea();
             LoadSettings();
             LoadItems();
+        }
+
+        private void FitToWorkArea()
+        {
+            var wa = SystemParameters.WorkArea;
+            Left = wa.Left;
+            Top = wa.Top;
+            Width = wa.Width;
+            Height = wa.Height;
+            MaxWidth = wa.Width;
+            MaxHeight = wa.Height;
         }
 
         private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
