@@ -156,8 +156,9 @@ internal static class Program
     {
         try
         {
-            var process = Process.GetProcessById(processId);
-            process.WaitForExit((int)timeout.TotalMilliseconds);
+            using var process = Process.GetProcessById(processId);
+            if (!process.WaitForExit((int)timeout.TotalMilliseconds))
+                TryTerminateProcess(process);
         }
         catch
         {
@@ -174,6 +175,24 @@ internal static class Program
                 return;
 
             Thread.Sleep(500);
+        }
+
+        foreach (var process in Process.GetProcessesByName("MaterialManager_V01"))
+            TryTerminateProcess(process);
+    }
+
+    private static void TryTerminateProcess(Process process)
+    {
+        try
+        {
+            if (process.HasExited)
+                return;
+
+            process.Kill(true);
+            process.WaitForExit(10000);
+        }
+        catch
+        {
         }
     }
 
@@ -279,8 +298,37 @@ internal static class Program
             if (!string.IsNullOrWhiteSpace(destinationParent))
                 Directory.CreateDirectory(destinationParent);
 
-            File.Copy(file, destinationFile, true);
+            CopyFileWithRetry(file, destinationFile, retryCount: 40, retryDelayMs: 500);
         }
+    }
+
+    private static void CopyFileWithRetry(string sourceFile, string destinationFile, int retryCount, int retryDelayMs)
+    {
+        Exception? lastError = null;
+
+        for (var attempt = 1; attempt <= retryCount; attempt++)
+        {
+            try
+            {
+                if (File.Exists(destinationFile))
+                    File.SetAttributes(destinationFile, FileAttributes.Normal);
+
+                File.Copy(sourceFile, destinationFile, true);
+                return;
+            }
+            catch (IOException ex)
+            {
+                lastError = ex;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                lastError = ex;
+            }
+
+            Thread.Sleep(retryDelayMs);
+        }
+
+        throw new IOException($"Datei konnte nicht ersetzt werden: {destinationFile}\n{lastError?.Message}", lastError);
     }
 
     private sealed class UpdateInstallerOptions
