@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
@@ -11,6 +12,14 @@ using Microsoft.Win32;
 
 internal static class Program
 {
+    private static bool _rebootRequired;
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool MoveFileEx(string? lpExistingFileName, string? lpNewFileName, int dwFlags);
+
+    private const int MoveFileReplaceExisting = 0x1;
+    private const int MoveFileDelayUntilReboot = 0x4;
+
     [STAThread]
     private static void Main(string[] args)
     {
@@ -57,6 +66,16 @@ internal static class Program
             ZipFile.ExtractToDirectory(zipPath, extractDir, true);
             CleanTargetDirectory(options.TargetDirectory);
             CopyDirectory(extractDir, options.TargetDirectory);
+
+            if (_rebootRequired)
+            {
+                MessageBox.Show(
+                    "Einige Dateien waren gesperrt und werden beim nächsten Neustart automatisch ersetzt.\n\nBitte den PC neu starten.",
+                    "MaterialManager Update",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
 
             var targetExe = Path.Combine(options.TargetDirectory, "MaterialManager_V01.exe");
             if (File.Exists(targetExe))
@@ -329,7 +348,31 @@ internal static class Program
             Thread.Sleep(retryDelayMs);
         }
 
+        if (TryScheduleReplaceOnReboot(sourceFile, destinationFile))
+        {
+            _rebootRequired = true;
+            return;
+        }
+
         throw new IOException($"Datei konnte nicht ersetzt werden: {destinationFile}\n{lastError?.Message}", lastError);
+    }
+
+    private static bool TryScheduleReplaceOnReboot(string sourceFile, string destinationFile)
+    {
+        try
+        {
+            var tempReplacement = destinationFile + ".mmupd";
+            var tempParent = Path.GetDirectoryName(tempReplacement);
+            if (!string.IsNullOrWhiteSpace(tempParent) && !Directory.Exists(tempParent))
+                Directory.CreateDirectory(tempParent);
+
+            File.Copy(sourceFile, tempReplacement, true);
+            return MoveFileEx(tempReplacement, destinationFile, MoveFileReplaceExisting | MoveFileDelayUntilReboot);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void CleanTargetDirectory(string targetDirectory)
@@ -339,7 +382,13 @@ internal static class Program
 
         foreach (var file in Directory.GetFiles(targetDirectory, "*", SearchOption.AllDirectories))
         {
-            DeleteFileWithRetry(file, retryCount: 20, retryDelayMs: 250);
+            try
+            {
+                DeleteFileWithRetry(file, retryCount: 20, retryDelayMs: 250);
+            }
+            catch
+            {
+            }
         }
 
         var directories = Directory
