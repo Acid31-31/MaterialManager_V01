@@ -70,8 +70,7 @@ namespace MaterialManager_V01.Services
 
         /// <summary>
         /// Installationsverzeichnis (nur für LESEN von Dateien!)
-        /// Z.B.: C:\Program Files\MaterialManager_V01\
-        /// WICHTIG: NICHT in diesen Ordner schreiben (Admin-Rechte nötig!)
+        /// WICHTIG: Pfad wird zur Laufzeit vom gestarteten Programm übernommen.
         /// </summary>
         public static string InstallDirectory => AppDomain.CurrentDomain.BaseDirectory;
     }

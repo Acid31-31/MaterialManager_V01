@@ -7,8 +7,8 @@ REM =====================================================================
 setlocal enabledelayedexpansion
 set "SCRIPT_DIR=%~dp0"
 set "SOURCE_DIR=%SCRIPT_DIR%MaterialManager"
-set "TARGET_DIR=C:\Program Files\MaterialManager_V01"
-set "LEGACY_DIR=C:\Program Files\MaterialManager"
+set "TARGET_DIR=D:\MaterialManager_V01"
+set "LEGACY_DIR=D:\MaterialManager"
 
 color 0A
 cls
