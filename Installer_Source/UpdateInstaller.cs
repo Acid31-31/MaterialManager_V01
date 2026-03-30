@@ -55,6 +55,7 @@ internal static class Program
 
             var extractDir = Path.Combine(tempRoot, "payload");
             ZipFile.ExtractToDirectory(zipPath, extractDir, true);
+            CleanTargetDirectory(options.TargetDirectory);
             CopyDirectory(extractDir, options.TargetDirectory);
 
             var targetExe = Path.Combine(options.TargetDirectory, "MaterialManager_V01.exe");
@@ -329,6 +330,64 @@ internal static class Program
         }
 
         throw new IOException($"Datei konnte nicht ersetzt werden: {destinationFile}\n{lastError?.Message}", lastError);
+    }
+
+    private static void CleanTargetDirectory(string targetDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(targetDirectory) || !Directory.Exists(targetDirectory))
+            return;
+
+        foreach (var file in Directory.GetFiles(targetDirectory, "*", SearchOption.AllDirectories))
+        {
+            DeleteFileWithRetry(file, retryCount: 20, retryDelayMs: 250);
+        }
+
+        var directories = Directory
+            .GetDirectories(targetDirectory, "*", SearchOption.AllDirectories)
+            .OrderByDescending(d => d.Length)
+            .ToList();
+
+        foreach (var directory in directories)
+        {
+            try
+            {
+                if (Directory.Exists(directory) && !Directory.EnumerateFileSystemEntries(directory).Any())
+                    Directory.Delete(directory, false);
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private static void DeleteFileWithRetry(string path, int retryCount, int retryDelayMs)
+    {
+        Exception? lastError = null;
+
+        for (var attempt = 1; attempt <= retryCount; attempt++)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return;
+
+                File.SetAttributes(path, FileAttributes.Normal);
+                File.Delete(path);
+                return;
+            }
+            catch (IOException ex)
+            {
+                lastError = ex;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                lastError = ex;
+            }
+
+            Thread.Sleep(retryDelayMs);
+        }
+
+        throw new IOException($"Datei konnte nicht gelöscht werden: {path}\n{lastError?.Message}", lastError);
     }
 
     private sealed class UpdateInstallerOptions
