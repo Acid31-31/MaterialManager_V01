@@ -7,6 +7,8 @@ REM =====================================================================
 setlocal enabledelayedexpansion
 set "SCRIPT_DIR=%~dp0"
 set "SOURCE_DIR=%SCRIPT_DIR%MaterialManager"
+set "TARGET_DIR=C:\Program Files\MaterialManager_V01"
+set "LEGACY_DIR=C:\Program Files\MaterialManager"
 
 color 0A
 cls
@@ -39,13 +41,17 @@ if not exist "%SOURCE_DIR%\MaterialManager_V01.exe" (
 echo   OK: Dateien gefunden
 
 echo.
-echo   [2/4] Kopiere nach: C:\Program Files\MaterialManager
-if exist "C:\Program Files\MaterialManager" (
-    echo   Lösche alte Installation...
-    rmdir /s /q "C:\Program Files\MaterialManager" 2>nul
+echo   [2/4] Kopiere nach: %TARGET_DIR%
+if exist "%LEGACY_DIR%" (
+    echo   Entferne alten Legacy-Ordner: %LEGACY_DIR%
+    rmdir /s /q "%LEGACY_DIR%" 2>nul
 )
-mkdir "C:\Program Files\MaterialManager"
-xcopy "%SOURCE_DIR%\*" "C:\Program Files\MaterialManager" /E /I /Y >nul
+if exist "%TARGET_DIR%" (
+    echo   Lösche alte Installation...
+    rmdir /s /q "%TARGET_DIR%" 2>nul
+)
+mkdir "%TARGET_DIR%"
+xcopy "%SOURCE_DIR%\*" "%TARGET_DIR%" /E /I /Y >nul
 if %errorlevel% neq 0 (
     echo   FEHLER beim Kopieren!
     pause
@@ -58,12 +64,12 @@ echo   [3/4] Erstelle Desktop-Verknüpfung...
 
 REM PowerShell Shortcut erstellen
 powershell -Command "^
-[string]$SourceFilePath = 'C:\Program Files\MaterialManager\MaterialManager_V01.exe'; ^
+[string]$SourceFilePath = '%TARGET_DIR%\MaterialManager_V01.exe'; ^
 [string]$ShortcutPath = [Environment]::GetFolderPath('Desktop') + '\MaterialManager.lnk'; ^
 $WshShell = New-Object -ComObject WScript.Shell; ^
 $Shortcut = $WshShell.CreateShortcut($ShortcutPath); ^
 $Shortcut.TargetPath = $SourceFilePath; ^
-$Shortcut.WorkingDirectory = 'C:\Program Files\MaterialManager'; ^
+$Shortcut.WorkingDirectory = '%TARGET_DIR%'; ^
 $Shortcut.Description = 'MaterialManager 1.0.x'; ^
 $Shortcut.Save()"
 
@@ -75,7 +81,7 @@ if exist "%USERPROFILE%\Desktop\MaterialManager.lnk" (
 
 echo.
 echo   [4/4] Starte Programm...
-start "" "C:\Program Files\MaterialManager\MaterialManager_V01.exe"
+start "" "%TARGET_DIR%\MaterialManager_V01.exe"
 
 echo.
 echo =====================================================================
@@ -83,7 +89,7 @@ echo   Installation FERTIG!
 echo =====================================================================
 echo.
 echo   MaterialManager ist jetzt installiert:
-echo   C:\Program Files\MaterialManager\
+echo   %TARGET_DIR%\
 echo.
 echo   Verknüpfung auf Desktop vorhanden!
 echo.
