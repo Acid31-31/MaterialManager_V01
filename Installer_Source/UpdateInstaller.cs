@@ -231,9 +231,7 @@ internal static class Program
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager_V01"),
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager"),
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager_V01"),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager"),
-            @"D:\MaterialManager_V01",
-            @"D:\MaterialManager"
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager")
         };
 
         return candidates.FirstOrDefault(IsValidInstallDirectory) ?? string.Empty;
@@ -359,7 +357,7 @@ internal static class Program
         throw new IOException($"Datei konnte nicht ersetzt werden: {destinationFile}\n{lastError?.Message}", lastError);
     }
 
-    private static bool TrySchedule ReplaceOnReboot(string sourceFile, string destinationFile)
+    private static bool TryScheduleReplaceOnReboot(string sourceFile, string destinationFile)
     {
         try
         {
