@@ -1027,6 +1027,15 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
+        private void OnOpenKundenMaterialView(object sender, MouseButtonEventArgs e)
+        {
+            var window = new KundenMaterialWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+            e.Handled = true;
+        }
+
         private void OnNetzwerkEinstellungen(object sender, RoutedEventArgs e)
         {
             var dlg = new NetzwerkEinstellungenDialog { Owner = this };
