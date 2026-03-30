@@ -694,27 +694,38 @@ function Show-InstallScreen {
         $installProgress.Value = 75
         $statusLabel.Text = 'Erstelle Deinstaller...'
         $form.Refresh()
-        
-        # DEINSTALLER
+
+        $uninstallGuiSource = Join-Path $Script:SourcePath 'UNINSTALL_GUI.ps1'
+        $uninstallGuiTarget = Join-Path $Script:InstallPath 'UNINSTALL_GUI.ps1'
+        if (Test-Path $uninstallGuiSource) {
+            Copy-Item -Path $uninstallGuiSource -Destination $uninstallGuiTarget -Force
+        }
+
+        # DEINSTALLER-LAUNCHER
         $uninstallScript = @"
 @echo off
 echo.
 echo MaterialManager V01 - DEINSTALLATION
 echo.
-pause
 
 net session >nul 2>&1
 if %errorLevel% NEQ 0 (
-    echo FEHLER: Administrator-Rechte erforderlich!
-    pause
-    exit /b 1
+    echo Administrator-Rechte werden angefordert...
+    powershell -NoProfile -Command "Start-Process cmd -ArgumentList '/c ""%~f0""' -Verb RunAs"
+    exit /b 0
 )
+
+if exist "%~dp0UNINSTALL_GUI.ps1" (
+    powershell -ExecutionPolicy Bypass -File "%~dp0UNINSTALL_GUI.ps1"
+    exit /b %errorlevel%
+)
+
+echo WARNUNG: UNINSTALL_GUI.ps1 nicht gefunden, verwende Fallback.
 
 taskkill /F /IM MaterialManager_V01.exe >nul 2>&1
 del "%USERPROFILE%\Desktop\MaterialManager V01.lnk" >nul 2>&1
 reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01" /f >nul 2>&1
 
-echo.
 choice /C JN /M "Benutzerdaten auch loeschen"
 if errorlevel 1 rd /S /Q "%LOCALAPPDATA%\MaterialManager_V01" >nul 2>&1
 
@@ -728,28 +739,6 @@ exit
 "@
         [System.IO.File]::WriteAllText("$Script:InstallPath\UNINSTALL.bat", $uninstallScript)
         
-        $installProgress.Value = 85
-        $statusLabel.Text = 'Registriere in Systemsteuerung...'
-        $form.Refresh()
-        
-        # REGISTRY
-        try {
-            $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01"
-            if (-not (Test-Path $regPath)) {
-                New-Item -Path $regPath -Force | Out-Null
-            }
-            
-            Set-ItemProperty -Path $regPath -Name "DisplayName" -Value "MaterialManager V01" -Type String
-            Set-ItemProperty -Path $regPath -Name "DisplayVersion" -Value $Script:PackageVersion -Type String
-            Set-ItemProperty -Path $regPath -Name "Publisher" -Value "Alexander Hoelzer" -Type String
-            Set-ItemProperty -Path $regPath -Name "InstallLocation" -Value $Script:InstallPath -Type String
-            Set-ItemProperty -Path $regPath -Name "UninstallString" -Value "`"$Script:InstallPath\UNINSTALL.bat`"" -Type String
-            Set-ItemProperty -Path $regPath -Name "DisplayIcon" -Value "$Script:InstallPath\MaterialManager_V01.exe,0" -Type String
-            Set-ItemProperty -Path $regPath -Name "NoModify" -Value 1 -Type DWord
-            Set-ItemProperty -Path $regPath -Name "NoRepair" -Value 1 -Type DWord
-            Set-ItemProperty -Path $regPath -Name "EstimatedSize" -Value 50000 -Type DWord
-        } catch { }
-
         $installProgress.Value = 100
         Start-Sleep -Milliseconds 500
         
