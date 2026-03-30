@@ -147,7 +147,7 @@ namespace MaterialManager_V01
                 // Benutzer richtet Netzwerk später manuell über Einstellungen ein.
                 if (!Services.NetzwerkService.HasConfiguredNetworkPath())
                 {
-                    File.AppendAllText(logPath, "Keine Netzwerk-Konfiguration vorhanden. Starte ohne Netzwerkmodus.\n");
+                    File.AppendAllText(logPath, "Keine Netzwerk-Konfiguration vorhanden. Starte mit lokalem Datenspeicher.\n");
                     return true;
                 }
 
@@ -155,10 +155,16 @@ namespace MaterialManager_V01
                 if (health.IsHealthy)
                     return true;
 
-                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen. Starte lokal: {health.Message}\n");
+                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen: {health.Message}\n");
 
-                // Still auf lokalen Modus zurückfallen, kein Blockieren und kein Zwangs-Dialog.
-                Services.NetzwerkService.SetNetzwerkModus(false, Services.NetzwerkService.NetzwerkPfad);
+                MessageBox.Show(
+                    "Netzwerkpfad ist aktuell nicht erreichbar.\n" +
+                    "Die Daten werden lokal weitergeführt und sind auf anderen PCs erst wieder sichtbar, wenn das Netzwerk wieder funktioniert.\n\n" +
+                    health.Message,
+                    "Netzwerkhinweis",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
                 return true;
             }
             catch (Exception ex)

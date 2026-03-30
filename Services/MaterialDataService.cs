@@ -15,10 +15,36 @@ namespace MaterialManager_V01.Services
             using var db = new MaterialManagerDbContext();
             db.Database.EnsureCreated();
 
-            return db.Materialien
+            var dbItems = db.Materialien
                 .AsNoTracking()
                 .OrderBy(m => m.Id)
                 .ToList();
+
+            if (!NetzwerkService.IsNetzwerkModus)
+                return dbItems;
+
+            try
+            {
+                var savePath = NetzwerkService.GetSavePath();
+                if (File.Exists(savePath))
+                {
+                    var sharedItems = LoadFromExcelFile(savePath);
+                    if (sharedItems.Count > 0)
+                    {
+                        PersistToDatabase(sharedItems);
+                        return sharedItems;
+                    }
+                }
+                else if (dbItems.Count > 0)
+                {
+                    TrySyncExcel(dbItems);
+                }
+            }
+            catch
+            {
+            }
+
+            return dbItems;
         }
 
         public static List<MaterialItem> LoadFromExcelFile(string filePath)
@@ -37,6 +63,15 @@ namespace MaterialManager_V01.Services
         public static void SaveAllMaterials(IEnumerable<MaterialItem> materialien, bool syncExcel = true)
         {
             var snapshot = materialien?.Select(CloneMaterial).ToList() ?? new List<MaterialItem>();
+            PersistToDatabase(snapshot);
+
+            if (syncExcel)
+                TrySyncExcel(snapshot);
+        }
+
+        private static void PersistToDatabase(IEnumerable<MaterialItem> materialien)
+        {
+            var snapshot = materialien.Select(CloneMaterial).ToList();
 
             using var db = new MaterialManagerDbContext();
             db.Database.EnsureCreated();
@@ -51,9 +86,6 @@ namespace MaterialManager_V01.Services
             SyncAuftraege(db, snapshot);
             db.SaveChanges();
             transaction.Commit();
-
-            if (syncExcel)
-                SyncExcel(snapshot);
         }
 
         private static void SyncAuftraege(MaterialManagerDbContext db, IEnumerable<MaterialItem> materialien)
@@ -94,6 +126,17 @@ namespace MaterialManager_V01.Services
             db.Auftraege.AddRange(auftraege);
         }
 
+        private static void TrySyncExcel(IEnumerable<MaterialItem> materialien)
+        {
+            try
+            {
+                SyncExcel(materialien);
+            }
+            catch
+            {
+            }
+        }
+
         private static void SyncExcel(IEnumerable<MaterialItem> materialien)
         {
             var savePath = NetzwerkService.GetSavePath();
@@ -102,6 +145,38 @@ namespace MaterialManager_V01.Services
                 Directory.CreateDirectory(directory);
 
             ExcelService.Export(savePath, materialien);
+            CreateNetworkBackupCopy(savePath);
+        }
+
+        private static void CreateNetworkBackupCopy(string savePath)
+        {
+            if (!NetzwerkService.IsNetzwerkModus || !File.Exists(savePath))
+                return;
+
+            var saveDir = Path.GetDirectoryName(savePath);
+            if (string.IsNullOrWhiteSpace(saveDir))
+                return;
+
+            var backupRoot = Path.Combine(saveDir, "Backups");
+            var dayFolder = Path.Combine(backupRoot, DateTime.Now.ToString("yyyy-MM-dd"));
+            Directory.CreateDirectory(dayFolder);
+
+            var backupFile = Path.Combine(dayFolder, $"materialbestand_{DateTime.Now:HHmmss}.xlsx");
+            File.Copy(savePath, backupFile, overwrite: true);
+
+            var keepAfter = DateTime.Now.Date.AddDays(-30);
+            foreach (var folder in Directory.GetDirectories(backupRoot))
+            {
+                try
+                {
+                    var name = Path.GetFileName(folder);
+                    if (DateTime.TryParse(name, out var date) && date.Date < keepAfter)
+                        Directory.Delete(folder, true);
+                }
+                catch
+                {
+                }
+            }
         }
 
         private static MaterialItem CloneMaterial(MaterialItem source)
