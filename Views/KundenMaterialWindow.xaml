@@ -121,6 +121,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
@@ -128,6 +129,13 @@
                         <TextBlock Text="Kunden Material" Foreground="White" FontSize="22" FontWeight="Bold"/>
                         <TextBlock Text="Überproduktion für Kundenaufträge erfassen" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                     </StackPanel>
+
+                    <Button Grid.Column="2"
+                            Content="Schließen"
+                            Click="OnCloseWindow"
+                            Background="#C42B1C"
+                            Foreground="White"
+                            Padding="14,8"/>
                 </Grid>
             </Border>
 

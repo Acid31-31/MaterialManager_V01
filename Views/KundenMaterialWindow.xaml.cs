@@ -43,6 +43,9 @@ namespace MaterialManager_V01.Views
 
         private void OnCloseWindow(object sender, RoutedEventArgs e)
         {
+            var startWindow = new StartModeWindow();
+            Application.Current.MainWindow = startWindow;
+            startWindow.Show();
             Close();
         }
 
