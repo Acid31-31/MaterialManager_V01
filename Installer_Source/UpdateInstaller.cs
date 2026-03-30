@@ -228,6 +228,10 @@ internal static class Program
 
         var candidates = new[]
         {
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager_V01"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "MaterialManager"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager_V01"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "MaterialManager"),
             @"D:\MaterialManager_V01",
             @"D:\MaterialManager"
         };

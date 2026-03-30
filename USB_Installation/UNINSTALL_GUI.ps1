@@ -10,7 +10,10 @@ Add-Type -AssemblyName System.Drawing
 # ============================================
 $Script:CurrentStep = 1
 $Script:TotalSteps = 4
-$Script:InstallPath = "D:\MaterialManager_V01"
+$Script:InstallPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+if (-not (Test-Path (Join-Path $Script:InstallPath 'MaterialManager_V01.exe'))) {
+    $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
+}
 $Script:UserDataPath = "$env:LOCALAPPDATA\MaterialManager_V01"
 $Script:DesignWidth = 1000
 $Script:DesignHeight = 750
