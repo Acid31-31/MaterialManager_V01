@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -445,30 +446,7 @@ namespace MaterialManager_V01.Services
                 var downloadedFile = Path.Combine(targetDir, fileName);
                 var logPath = Path.Combine(targetDir, "prepare_update.log");
 
-                using var response = await Http.GetAsync(updateInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                response.EnsureSuccessStatusCode();
-
-                var total = response.Content.Headers.ContentLength;
-
-                await using (var source = await response.Content.ReadAsStreamAsync(cancellationToken))
-                await using (var target = File.Create(downloadedFile))
-                {
-                    var buffer = new byte[81920];
-                    long readTotal = 0;
-                    int read;
-                    while ((read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
-                    {
-                        await target.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-                        readTotal += read;
-
-                        if (total.HasValue && total.Value > 0)
-                        {
-                            var pct = (int)Math.Round((readTotal * 100.0) / total.Value);
-                            progress?.Report(Math.Clamp(pct, 0, 100));
-                        }
-                    }
-                }
-
+                await DownloadWithRetryAsync(updateInfo.DownloadUrl, downloadedFile, progress, cancellationToken);
                 File.AppendAllText(logPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Download: {downloadedFile}{Environment.NewLine}");
 
                 if (downloadedFile.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
@@ -517,8 +495,70 @@ namespace MaterialManager_V01.Services
             }
             catch (Exception ex)
             {
-                return new PreparedUpdateResult { ErrorMessage = ex.Message };
+                return new PreparedUpdateResult { ErrorMessage = BuildFriendlyUpdateError(ex, updateInfo.ReleasePageUrl) };
             }
+        }
+
+        private static async Task DownloadWithRetryAsync(string url, string destinationFile, IProgress<int>? progress, CancellationToken cancellationToken)
+        {
+            Exception? lastError = null;
+
+            for (var attempt = 1; attempt <= 3; attempt++)
+            {
+                try
+                {
+                    using var response = await Http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                    response.EnsureSuccessStatusCode();
+
+                    var total = response.Content.Headers.ContentLength;
+                    progress?.Report(0);
+
+                    await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
+                    await using var target = File.Create(destinationFile);
+
+                    var buffer = new byte[81920];
+                    long readTotal = 0;
+                    int read;
+                    while ((read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+                    {
+                        await target.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                        readTotal += read;
+
+                        if (total.HasValue && total.Value > 0)
+                        {
+                            var pct = (int)Math.Round((readTotal * 100.0) / total.Value);
+                            progress?.Report(Math.Clamp(pct, 0, 100));
+                        }
+                    }
+
+                    progress?.Report(100);
+                    return;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    lastError = ex;
+                    if (attempt < 3)
+                        await Task.Delay(800, cancellationToken);
+                }
+            }
+
+            throw lastError ?? new InvalidOperationException("Download fehlgeschlagen.");
+        }
+
+        private static string BuildFriendlyUpdateError(Exception ex, string? releasePageUrl)
+        {
+            if (ex is HttpRequestException hre && hre.InnerException is SocketException se && se.SocketErrorCode == SocketError.HostNotFound)
+            {
+                return string.IsNullOrWhiteSpace(releasePageUrl)
+                    ? "Der Update-Server konnte nicht aufgelöst werden (DNS/Netzwerk). Bitte Internetverbindung prüfen und später erneut versuchen."
+                    : $"Der Update-Server konnte nicht aufgelöst werden (DNS/Netzwerk). Bitte Verbindung prüfen oder über 'Release im Browser' installieren:\n{releasePageUrl}";
+            }
+
+            return ex.Message;
         }
 
         private static bool IsDevelopmentPreviewRun()
