@@ -11,6 +11,10 @@ permissions:
 jobs:
   release:
     runs-on: windows-latest
+    env:
+      CODE_SIGN_CERT_BASE64: ${{ secrets.CODE_SIGN_CERT_BASE64 }}
+      CODE_SIGN_CERT_PASSWORD: ${{ secrets.CODE_SIGN_CERT_PASSWORD }}
+      CODE_SIGN_TIMESTAMP_URL: http://timestamp.digicert.com
 
     steps:
       - name: Checkout
@@ -23,6 +27,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+
+      - name: Prepare code-signing certificate
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:CODE_SIGN_CERT_BASE64) -or [string]::IsNullOrWhiteSpace($env:CODE_SIGN_CERT_PASSWORD)) {
+            throw "Code-Signing-Secret(s) fehlen. Bitte CODE_SIGN_CERT_BASE64 und CODE_SIGN_CERT_PASSWORD in GitHub Secrets setzen."
+          }
+
+          $certPath = Join-Path $env:RUNNER_TEMP "codesign.pfx"
+          [IO.File]::WriteAllBytes($certPath, [Convert]::FromBase64String($env:CODE_SIGN_CERT_BASE64))
+          "cert_path=$certPath" >> $env:GITHUB_OUTPUT
+        id: codesign
 
       - name: Restore
         run: dotnet restore MaterialManager_V01.csproj
@@ -38,6 +54,22 @@ jobs:
           $baseVersion = if ($versionNode) { $versionNode.InnerText.Trim() } else { "1.0.0" }
           $fullVersion = "$baseVersion.$env:GITHUB_RUN_NUMBER"
           dotnet publish MaterialManager_V01.csproj -c Release -r win-x64 --self-contained true -o publish /p:Version=$fullVersion /p:FileVersion=$fullVersion /p:AssemblyVersion=$fullVersion
+
+      - name: Sign main executable
+        shell: pwsh
+        run: |
+          $exePath = Join-Path $env:GITHUB_WORKSPACE "publish\MaterialManager_V01.exe"
+          if (!(Test-Path $exePath)) {
+            throw "Zu signierende Datei nicht gefunden: $exePath"
+          }
+
+          $signTool = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if ([string]::IsNullOrWhiteSpace($signTool)) {
+            throw "signtool.exe nicht gefunden."
+          }
+
+          & $signTool sign /fd SHA256 /f "${{ steps.codesign.outputs.cert_path }}" /p "$env:CODE_SIGN_CERT_PASSWORD" /tr "$env:CODE_SIGN_TIMESTAMP_URL" /td SHA256 "$exePath"
+          if ($LASTEXITCODE -ne 0) { throw "Signierung fehlgeschlagen: $exePath" }
 
       - name: Prepare release metadata
         id: meta
@@ -68,6 +100,22 @@ jobs:
           $outputDir = "${{ steps.meta.outputs.update_installer_dir }}"
           New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
           dotnet publish Installer_Source/UpdateInstaller.csproj -c Release -r win-x64 --self-contained true -o $outputDir /p:PayloadZip="$payloadZip"
+
+      - name: Sign update installer
+        shell: pwsh
+        run: |
+          $exePath = "${{ steps.meta.outputs.update_installer_exe }}"
+          if (!(Test-Path $exePath)) {
+            throw "Zu signierende Datei nicht gefunden: $exePath"
+          }
+
+          $signTool = (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1).FullName
+          if ([string]::IsNullOrWhiteSpace($signTool)) {
+            throw "signtool.exe nicht gefunden."
+          }
+
+          & $signTool sign /fd SHA256 /f "${{ steps.codesign.outputs.cert_path }}" /p "$env:CODE_SIGN_CERT_PASSWORD" /tr "$env:CODE_SIGN_TIMESTAMP_URL" /td SHA256 "$exePath"
+          if ($LASTEXITCODE -ne 0) { throw "Signierung fehlgeschlagen: $exePath" }
 
       - name: Prepare release notes
         id: notes
