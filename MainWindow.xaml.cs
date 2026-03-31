@@ -71,6 +71,7 @@ namespace MaterialManager_V01
 
         private DateTime _lastSaveUtc;
         private readonly System.Windows.Threading.DispatcherTimer _updateCheckTimer = new();
+        private static readonly System.Threading.Mutex UpdatePromptMutex = new(false, @"Local\MaterialManager_V01_UpdatePrompt");
         private bool _isUpdateCheckRunning;
         private string? _lastPromptedVersion;
 
@@ -1174,29 +1175,55 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                if (_lastPromptedVersion == result.LatestVersion)
+                var promptLockTaken = false;
+                try
                 {
-                    AppendUpdateUiLog($"Popup shown=no | source={source} | reason=already-prompted-{result.LatestVersion}");
-                    return;
-                }
-
-                _lastPromptedVersion = result.LatestVersion;
-
-                var decision = MessageBox.Show(
-                    $"Neue Version {result.LatestVersion} verfügbar. Jetzt installieren?",
-                    "Update verfügbar",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Information);
-
-                AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Später")}");
-
-                if (decision == MessageBoxResult.Yes)
-                {
-                    Dispatcher.Invoke(() =>
+                    try
                     {
-                        var dlg = new UpdateDialog(result) { Owner = this };
-                        dlg.ShowDialog();
-                    });
+                        promptLockTaken = UpdatePromptMutex.WaitOne(0);
+                    }
+                    catch (System.Threading.AbandonedMutexException)
+                    {
+                        promptLockTaken = true;
+                    }
+
+                    if (!promptLockTaken)
+                    {
+                        AppendUpdateUiLog($"Popup shown=no | source={source} | reason=prompt-already-open-in-other-instance");
+                        return;
+                    }
+
+                    if (_lastPromptedVersion == result.LatestVersion)
+                    {
+                        AppendUpdateUiLog($"Popup shown=no | source={source} | reason=already-prompted-{result.LatestVersion}");
+                        return;
+                    }
+
+                    _lastPromptedVersion = result.LatestVersion;
+
+                    var decision = MessageBox.Show(
+                        $"Neue Version {result.LatestVersion} verfügbar. Jetzt installieren?",
+                        "Update verfügbar",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Information);
+
+                    AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Später")}");
+
+                    if (decision == MessageBoxResult.Yes)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            var dlg = new UpdateDialog(result) { Owner = this };
+                            dlg.ShowDialog();
+                        });
+                    }
+                }
+                finally
+                {
+                    if (promptLockTaken)
+                    {
+                        try { UpdatePromptMutex.ReleaseMutex(); } catch { }
+                    }
                 }
             }
             catch (Exception ex)
