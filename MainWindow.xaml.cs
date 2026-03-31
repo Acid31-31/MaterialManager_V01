@@ -128,6 +128,28 @@ namespace MaterialManager_V01
             }
         }
 
+        private string _netzwerkStatusText = "Netzwerk: nicht geprüft";
+        public string NetzwerkStatusText
+        {
+            get => _netzwerkStatusText;
+            set
+            {
+                _netzwerkStatusText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NetzwerkStatusText)));
+            }
+        }
+
+        private Brush _netzwerkStatusBrush = Brushes.Gray;
+        public Brush NetzwerkStatusBrush
+        {
+            get => _netzwerkStatusBrush;
+            set
+            {
+                _netzwerkStatusBrush = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NetzwerkStatusBrush)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -160,6 +182,7 @@ namespace MaterialManager_V01
                 var status = Services.LicenseService.GetStatusMessage();
                 Title = $"MaterialManager V01 - {status}";
                 RefreshLicenseTrialDisplay();
+                RefreshNetworkStatusDisplay();
                 Log($"Titel gesetzt: {Title}");
 
                 Materialien.CollectionChanged += (_, __) => UpdateStats();
@@ -192,7 +215,11 @@ namespace MaterialManager_V01
                 
                 var timer = new System.Windows.Threading.DispatcherTimer();
                 timer.Interval = TimeSpan.FromSeconds(5);
-                timer.Tick += (_, __) => UpdateOnlineStatus();
+                timer.Tick += (_, __) =>
+                {
+                    UpdateOnlineStatus();
+                    RefreshNetworkStatusDisplay();
+                };
                 timer.Start();
                 Log("Timer gestartet");
                 
@@ -1043,6 +1070,7 @@ namespace MaterialManager_V01
             {
                 var savePath = Services.NetzwerkService.GetSavePath();
                 Services.FileWatcherService.StartWatching(savePath);
+                RefreshNetworkStatusDisplay();
             }
         }
 
@@ -1268,6 +1296,34 @@ namespace MaterialManager_V01
             LicenseTrialDisplayBrush = remainingDays <= 7
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
+        }
+
+        private void RefreshNetworkStatusDisplay()
+        {
+            if (!Services.NetzwerkService.HasConfiguredNetworkPath())
+            {
+                NetzwerkStatusText = "Netzwerk: nicht konfiguriert";
+                NetzwerkStatusBrush = Brushes.Gray;
+                return;
+            }
+
+            if (!Services.NetzwerkService.IsNetzwerkModus)
+            {
+                NetzwerkStatusText = "Netzwerk: deaktiviert";
+                NetzwerkStatusBrush = Brushes.Orange;
+                return;
+            }
+
+            if (Services.NetzwerkService.IstPfadErreichbar())
+            {
+                NetzwerkStatusText = "Netzwerk: verbunden";
+                NetzwerkStatusBrush = Brushes.LimeGreen;
+            }
+            else
+            {
+                NetzwerkStatusText = "Netzwerk: nicht erreichbar";
+                NetzwerkStatusBrush = Brushes.OrangeRed;
+            }
         }
     }
 }
