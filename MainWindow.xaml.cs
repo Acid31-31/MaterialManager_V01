@@ -466,64 +466,24 @@ namespace MaterialManager_V01
                         
                         System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] Import erfolgreich! {externalItems?.Count()} Materialien");
                         
-                        if (externalItems?.Any() == true)
+                        if (externalItems != null)
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] INTELLIGENTER MERGE startet...");
-                                
-                                // INTELLIGENTER MERGE: Aktualisiere/Füge hinzu statt alles zu ersetzen
-                                var currentRestNummern = Materialien.Where(m => !string.IsNullOrEmpty(m.Restnummer))
-                                    .Select(m => m.Restnummer)
-                                    .ToHashSet();
-                                
-                                var externalRestNummern = externalItems.Where(m => !string.IsNullOrEmpty(m.Restnummer))
-                                    .Select(m => m.Restnummer)
-                                    .ToHashSet();
+                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] Vollständige Übernahme aus Excel startet...");
 
-                                // 1. Entferne gelöschte Items (existieren nicht mehr in Excel)
-                                var toRemove = Materialien.Where(m => 
-                                    !string.IsNullOrEmpty(m.Restnummer) && 
-                                    !externalRestNummern.Contains(m.Restnummer)
-                                ).ToList();
-                                
-                                foreach (var item in toRemove)
-                                {
-                                    System.Diagnostics.Debug.WriteLine($"[MERGE] Entferne gelöschtes: {item.Restnummer}");
-                                    Materialien.Remove(item);
-                                }
-
-                                // 2. Aktualisiere existierende Items
+                                Materialien.Clear();
                                 foreach (var externalItem in externalItems)
                                 {
-                                    if (!string.IsNullOrEmpty(externalItem.Restnummer))
-                                    {
-                                        var existing = Materialien.FirstOrDefault(m => m.Restnummer == externalItem.Restnummer);
-                                        if (existing != null)
-                                        {
-                                            var idx = Materialien.IndexOf(existing);
-                                            if (idx >= 0)
-                                            {
-                                                System.Diagnostics.Debug.WriteLine($"[MERGE] Aktualisiere: {externalItem.Restnummer}");
-                                                Materialien[idx] = externalItem;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // 3. Füge neue Items hinzu
-                                            System.Diagnostics.Debug.WriteLine($"[MERGE] Neu hinzufügen: {externalItem.Restnummer}");
-                                            Materialien.Add(externalItem);
-                                        }
-                                    }
+                                    Materialien.Add(externalItem);
                                 }
-                                
+
                                 UpdateStats();
                                 MaterialDataService.SaveAllMaterials(Materialien.ToList(), syncExcel: false);
                                 _lastSaveUtc = DateTime.UtcNow;
-                                
-                                // VISUELLES FEEDBACK
+
                                 Title = $"MaterialManager V01 - Synchronisiert {DateTime.Now:HH:mm:ss}";
-                                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] MERGE FERTIG!");
+                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] Vollständige Übernahme FERTIG!");
                             });
                             
                             Services.ReloadService.RegisterLoad(savePath);
