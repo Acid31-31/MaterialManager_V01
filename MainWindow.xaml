@@ -313,6 +313,12 @@
                                    HorizontalAlignment="Right"
                                    Margin="0,0,12,0"
                                    TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding NetzwerkStatusText}"
+                                   Foreground="{Binding NetzwerkStatusBrush}"
+                                   FontSize="11"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,12,0"
+                                   TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="3"
