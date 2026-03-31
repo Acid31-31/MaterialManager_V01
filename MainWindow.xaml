@@ -13,7 +13,7 @@
         BorderThickness="1"
         Background="#0B0B0B">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="32"
+        <shell:WindowChrome CaptionHeight="40"
                             ResizeBorderThickness="6"
                             CornerRadius="0"
                             GlassFrameThickness="0"
@@ -241,7 +241,7 @@
     
     <Grid>
         <DockPanel>
-            <Border DockPanel.Dock="Top" Background="#111111" Height="32" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border DockPanel.Dock="Top" Background="#111111" Height="40" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
