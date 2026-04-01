@@ -37,11 +37,17 @@ namespace MaterialManager_V01.Views
             ArchivAuftraege.Clear();
             foreach (var item in AuftragArchivService.GetArchivedOrdersForWeek(_jahr, GetSelectedKw()))
                 ArchivAuftraege.Add(item);
+
+            UpdateEmptyState();
         }
 
-        private ArchivAuftragEintrag? GetSelectedEntry()
+        private void UpdateEmptyState()
         {
-            return ArchivGrid.SelectedItem as ArchivAuftragEintrag;
+            var hasItems = ArchivAuftraege.Count > 0;
+            EmptyStatePanel.Visibility = hasItems ? Visibility.Collapsed : Visibility.Visible;
+            EmptyStateText.Text = hasItems
+                ? string.Empty
+                : $"Für KW {GetSelectedKw():D2} ({_jahr}) wurden keine Aufträge archiviert.\n\nDas kann z. B. bei Feiertagen oder Stillstand normal sein.";
         }
 
         private void OnKwChanged(object sender, SelectionChangedEventArgs e)
