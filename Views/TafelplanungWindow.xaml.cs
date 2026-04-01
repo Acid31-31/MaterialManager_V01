@@ -440,6 +440,12 @@ namespace MaterialManager_V01.Views
             LoadAuftraegeGridForSelectedKw();
             RefreshAuftragFilter();
             ApplyFilter();
+
+            var archivDialog = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
+            {
+                Owner = this
+            };
+            archivDialog.ShowDialog();
         }
 
         private void OnAuftraegeGridDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1018,7 +1024,17 @@ namespace MaterialManager_V01.Views
 
             _alleMaterialien.Add(bookedItem);
         }
+    }
 
-        public sealed record AuftragFilterItem(string Auftragsnummer, string DisplayText);
+    public sealed class AuftragFilterItem
+    {
+        public AuftragFilterItem(string auftragsnummer, string displayText)
+        {
+            Auftragsnummer = auftragsnummer;
+            DisplayText = displayText;
+        }
+
+        public string Auftragsnummer { get; }
+        public string DisplayText { get; }
     }
 }
