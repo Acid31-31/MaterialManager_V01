@@ -219,6 +219,29 @@ namespace MaterialManager_V01.Views
             RegisterCustomer(kunde);
             var pdfPath = FindPdfByDrawingNumber(zeichnungsnummer, kunde);
 
+            if (string.IsNullOrWhiteSpace(pdfPath))
+            {
+                var confirmWithoutPdf = MessageBox.Show(
+                    "Für diese Zeichnungsnummer wurde keine PDF gefunden.\n\nTrotzdem speichern?",
+                    "Kunden Material",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirmWithoutPdf != MessageBoxResult.Yes)
+                    return;
+            }
+            else if (!IsPdfInFreigabe(pdfPath))
+            {
+                var confirmOutsideFreigabe = MessageBox.Show(
+                    $"Die gefundene PDF liegt nicht in einem 'Freigabe'-Ordner:\n{pdfPath}\n\nTrotzdem speichern?",
+                    "Kunden Material",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirmOutsideFreigabe != MessageBoxResult.Yes)
+                    return;
+            }
+
             Items.Add(new KundenMaterialItem
             {
                 Kunde = kunde,
@@ -268,6 +291,16 @@ namespace MaterialManager_V01.Views
 
             var preview = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
             preview.ShowDialog();
+        }
+
+        private static bool IsPdfInFreigabe(string? pdfPath)
+        {
+            if (string.IsNullOrWhiteSpace(pdfPath))
+                return false;
+
+            var normalized = pdfPath.Replace('/', '\\');
+            return normalized.IndexOf("\\Freigabe\\", StringComparison.OrdinalIgnoreCase) >= 0
+                || normalized.EndsWith("\\Freigabe", StringComparison.OrdinalIgnoreCase);
         }
 
         private string? FindPdfByDrawingNumber(string zeichnungsnummer, string kunde)
