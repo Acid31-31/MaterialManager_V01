@@ -1313,9 +1313,32 @@ namespace MaterialManager_V01
                 return;
             }
 
+            var configuredPath = (Services.NetzwerkService.NetzwerkPfad ?? string.Empty).Trim().Trim('"');
+            var isUncPath = configuredPath.StartsWith(@"\\");
+            var isNetworkDrive = false;
+
+            try
+            {
+                if (!isUncPath && Path.IsPathRooted(configuredPath))
+                {
+                    var root = Path.GetPathRoot(configuredPath);
+                    if (!string.IsNullOrWhiteSpace(root))
+                    {
+                        var drive = new DriveInfo(root);
+                        isNetworkDrive = drive.DriveType == DriveType.Network;
+                    }
+                }
+            }
+            catch
+            {
+                isNetworkDrive = false;
+            }
+
+            var isNetworkLocation = isUncPath || isNetworkDrive;
+
             if (Services.NetzwerkService.IstPfadErreichbar())
             {
-                NetzwerkStatusText = "Netzwerk: verbunden";
+                NetzwerkStatusText = isNetworkLocation ? "Netzwerk: verbunden" : "Datenordner: lokal";
                 NetzwerkStatusBrush = Brushes.LimeGreen;
             }
             else

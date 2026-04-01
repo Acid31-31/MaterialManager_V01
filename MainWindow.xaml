@@ -13,7 +13,7 @@
         BorderThickness="1"
         Background="#0B0B0B">
     <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="40"
+        <shell:WindowChrome CaptionHeight="46"
                             ResizeBorderThickness="6"
                             CornerRadius="0"
                             GlassFrameThickness="0"
@@ -241,7 +241,7 @@
     
     <Grid>
         <DockPanel>
-            <Border DockPanel.Dock="Top" Background="#111111" Height="40" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border DockPanel.Dock="Top" Background="#111111" Height="46" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -305,20 +305,20 @@
                                  Orientation="Vertical"
                                  VerticalAlignment="Center"
                                  HorizontalAlignment="Right"
-                                 Margin="0,0,12,0">
+                                 Margin="0,1,10,0">
                         <TextBlock Text="{Binding LicenseTrialDisplayText}"
                                    Foreground="{Binding LicenseTrialDisplayBrush}"
                                    FontWeight="Bold"
-                                   FontSize="12"
+                                   FontSize="11"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
-                                   Margin="0,0,12,0"
+                                   Margin="0,0,10,0"
                                    TextTrimming="CharacterEllipsis"/>
                         <TextBlock Text="{Binding NetzwerkStatusText}"
                                    Foreground="{Binding NetzwerkStatusBrush}"
-                                   FontSize="11"
+                                   FontSize="10"
                                    HorizontalAlignment="Right"
-                                   Margin="0,0,12,0"
+                                   Margin="0,0,10,0"
                                    TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
 
