@@ -388,6 +388,17 @@ namespace MaterialManager_V01.Services
 
             try
             {
+                var xlsxIndex = candidate.IndexOf(".xlsx", StringComparison.OrdinalIgnoreCase);
+                if (xlsxIndex >= 0)
+                {
+                    var filePart = candidate.Substring(0, xlsxIndex + 5);
+                    var remainder = candidate.Substring(xlsxIndex + 5).TrimStart('\\', '/');
+                    var fileDirectory = Path.GetDirectoryName(filePart) ?? string.Empty;
+                    candidate = string.IsNullOrWhiteSpace(remainder)
+                        ? fileDirectory
+                        : Path.Combine(fileDirectory, remainder);
+                }
+
                 var fullPath = Path.GetFullPath(candidate);
 
                 if (File.Exists(fullPath))

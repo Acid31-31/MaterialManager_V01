@@ -1,0 +1,47 @@
+<Window x:Class="MaterialManager_V01.Views.ArchivAuftraegeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Archiv-Aufträge"
+        Height="620"
+        Width="960"
+        WindowStartupLocation="CenterOwner"
+        Background="#0B0B0B"
+        Foreground="White">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Kalenderwoche:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <ComboBox x:Name="KwComboBox" Width="180" SelectionChanged="OnKwChanged"/>
+            <Button Content="Aktualisieren" Click="OnRefreshClick" Margin="12,0,0,0" Padding="12,6"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="1"
+                  x:Name="ArchivGrid"
+                  ItemsSource="{Binding ArchivAuftraege}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  RowHeight="30"
+                  Background="#111"
+                  Foreground="White"
+                  BorderBrush="#333">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="180"/>
+                <DataGridTextColumn Header="Archiviert am" Binding="{Binding ArchiviertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="170"/>
+                <DataGridTextColumn Header="PDFs" Binding="{Binding PdfAnzahl}" Width="80"/>
+                <DataGridTextColumn Header="Ordner" Binding="{Binding OrdnerPfad}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Ordner öffnen" Click="OnOpenFolderClick" Padding="14,6" Margin="0,0,8,0"/>
+            <Button Content="PDF öffnen" Click="OnOpenPdfClick" Padding="14,6" Margin="0,0,8,0"/>
+            <Button Content="Schließen" Click="OnCloseClick" Padding="14,6" Background="#555"/>
+        </StackPanel>
+    </Grid>
+</Window>

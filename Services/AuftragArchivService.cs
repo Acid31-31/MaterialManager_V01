@@ -14,9 +14,9 @@ namespace MaterialManager_V01.Services
             if (auftrag == null || string.IsNullOrWhiteSpace(auftrag.Auftragsnummer))
                 return (false, "Ungültiger Auftrag.");
 
-            var basisPfad = NetzwerkService.GetAuftragsArchivBasisPfad();
+            var basisPfad = ResolveArchiveBasePath();
             if (string.IsNullOrWhiteSpace(basisPfad))
-                return (false, "Kein Auftrags-Archivpfad in den Netzwerk-Einstellungen hinterlegt.");
+                return (false, "Kein Auftrags-Archivpfad verfügbar.");
 
             try
             {
@@ -108,6 +108,67 @@ namespace MaterialManager_V01.Services
             }
         }
 
+        public static List<ArchivAuftragEintrag> GetArchivedOrdersForWeek(int jahr, int kalenderWoche)
+        {
+            var basisPfad = ResolveArchiveBasePath();
+            if (string.IsNullOrWhiteSpace(basisPfad))
+                return new List<ArchivAuftragEintrag>();
+
+            var kwFolder = Path.Combine(basisPfad, jahr.ToString(), $"KW_{kalenderWoche:D2}");
+            if (!Directory.Exists(kwFolder))
+                return new List<ArchivAuftragEintrag>();
+
+            var result = new List<ArchivAuftragEintrag>();
+            foreach (var auftragFolder in Directory.EnumerateDirectories(kwFolder))
+            {
+                var auftragJson = Path.Combine(auftragFolder, "auftrag.json");
+                var pdfFolder = Path.Combine(auftragFolder, "PDF");
+                var pdfFiles = Directory.Exists(pdfFolder)
+                    ? Directory.EnumerateFiles(pdfFolder, "*.pdf", SearchOption.TopDirectoryOnly).ToList()
+                    : new List<string>();
+
+                var orderNumber = Path.GetFileName(auftragFolder);
+                try
+                {
+                    if (File.Exists(auftragJson))
+                    {
+                        using var doc = JsonDocument.Parse(File.ReadAllText(auftragJson));
+                        if (doc.RootElement.TryGetProperty("Auftrag", out var orderElement)
+                            && orderElement.TryGetProperty("Auftragsnummer", out var numberElement))
+                        {
+                            orderNumber = numberElement.GetString() ?? orderNumber;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                result.Add(new ArchivAuftragEintrag
+                {
+                    Auftragsnummer = orderNumber,
+                    OrdnerPfad = auftragFolder,
+                    AuftragJsonPfad = auftragJson,
+                    ErstePdfPfad = pdfFiles.FirstOrDefault() ?? string.Empty,
+                    PdfAnzahl = pdfFiles.Count,
+                    ArchiviertAm = Directory.GetLastWriteTime(auftragFolder)
+                });
+            }
+
+            return result
+                .OrderByDescending(x => x.ArchiviertAm)
+                .ToList();
+        }
+
+        private static string ResolveArchiveBasePath()
+        {
+            var basisPfad = NetzwerkService.GetAuftragsArchivBasisPfad();
+            if (!string.IsNullOrWhiteSpace(basisPfad))
+                return basisPfad;
+
+            return Path.Combine(PathService.DataDirectory, "Auftragsarchiv");
+        }
+
         private static List<string> CollectPdfPaths(Auftrag auftrag, List<MaterialItem> materialien)
         {
             var pfade = new List<string>();
@@ -177,5 +238,15 @@ namespace MaterialManager_V01.Services
             var cleaned = new string(value.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
             return string.IsNullOrWhiteSpace(cleaned) ? "Auftrag" : cleaned;
         }
+    }
+
+    public sealed class ArchivAuftragEintrag
+    {
+        public string Auftragsnummer { get; set; } = string.Empty;
+        public string OrdnerPfad { get; set; } = string.Empty;
+        public string AuftragJsonPfad { get; set; } = string.Empty;
+        public string ErstePdfPfad { get; set; } = string.Empty;
+        public int PdfAnzahl { get; set; }
+        public DateTime ArchiviertAm { get; set; }
     }
 }

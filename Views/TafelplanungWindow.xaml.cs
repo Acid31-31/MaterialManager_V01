@@ -371,6 +371,15 @@ namespace MaterialManager_V01.Views
             ApplyFilter();
         }
 
+        private void OnOpenArchivAuftraegeClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
+            {
+                Owner = this
+            };
+            dlg.ShowDialog();
+        }
+
         private void LoadAuftraegeGridForSelectedKw()
         {
             var gefilterteAuftraege = AuftragRulesService.FilterByIsoCalendarWeek(
