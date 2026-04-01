@@ -80,6 +80,18 @@ namespace MaterialManager_V01.Views
             dlg.ShowDialog();
         }
 
+        private void OnOpenNetworkFolder(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                NetzwerkService.OpenAktivenDatenordnerImExplorer();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void OnSelectOperatorClick(object sender, RoutedEventArgs e)
         {
             _ = PromptForOperatorName();

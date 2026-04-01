@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -42,6 +43,36 @@ namespace MaterialManager_V01.Services
             catch { }
 
             return targetPath;
+        }
+
+        public static void OpenAktivenDatenordnerImExplorer()
+        {
+            var savePath = GetSavePath();
+            var directory = Path.GetDirectoryName(savePath);
+
+            if (string.IsNullOrWhiteSpace(directory))
+                throw new InvalidOperationException("Der Speicherordner konnte nicht bestimmt werden.");
+
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            if (File.Exists(savePath))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = $"/select,\"{savePath}\"",
+                    UseShellExecute = true
+                });
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"\"{directory}\"",
+                UseShellExecute = true
+            });
         }
 
         public static string GetLockFile()

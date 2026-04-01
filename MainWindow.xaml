@@ -271,6 +271,7 @@
                             <MenuItem Header="Export" Click="OnExport"/>
                             <Separator/>
                             <MenuItem Header="Netzwerk‑Einstellungen" Click="OnNetzwerkEinstellungen"/>
+                            <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
                             <MenuItem Header="Beenden" Click="OnBeenden"/>
                         </MenuItem>

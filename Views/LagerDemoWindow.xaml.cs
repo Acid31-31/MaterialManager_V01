@@ -222,6 +222,18 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnOpenNetworkFolder(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                NetzwerkService.OpenAktivenDatenordnerImExplorer();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Lager", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void OnNewMaterialClick(object sender, RoutedEventArgs e)
         {
             var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };

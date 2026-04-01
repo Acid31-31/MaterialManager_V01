@@ -66,6 +66,18 @@ namespace MaterialManager_V01.Views
             LoadItems();
         }
 
+        private void OnOpenNetworkFolder(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                NetzwerkService.OpenAktivenDatenordnerImExplorer();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private async void OnCheckForUpdates(object sender, RoutedEventArgs e)
         {
             try

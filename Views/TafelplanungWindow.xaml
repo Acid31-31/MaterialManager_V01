@@ -287,6 +287,7 @@
                     <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
                         <MenuItem Header="Datei">
                             <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
+                            <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
                             <MenuItem Header="Schließen" Click="OnCloseClick"/>
                         </MenuItem>
