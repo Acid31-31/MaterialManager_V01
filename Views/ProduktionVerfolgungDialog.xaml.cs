@@ -145,31 +145,11 @@ namespace MaterialManager_V01.Views
 
         private void OnKwAuswahlClick(object sender, RoutedEventArgs e)
         {
-            var menu = new ContextMenu
+            var archivDialog = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
             {
-                Background = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#111111")),
-                Foreground = System.Windows.Media.Brushes.White,
-                BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#333333")),
-                BorderThickness = new Thickness(1)
+                Owner = this
             };
-
-            for (var kw = 1; kw <= 53; kw++)
-            {
-                var istAktiv = kw == _ausgewaehlteKalenderWoche;
-                var item = new MenuItem
-                {
-                    Header = istAktiv ? $"▶ KW {kw:D2} ({_aktuellesJahr})" : $"KW {kw:D2} ({_aktuellesJahr})",
-                    Tag = kw,
-                    Foreground = System.Windows.Media.Brushes.White,
-                    Background = System.Windows.Media.Brushes.Transparent
-                };
-                item.Click += OnKwAuswahlItemClick;
-                menu.Items.Add(item);
-            }
-
-            KwAuswahlButton.ContextMenu = menu;
-            menu.PlacementTarget = KwAuswahlButton;
-            menu.IsOpen = true;
+            archivDialog.ShowDialog();
         }
 
         private void OnKwAuswahlItemClick(object sender, RoutedEventArgs e)
@@ -179,6 +159,12 @@ namespace MaterialManager_V01.Views
 
             _ausgewaehlteKalenderWoche = kw;
             UpdateKwButtonText();
+
+            var archivDialog = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
+            {
+                Owner = this
+            };
+            archivDialog.ShowDialog();
         }
 
         private void UpdateKwButtonText()
