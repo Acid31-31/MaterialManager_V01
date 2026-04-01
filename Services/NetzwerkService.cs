@@ -149,7 +149,7 @@ namespace MaterialManager_V01.Services
         public static void SetNetzwerkModus(bool aktiviert, string pfad)
         {
             _config.Aktiviert = aktiviert;
-            _config.NetzwerkPfad = NormalizePath(pfad);
+            _config.NetzwerkPfad = NormalizeDirectoryPath(pfad);
             SaveConfig();
         }
 
@@ -166,7 +166,7 @@ namespace MaterialManager_V01.Services
 
         public static void SetAuftragsArchivPfad(string pfad)
         {
-            _config.AuftragsArchivPfad = NormalizePath(pfad);
+            _config.AuftragsArchivPfad = NormalizeDirectoryPath(pfad);
             SaveConfig();
         }
 
@@ -185,21 +185,21 @@ namespace MaterialManager_V01.Services
 
         public static bool HasConfiguredNetworkPath()
         {
-            var normalized = NormalizePath(_config.NetzwerkPfad);
+            var normalized = NormalizeDirectoryPath(_config.NetzwerkPfad);
             return !string.IsNullOrWhiteSpace(normalized) && Path.IsPathRooted(normalized);
         }
 
         public static bool HasConfiguredArchivePath()
         {
-            var normalized = NormalizePath(_config.AuftragsArchivPfad);
+            var normalized = NormalizeDirectoryPath(_config.AuftragsArchivPfad);
             return !string.IsNullOrWhiteSpace(normalized) && Path.IsPathRooted(normalized);
         }
 
         public static void ConfigureNetworkMode(bool aktiviert, string netzwerkPfad, string auftragsArchivPfad, string? benutzer = null)
         {
             _config.Aktiviert = aktiviert;
-            _config.NetzwerkPfad = NormalizePath(netzwerkPfad);
-            _config.AuftragsArchivPfad = NormalizePath(auftragsArchivPfad);
+            _config.NetzwerkPfad = NormalizeDirectoryPath(netzwerkPfad);
+            _config.AuftragsArchivPfad = NormalizeDirectoryPath(auftragsArchivPfad);
             if (!string.IsNullOrWhiteSpace(benutzer))
                 _config.BenutzerName = benutzer.Trim();
             SaveConfig();
@@ -309,7 +309,7 @@ namespace MaterialManager_V01.Services
             if (!_config.Aktiviert)
                 return false;
 
-            var normalized = NormalizePath(_config.NetzwerkPfad);
+            var normalized = NormalizeDirectoryPath(_config.NetzwerkPfad);
             if (string.IsNullOrWhiteSpace(normalized))
                 return false;
 
@@ -331,7 +331,7 @@ namespace MaterialManager_V01.Services
         {
             archivePath = string.Empty;
 
-            var normalized = NormalizePath(_config.AuftragsArchivPfad);
+            var normalized = NormalizeDirectoryPath(_config.AuftragsArchivPfad);
             if (string.IsNullOrWhiteSpace(normalized))
                 return false;
 
@@ -346,6 +346,30 @@ namespace MaterialManager_V01.Services
             catch
             {
                 return false;
+            }
+        }
+
+        private static string NormalizeDirectoryPath(string? path)
+        {
+            var candidate = NormalizePath(path);
+            if (string.IsNullOrWhiteSpace(candidate))
+                return string.Empty;
+
+            try
+            {
+                var fullPath = Path.GetFullPath(candidate);
+
+                if (File.Exists(fullPath))
+                    return Path.GetDirectoryName(fullPath) ?? string.Empty;
+
+                if (fullPath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                    return Path.GetDirectoryName(fullPath) ?? string.Empty;
+
+                return fullPath;
+            }
+            catch
+            {
+                return candidate;
             }
         }
 
@@ -369,6 +393,17 @@ namespace MaterialManager_V01.Services
                 {
                     var json = File.ReadAllText(ConfigFile);
                     _config = JsonSerializer.Deserialize<NetzwerkConfig>(json) ?? new();
+
+                    var normalizedNetwork = NormalizeDirectoryPath(_config.NetzwerkPfad);
+                    var normalizedArchive = NormalizeDirectoryPath(_config.AuftragsArchivPfad);
+                    var changed = !string.Equals(_config.NetzwerkPfad, normalizedNetwork, StringComparison.Ordinal)
+                        || !string.Equals(_config.AuftragsArchivPfad, normalizedArchive, StringComparison.Ordinal);
+
+                    _config.NetzwerkPfad = normalizedNetwork;
+                    _config.AuftragsArchivPfad = normalizedArchive;
+
+                    if (changed)
+                        SaveConfig();
                 }
             }
             catch
