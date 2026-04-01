@@ -50,6 +50,11 @@ namespace MaterialManager_V01.Views
                 : $"Für KW {GetSelectedKw():D2} ({_jahr}) wurden keine Aufträge archiviert.\n\nDas kann z. B. bei Feiertagen oder Stillstand normal sein.";
         }
 
+        private ArchivAuftragEintrag? GetSelectedEntry()
+        {
+            return ArchivGrid.SelectedItem as ArchivAuftragEintrag;
+        }
+
         private void OnKwChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
