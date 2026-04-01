@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace MaterialManager_V01.Views
     {
         private static readonly string StorePath = Path.Combine(PathService.DataDirectory, "kundenmaterial.json");
         private static readonly string SettingsPath = Path.Combine(PathService.DataDirectory, "kundenmaterial.settings.json");
+        private readonly Dictionary<string, string> _customerFolderMap = new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<string> _customers = new();
 
         public ObservableCollection<KundenMaterialItem> Items { get; } = new();
 
@@ -134,6 +137,40 @@ namespace MaterialManager_V01.Views
             var folder = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
             PdfFolderBox.Text = folder;
             SaveSettings();
+            UpdateCustomerFolderHint();
+        }
+
+        private void OnChooseCustomerFolderClick(object sender, RoutedEventArgs e)
+        {
+            var kunde = GetSelectedCustomer();
+            if (string.IsNullOrWhiteSpace(kunde))
+            {
+                MessageBox.Show("Bitte zuerst einen Kunden eingeben oder auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var dlg = new OpenFileDialog
+            {
+                Title = $"PDF-Datei für Kundenordner von '{kunde}' wählen",
+                Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            var currentFolder = GetCustomerSpecificFolder(kunde);
+            if (!string.IsNullOrWhiteSpace(currentFolder) && Directory.Exists(currentFolder))
+                dlg.InitialDirectory = currentFolder;
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var folder = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(folder))
+            {
+                _customerFolderMap[kunde] = folder;
+                RegisterCustomer(kunde);
+                SaveSettings();
+                UpdateCustomerFolderHint();
+            }
         }
 
         private void OnSearchPdfClick(object sender, RoutedEventArgs e)
@@ -145,7 +182,7 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            var path = FindPdfByDrawingNumber(zeichnungsnummer);
+            var path = FindPdfByDrawingNumber(zeichnungsnummer, GetSelectedCustomer());
             if (string.IsNullOrWhiteSpace(path))
             {
                 FoundPdfText.Text = "Keine passende PDF gefunden.";
@@ -172,10 +209,19 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            var pdfPath = FindPdfByDrawingNumber(zeichnungsnummer);
+            var kunde = GetSelectedCustomer();
+            if (string.IsNullOrWhiteSpace(kunde))
+            {
+                MessageBox.Show("Bitte einen Kunden angeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            RegisterCustomer(kunde);
+            var pdfPath = FindPdfByDrawingNumber(zeichnungsnummer, kunde);
 
             Items.Add(new KundenMaterialItem
             {
+                Kunde = kunde,
                 Zeichnungsnummer = zeichnungsnummer,
                 Stueckzahl = stueckzahl,
                 PdfPfad = pdfPath ?? string.Empty,
@@ -188,6 +234,7 @@ namespace MaterialManager_V01.Views
                 : Path.GetFileName(pdfPath);
 
             SaveItems();
+            SaveSettings();
             DrawingNumberBox.Clear();
             QuantityBox.Text = "1";
             DrawingNumberBox.Focus();
@@ -223,16 +270,18 @@ namespace MaterialManager_V01.Views
             preview.ShowDialog();
         }
 
-        private string? FindPdfByDrawingNumber(string zeichnungsnummer)
+        private string? FindPdfByDrawingNumber(string zeichnungsnummer, string kunde)
         {
-            var folder = PdfFolderBox.Text?.Trim() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+            var searchFolders = GetSearchFolders(kunde).ToList();
+            if (searchFolders.Count == 0)
                 return null;
 
             try
             {
                 var normalized = zeichnungsnummer.Trim();
-                var files = Directory.EnumerateFiles(folder, "*.pdf", SearchOption.AllDirectories)
+                var files = searchFolders
+                    .SelectMany(folder => Directory.EnumerateFiles(folder, "*.pdf", SearchOption.AllDirectories))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .Select(p => new { Path = p, Name = Path.GetFileNameWithoutExtension(p) ?? string.Empty })
                     .Where(x => x.Name.Contains(normalized, StringComparison.OrdinalIgnoreCase))
                     .OrderByDescending(x => string.Equals(x.Name, normalized, StringComparison.OrdinalIgnoreCase))
@@ -245,6 +294,185 @@ namespace MaterialManager_V01.Views
             catch
             {
                 return null;
+            }
+        }
+
+        private IEnumerable<string> GetSearchFolders(string kunde)
+        {
+            var customerFolder = GetCustomerSpecificFolder(kunde);
+            if (!string.IsNullOrWhiteSpace(customerFolder))
+            {
+                var freigabe = Path.Combine(customerFolder, "Freigabe");
+                if (Directory.Exists(freigabe))
+                    yield return freigabe;
+
+                if (Directory.Exists(customerFolder))
+                    yield return customerFolder;
+            }
+
+            var root = PdfFolderBox.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(root) && Directory.Exists(root))
+            {
+                var customerInRoot = string.IsNullOrWhiteSpace(kunde) ? string.Empty : Path.Combine(root, kunde);
+                var customerFreigabeInRoot = string.IsNullOrWhiteSpace(customerInRoot) ? string.Empty : Path.Combine(customerInRoot, "Freigabe");
+                var rootFreigabe = Path.Combine(root, "Freigabe");
+
+                if (!string.IsNullOrWhiteSpace(customerFreigabeInRoot) && Directory.Exists(customerFreigabeInRoot))
+                    yield return customerFreigabeInRoot;
+
+                if (!string.IsNullOrWhiteSpace(customerInRoot) && Directory.Exists(customerInRoot))
+                    yield return customerInRoot;
+
+                if (Directory.Exists(rootFreigabe))
+                    yield return rootFreigabe;
+
+                yield return root;
+            }
+        }
+
+        private string GetSelectedCustomer()
+        {
+            var selected = CustomerBox.SelectedItem?.ToString();
+            if (!string.IsNullOrWhiteSpace(selected))
+                return selected.Trim();
+
+            return (CustomerBox.Text ?? string.Empty).Trim();
+        }
+
+        private string? GetCustomerSpecificFolder(string kunde)
+        {
+            if (string.IsNullOrWhiteSpace(kunde))
+                return null;
+
+            if (_customerFolderMap.TryGetValue(kunde, out var mapped) && !string.IsNullOrWhiteSpace(mapped))
+                return mapped;
+
+            return null;
+        }
+
+        private void RegisterCustomer(string kunde)
+        {
+            var trimmed = (kunde ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(trimmed))
+                return;
+
+            if (_customers.Any(c => string.Equals(c, trimmed, StringComparison.OrdinalIgnoreCase)))
+                return;
+
+            _customers.Add(trimmed);
+            CustomerBox.Items.Add(trimmed);
+        }
+
+        private void OnCustomerSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            UpdateCustomerFolderHint();
+        }
+
+        private void OnCustomerSelectionLostFocus(object sender, RoutedEventArgs e)
+        {
+            var kunde = GetSelectedCustomer();
+            RegisterCustomer(kunde);
+            SaveSettings();
+            UpdateCustomerFolderHint();
+        }
+
+        private void UpdateCustomerFolderHint()
+        {
+            var kunde = GetSelectedCustomer();
+            if (string.IsNullOrWhiteSpace(kunde))
+            {
+                CustomerFolderHintText.Text = "Suche: Root\\Kunde\\Freigabe";
+                return;
+            }
+
+            var folder = GetCustomerSpecificFolder(kunde);
+            if (string.IsNullOrWhiteSpace(folder))
+            {
+                var root = PdfFolderBox.Text?.Trim() ?? string.Empty;
+                folder = string.IsNullOrWhiteSpace(root) ? string.Empty : Path.Combine(root, kunde, "Freigabe");
+            }
+
+            CustomerFolderHintText.Text = string.IsNullOrWhiteSpace(folder)
+                ? $"Suche: {kunde}"
+                : folder;
+        }
+
+        private void LoadSettings()
+        {
+            try
+            {
+                if (!File.Exists(SettingsPath))
+                {
+                    UpdateCustomerFolderHint();
+                    return;
+                }
+
+                var json = File.ReadAllText(SettingsPath);
+                var settings = JsonSerializer.Deserialize<KundenMaterialSettings>(json);
+                if (settings == null)
+                {
+                    UpdateCustomerFolderHint();
+                    return;
+                }
+
+                PdfFolderBox.Text = settings.PdfFolder ?? string.Empty;
+
+                _customerFolderMap.Clear();
+                if (settings.CustomerFolders != null)
+                {
+                    foreach (var kvp in settings.CustomerFolders)
+                    {
+                        if (!string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value))
+                            _customerFolderMap[kvp.Key.Trim()] = kvp.Value.Trim();
+                    }
+                }
+
+                _customers.Clear();
+                CustomerBox.Items.Clear();
+                if (settings.Customers != null)
+                {
+                    foreach (var customer in settings.Customers.Where(c => !string.IsNullOrWhiteSpace(c)).Select(c => c.Trim()).Distinct(StringComparer.OrdinalIgnoreCase))
+                    {
+                        _customers.Add(customer);
+                        CustomerBox.Items.Add(customer);
+                    }
+                }
+
+                var selected = settings.SelectedCustomer?.Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(selected))
+                {
+                    RegisterCustomer(selected);
+                    CustomerBox.Text = selected;
+                }
+
+                UpdateCustomerFolderHint();
+            }
+            catch
+            {
+                UpdateCustomerFolderHint();
+            }
+        }
+
+        private void SaveSettings()
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(SettingsPath);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var settings = new KundenMaterialSettings
+                {
+                    PdfFolder = PdfFolderBox.Text?.Trim() ?? string.Empty,
+                    SelectedCustomer = GetSelectedCustomer(),
+                    Customers = _customers.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(c => c).ToList(),
+                    CustomerFolders = _customerFolderMap.ToDictionary(k => k.Key, v => v.Value, StringComparer.OrdinalIgnoreCase)
+                };
+                var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(SettingsPath, json);
+            }
+            catch
+            {
             }
         }
 
@@ -286,46 +514,11 @@ namespace MaterialManager_V01.Views
                 MessageBox.Show($"Speichern fehlgeschlagen:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
-        private void LoadSettings()
-        {
-            try
-            {
-                if (!File.Exists(SettingsPath))
-                    return;
-
-                var json = File.ReadAllText(SettingsPath);
-                var settings = JsonSerializer.Deserialize<KundenMaterialSettings>(json);
-                if (settings == null)
-                    return;
-
-                PdfFolderBox.Text = settings.PdfFolder ?? string.Empty;
-            }
-            catch
-            {
-            }
-        }
-
-        private void SaveSettings()
-        {
-            try
-            {
-                var dir = Path.GetDirectoryName(SettingsPath);
-                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var settings = new KundenMaterialSettings { PdfFolder = PdfFolderBox.Text?.Trim() ?? string.Empty };
-                var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(SettingsPath, json);
-            }
-            catch
-            {
-            }
-        }
     }
 
     public sealed class KundenMaterialItem
     {
+        public string Kunde { get; set; } = string.Empty;
         public string Zeichnungsnummer { get; set; } = string.Empty;
         public int Stueckzahl { get; set; }
         public string PdfDateiname { get; set; } = string.Empty;
@@ -336,5 +529,8 @@ namespace MaterialManager_V01.Views
     public sealed class KundenMaterialSettings
     {
         public string PdfFolder { get; set; } = string.Empty;
+        public string SelectedCustomer { get; set; } = string.Empty;
+        public List<string> Customers { get; set; } = new();
+        public Dictionary<string, string> CustomerFolders { get; set; } = new();
     }
 }
