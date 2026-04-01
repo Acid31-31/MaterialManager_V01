@@ -1301,15 +1301,15 @@ namespace MaterialManager_V01
         {
             if (!Services.NetzwerkService.HasConfiguredNetworkPath())
             {
-                NetzwerkStatusText = "Netzwerk: nicht konfiguriert";
+                NetzwerkStatusText = "Modus: Lokal (nicht konfiguriert)";
                 NetzwerkStatusBrush = Brushes.Gray;
                 return;
             }
 
             if (!Services.NetzwerkService.IsNetzwerkModus)
             {
-                NetzwerkStatusText = "Netzwerk: deaktiviert";
-                NetzwerkStatusBrush = Brushes.Orange;
+                NetzwerkStatusText = "Modus: Lokal (Netzwerk aus)";
+                NetzwerkStatusBrush = Brushes.DeepSkyBlue;
                 return;
             }
 
@@ -1338,12 +1338,12 @@ namespace MaterialManager_V01
 
             if (Services.NetzwerkService.IstPfadErreichbar())
             {
-                NetzwerkStatusText = isNetworkLocation ? "Netzwerk: verbunden" : "Datenordner: lokal";
+                NetzwerkStatusText = isNetworkLocation ? "Modus: Server verbunden" : "Modus: Lokal (kein Server)";
                 NetzwerkStatusBrush = Brushes.LimeGreen;
             }
             else
             {
-                NetzwerkStatusText = "Netzwerk: nicht erreichbar";
+                NetzwerkStatusText = "Modus: Server nicht erreichbar";
                 NetzwerkStatusBrush = Brushes.OrangeRed;
             }
         }
