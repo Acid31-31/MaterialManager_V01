@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using MaterialManager_V01.Services;
@@ -90,6 +91,60 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void OnCleanupUpdateProcessesClick(object sender, RoutedEventArgs e)
+        {
+            var killed = 0;
+            var failed = 0;
+
+            foreach (var processName in new[] { "UpdateInstaller", "updater" })
+            {
+                Process[] processes;
+                try
+                {
+                    processes = Process.GetProcessesByName(processName);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        if (!process.HasExited)
+                        {
+                            process.Kill(true);
+                            process.WaitForExit(3000);
+                            killed++;
+                        }
+                    }
+                    catch
+                    {
+                        failed++;
+                    }
+                    finally
+                    {
+                        process.Dispose();
+                    }
+                }
+            }
+
+            if (killed == 0 && failed == 0)
+            {
+                MessageBox.Show("Es waren keine hängenden Update-Prozesse aktiv.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (failed > 0)
+            {
+                MessageBox.Show($"{killed} Update-Prozesse beendet, {failed} konnten nicht beendet werden.\n\nBei Bedarf die App einmal als Administrator starten und erneut ausführen.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            MessageBox.Show($"{killed} hängende Update-Prozesse wurden beendet.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnSelectOperatorClick(object sender, RoutedEventArgs e)

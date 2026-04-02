@@ -129,6 +129,7 @@
                         <MenuItem Header="Laser" Click="OnLaserClick"/>
                         <MenuItem Header="Kunden Material" Click="OnKundenMaterialClick"/>
                         <Separator/>
+                        <MenuItem Header="Update-Prozesse bereinigen" Click="OnCleanupUpdateProcessesClick"/>
                         <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                         <Separator/>
                         <MenuItem Header="Beenden" Click="OnCloseClick"/>
