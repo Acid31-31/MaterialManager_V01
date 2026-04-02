@@ -37,19 +37,23 @@ namespace MaterialManager_V01.Services
                 if (File.Exists(_filePath))
                 {
                     var lastWrite = File.GetLastWriteTime(_filePath);
-                    // Prüfe ob externe Datei neuer ist als letzte lokale Speicherung
-                    if (lastWrite > _lastLocalSave && lastWrite > _lastExternalChange.AddSeconds(-1))
+
+                    // Nur externe UND wirklich neue Änderungen triggern
+                    if (lastWrite <= _lastLocalSave)
+                        return;
+
+                    if (lastWrite <= _lastExternalChange)
+                        return;
+
+                    _lastExternalChange = lastWrite;
+                    IsSyncing = true;
+                    try
                     {
-                        _lastExternalChange = lastWrite;
-                        IsSyncing = true;
-                        try
-                        {
-                            OnAutoSyncTriggered?.Invoke();
-                        }
-                        finally
-                        {
-                            IsSyncing = false;
-                        }
+                        OnAutoSyncTriggered?.Invoke();
+                    }
+                    finally
+                    {
+                        IsSyncing = false;
                     }
                 }
             }

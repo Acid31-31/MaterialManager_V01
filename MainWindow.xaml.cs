@@ -947,6 +947,11 @@ namespace MaterialManager_V01
                     MaterialDataService.SaveAllMaterials(snapshot);
 
                     _lastSaveUtc = DateTime.UtcNow;
+                    try
+                    {
+                        Services.AutoSyncManager.RegisterLocalSave(Services.NetzwerkService.GetSavePath());
+                    }
+                    catch { }
                     System.Diagnostics.Debug.WriteLine($"[SaveNow] FERTIG gespeichert um {DateTime.Now:HH:mm:ss}!");
                 }
                 catch (Exception ex)
