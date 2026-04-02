@@ -18,6 +18,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             _auftrag = auftrag;
+            _auftrag.Auftragsnummer = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
             _aktuellesJahr = DateTime.Now.Year;
             _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
             AuftragTextBlock.Text = _auftrag.Auftragsnummer;
@@ -120,24 +121,32 @@ namespace MaterialManager_V01.Views
             {
                 using (var context = new MaterialManagerDbContext())
                 {
+                    var normalizedOrderNo = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
+
                     var existingAuftrag = context.Auftraege.Find(_auftrag.Id);
-                    if (existingAuftrag == null && !string.IsNullOrWhiteSpace(_auftrag.Auftragsnummer))
+                    if (existingAuftrag == null && !string.IsNullOrWhiteSpace(normalizedOrderNo))
                     {
                         existingAuftrag = context.Auftraege
-                            .FirstOrDefault(a => a.Auftragsnummer == _auftrag.Auftragsnummer);
+                            .AsEnumerable()
+                            .FirstOrDefault(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), normalizedOrderNo, StringComparison.OrdinalIgnoreCase));
                     }
 
                     if (existingAuftrag == null)
                     {
                         existingAuftrag = new Auftrag
                         {
-                            Auftragsnummer = _auftrag.Auftragsnummer,
+                            Auftragsnummer = normalizedOrderNo,
                             ErstelltAm = _auftrag.ErstelltAm,
                             AngelegtVon = _auftrag.AngelegtVon
                         };
                         context.Auftraege.Add(existingAuftrag);
                     }
+                    else
+                    {
+                        existingAuftrag.Auftragsnummer = normalizedOrderNo;
+                    }
 
+                    _auftrag.Auftragsnummer = normalizedOrderNo;
                     existingAuftrag.ProduktionStartDatum = _auftrag.ProduktionStartDatum;
                     existingAuftrag.ProduktionEndDatum = _auftrag.ProduktionEndDatum;
                     existingAuftrag.Status = _auftrag.Status;
@@ -192,8 +201,9 @@ namespace MaterialManager_V01.Views
         {
             fehlendePdfsText = string.Empty;
 
+            var orderNo = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
             var materialien = MaterialDataService.LoadAllMaterials()
-                .Where(m => string.Equals(m.AuftragNr, _auftrag.Auftragsnummer, StringComparison.OrdinalIgnoreCase))
+                .Where(m => string.Equals((m.AuftragNr ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (materialien.Count == 0)
