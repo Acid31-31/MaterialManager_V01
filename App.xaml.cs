@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
@@ -16,8 +17,17 @@ namespace MaterialManager_V01
         private const int DwmaUseImmersiveDarkMode = 20;
         private const int DwmaUseImmersiveDarkModeLegacy = 19;
 
+        private static Mutex? _singleInstanceMutex;
+        private static bool _ownsSingleInstanceMutex;
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            if (!EnsureSingleInstance())
+            {
+                Current.Shutdown();
+                return;
+            }
+
             base.OnStartup(e);
 
             EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent,
@@ -115,6 +125,50 @@ namespace MaterialManager_V01
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 Current.Shutdown();
+            }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            try
+            {
+                if (_ownsSingleInstanceMutex)
+                    _singleInstanceMutex?.ReleaseMutex();
+            }
+            catch
+            {
+            }
+            finally
+            {
+                _singleInstanceMutex?.Dispose();
+                _singleInstanceMutex = null;
+                _ownsSingleInstanceMutex = false;
+            }
+
+            base.OnExit(e);
+        }
+
+        private static bool EnsureSingleInstance()
+        {
+            try
+            {
+                _singleInstanceMutex = new Mutex(true, @"Local\MaterialManager_V01_SingleInstance", out var createdNew);
+                if (createdNew)
+                {
+                    _ownsSingleInstanceMutex = true;
+                    return true;
+                }
+
+                return false;
+            }
+            catch (AbandonedMutexException)
+            {
+                _ownsSingleInstanceMutex = true;
+                return true;
+            }
+            catch
+            {
+                return true;
             }
         }
 
