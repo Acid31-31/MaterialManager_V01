@@ -74,6 +74,7 @@ namespace MaterialManager_V01
         private static readonly System.Threading.Mutex UpdatePromptMutex = new(false, @"Local\MaterialManager_V01_UpdatePrompt");
         private bool _isUpdateCheckRunning;
         private string? _lastPromptedVersion;
+        private bool _periodicUpdateHandlerRegistered;
 
         private string _gesamtGewichtText = "0,00 kg";
         public string GesamtGewichtText { get => _gesamtGewichtText; set { _gesamtGewichtText = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GesamtGewichtText))); } }
@@ -272,6 +273,17 @@ namespace MaterialManager_V01
                 this.Closed += (s, e) =>
                 {
                     Log("MainWindow wird geschlossen");
+                    try
+                    {
+                        _updateCheckTimer.Stop();
+                        if (_periodicUpdateHandlerRegistered)
+                        {
+                            _updateCheckTimer.Tick -= OnPeriodicUpdateTimerTick;
+                            _periodicUpdateHandlerRegistered = false;
+                        }
+                    }
+                    catch { }
+
                     logWriter?.Close();
                     logWriter?.Dispose();
                 };
@@ -1162,16 +1174,38 @@ namespace MaterialManager_V01
 
         private void StartPeriodicUpdateChecks()
         {
+            _updateCheckTimer.Stop();
+            if (!_periodicUpdateHandlerRegistered)
+            {
+                _updateCheckTimer.Tick += OnPeriodicUpdateTimerTick;
+                _periodicUpdateHandlerRegistered = true;
+            }
             _updateCheckTimer.Interval = TimeSpan.FromMinutes(2);
-            _updateCheckTimer.Tick += async (_, __) => await CheckForUpdatesAndMaybePromptAsync("timer");
             _updateCheckTimer.Start();
             AppendUpdateUiLog("Periodischer Update-Check gestartet (alle 2 Minuten).");
+        }
+
+        private async void OnPeriodicUpdateTimerTick(object? sender, EventArgs e)
+        {
+            await CheckForUpdatesAndMaybePromptAsync("timer");
         }
 
         private async System.Threading.Tasks.Task CheckForUpdatesAndMaybePromptAsync(string source)
         {
             if (_isUpdateCheckRunning)
                 return;
+
+            if (!IsLoaded || !IsVisible)
+            {
+                AppendUpdateUiLog($"Update-Check ({source}) übersprungen: Fenster nicht sichtbar.");
+                return;
+            }
+
+            if (Application.Current?.Windows.OfType<Window>().Any(w => w.IsVisible) != true)
+            {
+                AppendUpdateUiLog($"Update-Check ({source}) übersprungen: keine sichtbaren Fenster.");
+                return;
+            }
 
             _isUpdateCheckRunning = true;
             try
