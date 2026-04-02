@@ -26,6 +26,17 @@ namespace MaterialManager_V01.Services
             try
             {
                 var savePath = NetzwerkService.GetSavePath();
+
+                // WICHTIG: DB ist führend, damit gelöschte Elemente nicht durch ältere Excel-Datei zurückkommen.
+                if (dbItems.Count > 0)
+                {
+                    if (!File.Exists(savePath))
+                        TrySyncExcel(dbItems);
+
+                    return dbItems;
+                }
+
+                // Nur wenn DB leer ist, aus Excel initial laden.
                 if (File.Exists(savePath))
                 {
                     var sharedItems = LoadFromExcelFile(savePath);
@@ -34,10 +45,6 @@ namespace MaterialManager_V01.Services
                         PersistToDatabase(sharedItems);
                         return sharedItems;
                     }
-                }
-                else if (dbItems.Count > 0)
-                {
-                    TrySyncExcel(dbItems);
                 }
             }
             catch
