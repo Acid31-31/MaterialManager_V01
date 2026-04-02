@@ -1,10 +1,12 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
+using Microsoft.Win32;
 
 namespace MaterialManager_V01.Views
 {
@@ -164,6 +166,105 @@ namespace MaterialManager_V01.Views
 
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
+            Close();
+        }
+
+        private void OnAttachOrderPdfClick(object sender, RoutedEventArgs e)
+        {
+            var orderNo = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(orderNo))
+                return;
+
+            var dlg = new OpenFileDialog
+            {
+                Title = $"PDF für Auftrag {orderNo} auswählen",
+                Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var materials = MaterialDataService.LoadAllMaterials();
+            var matched = materials
+                .Where(m => string.Equals((m.AuftragNr ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (matched.Count == 0)
+            {
+                MessageBox.Show("Keine Materialpositionen für diesen Auftrag gefunden.", "Auftrag", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            foreach (var item in matched)
+            {
+                if (string.IsNullOrWhiteSpace(item.PdfPfad))
+                    item.PdfPfad = dlg.FileName;
+
+                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                item.AenderungsDatum = DateTime.Now;
+            }
+
+            _auftrag.PdfPfad = dlg.FileName;
+            SaveChanges();
+            MaterialDataService.SaveAllMaterials(materials);
+
+            MessageBox.Show("PDF wurde für den Auftrag übernommen.", "Auftrag", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void OnDeleteOrderClick(object sender, RoutedEventArgs e)
+        {
+            var orderNo = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(orderNo))
+                return;
+
+            var confirm = MessageBox.Show(
+                $"Auftrag '{orderNo}' wirklich löschen?\n\nDie Reservierung wird von allen zugehörigen Materialien entfernt.",
+                "Auftrag löschen",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            var materials = MaterialDataService.LoadAllMaterials();
+            var matched = materials
+                .Where(m => string.Equals((m.AuftragNr ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var item in matched)
+            {
+                item.AuftragNr = string.Empty;
+                if (string.Equals(item.Lagerort, "Gebucht", StringComparison.OrdinalIgnoreCase))
+                {
+                    item.Lagerort = RegalService.DetermineLagerort(
+                        item.MaterialArt,
+                        item.Legierung,
+                        item.Form,
+                        item.Staerke,
+                        item.Mass,
+                        materials.Where(m => !ReferenceEquals(m, item)).ToList());
+                }
+
+                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                item.AenderungsDatum = DateTime.Now;
+            }
+
+            MaterialDataService.SaveAllMaterials(materials);
+
+            using (var context = new MaterialManagerDbContext())
+            {
+                var dbOrder = context.Auftraege
+                    .AsEnumerable()
+                    .FirstOrDefault(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase));
+                if (dbOrder != null)
+                {
+                    context.Auftraege.Remove(dbOrder);
+                    context.SaveChanges();
+                }
+            }
+
+            DialogResult = true;
             Close();
         }
 

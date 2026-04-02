@@ -48,6 +48,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Produktionsverfolgung" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
@@ -94,6 +95,11 @@
             <Button Content="▶ Start" Style="{StaticResource GreenButtonStyle}" Click="OnStartClick" x:Name="StartButton"/>
             <Button Content="⏹ Ende" Style="{StaticResource RedButtonStyle}" Click="OnEndClick" x:Name="EndButton" IsEnabled="False" Margin="12,0,0,0"/>
             <Button Content="Schließen" Background="#555" Click="OnCloseClick" Margin="24,0,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+            <Button Content="PDF nachtragen" Background="#1565C0" Click="OnAttachOrderPdfClick" MinWidth="170" Height="40" Padding="14,8"/>
+            <Button Content="Auftrag löschen" Background="#8B1E1E" Click="OnDeleteOrderClick" MinWidth="170" Height="40" Padding="14,8" Margin="12,0,0,0"/>
         </StackPanel>
     </Grid>
 </Window>
