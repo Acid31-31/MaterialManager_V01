@@ -253,8 +253,19 @@ namespace MaterialManager_V01
                 {
                     Log("MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!");
                     ApplyResponsiveWindowLayout();
-                    _ = CheckForUpdatesOnStartupAsync();
-                    StartPeriodicUpdateChecks();
+
+                    var startedAfterUpdate = Environment.GetCommandLineArgs()
+                        .Any(a => string.Equals(a, "--updated", StringComparison.OrdinalIgnoreCase));
+
+                    if (!startedAfterUpdate)
+                    {
+                        _ = CheckForUpdatesOnStartupAsync();
+                        StartPeriodicUpdateChecks();
+                    }
+                    else
+                    {
+                        AppendUpdateUiLog("Update-Checks beim ersten Start nach Update bewusst übersprungen (--updated).");
+                    }
                 };
 
                 // Cleanup beim Beenden

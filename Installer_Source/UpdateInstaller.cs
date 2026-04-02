@@ -77,15 +77,13 @@ internal static class Program
                 return;
             }
 
-            var targetExe = Path.Combine(options.TargetDirectory, "MaterialManager_V01.exe");
-            if (File.Exists(targetExe))
+            if (!TryLaunchUpdatedApplication(options.TargetDirectory, out var launchError))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = targetExe,
-                    WorkingDirectory = options.TargetDirectory,
-                    UseShellExecute = true
-                });
+                MessageBox.Show(
+                    "Update wurde installiert, aber die App konnte nicht automatisch gestartet werden.\n\n" + launchError,
+                    "MaterialManager Update",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
 
             Thread.Sleep(2000);
@@ -437,6 +435,63 @@ internal static class Program
         }
 
         throw new IOException($"Datei konnte nicht gelöscht werden: {path}\n{lastError?.Message}", lastError);
+    }
+
+    private static bool TryLaunchUpdatedApplication(string targetDirectory, out string error)
+    {
+        error = string.Empty;
+
+        try
+        {
+            var preferredExe = Path.Combine(targetDirectory, "MaterialManager_V01.exe");
+            string? launchExe = null;
+
+            for (var attempt = 0; attempt < 8; attempt++)
+            {
+                if (File.Exists(preferredExe))
+                {
+                    launchExe = preferredExe;
+                    break;
+                }
+
+                var candidates = Directory.Exists(targetDirectory)
+                    ? Directory.GetFiles(targetDirectory, "*.exe", SearchOption.TopDirectoryOnly)
+                        .Where(p =>
+                            !string.Equals(Path.GetFileName(p), "UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(Path.GetFileName(p), "MaterialManager.LicenseGenerator.exe", StringComparison.OrdinalIgnoreCase))
+                        .ToList()
+                    : new List<string>();
+
+                if (candidates.Count > 0)
+                {
+                    launchExe = candidates[0];
+                    break;
+                }
+
+                Thread.Sleep(500);
+            }
+
+            if (string.IsNullOrWhiteSpace(launchExe) || !File.Exists(launchExe))
+            {
+                error = $"Keine startbare EXE im Zielordner gefunden: {targetDirectory}";
+                return false;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = launchExe,
+                Arguments = "--updated",
+                WorkingDirectory = targetDirectory,
+                UseShellExecute = true
+            });
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
     }
 
     private sealed class UpdateInstallerOptions
