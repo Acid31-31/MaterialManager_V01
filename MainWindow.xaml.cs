@@ -151,6 +151,17 @@ namespace MaterialManager_V01
             }
         }
 
+        private string _excelSyncStatusText = string.Empty;
+        public string ExcelSyncStatusText
+        {
+            get => _excelSyncStatusText;
+            set
+            {
+                _excelSyncStatusText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExcelSyncStatusText)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -207,6 +218,7 @@ namespace MaterialManager_V01
 
                 var savePath = Services.NetzwerkService.GetSavePath();
                 Log($"SavePath: {savePath}");
+                ExcelSyncStatusText = $"Excel: {savePath}";
                 
                 InitializeAutoSync(savePath);
                 Log("AutoSync initialisiert");
@@ -949,14 +961,24 @@ namespace MaterialManager_V01
                     _lastSaveUtc = DateTime.UtcNow;
                     try
                     {
-                        Services.AutoSyncManager.RegisterLocalSave(Services.NetzwerkService.GetSavePath());
+                        var savePath = Services.NetzwerkService.GetSavePath();
+                        Services.AutoSyncManager.RegisterLocalSave(savePath);
+
+                        var stamp = File.Exists(savePath)
+                            ? File.GetLastWriteTime(savePath).ToString("HH:mm:ss")
+                            : "nicht gefunden";
+                        ExcelSyncStatusText = $"Excel-Sync: {stamp} | {savePath}";
                     }
-                    catch { }
+                    catch
+                    {
+                        ExcelSyncStatusText = "Excel-Sync: Pfad nicht verfügbar";
+                    }
                     System.Diagnostics.Debug.WriteLine($"[SaveNow] FERTIG gespeichert um {DateTime.Now:HH:mm:ss}!");
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"[SaveNow] FEHLER: {ex.Message}");
+                    ExcelSyncStatusText = $"Excel-Sync Fehler: {ex.Message}";
                 }
             }
         }

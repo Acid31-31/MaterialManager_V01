@@ -320,6 +320,12 @@
                                    HorizontalAlignment="Right"
                                    Margin="0,0,10,0"
                                    TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding ExcelSyncStatusText}"
+                                   Foreground="#9E9E9E"
+                                   FontSize="9"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,10,0"
+                                   TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="3"
