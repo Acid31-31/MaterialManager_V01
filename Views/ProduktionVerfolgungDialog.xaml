@@ -2,12 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Produktionsverfolgung"
-        Height="500"
-        Width="650"
+        Height="620"
+        Width="760"
+        MinHeight="560"
+        MinWidth="700"
         Background="#0B0B0B"
         Foreground="White"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         FontSize="13">
     <Window.Resources>
         <Style TargetType="Button">

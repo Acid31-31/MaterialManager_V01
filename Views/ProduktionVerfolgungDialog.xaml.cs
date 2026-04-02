@@ -60,11 +60,21 @@ namespace MaterialManager_V01.Views
 
             if (!CanStartProductionWithCompletePdfs(out var fehlendePdfsText))
             {
-                MessageBox.Show(
-                    $"Produktion kann nicht gestartet werden. Für diesen Auftrag fehlen PDF-Dateien:\n\n{fehlendePdfsText}",
+                var action = MessageBox.Show(
+                    $"Produktion kann nicht gestartet werden. Für diesen Auftrag fehlen PDF-Dateien:\n\n{fehlendePdfsText}\n\nJa = PDF jetzt nachtragen\nNein = Auftrag löschen\nAbbrechen = nichts tun",
                     "PDF-Pflicht vor Start",
-                    MessageBoxButton.OK,
+                    MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Warning);
+
+                if (action == MessageBoxResult.Yes)
+                {
+                    OnAttachOrderPdfClick(sender, e);
+                }
+                else if (action == MessageBoxResult.No)
+                {
+                    OnDeleteOrderClick(sender, e);
+                }
+
                 return;
             }
 
