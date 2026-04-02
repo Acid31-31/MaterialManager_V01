@@ -129,7 +129,7 @@ namespace MaterialManager_V01
             }
         }
 
-        private string _netzwerkStatusText = "Netzwerk: nicht geprüft";
+        private string _netzwerkStatusText = "Netzwerk: nicht geprÃ¼ft";
         public string NetzwerkStatusText
         {
             get => _netzwerkStatusText;
@@ -239,7 +239,7 @@ namespace MaterialManager_V01
                 
                 this.Loaded += (s, e) =>
                 {
-                    Log("MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!");
+                    Log("MainWindow.Loaded Event ausgelÃ¶st - Fenster ist sichtbar!");
                     ApplyResponsiveWindowLayout();
                     _ = CheckForUpdatesOnStartupAsync();
                     StartPeriodicUpdateChecks();
@@ -364,7 +364,7 @@ namespace MaterialManager_V01
             Marshal.StructureToPtr(minMaxInfo, lParam, true);
         }
 
-        // Ô£à UPDATE ONLINE-STATUS alle 5 Sekunden
+        // Ã”Â£Ã  UPDATE ONLINE-STATUS alle 5 Sekunden
         private void UpdateOnlineStatus()
         {
             try
@@ -379,7 +379,7 @@ namespace MaterialManager_V01
             catch { }
         }
 
-        // Ô£à CLICK auf Online-Users: Popup anzeigen
+        // Ã”Â£Ã  CLICK auf Online-Users: Popup anzeigen
         private void OnOnlineUsersClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -409,7 +409,7 @@ namespace MaterialManager_V01
                 
                 Services.FileWatcherService.OnFileChanged += (path) => 
                 {
-                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] Änderung erkannt: {path}");
+                    System.Diagnostics.Debug.WriteLine($"[FileWatcherService] Ã„nderung erkannt: {path}");
                     ReloadMaterialienAsync();
                 };
                 System.Diagnostics.Debug.WriteLine($"[InitializeAutoSync] FileWatcher Event registriert");
@@ -444,7 +444,7 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                // VERBESSERT: Kürzere Window für lokale Saves (500ms für sicheres Debouncing)
+                // VERBESSERT: KÃ¼rzere Window fÃ¼r lokale Saves (500ms fÃ¼r sicheres Debouncing)
                 bool isLocalSave = (DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds < 500;
                 System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] isLocalSave: {isLocalSave}, Zeit: {(DateTime.UtcNow - _lastSaveUtc).TotalMilliseconds}ms");
                 
@@ -454,7 +454,7 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe Änderung erkannt!");
+                System.Diagnostics.Debug.WriteLine($"[ReloadMaterialienAsync] LADEN - Externe Ã„nderung erkannt!");
                 
                 // Versuche bis zu 30x zu laden
                 for (var attempt = 0; attempt < 30; attempt++)
@@ -470,7 +470,7 @@ namespace MaterialManager_V01
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] Vollständige Übernahme aus Excel startet...");
+                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] VollstÃ¤ndige Ãœbernahme aus Excel startet...");
 
                                 Materialien.Clear();
                                 foreach (var externalItem in externalItems)
@@ -483,7 +483,7 @@ namespace MaterialManager_V01
                                 _lastSaveUtc = DateTime.UtcNow;
 
                                 Title = $"MaterialManager V01 - Synchronisiert {DateTime.Now:HH:mm:ss}";
-                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] Vollständige Übernahme FERTIG!");
+                                System.Diagnostics.Debug.WriteLine("[ReloadMaterialienAsync] VollstÃ¤ndige Ãœbernahme FERTIG!");
                             });
                             
                             Services.ReloadService.RegisterLoad(savePath);
@@ -510,12 +510,12 @@ namespace MaterialManager_V01
             var dlg = new MaterialDialog(Materialien) { Owner = this };
             if (dlg.ShowDialog() == true) 
             { 
-                // SOFORT zur UI hinzufügen (keine Verzögerung!)
+                // SOFORT zur UI hinzufÃ¼gen (keine VerzÃ¶gerung!)
                 Materialien.Add(dlg.Material);
                 UpdateStats();
                 
                 // DANN asynchron speichern (blockiert UI nicht)
-                System.Threading.Tasks.Task.Run(() => SaveNow());
+                SaveNow();
             }
         }
 
@@ -535,7 +535,7 @@ namespace MaterialManager_V01
                         UpdateStats();
                         
                         // DANN asynchron speichern
-                        System.Threading.Tasks.Task.Run(() => SaveNow());
+                        SaveNow();
                     }
                 }
             }
@@ -544,10 +544,10 @@ namespace MaterialManager_V01
         private void OnMaterialLoeschen(object sender, RoutedEventArgs e)
         {
             var selected = Materialien.Where(m => m.IsSelected).ToList();
-            if (!selected.Any()) { MessageBox.Show("Bitte Material auswählen."); return; }
-            if (MessageBox.Show($"{selected.Count} Material(ien) löschen?", "Bestätigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (!selected.Any()) { MessageBox.Show("Bitte Material auswÃ¤hlen."); return; }
+            if (MessageBox.Show($"{selected.Count} Material(ien) lÃ¶schen?", "BestÃ¤tigung", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Services.UndoService.Push($"{selected.Count} Material(ien) gelöscht", selected);
+                Services.UndoService.Push($"{selected.Count} Material(ien) gelÃ¶scht", selected);
                 
                 // SOFORT aus UI entfernen
                 foreach (var item in selected) 
@@ -558,7 +558,7 @@ namespace MaterialManager_V01
                 UpdateStats();
                 
                 // DANN asynchron speichern
-                System.Threading.Tasks.Task.Run(() => SaveNow());
+                SaveNow();
             }
         }
 
@@ -578,15 +578,15 @@ namespace MaterialManager_V01
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}\n\nAktuell: {result.CurrentVersion}",
+                        "Update-PrÃ¼fung", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!result.IsUpdateAvailable)
                 {
                     MessageBox.Show($"Sie haben die neueste Version.\n\nAktuell: {result.CurrentVersion}",
-                        "Update-Prüfung", MessageBoxButton.OK, MessageBoxImage.Information);
+                        "Update-PrÃ¼fung", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -594,7 +594,7 @@ namespace MaterialManager_V01
                 {
                     MessageBox.Show(
                         $"Neue Version {result.LatestVersion} gefunden, aber kein Update-Asset (.msi/.exe/.zip) in der Release.",
-                        "Update-Prüfung",
+                        "Update-PrÃ¼fung",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
@@ -605,7 +605,7 @@ namespace MaterialManager_V01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler bei Update-PrÃ¼fung:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -673,7 +673,7 @@ namespace MaterialManager_V01
                     UpdateStats();
                     
                     // Asynchron speichern
-                    System.Threading.Tasks.Task.Run(() => SaveNow());
+                    SaveNow();
                 }
             }
         }
@@ -695,7 +695,7 @@ namespace MaterialManager_V01
                         UpdateStats();
                         
                         // Asynchron speichern
-                        System.Threading.Tasks.Task.Run(() => SaveNow());
+                        SaveNow();
                     }
                 }
             }
@@ -711,7 +711,7 @@ namespace MaterialManager_V01
                 UpdateStats();
                 
                 // Asynchron speichern
-                System.Threading.Tasks.Task.Run(() => SaveNow());
+                SaveNow();
             }
         }
         private void OnResteSuchen(object sender, RoutedEventArgs e) 
@@ -732,7 +732,7 @@ namespace MaterialManager_V01
                         dlg.Form,
                         requireRest: false)).ToList();
 
-                // Markiere gefundene Materialien grün
+                // Markiere gefundene Materialien grÃ¼n
                 foreach (var m in Materialien)
                     m.IsHighlighted = gefunden.Contains(m);
 
@@ -743,7 +743,7 @@ namespace MaterialManager_V01
                     return;
                 }
 
-                MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grün markiert.",
+                MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grÃ¼n markiert.",
                     "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
@@ -765,7 +765,7 @@ namespace MaterialManager_V01
                         UpdateStats();
                         
                         // Asynchron speichern
-                        System.Threading.Tasks.Task.Run(() => SaveNow());
+                        SaveNow();
                     }
                 }
             }
@@ -796,7 +796,7 @@ namespace MaterialManager_V01
                         UpdateStats();
                         
                         // Asynchron speichern
-                        System.Threading.Tasks.Task.Run(() => SaveNow());
+                        SaveNow();
                         
                         MessageBox.Show("Import erfolgreich");
                     }
@@ -820,20 +820,20 @@ namespace MaterialManager_V01
                     UpdateStats();
                     
                     // Asynchron speichern
-                    System.Threading.Tasks.Task.Run(() => SaveNow());
+                    SaveNow();
                     
-                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "Rückgängig", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"{geloeschteItems.Count} Material(ien) wiederhergestellt!", "RÃ¼ckgÃ¤ngig", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Keine Aktion zum Rückgängigmachen verfügbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Keine Aktion zum RÃ¼ckgÃ¤ngigmachen verfÃ¼gbar.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         
         private void OnRedo(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Redo-Funktion ist nicht verfügbar.\n\nVerwendet Strg+Z oder Alt+Pfeil links zum Rückgängigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Redo-Funktion ist nicht verfÃ¼gbar.\n\nVerwendet Strg+Z oder Alt+Pfeil links zum RÃ¼ckgÃ¤ngigmachen.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnUeber(object sender, RoutedEventArgs e) { MessageBox.Show("MaterialManager V01 v1.0\n.NET 8.0 | WPF\n\nMit Reservierungs-Funktion"); }
@@ -874,7 +874,7 @@ namespace MaterialManager_V01
         
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            // DELETE - Material löschen
+            // DELETE - Material lÃ¶schen
             if (e.Key == Key.Delete)
             {
                 OnMaterialLoeschen(null, null);
@@ -882,7 +882,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // CTRL+Z - Undo (Zurück)
+            // CTRL+Z - Undo (ZurÃ¼ck)
             if (e.Key == Key.Z && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnUndo(null, null);
@@ -890,7 +890,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // CTRL+Y - Redo (Vorwärts)
+            // CTRL+Y - Redo (VorwÃ¤rts)
             if (e.Key == Key.Y && (e.KeyboardDevice.Modifiers & ModifierKeys.Control) != 0)
             {
                 OnRedo(null, null);
@@ -898,7 +898,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ALT+LINKS - Browser-ähnliche Zurück-Navigation
+            // ALT+LINKS - Browser-Ã¤hnliche ZurÃ¼ck-Navigation
             if (e.Key == Key.Left && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnUndo(null, null);
@@ -906,7 +906,7 @@ namespace MaterialManager_V01
                 return;
             }
 
-            // ALT+RECHTS - Browser-ähnliche Vorwärts-Navigation
+            // ALT+RECHTS - Browser-Ã¤hnliche VorwÃ¤rts-Navigation
             if (e.Key == Key.Right && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) != 0)
             {
                 OnRedo(null, null);
@@ -941,7 +941,7 @@ namespace MaterialManager_V01
             {
                 try
                 {
-                    System.Diagnostics.Debug.WriteLine("[SaveNow] Speichere Materialdaten über MaterialDataService");
+                    System.Diagnostics.Debug.WriteLine("[SaveNow] Speichere Materialdaten Ã¼ber MaterialDataService");
 
                     var snapshot = Materialien.ToList();
                     MaterialDataService.SaveAllMaterials(snapshot);
@@ -960,7 +960,7 @@ namespace MaterialManager_V01
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("[LoadAutosave] Lade Materialdaten über MaterialDataService");
+                System.Diagnostics.Debug.WriteLine("[LoadAutosave] Lade Materialdaten Ã¼ber MaterialDataService");
 
                 var items = MaterialDataService.LoadAllMaterials();
                 Materialien.Clear();
@@ -1043,7 +1043,7 @@ namespace MaterialManager_V01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Datei", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Datei", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -1174,12 +1174,12 @@ namespace MaterialManager_V01
                     _lastPromptedVersion = result.LatestVersion;
 
                     var decision = MessageBox.Show(
-                        $"Neue Version {result.LatestVersion} verfügbar. Jetzt installieren?",
-                        "Update verfügbar",
+                        $"Neue Version {result.LatestVersion} verfÃ¼gbar. Jetzt installieren?",
+                        "Update verfÃ¼gbar",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Information);
 
-                    AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "Später")}");
+                    AppendUpdateUiLog($"Popup shown=yes | source={source} | decision={(decision == MessageBoxResult.Yes ? "Jetzt installieren" : "SpÃ¤ter")}");
 
                     if (decision == MessageBoxResult.Yes)
                     {
