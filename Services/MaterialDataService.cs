@@ -97,6 +97,11 @@ namespace MaterialManager_V01.Services
 
         private static void SyncAuftraege(MaterialManagerDbContext db, IEnumerable<MaterialItem> materialien)
         {
+            var existingByNumber = db.Auftraege
+                .AsNoTracking()
+                .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
+                .ToDictionary(a => a.Auftragsnummer.Trim(), StringComparer.OrdinalIgnoreCase);
+
             db.Auftraege.RemoveRange(db.Auftraege);
 
             var auftraege = materialien
@@ -110,13 +115,16 @@ namespace MaterialManager_V01.Services
                         string.Equals(i.Lagerort, "Angefangene Tafel", StringComparison.OrdinalIgnoreCase)
                         || !string.IsNullOrWhiteSpace(i.PdfPfadAngefangeneTafel));
 
+                    existingByNumber.TryGetValue(gruppe.Key, out var existing);
+                    var status = existing?.Status ?? (hatAngefangeneTafel ? AuftragStatus.InBearbeitung : AuftragStatus.Offen);
+
                     return new Auftrag
                     {
                         Auftragsnummer = gruppe.Key,
-                        Status = hatAngefangeneTafel ? AuftragStatus.InBearbeitung : AuftragStatus.Offen,
-                        ErstelltAm = first.Datum ?? DateTime.Now,
+                        Status = status,
+                        ErstelltAm = existing?.ErstelltAm ?? first.Datum ?? DateTime.Now,
                         GeaendertAm = items.Max(i => i.AenderungsDatum ?? i.Datum ?? DateTime.Now),
-                        AngelegtVon = first.AngelegtVon,
+                        AngelegtVon = string.IsNullOrWhiteSpace(existing?.AngelegtVon) ? first.AngelegtVon : existing.AngelegtVon,
                         GeaendertVon = items
                             .OrderByDescending(i => i.AenderungsDatum ?? i.Datum ?? DateTime.MinValue)
                             .Select(i => i.GeaendertVon)
@@ -125,7 +133,9 @@ namespace MaterialManager_V01.Services
                         GesamtStueckzahl = items.Sum(i => i.Stueckzahl),
                         GesamtGewichtKg = Math.Round(items.Sum(i => i.GewichtKg), 2),
                         PdfPfad = items.Select(i => i.PdfPfad).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
-                        PdfPfadAngefangeneTafel = items.Select(i => i.PdfPfadAngefangeneTafel).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty
+                        PdfPfadAngefangeneTafel = items.Select(i => i.PdfPfadAngefangeneTafel).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
+                        ProduktionStartDatum = existing?.ProduktionStartDatum,
+                        ProduktionEndDatum = existing?.ProduktionEndDatum
                     };
                 })
                 .ToList();

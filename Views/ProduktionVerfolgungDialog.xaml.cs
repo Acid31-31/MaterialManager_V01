@@ -121,15 +121,30 @@ namespace MaterialManager_V01.Views
                 using (var context = new MaterialManagerDbContext())
                 {
                     var existingAuftrag = context.Auftraege.Find(_auftrag.Id);
-                    if (existingAuftrag != null)
+                    if (existingAuftrag == null && !string.IsNullOrWhiteSpace(_auftrag.Auftragsnummer))
                     {
-                        existingAuftrag.ProduktionStartDatum = _auftrag.ProduktionStartDatum;
-                        existingAuftrag.ProduktionEndDatum = _auftrag.ProduktionEndDatum;
-                        existingAuftrag.Status = _auftrag.Status;
-                        existingAuftrag.GeaendertAm = DateTime.Now;
-                        existingAuftrag.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-                        context.SaveChanges();
+                        existingAuftrag = context.Auftraege
+                            .FirstOrDefault(a => a.Auftragsnummer == _auftrag.Auftragsnummer);
                     }
+
+                    if (existingAuftrag == null)
+                    {
+                        existingAuftrag = new Auftrag
+                        {
+                            Auftragsnummer = _auftrag.Auftragsnummer,
+                            ErstelltAm = _auftrag.ErstelltAm,
+                            AngelegtVon = _auftrag.AngelegtVon
+                        };
+                        context.Auftraege.Add(existingAuftrag);
+                    }
+
+                    existingAuftrag.ProduktionStartDatum = _auftrag.ProduktionStartDatum;
+                    existingAuftrag.ProduktionEndDatum = _auftrag.ProduktionEndDatum;
+                    existingAuftrag.Status = _auftrag.Status;
+                    existingAuftrag.GeaendertAm = DateTime.Now;
+                    existingAuftrag.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                    context.SaveChanges();
+                    _auftrag.Id = existingAuftrag.Id;
                 }
             }
             catch (Exception ex)
