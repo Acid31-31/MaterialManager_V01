@@ -11,7 +11,12 @@ namespace MaterialManager_V01.Services
         public static List<Auftrag> FilterByIsoCalendarWeek(IEnumerable<Auftrag> auftraege, int jahr, int kalenderWoche)
         {
             return (auftraege ?? Enumerable.Empty<Auftrag>())
-                .Where(a => a.ErstelltAm.Year == jahr && System.Globalization.ISOWeek.GetWeekOfYear(a.ErstelltAm) == kalenderWoche)
+                .Where(a =>
+                {
+                    var relevantDate = a.GeaendertAm != default ? a.GeaendertAm : a.ErstelltAm;
+                    return relevantDate.Year == jahr
+                        && System.Globalization.ISOWeek.GetWeekOfYear(relevantDate) == kalenderWoche;
+                })
                 .OrderBy(a => a.Auftragsnummer)
                 .ToList();
         }
