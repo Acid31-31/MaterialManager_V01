@@ -465,8 +465,21 @@ namespace MaterialManager_V01
         private static double ParseDouble(string s)
         {
             if (string.IsNullOrWhiteSpace(s)) return 0;
-            if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v)) return v;
-            if (double.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+
+            var value = s.Trim();
+
+            // Wichtig: zuerst deutsches/lokales Format probieren (0,5)
+            if (double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("de-DE"), out var v)) return v;
+            if (double.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+            if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
+            // Fallback für gemischte Formate
+            var normalizedComma = value.Replace(".", "").Replace(',', '.');
+            if (double.TryParse(normalizedComma, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
+            var normalizedDot = value.Replace(",", "");
+            if (double.TryParse(normalizedDot, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
             return 0;
         }
 
@@ -479,8 +492,19 @@ namespace MaterialManager_V01
         private static decimal ParseDecimal(string s)
         {
             if (string.IsNullOrWhiteSpace(s)) return 0m;
-            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v)) return v;
-            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+
+            var value = s.Trim();
+
+            if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("de-DE"), out var v)) return v;
+            if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
+            if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
+            var normalizedComma = value.Replace(".", "").Replace(',', '.');
+            if (decimal.TryParse(normalizedComma, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
+            var normalizedDot = value.Replace(",", "");
+            if (decimal.TryParse(normalizedDot, NumberStyles.Any, CultureInfo.InvariantCulture, out v)) return v;
+
             return 0m;
         }
 
