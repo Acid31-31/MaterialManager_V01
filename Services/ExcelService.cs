@@ -608,7 +608,6 @@ namespace MaterialManager_V01
 
             var h1 = ws.Cell(2, 1).GetString().Trim();
             var h3 = ws.Cell(2, 3).GetString().Trim();
-            var h4 = ws.Cell(2, 4).GetString().Trim();
             if (!h1.Equals("Material", StringComparison.OrdinalIgnoreCase)
                 || h3.IndexOf("Dicke", StringComparison.OrdinalIgnoreCase) < 0)
                 return result;
@@ -617,13 +616,13 @@ namespace MaterialManager_V01
 
             for (int r = 3; r <= lastRow; r++)
             {
-                var c1 = ws.Cell(r, 1).GetString(); // Material / Legierung
-                var c2 = ws.Cell(r, 2).GetString(); // Oberfläche
-                var c3 = ws.Cell(r, 3).GetString(); // Stärke oder Rohrmaß
-                var c4 = ws.Cell(r, 4).GetString(); // Maß bzw. Länge
-                var c5 = ws.Cell(r, 5).GetString(); // Lagerplatz
-                var c6 = ws.Cell(r, 6).GetString(); // Restnummer
-                var c7 = ws.Cell(r, 7).GetString(); // Auftrag/Anzahl
+                var c1 = ws.Cell(r, 1).GetString();
+                var c2 = ws.Cell(r, 2).GetString();
+                var c3 = ws.Cell(r, 3).GetString();
+                var c4 = ws.Cell(r, 4).GetString();
+                var c5 = ws.Cell(r, 5).GetString();
+                var c6 = ws.Cell(r, 6).GetString();
+                var c7 = ws.Cell(r, 7).GetString();
 
                 if (string.IsNullOrWhiteSpace(c1) && string.IsNullOrWhiteSpace(c3) && string.IsNullOrWhiteSpace(c4))
                     continue;
@@ -648,19 +647,27 @@ namespace MaterialManager_V01
                     item.Form = "Rohr";
 
                     var profileMatch = System.Text.RegularExpressions.Regex.Match(c3 ?? string.Empty, @"(?<h>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<w>\d+(?:[\.,]\d+)?)");
-                    if (profileMatch.Success)
-                    {
-                        item.ProfilHoehe = ParseDouble(profileMatch.Groups["h"].Value);
-                        item.ProfilBreite = ParseDouble(profileMatch.Groups["b"].Value);
-                        item.Staerke = ParseDouble(profileMatch.Groups["w"].Value);
-                    }
+                    if (!profileMatch.Success)
+                        continue;
 
+                    item.ProfilHoehe = ParseDouble(profileMatch.Groups["h"].Value);
+                    item.ProfilBreite = ParseDouble(profileMatch.Groups["b"].Value);
+                    item.Staerke = ParseDouble(profileMatch.Groups["w"].Value);
                     item.Laenge = ParseDouble(c4);
+
+                    if (item.ProfilHoehe <= 0 || item.ProfilBreite <= 0 || item.Staerke <= 0 || item.Laenge <= 0)
+                        continue;
                 }
                 else
                 {
                     item.Kategorie = Models.MaterialKategorie.Blech;
                     item.Staerke = ParseDouble(c3);
+
+                    if (item.Staerke <= 0)
+                        continue;
+
+                    if (!TryExtractMass(item.Mass, out _, out _))
+                        continue;
                 }
 
                 if (string.IsNullOrWhiteSpace(item.MaterialArt))
@@ -670,6 +677,22 @@ namespace MaterialManager_V01
             }
 
             return result;
+        }
+
+        private static bool TryExtractMass(string? mass, out double laenge, out double breite)
+        {
+            laenge = 0;
+            breite = 0;
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var match = System.Text.RegularExpressions.Regex.Match(mass, @"(?<l>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)");
+            if (!match.Success)
+                return false;
+
+            laenge = ParseDouble(match.Groups["l"].Value);
+            breite = ParseDouble(match.Groups["b"].Value);
+            return laenge > 0 && breite > 0;
         }
     }
 }
