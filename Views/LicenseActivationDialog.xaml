@@ -183,6 +183,7 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Single (S1)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="1 Arbeitsplatz" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Leistungsumfang: Basisbetrieb, Standard-Updates, E-Mail-Support (werktags)" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding SinglePriceText}" FontWeight="Bold" Foreground="#4CAF50" FontSize="13"/>
@@ -200,6 +201,7 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Mehrplatz (M3)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="3 Arbeitsplätze" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Leistungsumfang: Teamlizenz, priorisierte Fehlerbehebung, Remote-Support nach Termin" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding MultiPriceText}" FontWeight="Bold" Foreground="#FF9800" FontSize="13"/>
@@ -217,6 +219,7 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Firmenlizenz (C10)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="10 Arbeitsplätze inkl. Standard-Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Leistungsumfang: Mehrstandortfähig, SLA-orientierte Reaktionszeit, regelmäßige Versionspflege" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding CompanyPriceText}" FontWeight="Bold" Foreground="#F44336" FontSize="13"/>
@@ -234,6 +237,7 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Enterprise (ENT)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="Erweiterbar, priorisierter Support, individuelle Vereinbarung" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Leistungsumfang: individuelle Betreuung, erweiterte Servicefenster, projektspezifische Anpassungen" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding EnterprisePriceText}" FontWeight="Bold" Foreground="#2196F3" FontSize="13"/>
