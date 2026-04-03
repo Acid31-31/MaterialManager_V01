@@ -10,6 +10,10 @@ namespace MaterialManager_V01.Services
 {
     public static class MaterialDataService
     {
+        public static string? LastExcelSyncError { get; private set; }
+        public static DateTime? LastExcelSyncUtc { get; private set; }
+        public static string? LastExcelSyncPath { get; private set; }
+
         public static List<MaterialItem> LoadAllMaterials()
         {
             using var db = new MaterialManagerDbContext();
@@ -148,9 +152,15 @@ namespace MaterialManager_V01.Services
             try
             {
                 SyncExcel(materialien);
+                LastExcelSyncError = null;
+                LastExcelSyncUtc = DateTime.UtcNow;
+                LastExcelSyncPath = NetzwerkService.GetSavePath();
             }
-            catch
+            catch (Exception ex)
             {
+                LastExcelSyncError = ex.Message;
+                LastExcelSyncUtc = DateTime.UtcNow;
+                LastExcelSyncPath = NetzwerkService.GetSavePath();
             }
         }
 

@@ -975,6 +975,15 @@ namespace MaterialManager_V01
                         var savePath = Services.NetzwerkService.GetSavePath();
                         Services.AutoSyncManager.RegisterLocalSave(savePath);
 
+                        if (!string.IsNullOrWhiteSpace(MaterialDataService.LastExcelSyncError))
+                        {
+                            var errPath = string.IsNullOrWhiteSpace(MaterialDataService.LastExcelSyncPath)
+                                ? savePath
+                                : MaterialDataService.LastExcelSyncPath;
+                            ExcelSyncStatusText = $"Excel-Sync Fehler: {MaterialDataService.LastExcelSyncError} | {errPath}";
+                            return;
+                        }
+
                         var stamp = File.Exists(savePath)
                             ? File.GetLastWriteTime(savePath).ToString("HH:mm:ss")
                             : "nicht gefunden";
