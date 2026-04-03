@@ -581,6 +581,12 @@ namespace MaterialManager_V01.Views
             _ausgewaehlteKalenderWoche = kw;
             UpdateAuftragsKwText();
             ApplyAuftragsKwFilter();
+
+            var archivDialog = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
+            {
+                Owner = this
+            };
+            archivDialog.ShowDialog();
         }
 
         private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
