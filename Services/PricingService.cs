@@ -44,7 +44,7 @@ namespace MaterialManager_V01.Services
                 CompanyPriceText = ToEuro(company10),
                 EnterprisePriceText = $"ab {ToEuro(enterpriseFrom)}",
                 CalculationHintText =
-                    $"Preise werden anhand des Software-Umfangs bewertet (Score {score:N0}, Faktor {model.BasePriceFactor.ToString("N2", De)}). Anpassbar in pricing-model.json."
+                    $"Preislogik: jährliche Lizenzkalkulation nach Software-Umfang (Score {score:N0}, Faktor {model.BasePriceFactor.ToString("N2", De)}). Konfigurierbar über pricing-model.json."
             };
         }
 

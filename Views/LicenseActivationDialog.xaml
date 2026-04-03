@@ -17,29 +17,26 @@
 
             <!-- Header -->
             <StackPanel Grid.Row="0" Margin="0,0,0,20">
-                <TextBlock Text="🔑 Lizenzaktivierung" 
+                <TextBlock Text="Lizenzaktivierung" 
                            FontSize="24" 
                            FontWeight="Bold" 
                            Foreground="#4CAF50"
                            Margin="0,0,0,10"/>
-                <TextBlock Text="Aktivieren Sie Ihre Vollversion von MaterialManager V01" 
+                <TextBlock Text="Aktivieren Sie Ihre Jahreslizenz für MaterialManager V01" 
                            FontSize="14" 
                            Foreground="#AAA"/>
                 
-                <!-- ⭐ BEWERTUNG & PREIS HINZUFÜGEN -->
                 <Grid Margin="0,15,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <!-- Bewertung (Sterne) -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <TextBlock Text="⭐⭐⭐⭐⭐" FontSize="18" Foreground="#FFD700" Margin="0,0,8,0"/>
-                        <TextBlock Text="4.9 / 5.0 (247 Bewertungen)" Foreground="#4CAF50" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Lizenzmodell" FontSize="14" Foreground="#FFD700" Margin="0,0,8,0"/>
+                        <TextBlock Text="Industrie-Edition" Foreground="#4CAF50" FontWeight="Bold" VerticalAlignment="Center"/>
                     </StackPanel>
                     
-                    <!-- Preis -->
                     <TextBlock Grid.Column="1" Text="{Binding HeadlinePriceText}" FontSize="16" FontWeight="Bold" Foreground="#FF9800" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
                 
@@ -171,13 +168,12 @@
                             Padding="15" 
                             Margin="0,0,0,15">
                         <StackPanel>
-                            <TextBlock Text="💰 Verfügbare Lizenztypen und Preise" 
+                            <TextBlock Text="Verfügbare Lizenzstufen" 
                                        FontSize="14" 
                                        FontWeight="Bold" 
                                        Foreground="#4CAF50"
                                        Margin="0,0,0,12"/>
-                            
-                            <!-- Single Lizenz -->
+                             
                             <Border Background="#2A2A2A" CornerRadius="3" Padding="12" Margin="0,0,0,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -185,17 +181,16 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="🔹 Single (S1)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Single (S1)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="1 Arbeitsplatz" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding SinglePriceText}" FontWeight="Bold" Foreground="#4CAF50" FontSize="13"/>
-                                        <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             
-                            <!-- Mehrplatz Lizenz -->
                             <Border Background="#2A2A2A" CornerRadius="3" Padding="12" Margin="0,0,0,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -203,17 +198,16 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="🔹 Mehrplatz (M3)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Mehrplatz (M3)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="3 Arbeitsplätze" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding MultiPriceText}" FontWeight="Bold" Foreground="#FF9800" FontSize="13"/>
-                                        <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             
-                            <!-- Firmen Lizenz -->
                             <Border Background="#2A2A2A" CornerRadius="3" Padding="12" Margin="0,0,0,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -221,17 +215,16 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="🔹 Firmenlizenz (C10)" FontWeight="Bold" Foreground="White" FontSize="12"/>
-                                        <TextBlock Text="10 Arbeitsplätze + Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Firmenlizenz (C10)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="10 Arbeitsplätze inkl. Standard-Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding CompanyPriceText}" FontWeight="Bold" Foreground="#F44336" FontSize="13"/>
-                                        <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             
-                            <!-- Enterprise -->
                             <Border Background="#2A2A2A" CornerRadius="3" Padding="12" Margin="0,0,0,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -239,12 +232,12 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="🔹 Enterprise (ENT)" FontWeight="Bold" Foreground="White" FontSize="12"/>
-                                        <TextBlock Text="Unbegrenzte Arbeitsplätze + Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
+                                        <TextBlock Text="Enterprise (ENT)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Erweiterbar, priorisierter Support, individuelle Vereinbarung" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding EnterprisePriceText}" FontWeight="Bold" Foreground="#2196F3" FontSize="13"/>
-                                        <TextBlock Text="/Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -267,7 +260,7 @@
                             Padding="15" 
                             Margin="0,0,0,0">
                         <StackPanel>
-                            <TextBlock Text="📞 Kontakt und Support" 
+                            <TextBlock Text="Kontakt und Support" 
                                        FontSize="13" 
                                        FontWeight="Bold" 
                                        Foreground="#2196F3"
@@ -285,7 +278,7 @@
                             </TextBlock>
                             
                             <TextBlock Foreground="#AAA" FontSize="10" Margin="0,8,0,0" TextWrapping="Wrap">
-                                Nach Zahlungseingang erhalten Sie sofort Ihren persönlichen Lizenzschlüssel per E-Mail. Support inklusive!
+                                Nach Bestätigung erhalten Sie Ihren Lizenzschlüssel sowie die Freischaltung für die vereinbarte Laufzeit.
                             </TextBlock>
                         </StackPanel>
                     </Border>
@@ -297,7 +290,7 @@
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right"
                         Margin="0,20,0,0">
-                <Button Content="❌ Abbrechen" 
+                <Button Content="Abbrechen" 
                         Click="OnCancel"
                         Background="#444" 
                         Foreground="White"
