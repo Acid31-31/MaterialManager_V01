@@ -31,24 +31,30 @@ namespace MaterialManager_V01.Services
             {
                 var savePath = NetzwerkService.GetSavePath();
 
-                // WICHTIG: DB ist führend, damit gelöschte Elemente nicht durch ältere Excel-Datei zurückkommen.
+                if (File.Exists(savePath))
+                {
+                    var excelWriteUtc = GetFileWriteTimeUtcSafe(savePath);
+                    var dbWriteUtc = GetFileWriteTimeUtcSafe(PathService.DatabasePath);
+
+                    // Wenn Excel manuell gepflegt wurde und neuer ist, aus Excel neu einlesen.
+                    if (dbItems.Count == 0 || (excelWriteUtc.HasValue && dbWriteUtc.HasValue && excelWriteUtc.Value > dbWriteUtc.Value.AddSeconds(2)))
+                    {
+                        var sharedItems = LoadFromExcelFile(savePath);
+                        if (sharedItems.Count > 0)
+                        {
+                            PersistToDatabase(sharedItems);
+                            return sharedItems;
+                        }
+                    }
+                }
+
+                // DB ist führend, wenn keine neuere Excel-Änderung vorliegt.
                 if (dbItems.Count > 0)
                 {
                     if (!File.Exists(savePath))
                         TrySyncExcel(dbItems);
 
                     return dbItems;
-                }
-
-                // Nur wenn DB leer ist, aus Excel initial laden.
-                if (File.Exists(savePath))
-                {
-                    var sharedItems = LoadFromExcelFile(savePath);
-                    if (sharedItems.Count > 0)
-                    {
-                        PersistToDatabase(sharedItems);
-                        return sharedItems;
-                    }
                 }
             }
             catch
@@ -204,6 +210,20 @@ namespace MaterialManager_V01.Services
                 {
                 }
             }
+        }
+
+        private static DateTime? GetFileWriteTimeUtcSafe(string? path)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                    return File.GetLastWriteTimeUtc(path);
+            }
+            catch
+            {
+            }
+
+            return null;
         }
 
         private static MaterialItem CloneMaterial(MaterialItem source)
