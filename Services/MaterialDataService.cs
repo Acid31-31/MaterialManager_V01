@@ -33,6 +33,18 @@ namespace MaterialManager_V01.Services
 
                 if (File.Exists(savePath))
                 {
+                    var isAppFormat = ExcelService.IsMaterialienFormatWithWeight(savePath);
+                    if (!isAppFormat)
+                    {
+                        var convertedItems = LoadFromExcelFile(savePath);
+                        if (convertedItems.Count > 0)
+                        {
+                            PersistToDatabase(convertedItems);
+                            TrySyncExcel(convertedItems); // schreibt als Materialien + GewichtKg zurück
+                            return convertedItems;
+                        }
+                    }
+
                     var excelWriteUtc = GetFileWriteTimeUtcSafe(savePath);
                     var dbWriteUtc = GetFileWriteTimeUtcSafe(PathService.DatabasePath);
 

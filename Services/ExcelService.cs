@@ -600,6 +600,22 @@ namespace MaterialManager_V01
             return DateTime.TryParse(s, out var d) ? d : (DateTime?)null;
         }
 
+        private static bool TryExtractMass(string? mass, out double laenge, out double breite)
+        {
+            laenge = 0;
+            breite = 0;
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var match = System.Text.RegularExpressions.Regex.Match(mass, @"(?<l>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)");
+            if (!match.Success)
+                return false;
+
+            laenge = ParseDouble(match.Groups["l"].Value);
+            breite = ParseDouble(match.Groups["b"].Value);
+            return laenge > 0 && breite > 0;
+        }
+
         private static IEnumerable<Models.MaterialItem> ReadHerkoSheet(IXLWorksheet ws)
         {
             var result = new List<Models.MaterialItem>();
@@ -680,20 +696,34 @@ namespace MaterialManager_V01
             return result;
         }
 
-        private static bool TryExtractMass(string? mass, out double laenge, out double breite)
+        public static bool IsMaterialienFormatWithWeight(string filePath)
         {
-            laenge = 0;
-            breite = 0;
-            if (string.IsNullOrWhiteSpace(mass))
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
                 return false;
 
-            var match = System.Text.RegularExpressions.Regex.Match(mass, @"(?<l>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)");
-            if (!match.Success)
-                return false;
+            try
+            {
+                using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var wb = new XLWorkbook(stream);
+                var ws = wb.Worksheets.FirstOrDefault(w => w.Name.Equals("Materialien", StringComparison.OrdinalIgnoreCase));
+                if (ws == null)
+                    return false;
 
-            laenge = ParseDouble(match.Groups["l"].Value);
-            breite = ParseDouble(match.Groups["b"].Value);
-            return laenge > 0 && breite > 0;
+                var headers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+                for (var c = 1; c <= lastCol; c++)
+                {
+                    var h = ws.Cell(1, c).GetString().Trim();
+                    if (!string.IsNullOrWhiteSpace(h))
+                        headers.Add(h);
+                }
+
+                return headers.Contains("GewichtKg") && headers.Contains("Mass") && headers.Contains("Staerke");
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
