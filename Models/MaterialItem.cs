@@ -73,12 +73,13 @@
         {
             get
             {
-                double dichte = MaterialArt switch
+                var art = (MaterialArt ?? string.Empty).Trim();
+                var dichte = art.ToLowerInvariant() switch
                 {
-                    "Stahl"     => 7850,
-                    "Edelstahl" => 8000,
-                    "Aluminium" => 2700,
-                    _           => 0
+                    var a when a.Contains("edelstahl") => 8000,
+                    var a when a.Contains("stahl") => 7850,
+                    var a when a.Contains("aluminium") || a == "alu" => 2700,
+                    _ => 0
                 };
                 if (dichte == 0) return 0;
 
@@ -88,30 +89,25 @@
                     {
                         case MaterialKategorie.Blech:
                         {
-                            if (string.IsNullOrWhiteSpace(Mass)) return 0;
-                            var teile = Mass.Split('x');
-                            if (teile.Length != 2) return 0;
-                            double laenge = double.Parse(teile[0]);
-                            double breite = double.Parse(teile[1]);
-                            double gewicht = (laenge / 1000.0) * (breite / 1000.0) * (Staerke / 1000.0) * dichte * Stueckzahl;
+                            if (!TryParseMass(Mass, out var laenge, out var breite))
+                                return 0;
+
+                            var gewicht = (laenge / 1000.0) * (breite / 1000.0) * (Staerke / 1000.0) * dichte * Stueckzahl;
                             return Math.Round(gewicht, 2);
                         }
                         case MaterialKategorie.Rohr:
                         {
                             if (Durchmesser <= 0 || Staerke <= 0 || Laenge <= 0) return 0;
-                            double ra = Durchmesser / 2.0 / 1000.0;       // Außenradius in m
-                            double ri = (Durchmesser / 2.0 - Staerke) / 1000.0; // Innenradius in m
+                            double ra = Durchmesser / 2.0 / 1000.0;
+                            double ri = (Durchmesser / 2.0 - Staerke) / 1000.0;
                             double gewicht = Math.PI * (ra * ra - ri * ri) * (Laenge / 1000.0) * dichte * Stueckzahl;
                             return Math.Round(gewicht, 2);
                         }
                         case MaterialKategorie.Profil:
                         {
-                            // Vereinfacht: Gewicht pro Meter als Schätzwert über Querschnitt
-                            // Für genaue Berechnung wäre ein Profilgewicht/m-Wert nötig;
-                            // hier wird ein generisches Kastenquerschnittmodell verwendet.
                             if (ProfilHoehe <= 0 || Staerke <= 0 || Laenge <= 0) return 0;
                             double b = ProfilBreite > 0 ? ProfilBreite : ProfilHoehe;
-                            double querschnitt = 2 * ((ProfilHoehe + b) * Staerke) / 1e6; // m²
+                            double querschnitt = 2 * ((ProfilHoehe + b) * Staerke) / 1e6;
                             double gewicht = querschnitt * (Laenge / 1000.0) * dichte * Stueckzahl;
                             return Math.Round(gewicht, 2);
                         }
@@ -124,6 +120,38 @@
                     return 0;
                 }
             }
+        }
+
+        private static bool TryParseMass(string? mass, out double laenge, out double breite)
+        {
+            laenge = 0;
+            breite = 0;
+
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var clean = mass.Trim().Replace(" ", string.Empty).Replace("mm", string.Empty, StringComparison.OrdinalIgnoreCase);
+            var teile = clean.Split(new[] { 'x', 'X', '×' }, StringSplitOptions.RemoveEmptyEntries);
+            if (teile.Length != 2)
+                return false;
+
+            return TryParseNumber(teile[0], out laenge) && TryParseNumber(teile[1], out breite);
+        }
+
+        private static bool TryParseNumber(string? input, out double value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+
+            var text = input.Trim();
+            if (double.TryParse(text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.GetCultureInfo("de-DE"), out value))
+                return true;
+            if (double.TryParse(text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out value))
+                return true;
+
+            text = text.Replace('.', ',');
+            return double.TryParse(text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.GetCultureInfo("de-DE"), out value);
         }
     }
 }
