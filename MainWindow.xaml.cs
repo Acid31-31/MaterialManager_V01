@@ -250,11 +250,14 @@ namespace MaterialManager_V01
                 
                 Log("MainWindow() Constructor erfolgreich beendet");
                 
-                this.Loaded += (s, e) =>
+                this.Loaded += async (s, e) =>
                 {
                     Log("MainWindow.Loaded Event ausgelöst - Fenster ist sichtbar!");
                     ApplyResponsiveWindowLayout();
-                    AppendUpdateUiLog("Automatische Update-Checks sind deaktiviert. Updates nur manuell über Menü/Button.");
+                    AppendUpdateUiLog("Automatische Update-Checks aktiv: Startup + periodisch.");
+
+                    _ = CheckForUpdatesOnStartupAsync();
+                    StartPeriodicUpdateChecks();
                 };
 
                 // Cleanup beim Beenden
