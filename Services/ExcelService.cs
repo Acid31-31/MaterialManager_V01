@@ -41,11 +41,11 @@ namespace MaterialManager_V01
             "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel"
         };
 
-        // Materialien (26 Spalten – neues Format)
+        // Materialien (27 Spalten – inkl. Gewicht)
         private static readonly string[] HeaderMaterialien =
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Form","Staerke","Mass",
-            "Stueckzahl","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
+            "Stueckzahl","GewichtKg","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
             "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel",
             "Kategorie","Durchmesser","Laenge","ProfilTyp","ProfilHoehe","ProfilBreite"
         };
@@ -121,24 +121,25 @@ namespace MaterialManager_V01
                 ws.Cell(r, 6).Value = m.Staerke;
                 ws.Cell(r, 7).Value = m.Mass;
                 ws.Cell(r, 8).Value = m.Stueckzahl;
-                ws.Cell(r, 9).Value = m.Restnummer;
-                ws.Cell(r, 10).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
-                ws.Cell(r, 11).Value = m.Lagerort;
-                ws.Cell(r, 12).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
-                ws.Cell(r, 13).Value = m.AuftragNr;
-                ws.Cell(r, 14).Value = m.Lieferant;
-                ws.Cell(r, 15).Value = m.LieferscheinNr;
-                ws.Cell(r, 16).Value = (double)m.PreisProKg;
-                ws.Cell(r, 17).Value = m.AngelegtVon;
-                ws.Cell(r, 18).Value = m.GeaendertVon;
-                ws.Cell(r, 19).Value = m.PdfPfad;
-                ws.Cell(r, 20).Value = m.PdfPfadAngefangeneTafel;
-                ws.Cell(r, 21).Value = m.Kategorie.ToString();
-                ws.Cell(r, 22).Value = m.Durchmesser;
-                ws.Cell(r, 23).Value = m.Laenge;
-                ws.Cell(r, 24).Value = m.ProfilTyp;
-                ws.Cell(r, 25).Value = m.ProfilHoehe;
-                ws.Cell(r, 26).Value = m.ProfilBreite;
+                ws.Cell(r, 9).Value = Math.Round(m.GewichtKg, 2);
+                ws.Cell(r, 10).Value = m.Restnummer;
+                ws.Cell(r, 11).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 12).Value = m.Lagerort;
+                ws.Cell(r, 13).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 14).Value = m.AuftragNr;
+                ws.Cell(r, 15).Value = m.Lieferant;
+                ws.Cell(r, 16).Value = m.LieferscheinNr;
+                ws.Cell(r, 17).Value = (double)m.PreisProKg;
+                ws.Cell(r, 18).Value = m.AngelegtVon;
+                ws.Cell(r, 19).Value = m.GeaendertVon;
+                ws.Cell(r, 20).Value = m.PdfPfad;
+                ws.Cell(r, 21).Value = m.PdfPfadAngefangeneTafel;
+                ws.Cell(r, 22).Value = m.Kategorie.ToString();
+                ws.Cell(r, 23).Value = m.Durchmesser;
+                ws.Cell(r, 24).Value = m.Laenge;
+                ws.Cell(r, 25).Value = m.ProfilTyp;
+                ws.Cell(r, 26).Value = m.ProfilHoehe;
+                ws.Cell(r, 27).Value = m.ProfilBreite;
                 r++;
             }
 
