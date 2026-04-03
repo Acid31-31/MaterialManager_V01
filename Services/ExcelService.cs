@@ -175,7 +175,7 @@ namespace MaterialManager_V01
                         }
                         else
                         {
-                            // Alt-Format: mehrere Blätter
+                            // Alt-Format + Firmenformat: mehrere Blätter
                             foreach (var ws in wb.Worksheets)
                             {
                                 var name = ws.Name;
@@ -190,6 +190,10 @@ namespace MaterialManager_V01
                                 else if (name.Equals("Profile", StringComparison.OrdinalIgnoreCase))
                                 {
                                     result.AddRange(ReadProfile(ws));
+                                }
+                                else
+                                {
+                                    result.AddRange(ReadHerkoSheet(ws));
                                 }
                             }
                         }
@@ -228,14 +232,11 @@ namespace MaterialManager_V01
                 var guete  = ws.Cell(r, 4).GetString();
                 var form   = ws.Cell(r, 5).GetString();
                 var sta    = ParseDouble(ws.Cell(r, 6).GetString());
-                var mass   = ws.Cell(r, 7).GetString();
+                var mass   = NormalizeMassText(ws.Cell(r, 7).GetString());
                 var stueck = ParseInt(ws.Cell(r, 8).GetString(), 1);
                 var rest   = ws.Cell(r, 9).GetString();
                 var datum  = ParseDate(ws.Cell(r, 10).GetString());
                 var lager  = MaterialManager_V01.Services.RegalService.DetermineLagerort(matArt, leg, form, sta, mass, null);
-
-                if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
-                    rest = Models.MaterialDefinitions.NeueRestnummer();
 
                 if (string.IsNullOrWhiteSpace(matArt) && string.IsNullOrWhiteSpace(mass))
                     continue;
@@ -249,6 +250,15 @@ namespace MaterialManager_V01
                 var geaendertVon = lastCol >= 18 ? ws.Cell(r, 18).GetString() : "";
                 var pdfPfad      = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
                 var pdfPfadAngefangeneTafel = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
+
+                if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
+                    rest = Models.MaterialDefinitions.NeueRestnummer();
+
+                if (string.IsNullOrWhiteSpace(matArt))
+                    matArt = InferMaterialArt(leg);
+
+                if (string.IsNullOrWhiteSpace(form))
+                    form = "Rest";
 
                 result.Add(new Models.MaterialItem
                 {
@@ -428,7 +438,7 @@ namespace MaterialManager_V01
                 var guete = GetCell(r, "Guete");
                 var form = GetCell(r, "Form");
                 var sta = ParseDouble(GetCell(r, "Staerke"));
-                var mass = GetCell(r, "Mass");
+                var mass = NormalizeMassText(GetCell(r, "Mass"));
                 var stueck = ParseInt(GetCell(r, "Stueckzahl"), 1);
                 var rest = GetCell(r, "Restnummer");
                 var datum = ParseDate(GetCell(r, "Datum"));
@@ -514,7 +524,7 @@ namespace MaterialManager_V01
         {
             if (string.IsNullOrWhiteSpace(s)) return 0;
 
-            var value = s.Trim();
+            var value = s.Trim().Replace(" ", string.Empty).Replace("'", string.Empty);
 
             // Wichtig: zuerst deutsches/lokales Format probieren (0,5)
             if (double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("de-DE"), out var v)) return v;
@@ -534,14 +544,41 @@ namespace MaterialManager_V01
         private static int ParseInt(string s, int fallback = 0)
         {
             if (string.IsNullOrWhiteSpace(s)) return fallback;
-            return int.TryParse(s, out var v) ? v : fallback;
+
+            var text = s.Trim();
+            if (int.TryParse(text, out var v)) return v;
+
+            var m = System.Text.RegularExpressions.Regex.Match(text, @"\d+");
+            return m.Success && int.TryParse(m.Value, out v) ? v : fallback;
+        }
+
+        private static string NormalizeMassText(string? mass)
+        {
+            if (string.IsNullOrWhiteSpace(mass))
+                return string.Empty;
+
+            return mass.Trim()
+                .Replace("X", "x")
+                .Replace("×", "x")
+                .Replace(" mm", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .Replace("mm", string.Empty, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string InferMaterialArt(string? legierung)
+        {
+            var leg = (legierung ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(leg)) return string.Empty;
+            if (leg.StartsWith("1.")) return "Edelstahl";
+            if (leg.StartsWith("s") || leg.Contains("dc")) return "Stahl";
+            if (leg.Contains("aw") || leg.Contains("al")) return "Aluminium";
+            return string.Empty;
         }
 
         private static decimal ParseDecimal(string s)
         {
             if (string.IsNullOrWhiteSpace(s)) return 0m;
 
-            var value = s.Trim();
+            var value = s.Trim().Replace(" ", string.Empty).Replace("'", string.Empty);
 
             if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("de-DE"), out var v)) return v;
             if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out v)) return v;
@@ -560,6 +597,79 @@ namespace MaterialManager_V01
         {
             if (string.IsNullOrWhiteSpace(s)) return null;
             return DateTime.TryParse(s, out var d) ? d : (DateTime?)null;
+        }
+
+        private static IEnumerable<Models.MaterialItem> ReadHerkoSheet(IXLWorksheet ws)
+        {
+            var result = new List<Models.MaterialItem>();
+            var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+            if (lastRow < 3)
+                return result;
+
+            var h1 = ws.Cell(2, 1).GetString().Trim();
+            var h3 = ws.Cell(2, 3).GetString().Trim();
+            var h4 = ws.Cell(2, 4).GetString().Trim();
+            if (!h1.Equals("Material", StringComparison.OrdinalIgnoreCase)
+                || h3.IndexOf("Dicke", StringComparison.OrdinalIgnoreCase) < 0)
+                return result;
+
+            var isRohrSheet = ws.Name.IndexOf("Rohr", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            for (int r = 3; r <= lastRow; r++)
+            {
+                var c1 = ws.Cell(r, 1).GetString(); // Material / Legierung
+                var c2 = ws.Cell(r, 2).GetString(); // Oberfläche
+                var c3 = ws.Cell(r, 3).GetString(); // Stärke oder Rohrmaß
+                var c4 = ws.Cell(r, 4).GetString(); // Maß bzw. Länge
+                var c5 = ws.Cell(r, 5).GetString(); // Lagerplatz
+                var c6 = ws.Cell(r, 6).GetString(); // Restnummer
+                var c7 = ws.Cell(r, 7).GetString(); // Auftrag/Anzahl
+
+                if (string.IsNullOrWhiteSpace(c1) && string.IsNullOrWhiteSpace(c3) && string.IsNullOrWhiteSpace(c4))
+                    continue;
+
+                var item = new Models.MaterialItem
+                {
+                    MaterialArt = InferMaterialArt(c1),
+                    Legierung = c1,
+                    Oberflaeche = c2,
+                    Form = "Rest",
+                    Restnummer = c6,
+                    Lagerort = string.IsNullOrWhiteSpace(c5) ? "EU Palette" : c5,
+                    Stueckzahl = ParseInt(c7, 1),
+                    Datum = ParseDate(c7),
+                    AuftragNr = string.IsNullOrWhiteSpace(c7) ? string.Empty : c7,
+                    Mass = NormalizeMassText(c4)
+                };
+
+                if (isRohrSheet)
+                {
+                    item.Kategorie = Models.MaterialKategorie.Profil;
+                    item.Form = "Rohr";
+
+                    var profileMatch = System.Text.RegularExpressions.Regex.Match(c3 ?? string.Empty, @"(?<h>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<w>\d+(?:[\.,]\d+)?)");
+                    if (profileMatch.Success)
+                    {
+                        item.ProfilHoehe = ParseDouble(profileMatch.Groups["h"].Value);
+                        item.ProfilBreite = ParseDouble(profileMatch.Groups["b"].Value);
+                        item.Staerke = ParseDouble(profileMatch.Groups["w"].Value);
+                    }
+
+                    item.Laenge = ParseDouble(c4);
+                }
+                else
+                {
+                    item.Kategorie = Models.MaterialKategorie.Blech;
+                    item.Staerke = ParseDouble(c3);
+                }
+
+                if (string.IsNullOrWhiteSpace(item.MaterialArt))
+                    item.MaterialArt = "Edelstahl";
+
+                result.Add(item);
+            }
+
+            return result;
         }
     }
 }
