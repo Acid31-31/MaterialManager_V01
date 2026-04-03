@@ -73,14 +73,7 @@
         {
             get
             {
-                var art = (MaterialArt ?? string.Empty).Trim();
-                var dichte = art.ToLowerInvariant() switch
-                {
-                    var a when a.Contains("edelstahl") => 8000,
-                    var a when a.Contains("stahl") => 7850,
-                    var a when a.Contains("aluminium") || a == "alu" => 2700,
-                    _ => 0
-                };
+                var dichte = ResolveDensity(MaterialArt, Legierung);
                 if (dichte == 0) return 0;
 
                 try
@@ -131,11 +124,30 @@
                 return false;
 
             var clean = mass.Trim().Replace(" ", string.Empty).Replace("mm", string.Empty, StringComparison.OrdinalIgnoreCase);
-            var teile = clean.Split(new[] { 'x', 'X', '×' }, StringSplitOptions.RemoveEmptyEntries);
-            if (teile.Length != 2)
+
+            var match = System.Text.RegularExpressions.Regex.Match(clean, @"(?<l>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)");
+            if (!match.Success)
                 return false;
 
-            return TryParseNumber(teile[0], out laenge) && TryParseNumber(teile[1], out breite);
+            return TryParseNumber(match.Groups["l"].Value, out laenge)
+                && TryParseNumber(match.Groups["b"].Value, out breite);
+        }
+
+        private static double ResolveDensity(string? materialArt, string? legierung)
+        {
+            var art = (materialArt ?? string.Empty).Trim().ToLowerInvariant();
+            var leg = (legierung ?? string.Empty).Trim().ToLowerInvariant();
+
+            if (art.Contains("edelstahl")) return 8000;
+            if (art.Contains("stahl")) return 7850;
+            if (art.Contains("aluminium") || art == "alu") return 2700;
+
+            // Fallback für manuelle Excel-Einträge ohne MaterialArt
+            if (leg.StartsWith("1.")) return 8000;                      // z. B. 1.4301
+            if (leg.Contains("aw") || leg.Contains("al")) return 2700; // z. B. EN AW-1050
+            if (leg.Contains("s235") || leg.Contains("dc01")) return 7850;
+
+            return 0;
         }
 
         private static bool TryParseNumber(string? input, out double value)
