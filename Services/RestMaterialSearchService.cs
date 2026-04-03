@@ -68,10 +68,20 @@ namespace MaterialManager_V01.Services
             if (materialItem == null)
                 return false;
 
-            if (!string.IsNullOrEmpty(materialArt) && materialItem.MaterialArt != materialArt)
+            var materialSearch = (materialArt ?? string.Empty).Trim();
+            var legierungSearch = (legierung ?? string.Empty).Trim();
+            var itemMaterial = (materialItem.MaterialArt ?? string.Empty).Trim();
+            var itemLegierung = (materialItem.Legierung ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(itemMaterial))
+                itemMaterial = InferMaterialArtFromLegierung(itemLegierung);
+
+            if (!string.IsNullOrWhiteSpace(materialSearch)
+                && !string.Equals(itemMaterial, materialSearch, StringComparison.OrdinalIgnoreCase))
                 return false;
 
-            if (!string.IsNullOrEmpty(legierung) && materialItem.Legierung != legierung)
+            if (!string.IsNullOrWhiteSpace(legierungSearch)
+                && !string.Equals(itemLegierung, legierungSearch, StringComparison.OrdinalIgnoreCase))
                 return false;
 
             if (staerke.HasValue && Math.Abs(materialItem.Staerke - staerke.Value) > 0.0001)
@@ -194,12 +204,49 @@ namespace MaterialManager_V01.Services
             laenge = 0;
             breite = 0;
 
-            var parts = mass?.Split('x', '×');
-            if (parts?.Length != 2)
+            if (string.IsNullOrWhiteSpace(mass))
                 return false;
 
-            return int.TryParse(parts[0].Trim(), out laenge)
-                && int.TryParse(parts[1].Trim(), out breite);
+            var match = System.Text.RegularExpressions.Regex.Match(
+                mass,
+                @"(?<l>\d+(?:[\.,]\d+)?)\s*[xX×]\s*(?<b>\d+(?:[\.,]\d+)?)",
+                System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+            if (!match.Success)
+                return false;
+
+            if (!TryParseDimension(match.Groups["l"].Value, out laenge))
+                return false;
+
+            if (!TryParseDimension(match.Groups["b"].Value, out breite))
+                return false;
+
+            return laenge > 0 && breite > 0;
+        }
+
+        private static bool TryParseDimension(string value, out int result)
+        {
+            result = 0;
+            var normalized = (value ?? string.Empty).Trim().Replace(',', '.');
+            if (double.TryParse(normalized, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d))
+            {
+                result = (int)Math.Round(d);
+                return true;
+            }
+
+            return int.TryParse((value ?? string.Empty).Trim(), out result);
+        }
+
+        private static string InferMaterialArtFromLegierung(string? legierung)
+        {
+            var leg = (legierung ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(leg))
+                return string.Empty;
+
+            if (leg.StartsWith("1.")) return "Edelstahl";
+            if (leg.StartsWith("s") || leg.Contains("dc")) return "Stahl";
+            if (leg.Contains("aw") || leg.Contains("almg") || leg.Contains("alu") || leg.Contains("al")) return "Aluminium";
+            return string.Empty;
         }
     }
 }
