@@ -938,21 +938,34 @@ namespace MaterialManager_V01
             }
         }
 
+        private static bool IsEuPaletteLagerort(string? lagerort)
+        {
+            if (string.IsNullOrWhiteSpace(lagerort))
+                return false;
+
+            var n = lagerort.Trim().ToLowerInvariant()
+                .Replace("-", " ")
+                .Replace("_", " ");
+
+            return n.Contains("eu") && n.Contains("palette");
+        }
+
         private void UpdateStats()
         {
             var total = Materialien.Sum(m => m.GewichtKg);
             GesamtGewichtText = $"{total:F2} kg";
             DurchschnittAuslastung = Materialien.Any() ? 50 : 0;
             AuslastungText = "+/- 50% (Regale A-J)";
-            
-            var restGewicht = Materialien.Where(m => m.Form == "Rest").Sum(m => m.GewichtKg);
+
+            var euPaletteItems = Materialien.Where(m => m != null && IsEuPaletteLagerort(m.Lagerort)).ToList();
+            var restGewicht = euPaletteItems.Sum(m => m.GewichtKg);
             EuPalettePct = restGewicht / 2000.0 * 100.0;
             EuPaletteDisplayText = $"{restGewicht:F2} / 2.000 kg ({EuPalettePct:F0}%)";
-            
+
             var niedrig = Materialien.Count(m => (m.Form == "GF" || m.Form == "MF" || m.Form == "KF") && m.Stueckzahl <= 3);
             NiedrigeBestaendeText = niedrig > 0 ? $"{niedrig} Materialien" : "Alle OK ?";
             NiedrigeBestaendeFarbe = niedrig > 0 ? Brushes.Orange : Brushes.LimeGreen;
-            
+
             ReservierteResteCount = Materialien.Count(m => !string.IsNullOrEmpty(m.AuftragNr));
         }
 

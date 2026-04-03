@@ -13,6 +13,18 @@ namespace MaterialManager_V01.Views
 {
     public partial class EuPaletteDialog : Window, INotifyPropertyChanged
     {
+        private static bool IsEuPaletteLagerort(string? lagerort)
+        {
+            if (string.IsNullOrWhiteSpace(lagerort))
+                return false;
+
+            var n = lagerort.Trim().ToLowerInvariant()
+                .Replace("-", " ")
+                .Replace("_", " ");
+
+            return n.Contains("eu") && n.Contains("palette");
+        }
+
         private ObservableCollection<MaterialItem> _sourceMaterialien;
         private List<MaterialItem> _paletteMaterialien = new();
         private ObservableCollection<MaterialItem> _filteredItems = new();
@@ -57,7 +69,7 @@ namespace MaterialManager_V01.Views
 
             // Alle EU Palette Materialien sammeln
             _paletteMaterialien = _sourceMaterialien
-                .Where(m => m != null && m.Lagerort == "EU Palette")
+                .Where(m => m != null && IsEuPaletteLagerort(m.Lagerort))
                 .ToList();
 
             // DataGrid binden
@@ -309,7 +321,7 @@ namespace MaterialManager_V01.Views
                     _sourceMaterialien[idx] = dlg.Material;
 
                 _paletteMaterialien = _sourceMaterialien
-                    .Where(m => m != null && m.Lagerort == "EU Palette")
+                    .Where(m => m != null && IsEuPaletteLagerort(m.Lagerort))
                     .ToList();
 
                 HasChanges = true;
