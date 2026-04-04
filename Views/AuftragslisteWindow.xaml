@@ -92,6 +92,7 @@
                   MouseDoubleClick="OnGridMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="180"/>
+                <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
                 <DataGridTextColumn Header="Positionen" Binding="{Binding MaterialPositionen}" Width="90"/>
                 <DataGridTextColumn Header="Stückzahl" Binding="{Binding GesamtStueckzahl}" Width="90"/>

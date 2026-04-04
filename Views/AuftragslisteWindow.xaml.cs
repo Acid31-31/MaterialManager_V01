@@ -38,6 +38,7 @@ namespace MaterialManager_V01.Views
                 ? _alleAuftraege
                 : _alleAuftraege.Where(a =>
                     (a.Auftragsnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
+                    (a.Arbeitsplatz ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     a.Status.ToString().ToLowerInvariant().Contains(query) ||
                     (a.AngelegtVon ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     (a.GeaendertVon ?? string.Empty).ToLowerInvariant().Contains(query))

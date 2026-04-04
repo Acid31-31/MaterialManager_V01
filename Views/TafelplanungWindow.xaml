@@ -348,6 +348,12 @@
                                 Foreground="White"
                                 Padding="12,8"
                                 Margin="0,0,8,0"/>
+                        <Button Content="Für Laser freigeben"
+                                Click="OnAssignToLaserClick"
+                                Background="#2E7D32"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
                         <Button Content="Für Kantbank freigeben"
                                 Click="OnAssignToKantbankClick"
                                 Background="#23A455"
@@ -465,6 +471,7 @@
                               RowHeight="28">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
+                            <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100"/>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
                             <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
                             <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>

@@ -371,6 +371,24 @@ namespace MaterialManager_V01.Views
             ApplyFilter();
         }
 
+        private void OnAssignToLaserClick(object sender, RoutedEventArgs e)
+        {
+            var auftragsnummer = GetSelectedAuftragsnummerForFreigabe();
+            if (string.IsNullOrWhiteSpace(auftragsnummer))
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen oder ein gebuchtes Material markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragArbeitsplatzService.SetArbeitsplatz(auftragsnummer, AuftragArbeitsplatzService.Laser);
+
+            RefreshAuftragFilter();
+            LoadAuftraegeGridForSelectedKw();
+            ApplyFilter();
+
+            MessageBox.Show($"Auftrag {auftragsnummer} wurde für den Laser freigegeben.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         private void OnAssignToKantbankClick(object sender, RoutedEventArgs e)
         {
             var auftragsnummer = GetSelectedAuftragsnummerForFreigabe();
