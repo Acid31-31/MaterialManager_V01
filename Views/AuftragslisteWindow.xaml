@@ -8,6 +8,21 @@
         Background="#0B0B0B"
         FontSize="13">
     <Window.Resources>
+        <Style x:Key="ArbeitsbereichTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B0BEC5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Laser">
+                    <Setter Property="Foreground" Value="#66BB6A"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Kantbank">
+                    <Setter Property="Foreground" Value="#FFB74D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Beides">
+                    <Setter Property="Foreground" Value="#90CAF9"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#121212"/>
             <Setter Property="Foreground" Value="White"/>
@@ -92,7 +107,11 @@
                   MouseDoubleClick="OnGridMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="180"/>
-                <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100"/>
+                <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource ArbeitsbereichTextStyle}"/>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
                 <DataGridTextColumn Header="Positionen" Binding="{Binding MaterialPositionen}" Width="90"/>
                 <DataGridTextColumn Header="Stückzahl" Binding="{Binding GesamtStueckzahl}" Width="90"/>

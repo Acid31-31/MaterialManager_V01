@@ -23,6 +23,21 @@
     </shell:WindowChrome.WindowChrome>
 
     <Window.Resources>
+        <Style x:Key="ArbeitsbereichTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B0BEC5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Laser">
+                    <Setter Property="Foreground" Value="#66BB6A"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Kantbank">
+                    <Setter Property="Foreground" Value="#FFB74D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Arbeitsplatz}" Value="Beides">
+                    <Setter Property="Foreground" Value="#90CAF9"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="13"/>
@@ -477,7 +492,11 @@
                               RowHeight="28">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
-                            <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100"/>
+                            <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource ArbeitsbereichTextStyle}"/>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
                             <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
                             <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
