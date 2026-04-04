@@ -327,7 +327,7 @@
 
                     <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="Laser – Auftragsübersicht" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding WorkspaceTitle}" Foreground="White" FontSize="22" FontWeight="Bold"/>
                         <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                     </StackPanel>
 

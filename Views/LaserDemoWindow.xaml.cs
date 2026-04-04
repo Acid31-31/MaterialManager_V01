@@ -26,6 +26,17 @@ namespace MaterialManager_V01.Views
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
 
+        private string _workspaceTitle = "Laser – Auftragsübersicht";
+        public string WorkspaceTitle
+        {
+            get => _workspaceTitle;
+            set
+            {
+                _workspaceTitle = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkspaceTitle)));
+            }
+        }
+
         private string _headerText = string.Empty;
         public string HeaderText
         {
@@ -78,6 +89,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
+            WorkspaceTitle = "Laser – Auftragsübersicht";
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
             UpdateAuftragsKwText();
             FitToWorkArea();

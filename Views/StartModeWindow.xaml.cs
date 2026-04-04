@@ -229,6 +229,17 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnKantbankClick(object sender, RoutedEventArgs e)
+        {
+            if (!PromptForOperatorName())
+                return;
+
+            var window = new KantbankDemoWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+        }
+
         private void OnKundenMaterialClick(object sender, RoutedEventArgs e)
         {
             if (!PromptForOperatorName())
