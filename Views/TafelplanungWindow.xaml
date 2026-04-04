@@ -360,6 +360,12 @@
                                 Foreground="White"
                                 Padding="12,8"
                                 Margin="0,0,8,0"/>
+                        <Button Content="Für beide freigeben"
+                                Click="OnAssignToBothClick"
+                                Background="#546E7A"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
                         <Button Content="Gebuchte Materialien"
                                 Click="OnReservedRestsClick"
                                 Background="#1976D2"
