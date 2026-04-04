@@ -510,6 +510,21 @@ namespace MaterialManager_V01.Views
             e.Handled = true;
         }
 
+        private void OnAuftragKantPdfButtonClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
+                return;
+
+            if (string.IsNullOrWhiteSpace(auftrag.PdfPfadKantzeichnung))
+            {
+                MessageBox.Show("Für diesen Auftrag wurde keine Kant-PDF gefunden.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            OpenPdfPreview(auftrag.PdfPfadKantzeichnung);
+            e.Handled = true;
+        }
+
         private void OnSearchRestsClick(object sender, RoutedEventArgs e)
         {
             var dlg = new ResteSucheDialog { Owner = this };
