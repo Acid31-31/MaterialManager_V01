@@ -319,6 +319,11 @@
                         </MenuItem>
                     </Menu>
 
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,8,0">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↶" Click="OnUndoClick" ToolTip="Zurück"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↷" Click="OnRedoClick" ToolTip="Vorwärts"/>
+                    </StackPanel>
+
                     <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
                         <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
@@ -373,9 +378,7 @@
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Gebuchte Materialien" Click="OnReservedRestsClick" Background="#1976D2" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Reste suchen" Click="OnSearchRestsClick" Background="#2E7D32" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Niedrige Bestände" Click="OnLowStockClick" Background="#EF6C00" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Aktualisieren" Click="OnRefreshClick" Background="#555" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="← Zurück" Click="OnUndoClick" Background="#5D4037" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="→ Vorwärts" Click="OnRedoClick" Background="#6D4C41" Foreground="White" Margin="0"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Aktualisieren" Click="OnRefreshClick" Background="#555" Foreground="White" Margin="0"/>
                 </StackPanel>
             </Border>
 
