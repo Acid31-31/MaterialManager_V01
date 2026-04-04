@@ -309,6 +309,11 @@
                         </MenuItem>
                     </Menu>
 
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,8,0">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↶" Click="OnUndoClick" ToolTip="Zurück"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↷" Click="OnRedoClick" ToolTip="Vorwärts"/>
+                    </StackPanel>
+
                     <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
                         <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
@@ -351,18 +356,6 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="← Zurück"
-                                Click="OnUndoClick"
-                                Background="#5D4037"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"/>
-                        <Button Content="→ Vorwärts"
-                                Click="OnRedoClick"
-                                Background="#6D4C41"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"/>
                         <Button Content="Material bearbeiten"
                                 Click="OnEditRestClick"
                                 Background="#455A64"
