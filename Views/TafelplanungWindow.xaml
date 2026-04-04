@@ -345,7 +345,7 @@
                 </Grid>
             </Border>
 
-            <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="10">
+            <Border DockPanel.Dock="Left" Background="#1F1F1F" Padding="10" Width="255">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="235">
                     <StackPanel.Resources>
                         <Style x:Key="SidebarActionButtonStyle" TargetType="Button">
@@ -360,8 +360,7 @@
                     <TextBlock Text="Freigabe" Foreground="#90CAF9" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftragsliste" Click="OnOrderListClick" Background="#455A64" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Laser freigeben" Click="OnAssignToLaserClick" Background="#2E7D32" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Kantbank freigeben" Click="OnAssignToKantbankClick" Background="#23A455" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für beide freigeben" Click="OnAssignToBothClick" Background="#546E7A" Foreground="White" Margin="0,0,0,10"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Kantbank freigeben" Click="OnAssignToKantbankClick" Background="#23A455" Foreground="White" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Auftragsaktionen" Foreground="#FFB74D" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Auftrag buchen" Click="OnBookForOrderClick" Background="#00897B" Foreground="White"/>
@@ -385,7 +384,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -535,6 +534,7 @@
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
                IsHitTestVisible="False"
-               Panel.ZIndex="1"/>
+               Panel.ZIndex="1"
+               Visibility="Collapsed"/>
     </Grid>
 </Window>
