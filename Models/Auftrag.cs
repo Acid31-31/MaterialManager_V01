@@ -21,6 +21,14 @@ namespace MaterialManager_V01.Models
         public DateTime? ProduktionEndDatum { get; set; }
 
         [NotMapped]
+        public string PdfPfadKantzeichnung { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string PdfDateinameKantzeichnung => string.IsNullOrWhiteSpace(PdfPfadKantzeichnung)
+            ? "Keine Kant-PDF"
+            : Path.GetFileName(PdfPfadKantzeichnung);
+
+        [NotMapped]
         public string Arbeitsplatz { get; set; } = "Beides";
 
         public string PdfDateiname

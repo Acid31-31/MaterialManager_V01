@@ -534,7 +534,21 @@ namespace MaterialManager_V01.Views
             if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
                 return;
 
-            OpenPdfPreviewForAuftrag(auftrag);
+            var pdfPfad = !string.IsNullOrWhiteSpace(auftrag.PdfPfadAngefangeneTafel)
+                ? auftrag.PdfPfadAngefangeneTafel
+                : auftrag.PdfPfad;
+
+            OpenPdfPreview(pdfPfad, "Diesem Auftrag ist keine Original-PDF zugeordnet.");
+            e.Handled = true;
+        }
+
+        private void OnAuftragKantPdfButtonClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
+                return;
+
+            var pdfPfad = auftrag.PdfPfadKantzeichnung;
+            OpenPdfPreview(pdfPfad, "Für diesen Auftrag wurde keine Kant-PDF im Kundenordner gefunden.");
             e.Handled = true;
         }
 
@@ -544,9 +558,14 @@ namespace MaterialManager_V01.Views
                 ? auftrag.PdfPfadAngefangeneTafel
                 : auftrag.PdfPfad;
 
+            OpenPdfPreview(pdfPfad, "Diesem Auftrag ist keine PDF-Datei zugeordnet.");
+        }
+
+        private void OpenPdfPreview(string pdfPfad, string emptyMessage)
+        {
             if (string.IsNullOrWhiteSpace(pdfPfad))
             {
-                MessageBox.Show("Diesem Auftrag ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(emptyMessage, "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
