@@ -12,10 +12,15 @@ namespace MaterialManager_V01.Services
             using var db = new MaterialManagerDbContext();
             db.Database.EnsureCreated();
 
-            return db.Auftraege
+            var list = db.Auftraege
                 .AsNoTracking()
                 .OrderBy(a => a.Auftragsnummer)
                 .ToList();
+
+            foreach (var auftrag in list)
+                auftrag.Arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftrag.Auftragsnummer);
+
+            return list;
         }
 
         private static void EnsureAuftraegeFromMaterialienIfMissing()

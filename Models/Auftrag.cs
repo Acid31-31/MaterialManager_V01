@@ -1,4 +1,5 @@
 using System.IO;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MaterialManager_V01.Models
 {
@@ -18,6 +19,9 @@ namespace MaterialManager_V01.Models
         public string PdfPfadAngefangeneTafel { get; set; } = string.Empty;
         public DateTime? ProduktionStartDatum { get; set; }
         public DateTime? ProduktionEndDatum { get; set; }
+
+        [NotMapped]
+        public string Arbeitsplatz { get; set; } = "Beides";
 
         public string PdfDateiname
         {

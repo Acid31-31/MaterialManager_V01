@@ -139,11 +139,14 @@ namespace MaterialManager_V01.Services
 
                     existingByNumber.TryGetValue(gruppe.Key, out var existing);
                     var status = existing?.Status ?? (hatAngefangeneTafel ? AuftragStatus.InBearbeitung : AuftragStatus.Offen);
+                    AuftragArbeitsplatzService.SetDefaultArbeitsplatzIfMissing(gruppe.Key, AuftragArbeitsplatzService.Laser);
+                    var arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(gruppe.Key);
 
                     return new Auftrag
                     {
                         Auftragsnummer = gruppe.Key,
                         Status = status,
+                        Arbeitsplatz = arbeitsplatz,
                         ErstelltAm = existing?.ErstelltAm ?? first.Datum ?? DateTime.Now,
                         GeaendertAm = items.Max(i => i.AenderungsDatum ?? i.Datum ?? DateTime.Now),
                         AngelegtVon = string.IsNullOrWhiteSpace(existing?.AngelegtVon) ? first.AngelegtVon : existing.AngelegtVon,

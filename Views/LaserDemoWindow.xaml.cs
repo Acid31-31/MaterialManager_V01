@@ -17,6 +17,8 @@ namespace MaterialManager_V01.Views
 {
     public partial class LaserDemoWindow : Window, INotifyPropertyChanged
     {
+        protected virtual string Arbeitsbereich => AuftragArbeitsplatzService.Laser;
+
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
         private List<Auftrag> _auftraegeCache = new();
@@ -124,6 +126,7 @@ namespace MaterialManager_V01.Views
                 _alleMaterialien = items;
                 _restMaterialienCache = _alleMaterialien
                     .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
+                    .Where(m => MatchesArbeitsbereich(m.AuftragNr))
                     .ToList();
 
                 LoadAuftraege();
@@ -135,11 +138,19 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private bool MatchesArbeitsbereich(string? auftragsnummer)
+        {
+            var arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftragsnummer);
+            return AuftragArbeitsplatzService.IsMatchForBereich(arbeitsplatz, Arbeitsbereich);
+        }
+
         private void LoadAuftraege()
         {
             try
             {
-                _auftraegeCache = AuftragDataService.LoadAllAuftraege();
+                _auftraegeCache = AuftragDataService.LoadAllAuftraege()
+                    .Where(a => AuftragArbeitsplatzService.IsMatchForBereich(a.Arbeitsplatz, Arbeitsbereich))
+                    .ToList();
                 ApplyAuftragsKwFilter();
             }
             catch (Exception ex)

@@ -4,6 +4,8 @@ namespace MaterialManager_V01.Views
 {
     public class KantbankDemoWindow : LaserDemoWindow
     {
+        protected override string Arbeitsbereich => AuftragArbeitsplatzService.Kantbank;
+
         public KantbankDemoWindow()
         {
             Title = "Kantbank - Restmaterial";

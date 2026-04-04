@@ -371,13 +371,34 @@ namespace MaterialManager_V01.Views
             ApplyFilter();
         }
 
-        private void OnOpenArchivAuftraegeClick(object sender, RoutedEventArgs e)
+        private void OnAssignToKantbankClick(object sender, RoutedEventArgs e)
         {
-            var dlg = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
+            var auftragsnummer = GetSelectedAuftragsnummerForFreigabe();
+            if (string.IsNullOrWhiteSpace(auftragsnummer))
             {
-                Owner = this
-            };
-            dlg.ShowDialog();
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen oder ein gebuchtes Material markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragArbeitsplatzService.SetArbeitsplatz(auftragsnummer, AuftragArbeitsplatzService.Kantbank);
+
+            RefreshAuftragFilter();
+            LoadAuftraegeGridForSelectedKw();
+            ApplyFilter();
+
+            MessageBox.Show($"Auftrag {auftragsnummer} wurde für die Kantbank freigegeben.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private string GetSelectedAuftragsnummerForFreigabe()
+        {
+            if (AuftraegeGrid.SelectedItem is Auftrag auftrag && !string.IsNullOrWhiteSpace(auftrag.Auftragsnummer))
+                return auftrag.Auftragsnummer.Trim();
+
+            var ausMaterial = GetMarkedMaterials()
+                .Select(m => m.AuftragNr)
+                .FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+
+            return (ausMaterial ?? string.Empty).Trim();
         }
 
         private void LoadAuftraegeGridForSelectedKw()
@@ -577,6 +598,9 @@ namespace MaterialManager_V01.Views
                 newValue: $"Gebucht für Auftrag {auftragNrForLog}, Stück: {gebuchteMenge}",
                 reason: $"Reservierung in Auftragssteuerung ({items.Count} Positionen)");
 
+            if (!string.IsNullOrWhiteSpace(auftragNrForLog))
+                AuftragArbeitsplatzService.SetDefaultArbeitsplatzIfMissing(auftragNrForLog, AuftragArbeitsplatzService.Laser);
+
             SaveAllMaterials();
             LoadMaterials();
         }
@@ -669,8 +693,8 @@ namespace MaterialManager_V01.Views
 
             var confirm = MessageBox.Show(
                 items.Count == 1
-                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchte Menge entfernen?"
-                    : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchte Mengen entfernen?",
+                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchter Material entfernen?"
+                    : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchte Materialien entfernen?",
                 "Auftragssteuerung",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);

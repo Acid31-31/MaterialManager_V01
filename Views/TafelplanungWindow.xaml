@@ -348,6 +348,12 @@
                                 Foreground="White"
                                 Padding="12,8"
                                 Margin="0,0,8,0"/>
+                        <Button Content="Für Kantbank freigeben"
+                                Click="OnAssignToKantbankClick"
+                                Background="#23A455"
+                                Foreground="White"
+                                Padding="12,8"
+                                Margin="0,0,8,0"/>
                         <Button Content="Gebuchte Materialien"
                                 Click="OnReservedRestsClick"
                                 Background="#1976D2"
