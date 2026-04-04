@@ -1078,6 +1078,15 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
+        private void OnOpenKantbankView(object sender, MouseButtonEventArgs e)
+        {
+            var window = new KantbankDemoWindow();
+            Application.Current.MainWindow = window;
+            window.Show();
+            Close();
+            e.Handled = true;
+        }
+
         private void OnOpenKundenMaterialView(object sender, MouseButtonEventArgs e)
         {
             var window = new KundenMaterialWindow();
