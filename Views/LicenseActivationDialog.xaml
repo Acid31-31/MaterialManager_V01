@@ -6,6 +6,13 @@
         WindowStartupLocation="CenterScreen"
         Background="#0B0B0B"
         ResizeMode="NoResize">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="HerkoGreen" Color="#23A455"/>
+        <SolidColorBrush x:Key="HerkoGreenSoft" Color="#66BB6A"/>
+        <SolidColorBrush x:Key="HerkoGreenLight" Color="#8FD19E"/>
+        <SolidColorBrush x:Key="HerkoGreenDark" Color="#1F8E4A"/>
+    </Window.Resources>
     
     <Border Padding="20" Background="#121212">
         <Grid>
@@ -20,7 +27,7 @@
                 <TextBlock Text="Lizenzaktivierung" 
                            FontSize="24" 
                            FontWeight="Bold" 
-                           Foreground="#4CAF50"
+                           Foreground="{StaticResource HerkoGreen}"
                            Margin="0,0,0,10"/>
                 <TextBlock Text="Aktivieren Sie Ihre Jahreslizenz für MaterialManager V01" 
                            FontSize="14" 
@@ -34,10 +41,10 @@
                     
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <TextBlock Text="Lizenzmodell" FontSize="14" Foreground="#FFD700" Margin="0,0,8,0"/>
-                        <TextBlock Text="Industrie-Edition" Foreground="#4CAF50" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Industrie-Edition" Foreground="{StaticResource HerkoGreen}" FontWeight="Bold" VerticalAlignment="Center"/>
                     </StackPanel>
                     
-                    <TextBlock Grid.Column="1" Text="{Binding HeadlinePriceText}" FontSize="16" FontWeight="Bold" Foreground="#FF9800" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding HeadlinePriceText}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource HerkoGreen}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
                 
                 <Border Background="#1E1E1E" 
@@ -86,7 +93,7 @@
                                              Text="{Binding HardwareId, Mode=OneWay}"
                                              IsReadOnly="True"
                                              Background="Transparent"
-                                             Foreground="#4CAF50"
+                                             Foreground="{StaticResource HerkoGreen}"
                                              BorderThickness="0"
                                              FontFamily="Consolas"
                                              FontSize="14"
@@ -162,7 +169,7 @@
 
                     <!-- Lizenztyp-Info mit PREISEN -->
                     <Border Background="#1F1F1F" 
-                            BorderBrush="#4CAF50" 
+                            BorderBrush="{StaticResource HerkoGreen}" 
                             BorderThickness="2"
                             CornerRadius="5" 
                             Padding="15" 
@@ -171,7 +178,7 @@
                             <TextBlock Text="Verfügbare Lizenzstufen" 
                                        FontSize="14" 
                                        FontWeight="Bold" 
-                                       Foreground="#4CAF50"
+                                       Foreground="{StaticResource HerkoGreen}"
                                        Margin="0,0,0,12"/>
                              
                             <Border Background="#2A2A2A" CornerRadius="3" Padding="12" Margin="0,0,0,10">
@@ -183,10 +190,10 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Single (S1)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="1 Arbeitsplatz" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
-                                        <TextBlock Text="Leistungsumfang: Basisbetrieb, Standard-Updates, E-Mail-Support (werktags, Reaktionszeit bis 48h)" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Leistungsumfang: Basisbetrieb, Standard-Updates, E-Mail-Support (werktags, Reaktionszeit bis 48h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding SinglePriceText}" FontWeight="Bold" Foreground="#4CAF50" FontSize="13"/>
+                                        <TextBlock Text="{Binding SinglePriceText}" FontWeight="Bold" Foreground="{StaticResource HerkoGreen}" FontSize="13"/>
                                         <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -201,10 +208,10 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Mehrplatz (M3)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="3 Arbeitsplätze" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
-                                        <TextBlock Text="Leistungsumfang: Teamlizenz, priorisierte Fehlerbehebung, Remote-Support nach Termin (Reaktionszeit bis 24h)" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Leistungsumfang: Teamlizenz, priorisierte Fehlerbehebung, Remote-Support nach Termin (Reaktionszeit bis 24h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding MultiPriceText}" FontWeight="Bold" Foreground="#FF9800" FontSize="13"/>
+                                        <TextBlock Text="{Binding MultiPriceText}" FontWeight="Bold" Foreground="{StaticResource HerkoGreenSoft}" FontSize="13"/>
                                         <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -219,10 +226,10 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Firmenlizenz (C10)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="10 Arbeitsplätze inkl. Standard-Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
-                                        <TextBlock Text="Leistungsumfang: Mehrstandortfähig, SLA-orientierte Reaktionszeit (bis 8h), regelmäßige Versionspflege" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Leistungsumfang: Mehrstandortfähig, SLA-orientierte Reaktionszeit (bis 8h), regelmäßige Versionspflege" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding CompanyPriceText}" FontWeight="Bold" Foreground="#F44336" FontSize="13"/>
+                                        <TextBlock Text="{Binding CompanyPriceText}" FontWeight="Bold" Foreground="{StaticResource HerkoGreenDark}" FontSize="13"/>
                                         <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -237,10 +244,10 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="Enterprise (ENT)" FontWeight="Bold" Foreground="White" FontSize="12"/>
                                         <TextBlock Text="Erweiterbar, priorisierter Support, individuelle Vereinbarung" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
-                                        <TextBlock Text="Leistungsumfang: individuelle Betreuung, erweiterte Servicefenster, projektspezifische Anpassungen (Reaktionszeit bis 4h)" Foreground="#8FCBFF" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Leistungsumfang: individuelle Betreuung, erweiterte Servicefenster, projektspezifische Anpassungen (Reaktionszeit bis 4h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding EnterprisePriceText}" FontWeight="Bold" Foreground="#2196F3" FontSize="13"/>
+                                        <TextBlock Text="{Binding EnterprisePriceText}" FontWeight="Bold" Foreground="{StaticResource HerkoGreenSoft}" FontSize="13"/>
                                         <TextBlock Text="pro Jahr" Foreground="#888" FontSize="10" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </Grid>
@@ -248,7 +255,7 @@
                             
                             <!-- Hinweis -->
                             <TextBlock Text="{Binding CalculationHintText}" 
-                                       Foreground="#4CAF50" 
+                                       Foreground="{StaticResource HerkoGreen}" 
                                        FontSize="11"
                                        FontWeight="Bold"
                                        Margin="0,10,0,0"
@@ -258,7 +265,7 @@
                     
                     <!-- Kontakt & Support -->
                     <Border Background="#1E1E1E" 
-                            BorderBrush="#2196F3"
+                            BorderBrush="{StaticResource HerkoGreen}"
                             BorderThickness="1"
                             CornerRadius="5" 
                             Padding="15" 
@@ -267,16 +274,16 @@
                             <TextBlock Text="Kontakt und Support" 
                                        FontSize="13" 
                                        FontWeight="Bold" 
-                                       Foreground="#2196F3"
+                                       Foreground="{StaticResource HerkoGreen}"
                                        Margin="0,0,0,10"/>
                             
 
-                            <TextBlock Foreground="#4CAF50" FontWeight="Bold" Margin="0,3,0,0">
+                            <TextBlock Foreground="{StaticResource HerkoGreen}" FontWeight="Bold" Margin="0,3,0,0">
                                 <Run Text="✉️ E-Mail: "/>
                                 <Run Text="hoelzer_alex@yahoo.de"/>
                             </TextBlock>
                             
-                            <TextBlock Foreground="#4CAF50" FontWeight="Bold" Margin="0,3,0,0">
+                            <TextBlock Foreground="{StaticResource HerkoGreen}" FontWeight="Bold" Margin="0,3,0,0">
                                 <Run Text="📱 Telefon: "/>
                                 <Run Text="+49 170 8339993"/>
                             </TextBlock>
@@ -331,7 +338,7 @@
                 <Button x:Name="ActivateButton"
                         Content="✓ Lizenz aktivieren" 
                         Click="OnActivate"
-                        Background="#4CAF50" 
+                        Background="{StaticResource HerkoGreen}" 
                         Foreground="White"
                         Padding="20,10"
                         BorderThickness="0"
@@ -361,11 +368,11 @@
                                     <Setter Property="Foreground" Value="#CCC"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="True">
-                                    <Setter Property="Background" Value="#4CAF50"/>
+                                    <Setter Property="Background" Value="{StaticResource HerkoGreen}"/>
                                     <Setter Property="Foreground" Value="White"/>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#45a049"/>
+                                    <Setter Property="Background" Value="{StaticResource HerkoGreenDark}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
