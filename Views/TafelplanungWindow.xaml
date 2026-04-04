@@ -346,7 +346,8 @@
             </Border>
 
             <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="260">
+                    <TextBlock Text="Freigabe" Foreground="#90CAF9" FontWeight="Bold" Margin="0,0,0,8"/>
                     <Button Content="Auftragsliste"
                             Click="OnOrderListClick"
                             Background="#455A64"
@@ -370,7 +371,41 @@
                             Background="#546E7A"
                             Foreground="White"
                             Padding="12,8"
+                            Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Auftragsaktionen" Foreground="#FFB74D" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <Button Content="Für Auftrag buchen"
+                            Click="OnBookForOrderClick"
+                            Background="#00897B"
+                            Foreground="White"
+                            Padding="12,8"
                             Margin="0,0,0,8"/>
+                    <Button Content="Reservierung aufheben"
+                            Click="OnReleaseReservationClick"
+                            Background="#8B1E1E"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,0,8"/>
+                    <Button Content="Produktion abschließen"
+                            Click="OnCompleteProductionClick"
+                            Background="#6A1B9A"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,0,8"/>
+                    <Button Content="📄 PDF anhängen"
+                            Click="OnAttachPdfClick"
+                            Background="#E65100"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,0,8"/>
+                    <Button Content="Material löschen"
+                            Click="OnDeleteMaterialClick"
+                            Background="#C62828"
+                            Foreground="White"
+                            Padding="12,8"
+                            Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Navigation / Ansicht" Foreground="#B0BEC5" FontWeight="Bold" Margin="0,0,0,8"/>
                     <Button Content="Gebuchte Materialien"
                             Click="OnReservedRestsClick"
                             Background="#1976D2"
@@ -404,36 +439,6 @@
                     <Button Content="→ Vorwärts"
                             Click="OnRedoClick"
                             Background="#6D4C41"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,0,8"/>
-                    <Button Content="Für Auftrag buchen"
-                            Click="OnBookForOrderClick"
-                            Background="#00897B"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,0,8"/>
-                    <Button Content="Material löschen"
-                            Click="OnDeleteMaterialClick"
-                            Background="#C62828"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,0,8"/>
-                    <Button Content="Reservierung aufheben"
-                            Click="OnReleaseReservationClick"
-                            Background="#8B1E1E"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,0,8"/>
-                    <Button Content="Produktion abschließen"
-                            Click="OnCompleteProductionClick"
-                            Background="#6A1B9A"
-                            Foreground="White"
-                            Padding="12,8"
-                            Margin="0,0,0,8"/>
-                    <Button Content="📄 PDF anhängen"
-                            Click="OnAttachPdfClick"
-                            Background="#E65100"
                             Foreground="White"
                             Padding="12,8"/>
                 </StackPanel>
