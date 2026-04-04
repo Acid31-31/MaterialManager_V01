@@ -307,8 +307,8 @@
                                 HorizontalAlignment="Right"
                                 Margin="0,0,10,0"
                                 shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↶" Click="OnUndo" ToolTip="Rückgängig (Ctrl+Z)"/>
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↷" Click="OnRedo" ToolTip="Wiederherstellen (Ctrl+Y)"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Margin="0,0,4,0" Content="↶" Click="OnUndo" ToolTip="Rückgängig (Ctrl+Z)"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Margin="0,0,8,0" Content="↷" Click="OnRedo" ToolTip="Wiederherstellen (Ctrl+Y)"/>
                         <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                             <TextBlock Text="{Binding NetzwerkStatusText}"
                                        Foreground="{Binding NetzwerkStatusBrush}"
