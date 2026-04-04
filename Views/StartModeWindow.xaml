@@ -11,6 +11,10 @@
         BorderThickness="1"
         Icon="/Assets/app-icon.png">
     <Window.Resources>
+        <SolidColorBrush x:Key="HerkoGreen" Color="#23A455"/>
+        <SolidColorBrush x:Key="HerkoGreenSoft" Color="#66BB6A"/>
+        <SolidColorBrush x:Key="HerkoGreenDark" Color="#1F8E4A"/>
+
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="46"/>
             <Setter Property="Height" Value="30"/>
@@ -91,7 +95,7 @@
                                 <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource HerkoGreen}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Foreground" Value="#666"/>
@@ -179,24 +183,24 @@
                        Stretch="Uniform"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,12"/>
-                <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                <TextBlock Text="MaterialManager V01" Foreground="{StaticResource HerkoGreen}" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Bitte Bereich auswählen" Foreground="{StaticResource HerkoGreenSoft}" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
             </StackPanel>
 
             <UniformGrid Grid.Row="2" Columns="6" Margin="48,0">
-                <Button Click="OnStandardClick" Margin="0,0,8,0" Height="150" Background="#1976D2" Foreground="White" Cursor="Hand" BorderThickness="0">
+                <Button Click="OnStandardClick" Margin="0,0,8,0" Height="150" Background="{StaticResource HerkoGreen}" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="🏠" FontSize="40" HorizontalAlignment="Center"/>
                         <TextBlock Text="Hauptprogramm" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Button Click="OnLagerClick" Margin="4,0,4,0" Height="150" Background="#6A1B9A" Foreground="White" Cursor="Hand" BorderThickness="0">
+                <Button Click="OnLagerClick" Margin="4,0,4,0" Height="150" Background="{StaticResource HerkoGreenDark}" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="📦" FontSize="40" HorizontalAlignment="Center"/>
                         <TextBlock Text="Lager" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
-                <Button Click="OnTafelplanungClick" Margin="4,0,4,0" Height="150" Background="#00897B" Foreground="White" Cursor="Hand" BorderThickness="0">
+                <Button Click="OnTafelplanungClick" Margin="4,0,4,0" Height="150" Background="{StaticResource HerkoGreenSoft}" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="📋" FontSize="40" HorizontalAlignment="Center"/>
                         <TextBlock Text="Tafelplanung" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
