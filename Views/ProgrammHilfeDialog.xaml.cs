@@ -18,7 +18,7 @@ MaterialManager V01 verwaltet Bleche, Rohre und Profile in einem gemeinsamen Lag
 Die wichtigsten Bereiche:
 - Hauptprogramm: Gesamtübersicht, Suche, Filter, Bearbeitung, Auswertungen.
 - Lager: Wareneingang, Regalauslastung, Inventur, niedrige Bestände.
-- Tafelplanung: Material für Aufträge reservieren und freigeben.
+- Auftragssteuerung: Material für Aufträge reservieren und freigeben.
 - Laser: Nur reservierte Materialien sehen, bearbeiten oder löschen.
 
 

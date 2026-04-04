@@ -139,7 +139,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -232,7 +232,7 @@ namespace MaterialManager_V01.Views
 
         private void PushUndoSnapshot(string beschreibung)
         {
-            UndoService.PushSnapshot($"Tafelplanung: {beschreibung}", _alleMaterialien);
+            UndoService.PushSnapshot($"Auftragssteuerung: {beschreibung}", _alleMaterialien);
         }
 
         private void RestoreMaterials(List<MaterialItem> materialien)
@@ -248,7 +248,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Undo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -260,7 +260,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Redo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -334,7 +334,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -534,7 +534,7 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst ein verfügbares Material auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst ein verfügbares Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -575,7 +575,7 @@ namespace MaterialManager_V01.Views
                 string.IsNullOrWhiteSpace(auftragNrForLog) ? "MULTI" : auftragNrForLog,
                 oldValue: "Verfügbar",
                 newValue: $"Gebucht für Auftrag {auftragNrForLog}, Stück: {gebuchteMenge}",
-                reason: $"Reservierung in Tafelplanung ({items.Count} Positionen)");
+                reason: $"Reservierung in Auftragssteuerung ({items.Count} Positionen)");
 
             SaveAllMaterials();
             LoadMaterials();
@@ -586,7 +586,7 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -596,7 +596,7 @@ namespace MaterialManager_V01.Views
                 items.Count == 1
                     ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' aufheben?"
                     : $"Reservierung für {items.Count} markierte Materialien aufheben?",
-                "Tafelplanung",
+                "Auftragssteuerung",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -661,7 +661,7 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -671,7 +671,7 @@ namespace MaterialManager_V01.Views
                 items.Count == 1
                     ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchte Menge entfernen?"
                     : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchte Mengen entfernen?",
-                "Tafelplanung",
+                "Auftragssteuerung",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -936,7 +936,7 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Tafelplanung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -944,7 +944,7 @@ namespace MaterialManager_V01.Views
                 items.Count == 1
                     ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
                     : $"{items.Count} markierte Materialien wirklich löschen?",
-                "Tafelplanung",
+                "Auftragssteuerung",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 

@@ -129,7 +129,7 @@
                     <MenuItem Header="Datei">
                         <MenuItem Header="Hauptprogramm" Click="OnStandardClick"/>
                         <MenuItem Header="Lager" Click="OnLagerClick"/>
-                        <MenuItem Header="Tafelplanung" Click="OnTafelplanungClick"/>
+                        <MenuItem Header="Auftragssteuerung" Click="OnTafelplanungClick"/>
                         <MenuItem Header="Laser" Click="OnLaserClick"/>
                         <MenuItem Header="Kantbank" Click="OnKantbankClick"/>
                         <MenuItem Header="Kunden Material" Click="OnKundenMaterialClick"/>
@@ -212,7 +212,7 @@
                 <Button Click="OnTafelplanungClick" Margin="4,0,4,0" Height="150" Background="#00897B" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
                         <TextBlock Text="📋" FontSize="40" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Tafelplanung" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                        <TextBlock Text="Auftragssteuerung" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnLaserClick" Margin="4,0,4,0" Height="150" Background="#2E7D32" Foreground="White" Cursor="Hand" BorderThickness="0">
@@ -236,7 +236,7 @@
             </UniformGrid>
 
             <TextBlock Grid.Row="3"
-                       Text="Lager: Wareneingang, Regalauslastung, Inventur   |   Tafelplanung: Restmaterial reservieren   |   Laser: Reservierungen einsehen und bearbeiten   |   Kantbank: Kantaufträge nach Reihenfolge bearbeiten   |   Hauptprogramm: Volle Verwaltung"
+                       Text="Lager: Wareneingang, Regalauslastung, Inventur   |   Auftragssteuerung: Restmaterial reservieren   |   Laser: Reservierungen einsehen und bearbeiten   |   Kantbank: Kantaufträge nach Reihenfolge bearbeiten   |   Hauptprogramm: Volle Verwaltung"
                        Foreground="#555"
                        FontSize="11"
                        TextWrapping="Wrap"
