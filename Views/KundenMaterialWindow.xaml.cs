@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using ClosedXML.Excel;
@@ -307,14 +308,111 @@ namespace MaterialManager_V01.Views
             if (KundenMaterialGrid.SelectedItem is not KundenMaterialItem item)
                 return;
 
-            if (string.IsNullOrWhiteSpace(item.PdfPfad) || !File.Exists(item.PdfPfad))
+            var action = MessageBox.Show(
+                $"Eintrag für '{item.Kunde}' / '{item.Zeichnungsnummer}' bearbeiten?\n\nJa = Stückzahl ändern\nNein = Löschen\nAbbrechen = nichts",
+                "Kunden Material",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (action == MessageBoxResult.Yes)
             {
-                MessageBox.Show("Für diesen Eintrag ist keine gültige PDF-Datei hinterlegt.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                var neueStueckzahl = PromptForStueckzahl(item.Stueckzahl);
+                if (neueStueckzahl == null)
+                    return;
+
+                item.Stueckzahl = neueStueckzahl.Value;
+                SaveItems();
+                KundenMaterialGrid.Items.Refresh();
                 return;
             }
 
-            var preview = new PdfPreviewDialog(item.PdfPfad) { Owner = this };
-            preview.ShowDialog();
+            if (action == MessageBoxResult.No)
+            {
+                if (MessageBox.Show("Ausgewählten Eintrag wirklich löschen?", "Kunden Material", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                    return;
+
+                Items.Remove(item);
+                SaveItems();
+            }
+        }
+
+        private int? PromptForStueckzahl(int aktuelleStueckzahl)
+        {
+            var input = new TextBox
+            {
+                Text = aktuelleStueckzahl.ToString(),
+                Width = 120,
+                Margin = new Thickness(0, 8, 0, 12)
+            };
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 90,
+                Margin = new Thickness(0, 0, 8, 0),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2E7D32"),
+                Foreground = System.Windows.Media.Brushes.White
+            };
+
+            var cancelButton = new Button
+            {
+                Content = "Abbrechen",
+                Width = 90,
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#555"),
+                Foreground = System.Windows.Media.Brushes.White
+            };
+
+            var buttons = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            buttons.Children.Add(okButton);
+            buttons.Children.Add(cancelButton);
+
+            var panel = new StackPanel { Margin = new Thickness(16) };
+            panel.Children.Add(new TextBlock
+            {
+                Text = "Neue Stückzahl eingeben:",
+                Foreground = System.Windows.Media.Brushes.White
+            });
+            panel.Children.Add(input);
+            panel.Children.Add(buttons);
+
+            var dialog = new Window
+            {
+                Title = "Stückzahl ändern",
+                Owner = this,
+                Content = panel,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#1B1B1B")
+            };
+
+            int? result = null;
+
+            okButton.Click += (_, _) =>
+            {
+                if (!int.TryParse(input.Text?.Trim(), out var parsed) || parsed <= 0)
+                {
+                    MessageBox.Show("Bitte eine gültige Stückzahl (> 0) eingeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                result = parsed;
+                dialog.DialogResult = true;
+                dialog.Close();
+            };
+
+            cancelButton.Click += (_, _) =>
+            {
+                dialog.DialogResult = false;
+                dialog.Close();
+            };
+
+            dialog.ShowDialog();
+            return result;
         }
 
         private static bool IsPdfInFreigabe(string? pdfPath)
