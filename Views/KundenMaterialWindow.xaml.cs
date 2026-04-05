@@ -450,6 +450,10 @@ namespace MaterialManager_V01.Views
                 }
 
                 PdfFolderBox.Text = settings.PdfFolder ?? string.Empty;
+                ImportExcelPathBox.Text = settings.ImportExcelPath ?? string.Empty;
+                ImportExcelInfoText.Text = string.IsNullOrWhiteSpace(ImportExcelPathBox.Text)
+                    ? "Keine Excel ausgewählt."
+                    : Path.GetFileName(ImportExcelPathBox.Text);
 
                 _customerFolderMap.Clear();
                 if (settings.CustomerFolders != null)
@@ -498,6 +502,7 @@ namespace MaterialManager_V01.Views
                 var settings = new KundenMaterialSettings
                 {
                     PdfFolder = PdfFolderBox.Text?.Trim() ?? string.Empty,
+                    ImportExcelPath = ImportExcelPathBox.Text?.Trim() ?? string.Empty,
                     SelectedCustomer = GetSelectedCustomer(),
                     Customers = _customers.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(c => c).ToList(),
                     CustomerFolders = _customerFolderMap.ToDictionary(k => k.Key, v => v.Value, StringComparer.OrdinalIgnoreCase)
@@ -549,23 +554,47 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private void OnImportExcelClick(object sender, RoutedEventArgs e)
+        private void OnChooseImportExcelPathClick(object sender, RoutedEventArgs e)
         {
             var dlg = new OpenFileDialog
             {
-                Title = "Kunden-Material aus Excel importieren",
+                Title = "Excel-Datei für Kunden-Material wählen",
                 Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
                 CheckFileExists = true
             };
 
-            var root = PdfFolderBox.Text?.Trim() ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(root) && Directory.Exists(root))
-                dlg.InitialDirectory = root;
+            var current = ImportExcelPathBox.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(current))
+            {
+                var dir = Path.GetDirectoryName(current);
+                if (!string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
+                    dlg.InitialDirectory = dir;
+            }
+            else
+            {
+                var root = PdfFolderBox.Text?.Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(root) && Directory.Exists(root))
+                    dlg.InitialDirectory = root;
+            }
 
             if (dlg.ShowDialog() != true)
                 return;
 
-            ImportKundenMaterialFromExcel(dlg.FileName);
+            ImportExcelPathBox.Text = dlg.FileName;
+            ImportExcelInfoText.Text = Path.GetFileName(dlg.FileName);
+            SaveSettings();
+        }
+
+        private void OnImportExcelClick(object sender, RoutedEventArgs e)
+        {
+            var path = ImportExcelPathBox.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                MessageBox.Show("Bitte zuerst eine gültige Excel-Datei auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            ImportKundenMaterialFromExcel(path);
         }
 
         private void ImportKundenMaterialFromExcel(string filePath)
@@ -718,6 +747,7 @@ namespace MaterialManager_V01.Views
     public sealed class KundenMaterialSettings
     {
         public string PdfFolder { get; set; } = string.Empty;
+        public string ImportExcelPath { get; set; } = string.Empty;
         public string SelectedCustomer { get; set; } = string.Empty;
         public List<string> Customers { get; set; } = new();
         public Dictionary<string, string> CustomerFolders { get; set; } = new();
