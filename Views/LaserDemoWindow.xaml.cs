@@ -481,6 +481,8 @@ namespace MaterialManager_V01.Views
                     table.Columns.Add(name, typeof(string));
                 }
 
+                var relevantIndexes = ResolveRelevantKantbankColumnIndexes(table);
+
                 for (var r = headerRow + 1; r <= lastRow; r++)
                 {
                     var row = table.NewRow();
@@ -494,8 +496,17 @@ namespace MaterialManager_V01.Views
                         row[c - 1] = value;
                     }
 
-                    if (hasValue)
-                        table.Rows.Add(row);
+                    if (!hasValue)
+                        continue;
+
+                    if (relevantIndexes.Count > 0)
+                    {
+                        var hasRelevantValue = relevantIndexes.Any(i => !string.IsNullOrWhiteSpace(row[i]?.ToString()?.Trim()));
+                        if (!hasRelevantValue)
+                            continue;
+                    }
+
+                    table.Rows.Add(row);
                 }
 
                 PromoteFirstDataRowToHeaderIfNeeded(table);
@@ -512,6 +523,37 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Excel konnte nicht geladen werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private static HashSet<int> ResolveRelevantKantbankColumnIndexes(DataTable table)
+        {
+            var indexes = new HashSet<int>();
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var n = table.Columns[i].ColumnName;
+                if (n.Contains("zeichnung", StringComparison.OrdinalIgnoreCase)
+                    || n.Contains("zeichnungsnr", StringComparison.OrdinalIgnoreCase)
+                    || n.Contains("anzahl", StringComparison.OrdinalIgnoreCase)
+                    || n.Contains("status", StringComparison.OrdinalIgnoreCase)
+                    || n.Contains("revision", StringComparison.OrdinalIgnoreCase)
+                    || n.Contains("pos", StringComparison.OrdinalIgnoreCase))
+                {
+                    indexes.Add(i);
+                }
+            }
+            return indexes;
+        }
+
+        private static string GetCellDisplayValue(IXLCell cell)
+        {
+            if (cell.TryGetValue<DateTime>(out var dt))
+                return dt.ToString("dd.MM.yyyy");
+
+            var text = cell.GetFormattedString();
+            if (!string.IsNullOrWhiteSpace(text))
+                return text;
+
+            return string.Empty;
         }
 
         private static void PromoteFirstDataRowToHeaderIfNeeded(DataTable table)
@@ -640,25 +682,12 @@ namespace MaterialManager_V01.Views
             return bestRow;
         }
 
-        private static string GetCellDisplayValue(IXLCell cell)
+        private static string NormalizeHeaderName(string value)
         {
-            if (cell.TryGetValue<DateTime>(out var dt))
-                return dt.ToString("dd.MM.yyyy");
-
-            var text = cell.GetFormattedString();
-            if (!string.IsNullOrWhiteSpace(text))
-                return text;
-
-            var merged = cell.MergedRange();
-            if (merged != null)
-            {
-                var first = merged.FirstCell();
-                if (first.TryGetValue<DateTime>(out var dtMerged))
-                    return dtMerged.ToString("dd.MM.yyyy");
-                return first.GetFormattedString();
-            }
-
-            return string.Empty;
+            return (value ?? string.Empty)
+                .Replace("\r", " ")
+                .Replace("\n", " ")
+                .Trim();
         }
 
         private static bool IsKantbankHeaderKeyword(string value)
@@ -676,14 +705,6 @@ namespace MaterialManager_V01.Views
                    || value.Contains("pos", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("anzahl", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("status", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static string NormalizeHeaderName(string value)
-        {
-            return (value ?? string.Empty)
-                .Replace("\r", " ")
-                .Replace("\n", " ")
-                .Trim();
         }
 
         private void ApplyKantbankExcelFilter()
