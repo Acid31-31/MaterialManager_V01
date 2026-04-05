@@ -456,6 +456,8 @@ namespace MaterialManager_V01.Views
                         table.Rows.Add(row);
                 }
 
+                PromoteFirstDataRowToHeaderIfNeeded(table);
+
                 _kantbankExcelTable = table;
                 KantbankExcelGrid.ItemsSource = table.DefaultView;
                 ExcelPathBox.Text = path;
@@ -465,6 +467,47 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Excel konnte nicht geladen werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private static void PromoteFirstDataRowToHeaderIfNeeded(DataTable table)
+        {
+            if (table.Columns.Count == 0 || table.Rows.Count == 0)
+                return;
+
+            var genericHeaderCount = table.Columns.Cast<DataColumn>()
+                .Count(c => c.ColumnName.StartsWith("Spalte", StringComparison.OrdinalIgnoreCase));
+
+            if (genericHeaderCount < Math.Max(2, table.Columns.Count / 2))
+                return;
+
+            var firstRow = table.Rows[0];
+            var headerCandidates = Enumerable.Range(0, table.Columns.Count)
+                .Select(i => NormalizeHeaderName(firstRow[i]?.ToString() ?? string.Empty))
+                .ToList();
+
+            var keywordHits = headerCandidates.Count(IsKantbankHeaderKeyword);
+            if (keywordHits < 2)
+                return;
+
+            var uniqueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < table.Columns.Count; i++)
+            {
+                var name = headerCandidates[i];
+                if (string.IsNullOrWhiteSpace(name))
+                    name = $"Spalte{i + 1}";
+
+                var baseName = name;
+                var idx = 2;
+                while (!uniqueNames.Add(name))
+                {
+                    name = $"{baseName}_{idx}";
+                    idx++;
+                }
+
+                table.Columns[i].ColumnName = name;
+            }
+
+            table.Rows.RemoveAt(0);
         }
 
         private static IXLWorksheet? SelectBestWorksheetForKantbank(XLWorkbook wb)
