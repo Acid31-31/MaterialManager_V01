@@ -152,11 +152,15 @@
 
                             <TextBox x:Name="PART_EditableTextBox"
                                      Grid.Column="0"
-                                     Margin="{TemplateBinding Padding}"
+                                     Margin="8,0,0,0"
+                                     Padding="0"
+                                     VerticalAlignment="Center"
                                      VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Left"
                                      Background="Transparent"
                                      BorderThickness="0"
                                      Foreground="{TemplateBinding Foreground}"
+                                     FontSize="{TemplateBinding FontSize}"
                                      Visibility="Hidden"
                                      IsReadOnly="{TemplateBinding IsReadOnly}"
                                      Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
