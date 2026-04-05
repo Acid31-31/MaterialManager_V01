@@ -410,7 +410,7 @@ namespace MaterialManager_V01.Views
                     return;
 
                 using var wb = new XLWorkbook(path);
-                var ws = wb.Worksheets.FirstOrDefault();
+                var ws = SelectBestWorksheetForKantbank(wb);
                 if (ws == null)
                     return;
 
@@ -419,12 +419,12 @@ namespace MaterialManager_V01.Views
                 if (lastRow < 1 || lastCol < 1)
                     return;
 
+                var headerRow = DetectHeaderRow(ws, lastRow, lastCol);
                 var table = new DataTable();
-                var headers = new List<string>();
 
                 for (var c = 1; c <= lastCol; c++)
                 {
-                    var name = ws.Cell(1, c).GetString().Trim();
+                    var name = NormalizeHeaderName(ws.Cell(headerRow, c).GetString());
                     if (string.IsNullOrWhiteSpace(name))
                         name = $"Spalte{c}";
 
@@ -436,17 +436,17 @@ namespace MaterialManager_V01.Views
                         idx++;
                     }
 
-                    headers.Add(name);
                     table.Columns.Add(name, typeof(string));
                 }
 
-                for (var r = 2; r <= lastRow; r++)
+                for (var r = headerRow + 1; r <= lastRow; r++)
                 {
                     var row = table.NewRow();
                     var hasValue = false;
+
                     for (var c = 1; c <= lastCol; c++)
                     {
-                        var value = ws.Cell(r, c).GetFormattedString();
+                        var value = ws.Cell(r, c).GetFormattedString().Trim();
                         if (!string.IsNullOrWhiteSpace(value))
                             hasValue = true;
                         row[c - 1] = value;
@@ -465,6 +465,102 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Excel konnte nicht geladen werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private static IXLWorksheet? SelectBestWorksheetForKantbank(XLWorkbook wb)
+        {
+            IXLWorksheet? best = null;
+            var bestScore = int.MinValue;
+
+            foreach (var ws in wb.Worksheets)
+            {
+                var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+                var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+                if (lastRow == 0 || lastCol == 0)
+                    continue;
+
+                var maxProbeRows = Math.Min(lastRow, 20);
+                var score = 0;
+                for (var r = 1; r <= maxProbeRows; r++)
+                {
+                    for (var c = 1; c <= lastCol; c++)
+                    {
+                        var text = NormalizeHeaderName(ws.Cell(r, c).GetString());
+                        if (string.IsNullOrWhiteSpace(text))
+                            continue;
+
+                        score += 1;
+                        if (IsKantbankHeaderKeyword(text))
+                            score += 5;
+                    }
+                }
+
+                score += lastRow;
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    best = ws;
+                }
+            }
+
+            return best ?? wb.Worksheets.FirstOrDefault();
+        }
+
+        private static int DetectHeaderRow(IXLWorksheet ws, int lastRow, int lastCol)
+        {
+            var maxProbeRows = Math.Min(lastRow, 25);
+            var bestRow = 1;
+            var bestScore = int.MinValue;
+
+            for (var r = 1; r <= maxProbeRows; r++)
+            {
+                var rowScore = 0;
+                var nonEmpty = 0;
+                for (var c = 1; c <= lastCol; c++)
+                {
+                    var text = NormalizeHeaderName(ws.Cell(r, c).GetString());
+                    if (string.IsNullOrWhiteSpace(text))
+                        continue;
+
+                    nonEmpty++;
+                    rowScore += 1;
+                    if (IsKantbankHeaderKeyword(text))
+                        rowScore += 8;
+                }
+
+                rowScore += nonEmpty;
+                if (rowScore > bestScore)
+                {
+                    bestScore = rowScore;
+                    bestRow = r;
+                }
+            }
+
+            return bestRow;
+        }
+
+        private static bool IsKantbankHeaderKeyword(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return false;
+
+            return value.Contains("kunde", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("datum", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("date", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("zeichnung", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("zeichnungsnr", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("revision", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("pos", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("anzahl", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("status", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeHeaderName(string value)
+        {
+            return (value ?? string.Empty)
+                .Replace("\r", " ")
+                .Replace("\n", " ")
+                .Trim();
         }
 
         private void ApplyKantbankExcelFilter()
@@ -597,10 +693,10 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var excelPath = NetzwerkService.GetSavePath();
+                var excelPath = ExcelPathBox?.Text?.Trim() ?? string.Empty;
                 if (string.IsNullOrWhiteSpace(excelPath) || !System.IO.File.Exists(excelPath))
                 {
-                    MessageBox.Show("Die zentrale Excel-Datei wurde nicht gefunden.", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Bitte zuerst eine gültige Kantbank-Excel auswählen.", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
