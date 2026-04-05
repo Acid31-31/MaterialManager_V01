@@ -141,12 +141,25 @@
 
                             <Border Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"/>
 
-                            <ContentPresenter Grid.Column="0"
+                            <ContentPresenter x:Name="ContentSite"
+                                              Grid.Column="0"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               Margin="{TemplateBinding Padding}"
                                               VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"/>
+                                              HorizontalAlignment="Left"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"/>
+
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Grid.Column="0"
+                                     Margin="{TemplateBinding Padding}"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     Visibility="Hidden"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <ToggleButton Grid.Column="1"
                                           Focusable="False"
@@ -166,6 +179,12 @@
                                 </Border>
                             </Popup>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
