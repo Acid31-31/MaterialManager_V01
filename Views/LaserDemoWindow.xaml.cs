@@ -318,7 +318,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Redo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtszetten.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -510,6 +510,8 @@ namespace MaterialManager_V01.Views
                 }
 
                 PromoteFirstDataRowToHeaderIfNeeded(table);
+                RepairImportantKantbankColumns(table);
+                RemoveRowsWithoutRelevantKantbankValues(table);
 
                 _kantbankExcelTable = table;
                 KantbankExcelGrid.ItemsSource = table.DefaultView;
@@ -522,6 +524,104 @@ namespace MaterialManager_V01.Views
             catch (Exception ex)
             {
                 MessageBox.Show($"Excel konnte nicht geladen werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private static void RemoveRowsWithoutRelevantKantbankValues(DataTable table)
+        {
+            if (table.Rows.Count == 0 || table.Columns.Count == 0)
+                return;
+
+            var relevantIndexes = ResolveRelevantKantbankColumnIndexes(table);
+            if (relevantIndexes.Count == 0)
+            {
+                for (var i = 1; i < Math.Min(6, table.Columns.Count); i++)
+                    relevantIndexes.Add(i);
+            }
+
+            for (var r = table.Rows.Count - 1; r >= 0; r--)
+            {
+                var row = table.Rows[r];
+                var hasRelevant = relevantIndexes.Any(i => !string.IsNullOrWhiteSpace(row[i]?.ToString()?.Trim()));
+                if (!hasRelevant)
+                    table.Rows.RemoveAt(r);
+            }
+        }
+
+        private static void RepairImportantKantbankColumns(DataTable table)
+        {
+            if (table.Rows.Count == 0)
+                return;
+
+            var drawingCol = table.Columns.Cast<DataColumn>()
+                .FirstOrDefault(c => c.ColumnName.Contains("zeichnung", StringComparison.OrdinalIgnoreCase));
+            if (drawingCol != null && IsColumnMostlyEmpty(table, drawingCol))
+            {
+                var candidate = table.Columns.Cast<DataColumn>()
+                    .Where(c => c != drawingCol && !c.ColumnName.Contains("kunde", StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(c => ScoreAsDrawingColumn(table, c))
+                    .FirstOrDefault();
+
+                if (candidate != null && ScoreAsDrawingColumn(table, candidate) > 0)
+                    CopyColumnValuesIfTargetEmpty(table, candidate, drawingCol);
+            }
+
+            var qtyCol = table.Columns.Cast<DataColumn>()
+                .FirstOrDefault(c => c.ColumnName.Contains("anzahl", StringComparison.OrdinalIgnoreCase));
+            if (qtyCol != null && IsColumnMostlyEmpty(table, qtyCol))
+            {
+                var candidate = table.Columns.Cast<DataColumn>()
+                    .Where(c => c != qtyCol)
+                    .OrderByDescending(c => ScoreAsQuantityColumn(table, c))
+                    .FirstOrDefault();
+
+                if (candidate != null && ScoreAsQuantityColumn(table, candidate) > 0)
+                    CopyColumnValuesIfTargetEmpty(table, candidate, qtyCol);
+            }
+        }
+
+        private static bool IsColumnMostlyEmpty(DataTable table, DataColumn column)
+        {
+            var nonEmpty = table.Rows.Cast<DataRow>().Count(r => !string.IsNullOrWhiteSpace(r[column]?.ToString()?.Trim()));
+            return nonEmpty <= Math.Max(1, table.Rows.Count / 20);
+        }
+
+        private static int ScoreAsDrawingColumn(DataTable table, DataColumn column)
+        {
+            var score = 0;
+            foreach (DataRow row in table.Rows)
+            {
+                var v = row[column]?.ToString()?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(v))
+                    continue;
+
+                if (v.Any(char.IsDigit)) score += 2;
+                if (v.Contains('-') || v.Contains('/') || v.Contains('_') || v.Contains('.')) score += 2;
+                if (v.Length >= 4) score += 1;
+            }
+            return score;
+        }
+
+        private static int ScoreAsQuantityColumn(DataTable table, DataColumn column)
+        {
+            var score = 0;
+            foreach (DataRow row in table.Rows)
+            {
+                var v = row[column]?.ToString()?.Trim() ?? string.Empty;
+                if (int.TryParse(v, out _)) score += 3;
+            }
+            return score;
+        }
+
+        private static void CopyColumnValuesIfTargetEmpty(DataTable table, DataColumn source, DataColumn target)
+        {
+            foreach (DataRow row in table.Rows)
+            {
+                var t = row[target]?.ToString()?.Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(t))
+                    continue;
+
+                row[target] = row[source]?.ToString() ?? string.Empty;
             }
         }
 
