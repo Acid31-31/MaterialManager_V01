@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
+using ClosedXML.Excel;
 using Microsoft.Win32;
 using MaterialManager_V01.Services;
 
@@ -546,6 +547,161 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Speichern fehlgeschlagen:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void OnImportExcelClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
+            {
+                Title = "Kunden-Material aus Excel importieren",
+                Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            var root = PdfFolderBox.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(root) && Directory.Exists(root))
+                dlg.InitialDirectory = root;
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            ImportKundenMaterialFromExcel(dlg.FileName);
+        }
+
+        private void ImportKundenMaterialFromExcel(string filePath)
+        {
+            try
+            {
+                using var wb = new XLWorkbook(filePath);
+                var ws = wb.Worksheets.FirstOrDefault();
+                if (ws == null)
+                {
+                    MessageBox.Show("Die Excel-Datei enthält kein Blatt.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+                var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+                if (lastRow < 2 || lastCol < 2)
+                {
+                    MessageBox.Show("Die Excel-Datei enthält keine importierbaren Daten.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var headerRow = DetectHeaderRow(ws, lastRow, lastCol);
+                var kundeCol = FindColumnIndex(ws, headerRow, lastCol, "kunde", "customer");
+                var zeichnungCol = FindColumnIndex(ws, headerRow, lastCol, "zeichnung", "zeichnungsnr", "zeichnungs nr", "drawing");
+                var anzahlCol = FindColumnIndex(ws, headerRow, lastCol, "anzahl", "menge", "qty", "quantity", "stück");
+
+                if (kundeCol <= 0 || zeichnungCol <= 0)
+                {
+                    MessageBox.Show("Erforderliche Spalten nicht gefunden (Kunde / Zeichnungsnummer).", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var imported = 0;
+                var updated = 0;
+
+                for (var r = headerRow + 1; r <= lastRow; r++)
+                {
+                    var kunde = (ws.Cell(r, kundeCol).GetFormattedString() ?? string.Empty).Trim();
+                    var zeichnung = (ws.Cell(r, zeichnungCol).GetFormattedString() ?? string.Empty).Trim();
+                    if (string.IsNullOrWhiteSpace(kunde) || string.IsNullOrWhiteSpace(zeichnung))
+                        continue;
+
+                    RegisterCustomer(kunde);
+
+                    var stueckzahl = 1;
+                    if (anzahlCol > 0)
+                    {
+                        var qtyText = (ws.Cell(r, anzahlCol).GetFormattedString() ?? string.Empty).Trim();
+                        if (int.TryParse(qtyText, out var qtyParsed) && qtyParsed > 0)
+                            stueckzahl = qtyParsed;
+                    }
+
+                    var existing = Items.FirstOrDefault(i =>
+                        string.Equals(i.Kunde, kunde, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(i.Zeichnungsnummer, zeichnung, StringComparison.OrdinalIgnoreCase));
+
+                    var pdfPath = FindPdfByDrawingNumber(zeichnung, kunde) ?? string.Empty;
+
+                    if (existing == null)
+                    {
+                        Items.Add(new KundenMaterialItem
+                        {
+                            Kunde = kunde,
+                            Zeichnungsnummer = zeichnung,
+                            Stueckzahl = stueckzahl,
+                            PdfPfad = pdfPath,
+                            PdfDateiname = string.IsNullOrWhiteSpace(pdfPath) ? string.Empty : Path.GetFileName(pdfPath),
+                            ErstelltAm = DateTime.Now
+                        });
+                        imported++;
+                    }
+                    else
+                    {
+                        existing.Stueckzahl = stueckzahl;
+                        existing.PdfPfad = pdfPath;
+                        existing.PdfDateiname = string.IsNullOrWhiteSpace(pdfPath) ? string.Empty : Path.GetFileName(pdfPath);
+                        updated++;
+                    }
+                }
+
+                SaveItems();
+                SaveSettings();
+                UpdateCustomerFolderHint();
+
+                MessageBox.Show($"Import abgeschlossen. Neu: {imported}, aktualisiert: {updated}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Excel-Import fehlgeschlagen:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private static int DetectHeaderRow(IXLWorksheet ws, int lastRow, int lastCol)
+        {
+            var maxRow = Math.Min(lastRow, 30);
+            var bestRow = 1;
+            var bestScore = int.MinValue;
+
+            for (var r = 1; r <= maxRow; r++)
+            {
+                var score = 0;
+                for (var c = 1; c <= lastCol; c++)
+                {
+                    var text = (ws.Cell(r, c).GetFormattedString() ?? string.Empty).Trim();
+                    if (string.IsNullOrWhiteSpace(text))
+                        continue;
+
+                    score += 1;
+                    if (text.Contains("kunde", StringComparison.OrdinalIgnoreCase)
+                        || text.Contains("zeichnung", StringComparison.OrdinalIgnoreCase)
+                        || text.Contains("anzahl", StringComparison.OrdinalIgnoreCase)
+                        || text.Contains("menge", StringComparison.OrdinalIgnoreCase))
+                        score += 10;
+                }
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestRow = r;
+                }
+            }
+
+            return bestRow;
+        }
+
+        private static int FindColumnIndex(IXLWorksheet ws, int headerRow, int lastCol, params string[] keys)
+        {
+            for (var c = 1; c <= lastCol; c++)
+            {
+                var text = (ws.Cell(headerRow, c).GetFormattedString() ?? string.Empty).Trim();
+                if (keys.Any(k => text.Contains(k, StringComparison.OrdinalIgnoreCase)))
+                    return c;
+            }
+
+            return -1;
         }
     }
 
