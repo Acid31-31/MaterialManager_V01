@@ -722,11 +722,164 @@ namespace MaterialManager_V01.Views
             var path = ImportExcelPathBox.Text?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
             {
-                MessageBox.Show("Bitte zuerst eine gültige Excel-Datei auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst unter Datei > Einstellungen eine gültige Excel-Datei auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             ImportKundenMaterialFromExcel(path);
+        }
+
+        private void OnOpenSettingsClick(object sender, RoutedEventArgs e)
+        {
+            var pdfBox = new TextBox
+            {
+                Text = PdfFolderBox.Text ?? string.Empty,
+                Margin = new Thickness(0, 6, 0, 10),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#1E1E1E"),
+                Foreground = System.Windows.Media.Brushes.White,
+                BorderBrush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#444"),
+                Padding = new Thickness(8, 5, 8, 5),
+                Width = 420
+            };
+
+            var excelBox = new TextBox
+            {
+                Text = ImportExcelPathBox.Text ?? string.Empty,
+                Margin = new Thickness(0, 6, 0, 10),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#1E1E1E"),
+                Foreground = System.Windows.Media.Brushes.White,
+                BorderBrush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#444"),
+                Padding = new Thickness(8, 5, 8, 5),
+                Width = 420
+            };
+
+            var choosePdfButton = new Button
+            {
+                Content = "PDF-Ordner wählen",
+                Margin = new Thickness(0, 0, 0, 10),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#455A64"),
+                Foreground = System.Windows.Media.Brushes.White,
+                Padding = new Thickness(12, 6, 12, 6),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+
+            var chooseExcelButton = new Button
+            {
+                Content = "Excel-Datei wählen",
+                Margin = new Thickness(0, 0, 0, 12),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#455A64"),
+                Foreground = System.Windows.Media.Brushes.White,
+                Padding = new Thickness(12, 6, 12, 6),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+
+            var saveButton = new Button
+            {
+                Content = "Speichern",
+                Width = 110,
+                Margin = new Thickness(0, 0, 8, 0),
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2E7D32"),
+                Foreground = System.Windows.Media.Brushes.White,
+                Padding = new Thickness(12, 6, 12, 6)
+            };
+
+            var cancelButton = new Button
+            {
+                Content = "Abbrechen",
+                Width = 110,
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#555"),
+                Foreground = System.Windows.Media.Brushes.White,
+                Padding = new Thickness(12, 6, 12, 6)
+            };
+
+            var buttonRow = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            buttonRow.Children.Add(saveButton);
+            buttonRow.Children.Add(cancelButton);
+
+            var panel = new StackPanel { Margin = new Thickness(16) };
+            panel.Children.Add(new TextBlock { Text = "PDF-Root-Ordner", Foreground = System.Windows.Media.Brushes.White });
+            panel.Children.Add(pdfBox);
+            panel.Children.Add(choosePdfButton);
+            panel.Children.Add(new TextBlock { Text = "Excel-Datei für Kunden-Import", Foreground = System.Windows.Media.Brushes.White });
+            panel.Children.Add(excelBox);
+            panel.Children.Add(chooseExcelButton);
+            panel.Children.Add(buttonRow);
+
+            var settingsWindow = new Window
+            {
+                Title = "Einstellungen – Kunden Material",
+                Owner = this,
+                Content = panel,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#1B1B1B")
+            };
+
+            choosePdfButton.Click += (_, _) =>
+            {
+                var dlg = new OpenFileDialog
+                {
+                    Title = "PDF-Datei im gewünschten Root-Ordner wählen",
+                    Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
+                    CheckFileExists = true
+                };
+
+                var current = pdfBox.Text?.Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(current) && Directory.Exists(current))
+                    dlg.InitialDirectory = current;
+
+                if (dlg.ShowDialog() != true)
+                    return;
+
+                pdfBox.Text = Path.GetDirectoryName(dlg.FileName) ?? string.Empty;
+            };
+
+            chooseExcelButton.Click += (_, _) =>
+            {
+                var dlg = new OpenFileDialog
+                {
+                    Title = "Excel-Datei wählen",
+                    Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
+                    CheckFileExists = true
+                };
+
+                var current = excelBox.Text?.Trim() ?? string.Empty;
+                var currentDir = Path.GetDirectoryName(current);
+                if (!string.IsNullOrWhiteSpace(currentDir) && Directory.Exists(currentDir))
+                    dlg.InitialDirectory = currentDir;
+
+                if (dlg.ShowDialog() != true)
+                    return;
+
+                excelBox.Text = dlg.FileName;
+            };
+
+            saveButton.Click += (_, _) =>
+            {
+                PdfFolderBox.Text = pdfBox.Text?.Trim() ?? string.Empty;
+                ImportExcelPathBox.Text = excelBox.Text?.Trim() ?? string.Empty;
+                ImportExcelInfoText.Text = string.IsNullOrWhiteSpace(ImportExcelPathBox.Text)
+                    ? "Keine Excel ausgewählt."
+                    : Path.GetFileName(ImportExcelPathBox.Text);
+
+                SaveSettings();
+                UpdateCustomerFolderHint();
+                settingsWindow.DialogResult = true;
+                settingsWindow.Close();
+            };
+
+            cancelButton.Click += (_, _) =>
+            {
+                settingsWindow.DialogResult = false;
+                settingsWindow.Close();
+            };
+
+            settingsWindow.ShowDialog();
         }
 
         private void ImportKundenMaterialFromExcel(string filePath)
