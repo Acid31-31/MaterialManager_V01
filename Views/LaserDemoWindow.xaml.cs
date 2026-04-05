@@ -424,7 +424,7 @@ namespace MaterialManager_V01.Views
 
                 for (var c = 1; c <= lastCol; c++)
                 {
-                    var name = NormalizeHeaderName(ws.Cell(headerRow, c).GetString());
+                    var name = NormalizeHeaderName(GetCellDisplayValue(ws.Cell(headerRow, c)));
                     if (string.IsNullOrWhiteSpace(name))
                         name = $"Spalte{c}";
 
@@ -446,7 +446,7 @@ namespace MaterialManager_V01.Views
 
                     for (var c = 1; c <= lastCol; c++)
                     {
-                        var value = ws.Cell(r, c).GetFormattedString().Trim();
+                        var value = GetCellDisplayValue(ws.Cell(r, c)).Trim();
                         if (!string.IsNullOrWhiteSpace(value))
                             hasValue = true;
                         row[c - 1] = value;
@@ -479,23 +479,27 @@ namespace MaterialManager_V01.Views
                 if (lastRow == 0 || lastCol == 0)
                     continue;
 
-                var maxProbeRows = Math.Min(lastRow, 20);
-                var score = 0;
-                for (var r = 1; r <= maxProbeRows; r++)
+                var headerRow = DetectHeaderRow(ws, lastRow, lastCol);
+                var headerHits = 0;
+                for (var c = 1; c <= lastCol; c++)
+                {
+                    var text = NormalizeHeaderName(GetCellDisplayValue(ws.Cell(headerRow, c)));
+                    if (IsKantbankHeaderKeyword(text))
+                        headerHits++;
+                }
+
+                var probeRows = Math.Min(lastRow, headerRow + 30);
+                var dataCells = 0;
+                for (var r = headerRow + 1; r <= probeRows; r++)
                 {
                     for (var c = 1; c <= lastCol; c++)
                     {
-                        var text = NormalizeHeaderName(ws.Cell(r, c).GetString());
-                        if (string.IsNullOrWhiteSpace(text))
-                            continue;
-
-                        score += 1;
-                        if (IsKantbankHeaderKeyword(text))
-                            score += 5;
+                        if (!string.IsNullOrWhiteSpace(GetCellDisplayValue(ws.Cell(r, c))))
+                            dataCells++;
                     }
                 }
 
-                score += lastRow;
+                var score = (headerHits * 1000) + dataCells + lastRow;
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -518,7 +522,7 @@ namespace MaterialManager_V01.Views
                 var nonEmpty = 0;
                 for (var c = 1; c <= lastCol; c++)
                 {
-                    var text = NormalizeHeaderName(ws.Cell(r, c).GetString());
+                    var text = NormalizeHeaderName(GetCellDisplayValue(ws.Cell(r, c)));
                     if (string.IsNullOrWhiteSpace(text))
                         continue;
 
@@ -539,6 +543,19 @@ namespace MaterialManager_V01.Views
             return bestRow;
         }
 
+        private static string GetCellDisplayValue(IXLCell cell)
+        {
+            var text = cell.GetFormattedString();
+            if (!string.IsNullOrWhiteSpace(text))
+                return text;
+
+            var merged = cell.MergedRange();
+            if (merged != null)
+                return merged.FirstCell().GetFormattedString();
+
+            return string.Empty;
+        }
+
         private static bool IsKantbankHeaderKeyword(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -547,6 +564,7 @@ namespace MaterialManager_V01.Views
             return value.Contains("kunde", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("datum", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("date", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("termin", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("zeichnung", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("zeichnungsnr", StringComparison.OrdinalIgnoreCase)
                    || value.Contains("revision", StringComparison.OrdinalIgnoreCase)
@@ -591,14 +609,20 @@ namespace MaterialManager_V01.Views
             {
                 var dateCols = _kantbankExcelTable.Columns.Cast<DataColumn>()
                     .Select(c => c.ColumnName)
-                    .Where(n => n.Contains("datum", StringComparison.OrdinalIgnoreCase) || n.Contains("date", StringComparison.OrdinalIgnoreCase))
+                    .Where(n => n.Contains("datum", StringComparison.OrdinalIgnoreCase)
+                             || n.Contains("date", StringComparison.OrdinalIgnoreCase)
+                             || n.Contains("termin", StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
                 if (dateCols.Count > 0)
                 {
                     var d1 = date.ToString("dd.MM.yyyy");
-                    var d2 = date.ToString("yyyy-MM-dd");
-                    var dateExpr = string.Join(" OR ", dateCols.Select(c => $"([{c}] LIKE '%{d1}%' OR [{c}] LIKE '%{d2}%')"));
+                    var d2 = date.ToString("d.M.yyyy");
+                    var d3 = date.ToString("yyyy-MM-dd");
+                    var d4 = date.ToString("yyyy-M-d");
+
+                    var dateExpr = string.Join(" OR ", dateCols.Select(c =>
+                        $"([{c}] LIKE '%{d1}%' OR [{c}] LIKE '%{d2}%' OR [{c}] LIKE '%{d3}%' OR [{c}] LIKE '%{d4}%')"));
                     clauses.Add($"({dateExpr})");
                 }
             }
