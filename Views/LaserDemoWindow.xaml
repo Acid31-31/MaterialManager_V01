@@ -396,6 +396,16 @@
                                  Margin="0,0,8,0"
                                  IsReadOnly="True"
                                  Visibility="Collapsed"/>
+                        <TextBlock x:Name="SheetFilterLabel" Text="Blatt:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
+                        <ComboBox x:Name="KantbankSheetBox"
+                                  Width="180"
+                                  Background="#222"
+                                  Foreground="White"
+                                  BorderBrush="#444"
+                                  Padding="8,5"
+                                  Margin="0,0,8,0"
+                                  SelectionChanged="OnKantbankSheetChanged"
+                                  Visibility="Collapsed"/>
                         <TextBlock x:Name="CustomerFilterLabel" Text="Kunde:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
                         <TextBox x:Name="KantbankCustomerFilterBox"
                                  Width="160"
@@ -412,6 +422,11 @@
                                     Margin="0,0,8,0"
                                     SelectedDateChanged="OnKantbankFilterChanged"
                                     Visibility="Collapsed"/>
+                        <TextBlock x:Name="KantbankDetectInfoText"
+                                   Foreground="#90A4AE"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,12,0"
+                                   Visibility="Collapsed"/>
 
                         <Button x:Name="EditRestButton" Content="Material bearbeiten"
                                 Click="OnEditRestClick"

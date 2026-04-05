@@ -36,6 +36,8 @@ namespace MaterialManager_V01.Views
         private readonly int _aktuellesJahr = DateTime.Now.Year;
         private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
         private DataTable? _kantbankExcelTable;
+        private string _selectedKantbankSheetName = string.Empty;
+        private bool _isUpdatingKantbankSheetSelection;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -121,10 +123,13 @@ namespace MaterialManager_V01.Views
                 if (SaveExcelButton != null) SaveExcelButton.Visibility = Visibility.Visible;
                 if (ExcelPathLabel != null) ExcelPathLabel.Visibility = Visibility.Visible;
                 if (ExcelPathBox != null) ExcelPathBox.Visibility = Visibility.Visible;
+                if (SheetFilterLabel != null) SheetFilterLabel.Visibility = Visibility.Visible;
+                if (KantbankSheetBox != null) KantbankSheetBox.Visibility = Visibility.Visible;
                 if (CustomerFilterLabel != null) CustomerFilterLabel.Visibility = Visibility.Visible;
                 if (KantbankCustomerFilterBox != null) KantbankCustomerFilterBox.Visibility = Visibility.Visible;
                 if (DateFilterLabel != null) DateFilterLabel.Visibility = Visibility.Visible;
                 if (KantbankDateFilterPicker != null) KantbankDateFilterPicker.Visibility = Visibility.Visible;
+                if (KantbankDetectInfoText != null) KantbankDetectInfoText.Visibility = Visibility.Visible;
             }
 
             if (!ShowReservedMaterialArea)
@@ -388,8 +393,24 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
+            _selectedKantbankSheetName = string.Empty;
             SaveKantbankExcelPath(dlg.FileName);
             LoadKantbankExcel(dlg.FileName);
+        }
+
+        private void OnKantbankSheetChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isUpdatingKantbankSheetSelection)
+                return;
+
+            var selected = KantbankSheetBox?.SelectedItem?.ToString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(selected))
+                return;
+
+            _selectedKantbankSheetName = selected;
+            var path = ExcelPathBox?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                LoadKantbankExcel(path);
         }
 
         private void OnSaveExcelClick(object sender, RoutedEventArgs e)
@@ -410,9 +431,30 @@ namespace MaterialManager_V01.Views
                     return;
 
                 using var wb = new XLWorkbook(path);
-                var ws = SelectBestWorksheetForKantbank(wb);
+
+                var sheetNames = wb.Worksheets.Select(w => w.Name).ToList();
+                if (KantbankSheetBox != null)
+                {
+                    _isUpdatingKantbankSheetSelection = true;
+                    KantbankSheetBox.ItemsSource = sheetNames;
+                    _isUpdatingKantbankSheetSelection = false;
+                }
+
+                IXLWorksheet? ws = null;
+                if (!string.IsNullOrWhiteSpace(_selectedKantbankSheetName))
+                    ws = wb.Worksheet(_selectedKantbankSheetName);
+
+                ws ??= SelectBestWorksheetForKantbank(wb);
                 if (ws == null)
                     return;
+
+                _selectedKantbankSheetName = ws.Name;
+                if (KantbankSheetBox != null)
+                {
+                    _isUpdatingKantbankSheetSelection = true;
+                    KantbankSheetBox.SelectedItem = _selectedKantbankSheetName;
+                    _isUpdatingKantbankSheetSelection = false;
+                }
 
                 var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
                 var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
@@ -461,6 +503,9 @@ namespace MaterialManager_V01.Views
                 _kantbankExcelTable = table;
                 KantbankExcelGrid.ItemsSource = table.DefaultView;
                 ExcelPathBox.Text = path;
+                if (KantbankDetectInfoText != null)
+                    KantbankDetectInfoText.Text = $"Blatt: {ws.Name} | Header-Zeile: {headerRow} | Spalten: {table.Columns.Count}";
+
                 ApplyKantbankExcelFilter();
             }
             catch (Exception ex)
