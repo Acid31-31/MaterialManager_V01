@@ -10,7 +10,6 @@ namespace MaterialManager_V01.Services
     public static class KantzeichnungPdfService
     {
         private static readonly string SettingsPath = Path.Combine(PathService.DataDirectory, "kundenmaterial.settings.json");
-        private static readonly string KundenMaterialStorePath = Path.Combine(PathService.DataDirectory, "kundenmaterial.json");
 
         public static string FindKantzeichnungPdf(string originalPdfPfad)
         {
@@ -20,10 +19,6 @@ namespace MaterialManager_V01.Services
             var searchTokens = ExtractSearchTokens(Path.GetFileNameWithoutExtension(originalPdfPfad));
             if (searchTokens.Count == 0)
                 return string.Empty;
-
-            var fromStore = FindInKundenMaterialStore(searchTokens);
-            if (!string.IsNullOrWhiteSpace(fromStore))
-                return fromStore;
 
             var folders = LoadCustomerPdfFolders();
             if (folders.Count == 0)
@@ -75,49 +70,6 @@ namespace MaterialManager_V01.Services
                 .ThenBy(c => c.Path.Length)
                 .Select(c => c.Path)
                 .FirstOrDefault() ?? string.Empty;
-        }
-
-        private static string FindInKundenMaterialStore(List<string> searchTokens)
-        {
-            try
-            {
-                if (!File.Exists(KundenMaterialStorePath))
-                    return string.Empty;
-
-                var json = File.ReadAllText(KundenMaterialStorePath);
-                var items = JsonSerializer.Deserialize<List<KundenMaterialItemDto>>(json);
-                if (items == null || items.Count == 0)
-                    return string.Empty;
-
-                var candidate = items
-                    .Where(i => !string.IsNullOrWhiteSpace(i.PdfPfad) && File.Exists(i.PdfPfad))
-                    .Select(i => new
-                    {
-                        Item = i,
-                        ZeichnungNorm = NormalizeToken(i.Zeichnungsnummer),
-                        PdfNameNorm = NormalizeToken(Path.GetFileNameWithoutExtension(i.PdfPfad ?? string.Empty))
-                    })
-                    .Select(x => new
-                    {
-                        x.Item,
-                        Score = searchTokens
-                            .Where(t => (!string.IsNullOrWhiteSpace(x.ZeichnungNorm) && x.ZeichnungNorm.Contains(t, StringComparison.OrdinalIgnoreCase))
-                                     || (!string.IsNullOrWhiteSpace(x.PdfNameNorm) && x.PdfNameNorm.Contains(t, StringComparison.OrdinalIgnoreCase)))
-                            .OrderByDescending(t => t.Length)
-                            .Select(t => t.Length)
-                            .FirstOrDefault()
-                    })
-                    .Where(x => x.Score > 0)
-                    .OrderByDescending(x => x.Score)
-                    .Select(x => x.Item.PdfPfad)
-                    .FirstOrDefault();
-
-                return candidate ?? string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
         }
 
         private static List<string> ExtractSearchTokens(string fileNameWithoutExtension)
@@ -187,12 +139,6 @@ namespace MaterialManager_V01.Services
         {
             public string PdfFolder { get; set; } = string.Empty;
             public Dictionary<string, string> CustomerFolders { get; set; } = new(StringComparer.OrdinalIgnoreCase);
-        }
-
-        private sealed class KundenMaterialItemDto
-        {
-            public string Zeichnungsnummer { get; set; } = string.Empty;
-            public string PdfPfad { get; set; } = string.Empty;
         }
     }
 }
