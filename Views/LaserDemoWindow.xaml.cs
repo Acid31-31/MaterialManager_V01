@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace MaterialManager_V01.Views
     public partial class LaserDemoWindow : Window, INotifyPropertyChanged
     {
         protected virtual string Arbeitsbereich => AuftragArbeitsplatzService.Laser;
+        protected virtual bool ShowReservedMaterialArea => true;
+        protected virtual bool ShowExcelOrderButton => false;
 
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
@@ -95,8 +98,30 @@ namespace MaterialManager_V01.Views
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
             UpdateAuftragsKwText();
             FitToWorkArea();
+            ConfigureArbeitsbereichLayout();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
+        }
+
+        private void ConfigureArbeitsbereichLayout()
+        {
+            if (ShowExcelOrderButton && OpenExcelButton != null)
+                OpenExcelButton.Visibility = Visibility.Visible;
+
+            if (!ShowReservedMaterialArea)
+            {
+                if (MaterialActionPanel != null)
+                    MaterialActionPanel.Visibility = Visibility.Collapsed;
+
+                if (MaterialFilterBorder != null)
+                    MaterialFilterBorder.Visibility = Visibility.Collapsed;
+
+                if (RestMaterialGrid != null)
+                    RestMaterialGrid.Visibility = Visibility.Collapsed;
+
+                if (AuftraegeGridRowDefinition != null)
+                    AuftraegeGridRowDefinition.Height = new GridLength(1, GridUnitType.Star);
+            }
         }
 
         private void FitToWorkArea()
@@ -304,6 +329,29 @@ namespace MaterialManager_V01.Views
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
             LoadMaterials();
+        }
+
+        private void OnOpenExcelClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var excelPath = NetzwerkService.GetSavePath();
+                if (string.IsNullOrWhiteSpace(excelPath) || !System.IO.File.Exists(excelPath))
+                {
+                    MessageBox.Show("Die zentrale Excel-Datei wurde nicht gefunden.", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = excelPath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Excel-Datei konnte nicht geöffnet werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void OnOpenNetworkFolder(object sender, RoutedEventArgs e)
