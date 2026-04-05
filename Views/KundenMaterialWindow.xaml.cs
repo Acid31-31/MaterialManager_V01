@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using ClosedXML.Excel;
 using Microsoft.Win32;
@@ -18,6 +20,7 @@ namespace MaterialManager_V01.Views
         private static readonly string SettingsPath = Path.Combine(PathService.DataDirectory, "kundenmaterial.settings.json");
         private readonly Dictionary<string, string> _customerFolderMap = new(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _customers = new();
+        private readonly ICollectionView _itemsView;
 
         public ObservableCollection<KundenMaterialItem> Items { get; } = new();
 
@@ -25,9 +28,29 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
+            _itemsView = CollectionViewSource.GetDefaultView(Items);
+            _itemsView.Filter = FilterBySelectedCustomer;
             FitToWorkArea();
             LoadSettings();
             LoadItems();
+        }
+
+        private bool FilterBySelectedCustomer(object obj)
+        {
+            if (obj is not KundenMaterialItem item)
+                return false;
+
+            var kundeFilter = GetSelectedCustomer();
+            if (string.IsNullOrWhiteSpace(kundeFilter))
+                return true;
+
+            return (item.Kunde ?? string.Empty)
+                .Contains(kundeFilter.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void RefreshCustomerFilter()
+        {
+            _itemsView.Refresh();
         }
 
         private void FitToWorkArea()
@@ -400,6 +423,7 @@ namespace MaterialManager_V01.Views
         private void OnCustomerSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             UpdateCustomerFolderHint();
+            RefreshCustomerFilter();
         }
 
         private void OnCustomerSelectionLostFocus(object sender, RoutedEventArgs e)
@@ -408,6 +432,7 @@ namespace MaterialManager_V01.Views
             RegisterCustomer(kunde);
             SaveSettings();
             UpdateCustomerFolderHint();
+            RefreshCustomerFilter();
         }
 
         private void UpdateCustomerFolderHint()
@@ -522,18 +547,27 @@ namespace MaterialManager_V01.Views
                 Items.Clear();
 
                 if (!File.Exists(StorePath))
+                {
+                    RefreshCustomerFilter();
                     return;
+                }
 
                 var json = File.ReadAllText(StorePath);
                 var parsed = JsonSerializer.Deserialize<KundenMaterialItem[]>(json);
                 if (parsed == null)
+                {
+                    RefreshCustomerFilter();
                     return;
+                }
 
                 foreach (var item in parsed)
                     Items.Add(item);
+
+                RefreshCustomerFilter();
             }
             catch
             {
+                RefreshCustomerFilter();
             }
         }
 
