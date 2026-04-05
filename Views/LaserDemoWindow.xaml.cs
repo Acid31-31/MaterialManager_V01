@@ -2,15 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using ClosedXML.Excel;
+using Microsoft.Win32;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -22,11 +28,14 @@ namespace MaterialManager_V01.Views
         protected virtual bool ShowReservedMaterialArea => true;
         protected virtual bool ShowExcelOrderButton => false;
 
+        private static readonly string KantbankExcelSettingsPath = Path.Combine(PathService.DataDirectory, "kantbank_excel.settings.json");
+
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _restMaterialienCache = new();
         private List<Auftrag> _auftraegeCache = new();
         private readonly int _aktuellesJahr = DateTime.Now.Year;
         private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
+        private DataTable? _kantbankExcelTable;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -105,13 +114,25 @@ namespace MaterialManager_V01.Views
 
         private void ConfigureArbeitsbereichLayout()
         {
-            if (ShowExcelOrderButton && OpenExcelButton != null)
-                OpenExcelButton.Visibility = Visibility.Visible;
+            if (ShowExcelOrderButton)
+            {
+                if (OpenExcelButton != null) OpenExcelButton.Visibility = Visibility.Visible;
+                if (SelectExcelButton != null) SelectExcelButton.Visibility = Visibility.Visible;
+                if (SaveExcelButton != null) SaveExcelButton.Visibility = Visibility.Visible;
+                if (ExcelPathLabel != null) ExcelPathLabel.Visibility = Visibility.Visible;
+                if (ExcelPathBox != null) ExcelPathBox.Visibility = Visibility.Visible;
+                if (CustomerFilterLabel != null) CustomerFilterLabel.Visibility = Visibility.Visible;
+                if (KantbankCustomerFilterBox != null) KantbankCustomerFilterBox.Visibility = Visibility.Visible;
+                if (DateFilterLabel != null) DateFilterLabel.Visibility = Visibility.Visible;
+                if (KantbankDateFilterPicker != null) KantbankDateFilterPicker.Visibility = Visibility.Visible;
+            }
 
             if (!ShowReservedMaterialArea)
             {
-                if (MaterialActionPanel != null)
-                    MaterialActionPanel.Visibility = Visibility.Collapsed;
+                if (EditRestButton != null) EditRestButton.Visibility = Visibility.Collapsed;
+                if (DeleteRestButton != null) DeleteRestButton.Visibility = Visibility.Collapsed;
+                if (OpenRestPdfButton != null) OpenRestPdfButton.Visibility = Visibility.Collapsed;
+                if (MaterialActionHint != null) MaterialActionHint.Visibility = Visibility.Collapsed;
 
                 if (MaterialFilterBorder != null)
                     MaterialFilterBorder.Visibility = Visibility.Collapsed;
@@ -119,8 +140,18 @@ namespace MaterialManager_V01.Views
                 if (RestMaterialGrid != null)
                     RestMaterialGrid.Visibility = Visibility.Collapsed;
 
+                if (AuftraegeGrid != null)
+                    AuftraegeGrid.Visibility = Visibility.Collapsed;
+
+                if (KantbankExcelGrid != null)
+                    KantbankExcelGrid.Visibility = Visibility.Visible;
+
                 if (AuftraegeGridRowDefinition != null)
                     AuftraegeGridRowDefinition.Height = new GridLength(1, GridUnitType.Star);
+
+                var path = LoadSavedKantbankExcelPath();
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                    LoadKantbankExcel(path);
             }
         }
 
@@ -328,7 +359,238 @@ namespace MaterialManager_V01.Views
 
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
+            if (ShowExcelOrderButton)
+            {
+                var path = ExcelPathBox?.Text?.Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                    LoadKantbankExcel(path);
+                else
+                    LoadMaterials();
+                return;
+            }
+
             LoadMaterials();
+        }
+
+        private void OnSelectExcelPathClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog
+            {
+                Title = "Kantbank-Excel auswählen",
+                Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            var netDir = Path.GetDirectoryName(NetzwerkService.GetSavePath());
+            if (!string.IsNullOrWhiteSpace(netDir) && Directory.Exists(netDir))
+                dlg.InitialDirectory = netDir;
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            SaveKantbankExcelPath(dlg.FileName);
+            LoadKantbankExcel(dlg.FileName);
+        }
+
+        private void OnSaveExcelClick(object sender, RoutedEventArgs e)
+        {
+            SaveKantbankExcel();
+        }
+
+        private void OnKantbankFilterChanged(object sender, EventArgs e)
+        {
+            ApplyKantbankExcelFilter();
+        }
+
+        private void LoadKantbankExcel(string path)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return;
+
+                using var wb = new XLWorkbook(path);
+                var ws = wb.Worksheets.FirstOrDefault();
+                if (ws == null)
+                    return;
+
+                var lastRow = ws.LastRowUsed()?.RowNumber() ?? 0;
+                var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
+                if (lastRow < 1 || lastCol < 1)
+                    return;
+
+                var table = new DataTable();
+                var headers = new List<string>();
+
+                for (var c = 1; c <= lastCol; c++)
+                {
+                    var name = ws.Cell(1, c).GetString().Trim();
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = $"Spalte{c}";
+
+                    var original = name;
+                    var idx = 2;
+                    while (table.Columns.Contains(name))
+                    {
+                        name = $"{original}_{idx}";
+                        idx++;
+                    }
+
+                    headers.Add(name);
+                    table.Columns.Add(name, typeof(string));
+                }
+
+                for (var r = 2; r <= lastRow; r++)
+                {
+                    var row = table.NewRow();
+                    var hasValue = false;
+                    for (var c = 1; c <= lastCol; c++)
+                    {
+                        var value = ws.Cell(r, c).GetFormattedString();
+                        if (!string.IsNullOrWhiteSpace(value))
+                            hasValue = true;
+                        row[c - 1] = value;
+                    }
+
+                    if (hasValue)
+                        table.Rows.Add(row);
+                }
+
+                _kantbankExcelTable = table;
+                KantbankExcelGrid.ItemsSource = table.DefaultView;
+                ExcelPathBox.Text = path;
+                ApplyKantbankExcelFilter();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Excel konnte nicht geladen werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void ApplyKantbankExcelFilter()
+        {
+            if (_kantbankExcelTable == null)
+                return;
+
+            var view = _kantbankExcelTable.DefaultView;
+            var clauses = new List<string>();
+
+            var customer = KantbankCustomerFilterBox?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(customer))
+            {
+                var customerCols = _kantbankExcelTable.Columns.Cast<DataColumn>()
+                    .Select(c => c.ColumnName)
+                    .Where(n => n.Contains("kunde", StringComparison.OrdinalIgnoreCase) || n.Contains("customer", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (customerCols.Count > 0)
+                {
+                    var escaped = customer.Replace("'", "''");
+                    var customerExpr = string.Join(" OR ", customerCols.Select(c => $"[{c}] LIKE '%{escaped}%'"));
+                    clauses.Add($"({customerExpr})");
+                }
+            }
+
+            if (KantbankDateFilterPicker?.SelectedDate is DateTime date)
+            {
+                var dateCols = _kantbankExcelTable.Columns.Cast<DataColumn>()
+                    .Select(c => c.ColumnName)
+                    .Where(n => n.Contains("datum", StringComparison.OrdinalIgnoreCase) || n.Contains("date", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (dateCols.Count > 0)
+                {
+                    var d1 = date.ToString("dd.MM.yyyy");
+                    var d2 = date.ToString("yyyy-MM-dd");
+                    var dateExpr = string.Join(" OR ", dateCols.Select(c => $"([{c}] LIKE '%{d1}%' OR [{c}] LIKE '%{d2}%')"));
+                    clauses.Add($"({dateExpr})");
+                }
+            }
+
+            view.RowFilter = clauses.Count == 0 ? string.Empty : string.Join(" AND ", clauses);
+        }
+
+        private void SaveKantbankExcel()
+        {
+            if (_kantbankExcelTable == null)
+                return;
+
+            var path = ExcelPathBox?.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                MessageBox.Show("Bitte zuerst eine Excel-Datei auswählen.", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                using var wb = new XLWorkbook();
+                var ws = wb.Worksheets.Add("Aufträge");
+
+                for (var c = 0; c < _kantbankExcelTable.Columns.Count; c++)
+                    ws.Cell(1, c + 1).Value = _kantbankExcelTable.Columns[c].ColumnName;
+
+                for (var r = 0; r < _kantbankExcelTable.Rows.Count; r++)
+                {
+                    for (var c = 0; c < _kantbankExcelTable.Columns.Count; c++)
+                        ws.Cell(r + 2, c + 1).Value = _kantbankExcelTable.Rows[r][c]?.ToString() ?? string.Empty;
+                }
+
+                ws.Columns().AdjustToContents();
+                wb.SaveAs(path);
+
+                MessageBox.Show("Excel wurde gespeichert.", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Excel konnte nicht gespeichert werden:\n{ex.Message}", "Kantbank", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private static string LoadSavedKantbankExcelPath()
+        {
+            try
+            {
+                if (!File.Exists(KantbankExcelSettingsPath))
+                    return string.Empty;
+
+                var json = File.ReadAllText(KantbankExcelSettingsPath, Encoding.UTF8);
+                var dto = JsonSerializer.Deserialize<KantbankExcelSettingsDto>(json);
+                return dto?.ExcelPath?.Trim() ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private static void SaveKantbankExcelPath(string path)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(KantbankExcelSettingsPath);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var dto = new KantbankExcelSettingsDto { ExcelPath = path?.Trim() ?? string.Empty };
+                var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(KantbankExcelSettingsPath, json, Encoding.UTF8);
+            }
+            catch
+            {
+            }
+        }
+
+        private sealed class KantbankExcelSettingsDto
+        {
+            public string ExcelPath { get; set; } = string.Empty;
+        }
+
+        private void OnExcelPathTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var path = ExcelPathBox?.Text?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                LoadKantbankExcel(path);
         }
 
         private void OnOpenExcelClick(object sender, RoutedEventArgs e)
