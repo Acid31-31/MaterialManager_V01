@@ -488,7 +488,7 @@ namespace MaterialManager_V01.Views
                         headerHits++;
                 }
 
-                var probeRows = Math.Min(lastRow, headerRow + 30);
+                var probeRows = Math.Min(lastRow, headerRow + 80);
                 var dataCells = 0;
                 for (var r = headerRow + 1; r <= probeRows; r++)
                 {
@@ -499,7 +499,7 @@ namespace MaterialManager_V01.Views
                     }
                 }
 
-                var score = (headerHits * 1000) + dataCells + lastRow;
+                var score = (headerHits * 10000) + dataCells + lastRow;
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -512,7 +512,7 @@ namespace MaterialManager_V01.Views
 
         private static int DetectHeaderRow(IXLWorksheet ws, int lastRow, int lastCol)
         {
-            var maxProbeRows = Math.Min(lastRow, 25);
+            var maxProbeRows = Math.Min(lastRow, 200);
             var bestRow = 1;
             var bestScore = int.MinValue;
 
@@ -520,6 +520,8 @@ namespace MaterialManager_V01.Views
             {
                 var rowScore = 0;
                 var nonEmpty = 0;
+                var keywordHits = 0;
+
                 for (var c = 1; c <= lastCol; c++)
                 {
                     var text = NormalizeHeaderName(GetCellDisplayValue(ws.Cell(r, c)));
@@ -529,10 +531,17 @@ namespace MaterialManager_V01.Views
                     nonEmpty++;
                     rowScore += 1;
                     if (IsKantbankHeaderKeyword(text))
-                        rowScore += 8;
+                    {
+                        keywordHits++;
+                        rowScore += 30;
+                    }
                 }
 
+                if (keywordHits >= 3)
+                    rowScore += 200;
+
                 rowScore += nonEmpty;
+
                 if (rowScore > bestScore)
                 {
                     bestScore = rowScore;
@@ -545,13 +554,21 @@ namespace MaterialManager_V01.Views
 
         private static string GetCellDisplayValue(IXLCell cell)
         {
+            if (cell.TryGetValue<DateTime>(out var dt))
+                return dt.ToString("dd.MM.yyyy");
+
             var text = cell.GetFormattedString();
             if (!string.IsNullOrWhiteSpace(text))
                 return text;
 
             var merged = cell.MergedRange();
             if (merged != null)
-                return merged.FirstCell().GetFormattedString();
+            {
+                var first = merged.FirstCell();
+                if (first.TryGetValue<DateTime>(out var dtMerged))
+                    return dtMerged.ToString("dd.MM.yyyy");
+                return first.GetFormattedString();
+            }
 
             return string.Empty;
         }
