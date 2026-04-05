@@ -248,7 +248,11 @@
                     <Menu Grid.Column="1" VerticalAlignment="Center" FontSize="13">
                         <MenuItem Header="Datei">
                             <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
-                            <MenuItem Header="Einstellungen" Click="OnOpenSettingsClick"/>
+                            <MenuItem Header="Einstellungen">
+                                <MenuItem Header="Einstellungsdialog öffnen" Click="OnOpenSettingsClick"/>
+                                <MenuItem Header="PDF-Root-Ordner wählen" Click="OnChoosePdfFolderClick"/>
+                                <MenuItem Header="Excel-Datei wählen" Click="OnChooseImportExcelPathClick"/>
+                            </MenuItem>
                             <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
                             <MenuItem Header="Schließen" Click="OnCloseWindow"/>
