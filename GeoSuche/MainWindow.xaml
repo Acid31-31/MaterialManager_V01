@@ -4,6 +4,7 @@
         Title="GEO Arbeitsvorbereitung"
         Width="1100" Height="780" MinWidth="820" MinHeight="560"
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         Background="{StaticResource WindowBg}"
         Foreground="{StaticResource TextPrimary}"
         FontFamily="Segoe UI" FontSize="13">
@@ -30,6 +31,16 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Startprogramm"
+                            Click="OnOpenStartProgrammClick"
+                            Style="{StaticResource SecondaryButton}"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"/>
+                    <Button Content="Hauptprogramm"
+                            Click="OnOpenHauptProgrammClick"
+                            Style="{StaticResource SecondaryButton}"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"/>
                     <Button Content="Suchordner-Auswahl"
                             Command="{Binding OpenSearchFoldersCommand}"
                             Style="{StaticResource SecondaryButton}"
