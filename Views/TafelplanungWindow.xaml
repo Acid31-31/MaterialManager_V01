@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         ResizeMode="CanResize"
-        WindowStyle="SingleBorderWindow"
+        WindowStyle="None"
         BorderBrush="#2A2A2A"
         BorderThickness="1"
         Icon="/Assets/app-icon.png"
