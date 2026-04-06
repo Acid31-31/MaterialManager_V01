@@ -50,9 +50,7 @@ public partial class SearchFoldersDialog : Window
             {
                 IndexLabel = $"{slotPrefix} {i + 1}",
                 Path = path,
-                IsSelected = hasPath && (string.IsNullOrWhiteSpace(currentSelectedFolder)
-                              || string.Equals(path, currentSelectedFolder, StringComparison.OrdinalIgnoreCase)
-                              || hasPath)
+                IsSelected = hasPath
             });
         }
 
@@ -88,6 +86,18 @@ public partial class SearchFoldersDialog : Window
             entry.Path = dialog.FolderName;
             entry.IsSelected = true;
         }
+    }
+
+    private void SelectAllWithPath_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var entry in FolderEntries)
+            entry.IsSelected = !string.IsNullOrWhiteSpace(entry.Path?.Trim());
+    }
+
+    private void ClearSelection_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var entry in FolderEntries)
+            entry.IsSelected = false;
     }
 
     private void Apply_Click(object sender, RoutedEventArgs e)
