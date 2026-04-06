@@ -30,37 +30,41 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="Startprogramm"
-                            Click="OnOpenStartProgrammClick"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"/>
-                    <Button Content="Hauptprogramm"
-                            Click="OnOpenHauptProgrammClick"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"/>
-                    <Button Content="Suchordner-Auswahl"
-                            Command="{Binding OpenSearchFoldersCommand}"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="10,0,0,0"
-                            VerticalAlignment="Center"/>
-                    <Button Content="Speicherordner-Auswahl"
-                            Command="{Binding OpenOutputFoldersCommand}"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="10,0,0,0"
-                            VerticalAlignment="Center"/>
-                    <Button Content="Excel-Datei auswählen"
-                            Command="{Binding SelectLagerBestandExcelCommand}"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="10,0,0,0"
-                            VerticalAlignment="Center"/>
-                    <Button Content="Lagerbestand (Excel)"
-                            Command="{Binding OpenLagerBestandCommand}"
-                            Style="{StaticResource SecondaryButton}"
-                            Margin="10,0,0,0"
-                            VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
+                        <Button Content="Startprogramm"
+                                Click="OnOpenStartProgrammClick"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"/>
+                        <Button Content="Hauptprogramm"
+                                Click="OnOpenHauptProgrammClick"
+                                Style="{StaticResource SecondaryButton}"
+                                VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <WrapPanel HorizontalAlignment="Right">
+                        <Button Content="Suchordner-Auswahl"
+                                Command="{Binding OpenSearchFoldersCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"/>
+                        <Button Content="Speicherordner-Auswahl"
+                                Command="{Binding OpenOutputFoldersCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"/>
+                        <Button Content="Excel-Datei auswählen"
+                                Command="{Binding SelectLagerBestandExcelCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"/>
+                        <Button Content="Lagerbestand (Excel)"
+                                Command="{Binding OpenLagerBestandCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"/>
+                    </WrapPanel>
                 </StackPanel>
             </Grid>
         </Border>
