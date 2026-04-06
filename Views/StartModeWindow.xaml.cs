@@ -1,23 +1,13 @@
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
     public partial class StartModeWindow : Window
     {
-        private static readonly string GeoSucheSettingsPath = Path.Combine(PathService.DataDirectory, "geosuche.settings.json");
-        private static readonly string[] GeoSucheKnownPaths =
-        {
-            @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung\GeoArbeitsvorbereitung\bin\Release\net8.0-windows\win-x64\GeoArbeitsvorbereitung.exe",
-            @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung\GeoArbeitsvorbereitung\bin\Debug\net8.0-windows\GeoArbeitsvorbereitung.exe"
-        };
-
         public StartModeWindow()
         {
             InitializeComponent();
@@ -254,91 +244,13 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var exePath = ResolveGeoSuchePath();
-                if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
-                {
-                    var dlg = new OpenFileDialog
-                    {
-                        Title = "Geo Suche EXE auswählen",
-                        Filter = "Anwendung (*.exe)|*.exe|Alle Dateien (*.*)|*.*",
-                        CheckFileExists = true,
-                        InitialDirectory = @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung"
-                    };
-
-                    if (dlg.ShowDialog() != true)
-                        return;
-
-                    exePath = dlg.FileName;
-                    SaveGeoSuchePath(exePath);
-                }
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = exePath,
-                    UseShellExecute = true
-                });
+                var geoWindow = new GeoArbeitsvorbereitung.MainWindow();
+                geoWindow.Show();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Geo Suche konnte nicht gestartet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Geo Suche konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
-
-        private static string ResolveGeoSuchePath()
-        {
-            var saved = LoadGeoSuchePath();
-            if (!string.IsNullOrWhiteSpace(saved) && File.Exists(saved))
-                return saved;
-
-            foreach (var p in GeoSucheKnownPaths)
-            {
-                if (File.Exists(p))
-                {
-                    SaveGeoSuchePath(p);
-                    return p;
-                }
-            }
-
-            return string.Empty;
-        }
-
-        private static string LoadGeoSuchePath()
-        {
-            try
-            {
-                if (!File.Exists(GeoSucheSettingsPath))
-                    return string.Empty;
-
-                var json = File.ReadAllText(GeoSucheSettingsPath);
-                var dto = JsonSerializer.Deserialize<GeoSucheSettingsDto>(json);
-                return dto?.ExePath?.Trim() ?? string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        private static void SaveGeoSuchePath(string exePath)
-        {
-            try
-            {
-                var dir = Path.GetDirectoryName(GeoSucheSettingsPath);
-                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var dto = new GeoSucheSettingsDto { ExePath = exePath?.Trim() ?? string.Empty };
-                var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(GeoSucheSettingsPath, json);
-            }
-            catch
-            {
-            }
-        }
-
-        private sealed class GeoSucheSettingsDto
-        {
-            public string ExePath { get; set; } = string.Empty;
         }
 
         private void OnKundenMaterialClick(object sender, RoutedEventArgs e)
