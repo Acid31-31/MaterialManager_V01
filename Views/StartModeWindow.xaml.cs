@@ -12,6 +12,11 @@ namespace MaterialManager_V01.Views
     public partial class StartModeWindow : Window
     {
         private static readonly string GeoSucheSettingsPath = Path.Combine(PathService.DataDirectory, "geosuche.settings.json");
+        private static readonly string[] GeoSucheKnownPaths =
+        {
+            @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung\GeoArbeitsvorbereitung\bin\Release\net8.0-windows\win-x64\GeoArbeitsvorbereitung.exe",
+            @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung\GeoArbeitsvorbereitung\bin\Debug\net8.0-windows\GeoArbeitsvorbereitung.exe"
+        };
 
         public StartModeWindow()
         {
@@ -249,14 +254,15 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var exePath = LoadGeoSuchePath();
+                var exePath = ResolveGeoSuchePath();
                 if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
                 {
                     var dlg = new OpenFileDialog
                     {
                         Title = "Geo Suche EXE auswählen",
                         Filter = "Anwendung (*.exe)|*.exe|Alle Dateien (*.*)|*.*",
-                        CheckFileExists = true
+                        CheckFileExists = true,
+                        InitialDirectory = @"C:\Users\hoelz.WIN-G2OC48399EJ\source\repos\Acid31-31\Arbeitsvorbereitung"
                     };
 
                     if (dlg.ShowDialog() != true)
@@ -276,6 +282,24 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Geo Suche konnte nicht gestartet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private static string ResolveGeoSuchePath()
+        {
+            var saved = LoadGeoSuchePath();
+            if (!string.IsNullOrWhiteSpace(saved) && File.Exists(saved))
+                return saved;
+
+            foreach (var p in GeoSucheKnownPaths)
+            {
+                if (File.Exists(p))
+                {
+                    SaveGeoSuchePath(p);
+                    return p;
+                }
+            }
+
+            return string.Empty;
         }
 
         private static string LoadGeoSuchePath()
