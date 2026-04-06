@@ -71,14 +71,30 @@
 
         <!-- ══ Main content ═════════════════════════════════════════════════ -->
         <Grid Grid.Row="1" Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
+            <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#1F1F1F" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="↩ Startprogramm"
+                            Click="OnOpenStartProgrammClick"
+                            Style="{StaticResource SecondaryButton}"
+                            Margin="0,0,10,0"/>
+                    <Button Content="🏠 Hauptprogramm"
+                            Click="OnOpenHauptProgrammClick"
+                            Style="{StaticResource SecondaryButton}"/>
+                </StackPanel>
+            </Border>
+
             <!-- Left: Workflow area -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
 
                     <!-- ── Section: Suche ───────────────────────────────────── -->
