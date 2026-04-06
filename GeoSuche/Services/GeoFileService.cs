@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using GeoArbeitsvorbereitung.Models;
@@ -8,6 +9,7 @@ public class GeoFileService : IGeoFileService
 {
     private static readonly Regex QuantityPattern = new(@"^(\d+)x$", RegexOptions.IgnoreCase);
     private static readonly Regex MaterialPattern = new(@"^(V2a|ST)-\d+(?:[\.,]\d+)?mm$", RegexOptions.IgnoreCase);
+    private static readonly Regex MaterialPartsPattern = new(@"^(?<mat>V2a|ST)-(?<thick>\d+(?:[\.,]\d+)?)mm$", RegexOptions.IgnoreCase);
 
     public IReadOnlyList<GeoFileInfo> FindAll(string searchRoot, string searchTerm)
     {
@@ -67,33 +69,17 @@ public class GeoFileService : IGeoFileService
         if (!Directory.Exists(outputRoot))
             throw new DirectoryNotFoundException($"Speicherordner nicht gefunden: {outputRoot}");
 
-        var material = source.Material?.Trim() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(material) || !MaterialPattern.IsMatch(material))
+        var materialToken = source.Material?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(materialToken) || !MaterialPattern.IsMatch(materialToken))
             throw new InvalidOperationException(
                 "Ungültiges oder fehlendes Material im Dateinamen. Erwartet z. B. 'V2a-1,5mm' oder 'ST-5,0mm'.");
 
-        var directMatch = Path.Combine(outputRoot, material);
-        string targetFolder;
+        var targetFolder = ResolveAutonomousMaterialFolder(outputRoot, materialToken)
+            ?? ResolveLegacyMaterialFolder(outputRoot, materialToken);
 
-        if (Directory.Exists(directMatch))
-        {
-            targetFolder = directMatch;
-        }
-        else
-        {
-            var recursiveMatch = Directory
-                .EnumerateDirectories(outputRoot, "*", SearchOption.AllDirectories)
-                .Where(d => string.Equals(Path.GetFileName(d), material, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(d => d.Length)
-                .ThenBy(d => d, StringComparer.OrdinalIgnoreCase)
-                .FirstOrDefault();
-
-            if (recursiveMatch == null)
-                throw new DirectoryNotFoundException(
-                    $"Kein vorhandener Material-Ordner \"{material}\" unter \"{outputRoot}\" gefunden.");
-
-            targetFolder = recursiveMatch;
-        }
+        if (string.IsNullOrWhiteSpace(targetFolder))
+            throw new DirectoryNotFoundException(
+                $"Kein passender Material-/Stärken-Ordner für '{materialToken}' unter '{outputRoot}' gefunden.");
 
         return Path.Combine(targetFolder, newFileName);
     }
@@ -107,6 +93,94 @@ public class GeoFileService : IGeoFileService
             throw new DirectoryNotFoundException($"Zielordner existiert nicht: {dir}");
 
         File.Copy(sourcePath, targetPath, overwrite: false);
+    }
+
+    private static string? ResolveLegacyMaterialFolder(string outputRoot, string materialToken)
+    {
+        var directMatch = Path.Combine(outputRoot, materialToken);
+        if (Directory.Exists(directMatch))
+            return directMatch;
+
+        return Directory
+            .EnumerateDirectories(outputRoot, "*", SearchOption.AllDirectories)
+            .Where(d => string.Equals(Path.GetFileName(d), materialToken, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(d => d.Length)
+            .ThenBy(d => d, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
+    }
+
+    private static string? ResolveAutonomousMaterialFolder(string outputRoot, string materialToken)
+    {
+        var match = MaterialPartsPattern.Match(materialToken);
+        if (!match.Success)
+            return null;
+
+        var materialMain = match.Groups["mat"].Value.Trim();
+        var thicknessRaw = match.Groups["thick"].Value.Trim();
+        var thicknessNames = BuildThicknessNameCandidates(thicknessRaw);
+
+        var allDirs = Directory.EnumerateDirectories(outputRoot, "*", SearchOption.AllDirectories).ToList();
+        var mainMaterialFolders = allDirs
+            .Where(d => string.Equals(Path.GetFileName(d), materialMain, StringComparison.OrdinalIgnoreCase)
+                        || Path.GetFileName(d).StartsWith(materialMain + "-", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var thicknessFolders = allDirs
+            .Where(d => thicknessNames.Any(t => string.Equals(Path.GetFileName(d), t, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        var withinMaterial = thicknessFolders
+            .Where(t => mainMaterialFolders.Any(m => IsSubPathOf(t, m)))
+            .OrderBy(t => t.Length)
+            .ThenBy(t => t, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
+
+        if (!string.IsNullOrWhiteSpace(withinMaterial))
+            return withinMaterial;
+
+        return thicknessFolders
+            .OrderBy(t => t.Length)
+            .ThenBy(t => t, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
+    }
+
+    private static bool IsSubPathOf(string path, string parent)
+    {
+        var p = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+            + Path.DirectorySeparatorChar;
+        var root = Path.GetFullPath(parent).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+            + Path.DirectorySeparatorChar;
+        return p.StartsWith(root, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static HashSet<string> BuildThicknessNameCandidates(string raw)
+    {
+        var candidates = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var normalized = raw.Replace(',', '.');
+
+        if (decimal.TryParse(normalized, NumberStyles.Number, CultureInfo.InvariantCulture, out var mmValue))
+        {
+            var sInvariant = mmValue.ToString("0.###", CultureInfo.InvariantCulture);
+            var sGerman = mmValue.ToString("0.###", CultureInfo.GetCultureInfo("de-DE"));
+            candidates.Add($"{sInvariant}mm");
+            candidates.Add($"{sGerman}mm");
+
+            var compact = sInvariant.Replace(".", string.Empty);
+            if (!string.IsNullOrWhiteSpace(compact))
+                candidates.Add($"{compact}mm");
+
+            if (decimal.Truncate(mmValue) == mmValue)
+            {
+                var intValue = ((int)mmValue).ToString(CultureInfo.InvariantCulture);
+                candidates.Add($"{intValue}mm");
+            }
+        }
+
+        candidates.Add($"{raw}mm");
+        candidates.Add($"{raw.Replace('.', ',')}mm");
+        candidates.Add($"{raw.Replace(',', '.')}mm");
+
+        return candidates;
     }
 
     private static bool MatchesSearchTerm(GeoFileInfo info, string term)
