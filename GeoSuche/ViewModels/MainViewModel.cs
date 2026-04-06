@@ -179,14 +179,11 @@ public class MainViewModel : INotifyPropertyChanged
         if (dlg.ShowDialog() != true)
             return;
 
-        _searchFolderOptions = NormalizeFolderOptions(dlg.FolderPaths);
+        _searchFolderOptions = NormalizeFolderOptions(dlg.SelectedFolders);
 
-        if (!string.IsNullOrWhiteSpace(dlg.SelectedFolder))
-        {
-            SearchRoot = dlg.SelectedFolder;
-            SaveSettings();
-            Log($"Suchordner aus Auswahl übernommen: {SearchRoot}");
-        }
+        SearchRoot = _searchFolderOptions.FirstOrDefault(p => !string.IsNullOrWhiteSpace(p)) ?? string.Empty;
+        SaveSettings();
+        Log($"Suchordner übernommen: {dlg.SelectedFolders.Count} ausgewählt.");
     }
 
     private void OpenOutputFoldersDialog()
@@ -204,14 +201,11 @@ public class MainViewModel : INotifyPropertyChanged
         if (dlg.ShowDialog() != true)
             return;
 
-        _outputFolderOptions = NormalizeFolderOptions(dlg.FolderPaths);
+        _outputFolderOptions = NormalizeFolderOptions(dlg.SelectedFolders);
 
-        if (!string.IsNullOrWhiteSpace(dlg.SelectedFolder))
-        {
-            OutputRoot = dlg.SelectedFolder;
-            SaveSettings();
-            Log($"Speicherordner aus Auswahl übernommen: {OutputRoot}");
-        }
+        OutputRoot = _outputFolderOptions.FirstOrDefault(p => !string.IsNullOrWhiteSpace(p)) ?? string.Empty;
+        SaveSettings();
+        Log($"Speicherordner übernommen: {dlg.SelectedFolders.Count} ausgewählt.");
     }
 
     private static List<string> NormalizeFolderOptions(IEnumerable<string>? options)
@@ -269,15 +263,44 @@ public class MainViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(HasFoundFiles));
             OnPropertyChanged(nameof(HasLagerBestandTreffer));
 
-            if (string.IsNullOrWhiteSpace(SearchRoot))
+            var searchRoots = NormalizeFolderOptions(_searchFolderOptions)
+                .Where(p => !string.IsNullOrWhiteSpace(p) && Directory.Exists(p))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (searchRoots.Count == 0 && !string.IsNullOrWhiteSpace(SearchRoot) && Directory.Exists(SearchRoot))
+                searchRoots.Add(SearchRoot);
+
+            if (searchRoots.Count == 0)
             {
-                Log("Fehler: Kein Suchordner angegeben.");
+                Log("Fehler: Kein gültiger Suchordner angegeben.");
                 return;
             }
 
             var term = DrawingNumber.Trim();
-            var results = _geoFileService.FindAll(SearchRoot, term);
-            foreach (var file in results)
+            var merged = new Dictionary<string, GeoFileInfo>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var root in searchRoots)
+            {
+                IReadOnlyList<GeoFileInfo> results;
+                try
+                {
+                    results = _geoFileService.FindAll(root, term);
+                }
+                catch (Exception ex)
+                {
+                    Log($"Suchordner übersprungen ({root}): {ex.Message}");
+                    continue;
+                }
+
+                foreach (var file in results)
+                {
+                    if (!merged.ContainsKey(file.FullPath))
+                        merged[file.FullPath] = file;
+                }
+            }
+
+            foreach (var file in merged.Values.OrderByDescending(f => f.LastWriteTime).ThenBy(f => f.FileName, StringComparer.OrdinalIgnoreCase))
                 FoundFiles.Add(file);
 
             OnPropertyChanged(nameof(HasFoundFiles));
@@ -289,7 +312,7 @@ public class MainViewModel : INotifyPropertyChanged
             else
             {
                 FoundFile = FoundFiles[0];
-                Log($"{FoundFiles.Count} GEO-Datei(en) gefunden. Auswahl: {FoundFile.FileName}");
+                Log($"{FoundFiles.Count} GEO-Datei(en) gefunden in {searchRoots.Count} Suchordnern. Auswahl: {FoundFile.FileName}");
             }
 
             PruefeLagerBestand(term);

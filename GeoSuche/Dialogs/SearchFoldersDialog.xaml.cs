@@ -12,6 +12,11 @@ public partial class SearchFoldersDialog : Window
     public ObservableCollection<FolderEntry> FolderEntries { get; } = [];
 
     public List<string> FolderPaths => FolderEntries.Select(f => f.Path?.Trim() ?? string.Empty).ToList();
+    public List<string> SelectedFolders => FolderEntries
+        .Where(f => f.IsSelected && !string.IsNullOrWhiteSpace(f.Path))
+        .Select(f => f.Path.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToList();
 
     public string? SelectedFolder { get; private set; }
 
@@ -39,12 +44,15 @@ public partial class SearchFoldersDialog : Window
 
         for (int i = 0; i < normalized.Count; i++)
         {
+            var path = normalized[i];
+            var hasPath = !string.IsNullOrWhiteSpace(path);
             FolderEntries.Add(new FolderEntry
             {
                 IndexLabel = $"{slotPrefix} {i + 1}",
-                Path = normalized[i],
-                IsSelected = !string.IsNullOrWhiteSpace(currentSelectedFolder)
-                             && string.Equals(normalized[i], currentSelectedFolder, StringComparison.OrdinalIgnoreCase)
+                Path = path,
+                IsSelected = hasPath && (string.IsNullOrWhiteSpace(currentSelectedFolder)
+                              || string.Equals(path, currentSelectedFolder, StringComparison.OrdinalIgnoreCase)
+                              || hasPath)
             });
         }
 
@@ -84,28 +92,29 @@ public partial class SearchFoldersDialog : Window
 
     private void Apply_Click(object sender, RoutedEventArgs e)
     {
-        var selected = FolderEntries.FirstOrDefault(f => f.IsSelected);
-        if (selected == null || string.IsNullOrWhiteSpace(selected.Path))
+        var selected = SelectedFolders;
+        if (selected.Count == 0)
         {
             MessageBox.Show(
-                "Bitte einen Ordner auswählen (Radio-Button) und einen gültigen Pfad eintragen.",
+                "Bitte mindestens einen Ordner auswählen und einen gültigen Pfad eintragen.",
                 "Hinweis",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
             return;
         }
 
-        if (!Directory.Exists(selected.Path))
+        var missing = selected.FirstOrDefault(p => !Directory.Exists(p));
+        if (!string.IsNullOrWhiteSpace(missing))
         {
             MessageBox.Show(
-                "Der ausgewählte Ordner existiert nicht.",
+                $"Ein ausgewählter Ordner existiert nicht:\n{missing}",
                 "Fehler",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
             return;
         }
 
-        SelectedFolder = selected.Path.Trim();
+        SelectedFolder = selected.First();
         DialogResult = true;
     }
 
