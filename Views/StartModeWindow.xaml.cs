@@ -1,13 +1,18 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
     public partial class StartModeWindow : Window
     {
+        private static readonly string GeoSucheSettingsPath = Path.Combine(PathService.DataDirectory, "geosuche.settings.json");
+
         public StartModeWindow()
         {
             InitializeComponent();
@@ -238,6 +243,78 @@ namespace MaterialManager_V01.Views
             Application.Current.MainWindow = window;
             window.Show();
             Close();
+        }
+
+        private void OnGeoSucheClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var exePath = LoadGeoSuchePath();
+                if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
+                {
+                    var dlg = new OpenFileDialog
+                    {
+                        Title = "Geo Suche EXE auswählen",
+                        Filter = "Anwendung (*.exe)|*.exe|Alle Dateien (*.*)|*.*",
+                        CheckFileExists = true
+                    };
+
+                    if (dlg.ShowDialog() != true)
+                        return;
+
+                    exePath = dlg.FileName;
+                    SaveGeoSuchePath(exePath);
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Geo Suche konnte nicht gestartet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private static string LoadGeoSuchePath()
+        {
+            try
+            {
+                if (!File.Exists(GeoSucheSettingsPath))
+                    return string.Empty;
+
+                var json = File.ReadAllText(GeoSucheSettingsPath);
+                var dto = JsonSerializer.Deserialize<GeoSucheSettingsDto>(json);
+                return dto?.ExePath?.Trim() ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private static void SaveGeoSuchePath(string exePath)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(GeoSucheSettingsPath);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var dto = new GeoSucheSettingsDto { ExePath = exePath?.Trim() ?? string.Empty };
+                var json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(GeoSucheSettingsPath, json);
+            }
+            catch
+            {
+            }
+        }
+
+        private sealed class GeoSucheSettingsDto
+        {
+            public string ExePath { get; set; } = string.Empty;
         }
 
         private void OnKundenMaterialClick(object sender, RoutedEventArgs e)
