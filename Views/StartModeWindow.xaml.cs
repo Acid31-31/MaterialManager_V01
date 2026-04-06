@@ -244,8 +244,13 @@ namespace MaterialManager_V01.Views
         {
             try
             {
+                if (!PromptForOperatorName())
+                    return;
+
                 var geoWindow = new GeoArbeitsvorbereitung.MainWindow();
+                Application.Current.MainWindow = geoWindow;
                 geoWindow.Show();
+                Close();
             }
             catch (Exception ex)
             {
