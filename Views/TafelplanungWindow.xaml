@@ -301,6 +301,7 @@
                             <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
                             <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
+                            <MenuItem Header="Hauptprogramm" Click="OnOpenMainProgramClick"/>
                             <MenuItem Header="Schließen" Click="OnCloseClick"/>
                         </MenuItem>
                         <MenuItem Header="Bearbeiten">
@@ -331,8 +332,12 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
+                        <Button Content="Hauptprogramm"
+                                Click="OnOpenMainProgramClick"
+                                Background="#1565C0"
+                                Foreground="White"
+                                Padding="14,8"
+                                Margin="0,0,8,0"/>
                         <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseWindow"/>
                     </StackPanel>
                 </Grid>

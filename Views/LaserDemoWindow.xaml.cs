@@ -1175,6 +1175,14 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenMainProgramClick(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = new MainWindow();
+            Application.Current.MainWindow = mainWindow;
+            mainWindow.Show();
+            Close();
+        }
+
         private void OnAuftraegeGridDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (AuftraegeGrid.SelectedItem is not Auftrag auftrag)

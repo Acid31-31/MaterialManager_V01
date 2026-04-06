@@ -253,6 +253,7 @@
                             <MenuItem Header="Excel-Datei wählen" Click="OnChooseImportExcelPathClick"/>
                             <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
+                            <MenuItem Header="Hauptprogramm" Click="OnOpenMainProgramClick"/>
                             <MenuItem Header="Schließen" Click="OnCloseWindow"/>
                         </MenuItem>
                         <MenuItem Header="Hilfe">

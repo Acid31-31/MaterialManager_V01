@@ -810,6 +810,14 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenMainProgramClick(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = new MainWindow();
+            Application.Current.MainWindow = mainWindow;
+            mainWindow.Show();
+            Close();
+        }
+
         private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dep = e.OriginalSource as DependencyObject;
