@@ -450,6 +450,8 @@
                 <DataGridTextColumn Header="Lagerort" Binding="{Binding Lagerort}" Width="90"/>
                 <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
                 <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
+                <DataGridTextColumn Header="Angelegt am" Binding="{Binding Datum, StringFormat=dd.MM.yyyy HH:mm}" Width="145"/>
+                <DataGridTextColumn Header="Geändert am" Binding="{Binding AenderungsDatum, StringFormat=dd.MM.yyyy HH:mm}" Width="145"/>
                 <DataGridTextColumn Header="Restnummer" Binding="{Binding Restnummer}" Width="110"/>
                 <DataGridTextColumn Header="Auftrag" Binding="{Binding AuftragNr}" Width="140"/>
                 <DataGridTextColumn Header="PDF" Binding="{Binding PdfDateiname}" Width="170" IsReadOnly="True">
