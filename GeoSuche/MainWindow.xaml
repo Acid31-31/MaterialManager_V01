@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <!-- ══ Title bar ════════════════════════════════════════════════════ -->
-        <Border Grid.Row="0" Background="#007ACC" Padding="16,10">
+        <Border Grid.Row="0" Background="#111111" BorderBrush="#23A455" BorderThickness="0,0,0,2" Padding="16,10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -24,6 +24,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Image Source="/Assets/logo.png" Height="20" Stretch="Uniform" Margin="0,0,10,0"/>
                     <TextBlock Text="⚙" FontSize="18" Foreground="White" Margin="0,0,10,0" VerticalAlignment="Center"/>
                     <TextBlock Text="GEO Arbeitsvorbereitung"
                                FontSize="16" FontWeight="SemiBold" Foreground="White"
@@ -32,15 +33,23 @@
 
                 <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,6">
-                        <Button Content="Startprogramm"
-                                Click="OnOpenStartProgrammClick"
+                        <Button Click="OnOpenStartProgrammClick"
                                 Style="{StaticResource SecondaryButton}"
                                 Margin="0,0,10,0"
-                                VerticalAlignment="Center"/>
-                        <Button Content="Hauptprogramm"
-                                Click="OnOpenHauptProgrammClick"
+                                VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Assets/app-icon.png" Width="14" Height="14" Margin="0,0,6,0"/>
+                                <TextBlock Text="Startprogramm" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Click="OnOpenHauptProgrammClick"
                                 Style="{StaticResource SecondaryButton}"
-                                VerticalAlignment="Center"/>
+                                VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Assets/app-icon.png" Width="14" Height="14" Margin="0,0,6,0"/>
+                                <TextBlock Text="Hauptprogramm" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
 
                     <WrapPanel HorizontalAlignment="Right">
@@ -83,13 +92,21 @@
 
             <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#1F1F1F" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Button Content="↩ Startprogramm"
-                            Click="OnOpenStartProgrammClick"
+                    <Button Click="OnOpenStartProgrammClick"
                             Style="{StaticResource SecondaryButton}"
-                            Margin="0,0,10,0"/>
-                    <Button Content="🏠 Hauptprogramm"
-                            Click="OnOpenHauptProgrammClick"
-                            Style="{StaticResource SecondaryButton}"/>
+                            Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/app-icon.png" Width="14" Height="14" Margin="0,0,6,0"/>
+                            <TextBlock Text="Startprogramm" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnOpenHauptProgrammClick"
+                            Style="{StaticResource SecondaryButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/app-icon.png" Width="14" Height="14" Margin="0,0,6,0"/>
+                            <TextBlock Text="Hauptprogramm" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Border>
 
