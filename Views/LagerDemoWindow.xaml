@@ -311,12 +311,19 @@
                         <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                     </StackPanel>
 
-                    <Button Grid.Column="2"
-                            Content="Schließen"
-                            Click="OnCloseClick"
-                            Background="#C42B1C"
-                            Foreground="White"
-                            Padding="14,8"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Laser"
+                                Click="OnOpenLaserProgramClick"
+                                Background="#2E7D32"
+                                Foreground="White"
+                                Padding="14,8"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Schließen"
+                                Click="OnCloseClick"
+                                Background="#C42B1C"
+                                Foreground="White"
+                                Padding="14,8"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 
