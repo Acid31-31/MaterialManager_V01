@@ -296,6 +296,8 @@
                             <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
                             <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
+                            <MenuItem Header="Startprogramm" Click="OnOpenStartProgramClick"/>
+                            <MenuItem Header="Lager" Click="OnOpenLagerProgramClick"/>
                             <MenuItem Header="Hauptprogramm" Click="OnOpenMainProgramClick"/>
                             <MenuItem Header="Schließen" Click="OnCloseClick"/>
                         </MenuItem>
@@ -355,6 +357,18 @@
             <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Startprogramm"
+                                Click="OnOpenStartProgramClick"
+                                Background="#37474F"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
+                        <Button Content="Lager"
+                                Click="OnOpenLagerProgramClick"
+                                Background="#6A1B9A"
+                                Foreground="White"
+                                Padding="16,12"
+                                Margin="0,0,8,0"/>
                         <Button Content="Excel speichern"
                                 x:Name="SaveExcelButton"
                                 Click="OnSaveExcelClick"

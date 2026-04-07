@@ -1175,6 +1175,22 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenStartProgramClick(object sender, RoutedEventArgs e)
+        {
+            var startWindow = new StartModeWindow();
+            Application.Current.MainWindow = startWindow;
+            startWindow.Show();
+            Close();
+        }
+
+        private void OnOpenLagerProgramClick(object sender, RoutedEventArgs e)
+        {
+            var lagerWindow = new LagerDemoWindow();
+            Application.Current.MainWindow = lagerWindow;
+            lagerWindow.Show();
+            Close();
+        }
+
         private void OnOpenMainProgramClick(object sender, RoutedEventArgs e)
         {
             var mainWindow = new MainWindow();
