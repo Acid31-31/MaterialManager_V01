@@ -474,5 +474,13 @@ namespace MaterialManager_V01.Views
             mainWindow.Show();
             Close();
         }
+
+        private void OnOpenLaserProgramClick(object sender, RoutedEventArgs e)
+        {
+            var laserWindow = new LaserDemoWindow();
+            Application.Current.MainWindow = laserWindow;
+            laserWindow.Show();
+            Close();
+        }
     }
 }
