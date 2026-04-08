@@ -588,8 +588,26 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst ein verfügbares Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                var verfuegbareMaterialien = _alleMaterialien
+                    .Where(m => string.IsNullOrWhiteSpace(m.AuftragNr) && m.Stueckzahl > 0)
+                    .OrderBy(m => m.Kategorie)
+                    .ThenBy(m => m.MaterialArt)
+                    .ThenBy(m => m.Legierung)
+                    .ThenBy(m => m.Form)
+                    .ThenBy(m => m.Mass)
+                    .ToList();
+
+                if (verfuegbareMaterialien.Count == 0)
+                {
+                    MessageBox.Show("Es sind keine verfügbaren Materialien für eine Reservierung vorhanden.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var auswahlDlg = new ResteAuswahlDialog(verfuegbareMaterialien) { Owner = this };
+                if (auswahlDlg.ShowDialog() != true || auswahlDlg.SelectedMaterial == null)
+                    return;
+
+                items.Add(auswahlDlg.SelectedMaterial);
             }
 
             string auftragNrForLog = string.Empty;
