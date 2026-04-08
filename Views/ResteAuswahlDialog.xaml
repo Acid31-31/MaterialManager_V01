@@ -36,9 +36,10 @@
         <DataGrid x:Name="ResteGrid" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="OnDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Trefferart" Binding="{Binding SuchTrefferArt}" Width="140"/>
+                <DataGridTextColumn Header="Kategorie" Binding="{Binding Kategorie}" Width="90"/>
                 <DataGridTextColumn Header="Material" Binding="{Binding MaterialArt}" Width="100"/>
                 <DataGridTextColumn Header="Legierung" Binding="{Binding Legierung}" Width="100"/>
-                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="70"/>
+                <DataGridTextColumn Header="Form" Binding="{Binding Form}" Width="90"/>
                 <DataGridTextColumn Header="Stärke" Binding="{Binding Staerke, StringFormat={}{0:0.0} mm}" Width="80"/>
                 <DataGridTextColumn Header="Maß" Binding="{Binding Mass}" Width="120"/>
                 <DataGridTextColumn Header="Stück" Binding="{Binding Stueckzahl}" Width="60"/>

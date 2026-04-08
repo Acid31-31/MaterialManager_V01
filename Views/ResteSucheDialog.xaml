@@ -1,7 +1,7 @@
 ﻿<Window x:Class="MaterialManager_V01.Views.ResteSucheDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="🔍 Reste suchen" Height="700" Width="1400" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
+        Title="Material suchen" Height="700" Width="1400" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
         <Style TargetType="TextBlock">
@@ -131,7 +131,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Erweiterte Reste-Suche" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
+        <TextBlock Grid.Row="0" Text="Erweiterte Material-Suche" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
 
         <TextBlock Grid.Row="1" Text="Material:"/>
         <ComboBox Grid.Row="1" x:Name="MaterialBox" Margin="0,32,0,0" SelectedIndex="0" SelectionChanged="MaterialBox_SelectionChanged">
@@ -167,7 +167,7 @@
             <ComboBoxItem>25,0</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="4" Text="Maße (z.B. 1000x550):"/>
+        <TextBlock Grid.Row="4" Text="Maße (optional, z.B. 1000x550):"/>
         <TextBox Grid.Row="4" x:Name="MassBox" Margin="0,32,0,0" 
                  ToolTip="Format: LängexBreite (in mm)&#x0a;Zuerst werden exakte Maßtreffer gesucht.&#x0a;Wenn kein exakter Rest vorhanden ist, werden größere Reste angezeigt.&#x0a;Wenn keine Reste passen, werden passende Tafeln angezeigt."/>
 
@@ -181,13 +181,16 @@
             <ComboBoxItem>30%</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="6" Text="Form:"/>
+        <TextBlock Grid.Row="6" Text="Form / Typ:"/>
         <ComboBox Grid.Row="6" x:Name="FormBox" Margin="0,32,0,0" SelectedIndex="0">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>Rest</ComboBoxItem>
             <ComboBoxItem>GF</ComboBoxItem>
             <ComboBoxItem>MF</ComboBoxItem>
             <ComboBoxItem>KF</ComboBoxItem>
+            <ComboBoxItem>Rundrohr</ComboBoxItem>
+            <ComboBoxItem>Vierkantrohr</ComboBoxItem>
+            <ComboBoxItem>Rechteckrohr</ComboBoxItem>
         </ComboBox>
 
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">

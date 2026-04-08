@@ -38,6 +38,13 @@ namespace MaterialManager_V01.Services
                 return ApplyTrefferArt(GetLargerDimensionMatches(formKandidaten, laenge.Value, breite.Value), "Größere Tafel");
             }
 
+            if (!string.IsNullOrWhiteSpace(form)
+                && !string.Equals(form, "Alle", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase))
+            {
+                return ApplyTrefferArt(OrderWithoutDimensionFallback(kandidaten, form, requireRest), "Material");
+            }
+
             var restKandidaten = kandidaten.Where(IsRest).ToList();
             var exakteReste = GetExactDimensionMatches(restKandidaten, laenge.Value, breite.Value);
             if (exakteReste.Any())
@@ -94,10 +101,7 @@ namespace MaterialManager_V01.Services
         {
             IEnumerable<MaterialItem> gefiltert = kandidaten;
 
-            if (string.Equals(form, "GF", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(form, "MF", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(form, "KF", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(form) && !string.Equals(form, "Alle", StringComparison.OrdinalIgnoreCase))
             {
                 gefiltert = gefiltert.Where(m => string.Equals(m.Form, form, StringComparison.OrdinalIgnoreCase));
             }
