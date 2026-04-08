@@ -133,21 +133,33 @@
 
         <TextBlock Grid.Row="0" Text="Erweiterte Material-Suche" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <TextBlock Grid.Row="1" Text="Material:"/>
-        <ComboBox Grid.Row="1" x:Name="MaterialBox" Margin="0,32,0,0" SelectedIndex="0" SelectionChanged="MaterialBox_SelectionChanged">
+        <TextBlock Grid.Row="1" Text="Form / Typ:"/>
+        <ComboBox Grid.Row="1" x:Name="FormBox" Margin="0,32,0,0" SelectedIndex="0">
+            <ComboBoxItem>Alle</ComboBoxItem>
+            <ComboBoxItem>Rest</ComboBoxItem>
+            <ComboBoxItem>GF</ComboBoxItem>
+            <ComboBoxItem>MF</ComboBoxItem>
+            <ComboBoxItem>KF</ComboBoxItem>
+            <ComboBoxItem>Rundrohr</ComboBoxItem>
+            <ComboBoxItem>Vierkantrohr</ComboBoxItem>
+            <ComboBoxItem>Rechteckrohr</ComboBoxItem>
+        </ComboBox>
+
+        <TextBlock Grid.Row="2" Text="Material:"/>
+        <ComboBox Grid.Row="2" x:Name="MaterialBox" Margin="0,32,0,0" SelectedIndex="0" SelectionChanged="MaterialBox_SelectionChanged">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>Stahl</ComboBoxItem>
             <ComboBoxItem>Edelstahl</ComboBoxItem>
             <ComboBoxItem>Aluminium</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="2" Text="Legierung:"/>
-        <ComboBox Grid.Row="2" x:Name="LegierungBox" Margin="0,32,0,0" 
+        <TextBlock Grid.Row="3" Text="Legierung:"/>
+        <ComboBox Grid.Row="3" x:Name="LegierungBox" Margin="0,32,0,0" 
                   ItemsSource="{Binding Legierungen}"
                   SelectedIndex="0"/>
 
-        <TextBlock Grid.Row="3" Text="Stärke (mm):"/>
-        <ComboBox Grid.Row="3" x:Name="StaerkeBox" Margin="0,32,0,0" SelectedIndex="0">
+        <TextBlock Grid.Row="4" Text="Stärke (mm):"/>
+        <ComboBox Grid.Row="4" x:Name="StaerkeBox" Margin="0,32,0,0" SelectedIndex="0">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>0,3</ComboBoxItem>
             <ComboBoxItem>0,5</ComboBoxItem>
@@ -167,30 +179,18 @@
             <ComboBoxItem>25,0</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="4" Text="Maße (optional, z.B. 1000x550):"/>
-        <TextBox Grid.Row="4" x:Name="MassBox" Margin="0,32,0,0" 
+        <TextBlock Grid.Row="5" Text="Maße (optional, z.B. 1000x550):"/>
+        <TextBox Grid.Row="5" x:Name="MassBox" Margin="0,32,0,0" 
                  ToolTip="Format: LängexBreite (in mm)&#x0a;Zuerst werden exakte Maßtreffer gesucht.&#x0a;Wenn kein exakter Rest vorhanden ist, werden größere Reste angezeigt.&#x0a;Wenn keine Reste passen, werden passende Tafeln angezeigt."/>
 
-        <TextBlock Grid.Row="5" Text="Toleranz (%):" Visibility="Collapsed"/>
-        <ComboBox Grid.Row="5" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1" Visibility="Collapsed">
+        <TextBlock Grid.Row="6" Text="Toleranz (%):" Visibility="Collapsed"/>
+        <ComboBox Grid.Row="6" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1" Visibility="Collapsed">
             <ComboBoxItem>5%</ComboBoxItem>
             <ComboBoxItem>10%</ComboBoxItem>
             <ComboBoxItem>15%</ComboBoxItem>
             <ComboBoxItem>20%</ComboBoxItem>
             <ComboBoxItem>25%</ComboBoxItem>
             <ComboBoxItem>30%</ComboBoxItem>
-        </ComboBox>
-
-        <TextBlock Grid.Row="6" Text="Form / Typ:"/>
-        <ComboBox Grid.Row="6" x:Name="FormBox" Margin="0,32,0,0" SelectedIndex="0">
-            <ComboBoxItem>Alle</ComboBoxItem>
-            <ComboBoxItem>Rest</ComboBoxItem>
-            <ComboBoxItem>GF</ComboBoxItem>
-            <ComboBoxItem>MF</ComboBoxItem>
-            <ComboBoxItem>KF</ComboBoxItem>
-            <ComboBoxItem>Rundrohr</ComboBoxItem>
-            <ComboBoxItem>Vierkantrohr</ComboBoxItem>
-            <ComboBoxItem>Rechteckrohr</ComboBoxItem>
         </ComboBox>
 
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
