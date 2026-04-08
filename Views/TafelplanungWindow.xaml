@@ -317,7 +317,7 @@
                         <MenuItem Header="Ansicht">
                             <MenuItem Header="Auftragsliste" Click="OnOrderListClick"/>
                             <MenuItem Header="Gebuchte Materialien" Click="OnReservedRestsClick"/>
-                            <MenuItem Header="Reste suchen" Click="OnSearchRestsClick"/>
+                            <MenuItem Header="Material suchen" Click="OnSearchRestsClick"/>
                             <MenuItem Header="Niedrige Bestände" Click="OnLowStockClick"/>
                         </MenuItem>
                         <MenuItem Header="Hilfe">
@@ -391,7 +391,7 @@
 
                     <TextBlock Text="Navigation / Ansicht" Foreground="#B0BEC5" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Gebuchte Materialien" Click="OnReservedRestsClick" Background="#1976D2" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Reste suchen" Click="OnSearchRestsClick" Background="#2E7D32" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Material suchen" Click="OnSearchRestsClick" Background="#2E7D32" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Niedrige Bestände" Click="OnLowStockClick" Background="#EF6C00" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Aktualisieren" Click="OnRefreshClick" Background="#555" Foreground="White" Margin="0"/>
                 </StackPanel>

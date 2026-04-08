@@ -549,12 +549,12 @@ namespace MaterialManager_V01.Views
 
             if (!gefunden.Any())
             {
-                MessageBox.Show("Keine passenden Materialien gefunden.", "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Keine passenden Materialien gefunden.", "Material-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grün markiert.",
-                "Reste-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
+                "Material-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
 
             var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
             if (auswahlDlg.ShowDialog() != true || auswahlDlg.SelectedMaterial == null)
