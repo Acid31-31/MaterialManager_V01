@@ -90,11 +90,37 @@
                         }
                         case MaterialKategorie.Rohr:
                         {
-                            if (Durchmesser <= 0 || Staerke <= 0 || Laenge <= 0) return 0;
+                            if (Staerke <= 0 || Laenge <= 0) return 0;
+
+                            if (string.Equals(Form, "Vierkantrohr", StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(Form, "Rechteckrohr", StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (!TryParseMass(Mass, out var hoehe, out var breite))
+                                {
+                                    if (Durchmesser <= 0) return 0;
+                                    hoehe = Durchmesser;
+                                    breite = string.Equals(Form, "Vierkantrohr", StringComparison.OrdinalIgnoreCase)
+                                        ? Durchmesser
+                                        : 0;
+                                }
+
+                                if (hoehe <= 0) return 0;
+                                if (breite <= 0)
+                                    breite = hoehe;
+
+                                var innenHoehe = Math.Max(0, hoehe - 2 * Staerke);
+                                var innenBreite = Math.Max(0, breite - 2 * Staerke);
+
+                                var querschnitt = ((hoehe * breite) - (innenHoehe * innenBreite)) / 1_000_000.0;
+                                var gewicht = querschnitt * (Laenge / 1000.0) * dichte * Stueckzahl;
+                                return Math.Round(gewicht, 2);
+                            }
+
+                            if (Durchmesser <= 0) return 0;
                             double ra = Durchmesser / 2.0 / 1000.0;
                             double ri = (Durchmesser / 2.0 - Staerke) / 1000.0;
-                            double gewicht = Math.PI * (ra * ra - ri * ri) * (Laenge / 1000.0) * dichte * Stueckzahl;
-                            return Math.Round(gewicht, 2);
+                            double gewichtRund = Math.PI * (ra * ra - ri * ri) * (Laenge / 1000.0) * dichte * Stueckzahl;
+                            return Math.Round(gewichtRund, 2);
                         }
                         case MaterialKategorie.Profil:
                         {

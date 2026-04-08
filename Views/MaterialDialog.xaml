@@ -288,31 +288,56 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Außen-Ø (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Rohrform:" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="0" Grid.Column="1"
+                              ItemsSource="{Binding RohrFormen}"
+                              SelectedItem="{Binding SelectedRohrForm, Mode=TwoWay}"
+                              Margin="0,5"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Außen-Ø (mm):" VerticalAlignment="Center" Margin="0,5"
+                               Visibility="{Binding RohrRundVisible}"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding RohrDurchmesser}"
                               Text="{Binding SelectedDurchmesser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
-                              Margin="0,5"/>
+                              Margin="0,5"
+                              Visibility="{Binding RohrRundVisible}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1"
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Höhe außen (mm):" VerticalAlignment="Center" Margin="0,5"
+                               Visibility="{Binding RohrEckigVisible}"/>
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding SelectedRohrHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"
+                             Visibility="{Binding RohrEckigVisible}"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Breite außen (mm):" VerticalAlignment="Center" Margin="0,5"
+                               Visibility="{Binding RohrBreiteVisible}"/>
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             Text="{Binding SelectedRohrBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5"
+                             Visibility="{Binding RohrBreiteVisible}"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="4" Grid.Column="1"
                               ItemsSource="{Binding RohrWandstaerken}"
                               Text="{Binding SelectedRohrWand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
-                    <ComboBox Grid.Row="2" Grid.Column="1"
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
+                    <ComboBox Grid.Row="5" Grid.Column="1"
                               ItemsSource="{Binding StandardLaengen}"
                               Text="{Binding SelectedLaenge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               IsEditable="True"
                               Margin="0,5"/>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
-                    <TextBox Grid.Row="3" Grid.Column="1"
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Grid.Row="6" Grid.Column="1"
                              Text="{Binding Stueckzahl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Margin="0,5"/>
                 </Grid>

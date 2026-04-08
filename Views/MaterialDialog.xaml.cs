@@ -130,12 +130,40 @@ namespace MaterialManager_V01.Views
         public Visibility EtiquetteVisible  => SelectedForm == "Rest" ? Visibility.Visible : Visibility.Collapsed;
 
         // ── Rohr-spezifisch ──────────────────────────────────────────────────
+        public string[] RohrFormen => MaterialDefinitions.RohrFormen;
+
+        private string _selectedRohrForm = "Rundrohr";
+        public string SelectedRohrForm
+        {
+            get => _selectedRohrForm;
+            set
+            {
+                if (_selectedRohrForm == value) return;
+                _selectedRohrForm = value;
+                OnPropertyChanged(nameof(SelectedRohrForm));
+                OnPropertyChanged(nameof(RohrRundVisible));
+                OnPropertyChanged(nameof(RohrEckigVisible));
+                OnPropertyChanged(nameof(RohrBreiteVisible));
+                OnPropertyChanged(nameof(GeschaetzterWert));
+            }
+        }
+
+        public Visibility RohrRundVisible => SelectedRohrForm == "Rundrohr" ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility RohrEckigVisible => SelectedRohrForm == "Rundrohr" ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility RohrBreiteVisible => SelectedRohrForm == "Rechteckrohr" ? Visibility.Visible : Visibility.Collapsed;
+
         public double[] RohrDurchmesser  => MaterialDefinitions.RohrStandardDurchmesser;
         public double[] RohrWandstaerken => MaterialDefinitions.RohrStandardWandstaerken;
         public int[]    StandardLaengen  => MaterialDefinitions.StandardLaengen;
 
         private string _selectedDurchmesser = "";
         public string SelectedDurchmesser { get => _selectedDurchmesser; set { _selectedDurchmesser = value; OnPropertyChanged(nameof(SelectedDurchmesser)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        private string _selectedRohrHoehe = "";
+        public string SelectedRohrHoehe { get => _selectedRohrHoehe; set { _selectedRohrHoehe = value; OnPropertyChanged(nameof(SelectedRohrHoehe)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+
+        private string _selectedRohrBreite = "";
+        public string SelectedRohrBreite { get => _selectedRohrBreite; set { _selectedRohrBreite = value; OnPropertyChanged(nameof(SelectedRohrBreite)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
 
         private string _selectedRohrWand = "";
         public string SelectedRohrWand { get => _selectedRohrWand; set { _selectedRohrWand = value; OnPropertyChanged(nameof(SelectedRohrWand)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
@@ -183,14 +211,33 @@ namespace MaterialManager_V01.Views
                 }
                 else if (_selectedKategorie == "Rohr")
                 {
-                    ParseD(_selectedDurchmesser, out var dm);
                     ParseD(_selectedRohrWand, out var wand);
                     ParseD(_selectedLaenge, out var len);
-                    if (dm > 0 && wand > 0 && len > 0)
+
+                    if (SelectedRohrForm == "Rundrohr")
                     {
-                        double ra = dm / 2.0 / 1000.0;
-                        double ri = (dm / 2.0 - wand) / 1000.0;
-                        gewicht = Math.PI * (ra * ra - ri * ri) * (len / 1000.0) * dichte * _stueckzahl;
+                        ParseD(_selectedDurchmesser, out var dm);
+                        if (dm > 0 && wand > 0 && len > 0)
+                        {
+                            double ra = dm / 2.0 / 1000.0;
+                            double ri = (dm / 2.0 - wand) / 1000.0;
+                            gewicht = Math.PI * (ra * ra - ri * ri) * (len / 1000.0) * dichte * _stueckzahl;
+                        }
+                    }
+                    else
+                    {
+                        ParseD(_selectedRohrHoehe, out var h);
+                        ParseD(_selectedRohrBreite, out var b);
+                        if (SelectedRohrForm == "Vierkantrohr" && b <= 0)
+                            b = h;
+
+                        if (h > 0 && b > 0 && wand > 0 && len > 0)
+                        {
+                            var innenH = Math.Max(0, h - 2 * wand);
+                            var innenB = Math.Max(0, b - 2 * wand);
+                            var querschnitt = ((h * b) - (innenH * innenB)) / 1_000_000.0;
+                            gewicht = querschnitt * (len / 1000.0) * dichte * _stueckzahl;
+                        }
                     }
                 }
                 else if (_selectedKategorie == "Profil")
@@ -324,9 +371,19 @@ namespace MaterialManager_V01.Views
                     Mass = original.Mass;
                     break;
                 case MaterialKategorie.Rohr:
+                    SelectedRohrForm = string.IsNullOrWhiteSpace(original.Form) ? "Rundrohr" : original.Form;
                     SelectedDurchmesser = original.Durchmesser > 0 ? original.Durchmesser.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
                     SelectedRohrWand    = original.Staerke     > 0 ? original.Staerke.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
                     SelectedLaenge      = original.Laenge       > 0 ? original.Laenge.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+
+                    if (SelectedRohrForm != "Rundrohr" && !string.IsNullOrWhiteSpace(original.Mass))
+                    {
+                        var parts = original.Mass.Split('x', 'X', '×');
+                        if (parts.Length >= 1)
+                            SelectedRohrHoehe = parts[0].Trim();
+                        if (parts.Length >= 2)
+                            SelectedRohrBreite = parts[1].Trim();
+                    }
                     break;
                 case MaterialKategorie.Profil:
                     SelectedProfilTyp    = original.ProfilTyp;
@@ -491,9 +548,27 @@ namespace MaterialManager_V01.Views
             }
             else if (kat == MaterialKategorie.Rohr)
             {
-                ParseD(SelectedDurchmesser, out var dm);
-                ParseD(SelectedRohrWand,    out var wand);
-                ParseD(SelectedLaenge,      out var len);
+                ParseD(SelectedRohrWand, out var wand);
+                ParseD(SelectedLaenge, out var len);
+
+                double dm = 0;
+                string rohrMass = string.Empty;
+
+                if (SelectedRohrForm == "Rundrohr")
+                {
+                    ParseD(SelectedDurchmesser, out dm);
+                }
+                else
+                {
+                    ParseD(SelectedRohrHoehe, out var h);
+                    ParseD(SelectedRohrBreite, out var b);
+                    if (SelectedRohrForm == "Vierkantrohr" && b <= 0)
+                        b = h;
+
+                    if (h > 0 && b > 0)
+                        rohrMass = $"{h:0.##}x{b:0.##}";
+                }
+
                 Material = new MaterialItem
                 {
                     Kategorie      = MaterialKategorie.Rohr,
@@ -501,8 +576,10 @@ namespace MaterialManager_V01.Views
                     Legierung      = SelectedLegierung,
                     Oberflaeche    = SelectedOberflaeche,
                     Guete          = SelectedGuete,
+                    Form           = SelectedRohrForm,
                     Durchmesser    = dm,
                     Staerke        = wand,
+                    Mass           = rohrMass,
                     Laenge         = len,
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,

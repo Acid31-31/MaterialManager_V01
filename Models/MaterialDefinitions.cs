@@ -19,6 +19,13 @@ namespace MaterialManager_V01.Models
         };
 
         // ── Rohr ───────────────────────────────────────────────────────────────
+        public static readonly string[] RohrFormen =
+        {
+            "Rundrohr",
+            "Vierkantrohr",
+            "Rechteckrohr"
+        };
+
         /// <summary>Standardaußendurchmesser für Rundrohre in mm (EN 10216/10217)</summary>
         public static readonly double[] RohrStandardDurchmesser =
         {
