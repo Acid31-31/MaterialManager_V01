@@ -33,6 +33,13 @@ namespace MaterialManager_V01.Models
             88.9, 101.6, 114.3, 133, 139.7, 159, 168.3, 193.7, 219.1, 273
         };
 
+        /// <summary>Standard-Kantenmaße für Vierkant-/Rechteckrohre in mm</summary>
+        public static readonly double[] RohrStandardKantenmasse =
+        {
+            10, 12, 15, 20, 25, 30, 35, 40, 45, 50,
+            60, 70, 80, 90, 100, 120, 140, 150, 160, 180, 200
+        };
+
         /// <summary>Übliche Wandstärken für Rohre in mm</summary>
         public static readonly double[] RohrStandardWandstaerken =
         {

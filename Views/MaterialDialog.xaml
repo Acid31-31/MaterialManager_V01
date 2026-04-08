@@ -310,17 +310,21 @@
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Höhe außen (mm):" VerticalAlignment="Center" Margin="0,5"
                                Visibility="{Binding RohrEckigVisible}"/>
-                    <TextBox Grid.Row="2" Grid.Column="1"
-                             Text="{Binding SelectedRohrHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,5"
-                             Visibility="{Binding RohrEckigVisible}"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1"
+                              ItemsSource="{Binding RohrKantenmasse}"
+                              Text="{Binding SelectedRohrHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              IsEditable="True"
+                              Margin="0,5"
+                              Visibility="{Binding RohrEckigVisible}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Breite außen (mm):" VerticalAlignment="Center" Margin="0,5"
                                Visibility="{Binding RohrBreiteVisible}"/>
-                    <TextBox Grid.Row="3" Grid.Column="1"
-                             Text="{Binding SelectedRohrBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,5"
-                             Visibility="{Binding RohrBreiteVisible}"/>
+                    <ComboBox Grid.Row="3" Grid.Column="1"
+                              ItemsSource="{Binding RohrKantenmasse}"
+                              Text="{Binding SelectedRohrBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              IsEditable="True"
+                              Margin="0,5"
+                              Visibility="{Binding RohrBreiteVisible}"/>
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="4" Grid.Column="1"

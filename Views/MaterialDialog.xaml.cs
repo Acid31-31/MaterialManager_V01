@@ -153,6 +153,7 @@ namespace MaterialManager_V01.Views
         public Visibility RohrBreiteVisible => SelectedRohrForm == "Rechteckrohr" ? Visibility.Visible : Visibility.Collapsed;
 
         public double[] RohrDurchmesser  => MaterialDefinitions.RohrStandardDurchmesser;
+        public double[] RohrKantenmasse => MaterialDefinitions.RohrStandardKantenmasse;
         public double[] RohrWandstaerken => MaterialDefinitions.RohrStandardWandstaerken;
         public int[]    StandardLaengen  => MaterialDefinitions.StandardLaengen;
 
