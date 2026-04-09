@@ -908,15 +908,8 @@ namespace MaterialManager_V01.Views
                 return;
 
             PushUndoSnapshot("Material bearbeiten");
-            dlg.Material.Lagerort = !string.IsNullOrWhiteSpace(item.AuftragNr) && item.Kategorie == MaterialKategorie.Blech
-                ? "Angefangene Tafel"
-                : RegalService.DetermineLagerort(
-                    dlg.Material.MaterialArt,
-                    dlg.Material.Legierung,
-                    dlg.Material.Form,
-                    dlg.Material.Staerke,
-                    dlg.Material.Mass,
-                    _alleMaterialien.Where(m => !ReferenceEquals(m, item)).ToList());
+            if (!string.IsNullOrWhiteSpace(item.AuftragNr) && item.Kategorie == MaterialKategorie.Blech)
+                dlg.Material.Lagerort = "Angefangene Tafel";
             dlg.Material.IsSelected = false;
             _alleMaterialien[index] = dlg.Material;
             SaveAllMaterials();

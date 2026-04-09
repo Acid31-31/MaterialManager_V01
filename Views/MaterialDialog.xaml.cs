@@ -307,6 +307,25 @@ namespace MaterialManager_V01.Views
         private bool _canSave = true;
         public bool CanSave { get => _canSave; set { _canSave = value; OnPropertyChanged(nameof(CanSave)); } }
 
+        private List<string> _availableLagerorte = new();
+        public List<string> AvailableLagerorte
+        {
+            get => _availableLagerorte;
+            set { _availableLagerorte = value; OnPropertyChanged(nameof(AvailableLagerorte)); }
+        }
+
+        private string _selectedLagerort = string.Empty;
+        public string SelectedLagerort
+        {
+            get => _selectedLagerort;
+            set
+            {
+                _selectedLagerort = value ?? string.Empty;
+                OnPropertyChanged(nameof(SelectedLagerort));
+                UpdateShelfStats();
+            }
+        }
+
         public MaterialDialog()
         {
             InitializeComponent();
@@ -337,6 +356,21 @@ namespace MaterialManager_V01.Views
                 _inventoryNotifier = nc;
                 _inventoryNotifier.CollectionChanged += Inventory_CollectionChanged;
             }
+
+            var alleLagerorte = Services.RegalService.GetAllLagerorte().ToList();
+            var ausBestand = _inventory
+                .Select(i => i.Lagerort)
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+
+            AvailableLagerorte = alleLagerorte
+                .Concat(ausBestand)
+                .Concat(new[] { "Gebucht", "Angefangene Tafel" })
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(v => v)
+                .ToList();
+
             UpdateShelfStats();
         }
 
@@ -363,6 +397,7 @@ namespace MaterialManager_V01.Views
             SelectedLieferant = original.Lieferant;
             SelectedLieferscheinNr = original.LieferscheinNr;
             PreisProKg = original.PreisProKg.ToString("F2", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',');
+            SelectedLagerort = original.Lagerort;
 
             switch (original.Kategorie)
             {
@@ -449,27 +484,28 @@ namespace MaterialManager_V01.Views
             UpdateShelfStats();
         }
 
+        private string DetermineSuggestedLagerort()
+        {
+            if (_selectedKategorie == "Rohr")
+                return "Rohrlager";
+
+            if (_selectedKategorie == "Profil")
+                return "Profillager";
+
+            return Services.RegalService.DetermineLagerort(
+                SelectedMaterialArt,
+                SelectedLegierung,
+                SelectedForm,
+                SelectedStaerke,
+                Mass,
+                _inventory);
+        }
+
         private void UpdateShelfStats()
         {
-            string lagerort;
-            if (_selectedKategorie == "Rohr")
-            {
-                lagerort = "Rohrlager";
-            }
-            else if (_selectedKategorie == "Profil")
-            {
-                lagerort = "Profillager";
-            }
-            else
-            {
-                lagerort = Services.RegalService.DetermineLagerort(
-                    SelectedMaterialArt,
-                    SelectedLegierung,
-                    SelectedForm,
-                    SelectedStaerke,
-                    Mass,
-                    _inventory);
-            }
+            var lagerort = !string.IsNullOrWhiteSpace(SelectedLagerort)
+                ? SelectedLagerort
+                : DetermineSuggestedLagerort();
 
             CapacityKg = Services.RegalService.GetCapacity(lagerort);
             CurrentLoadKg = Services.RegalService.CalculateCurrentLoad(_inventory, lagerort);
@@ -534,9 +570,11 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = _isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
-                                        ? _originalLagerort
-                                        : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, SelectedStaerke, Mass, _inventory),
+                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort)
+                                        ? SelectedLagerort
+                                        : (_isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
+                                            ? _originalLagerort
+                                            : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, SelectedStaerke, Mass, _inventory)),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
@@ -586,7 +624,7 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = "Rohrlager",
+                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort) ? SelectedLagerort : "Rohrlager",
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
@@ -619,7 +657,7 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = "Profillager",
+                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort) ? SelectedLagerort : "Profillager",
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
