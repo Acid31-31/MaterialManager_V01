@@ -81,6 +81,11 @@ Desktop.ini
 *.license
 license_keys/
 LicenseKeys/
+*.pfx
+*.p12
+
+# Temporäre Visual-Studio/WPF Projektdateien
+*_wpftmp.csproj
 
 # Temporäre Excel-Dateien
 ~$*.xlsx
