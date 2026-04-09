@@ -12,6 +12,15 @@ Doppelklick: `START_MaterialManager.bat`
 
 `Install_LocalPC.bat` als Administrator ausführen.
 
+## Code-Signing (wichtig für Updates auf andere PCs)
+
+Für neue PCs zuerst (einmalig) als Administrator ausführen:
+- `INSTALL_CERTIFICATE.bat`
+
+Hinweis:
+- Das öffentliche Zertifikat liegt als `MaterialManager_CodeSigning_PUBLIC.cer` im selben Ordner.
+- Die `.pfx` bleibt nur auf dem Build-PC und wird nicht verteilt.
+
 ## Mehr-PC / Netzwerk
 
 Vollständige Anleitung:

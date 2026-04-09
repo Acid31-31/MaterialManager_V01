@@ -11,6 +11,14 @@ Dieses Dokument beschreibt, wie du das Programm digital mit einem Code-Signing-Z
 - **Integrität**: Datei wurde nicht verändert
 - **SmartScreen-Warnungen reduzieren**
 
+## 🚨 Wichtig für Updates auf andere PCs
+
+- Die `.pfx` enthält den **privaten Schlüssel** und bleibt nur auf dem Build-PC.
+- Auf Ziel-PCs wird **nicht** die `.pfx` verteilt.
+- Verteilt werden:
+  1. die **signierten Update-Dateien** (`.exe`, `.dll`),
+  2. das **öffentliche Zertifikat** (`.cer`) für Vertrauen auf Ziel-PCs.
+
 ## 📦 Optionen zum Signieren
 
 ### Option 1: Selbstsigniertes Zertifikat (kostenlos, lokal)
@@ -47,143 +55,58 @@ Gut für: Kommerzielle Verteilung, Vertrauen von Dritten
 
 **Vorteil:**
 - Windows erkennt Zertifikat automatisch als vertrauenswürdig
-- Keine SmartScreen-Warnungen
+- Weniger SmartScreen-Warnungen
 - Professioneller Eindruck
 
-## 🔨 Vollautomatisches Signing mit Build-Script
+## ✅ Neuer Standard-Workflow (Release + USB)
 
-```powershell
-# Publish + Sign in einem Schritt:
-.\Build-USBVersion.ps1 -Action Package `
-    -CertificatePath "MaterialManager_CodeSign.pfx" `
-    -CertificatePassword "YourSecurePassword"
+1. Software bauen/publishen.
+2. Signieren mit:
+
+```bat
+SIGN_RELEASE.bat "D:\Pfad\zu\deinem.pfx" "DEIN_PASSWORT"
 ```
+
+3. Dabei wird automatisch exportiert:
+
+- `USB_Installation\MaterialManager_CodeSigning_PUBLIC.cer`
+
+4. Auf Ziel-PC (einmalig pro Zertifikat):
+
+- `USB_Installation\INSTALL_CERTIFICATE.bat` als Administrator ausführen.
+
+5. Danach Update/Installation normal starten.
 
 ## ✅ Verifizierung der Signatur
 
 ```powershell
-# Signatur prüfen
-$file = "C:\Path\To\MaterialManager_V01.exe"
-Get-AuthenticodeSignature $file | Format-List *
-
-# Sollte zeigen:
-# Status: Valid
-# SignerCertificate: CN=MaterialManager
-```
-
-## 📝 Lizenz-Dateien Struktur
-
-Die Lizenzierung funktioniert parallel zum Code-Signing:
-
-```
-USB_Stick/
-├── MaterialManager_V01.exe    ← Digital signiert
-├── *.dll                       ← Digital signiert
-├── INSTALL.bat                 ← Installation
-├── GENERATE_LICENSE.bat        ← Lizenzgenerierung
-└── USB_README.txt             ← Dokumentation
-```
-
-## 🚀 Kompletter Prozess für USB-Distribution
-
-```bash
-# 1. Build erstellen
-.\Build-USBVersion.ps1 -Action Build
-
-# 2. Publish (self-contained)
-.\Build-USBVersion.ps1 -Action Publish
-
-# 3. Code-Signing (optional, mit gültigem Zertifikat)
-.\Build-USBVersion.ps1 -Action Sign `
-    -CertificatePath "MaterialManager_CodeSign.pfx" `
-    -CertificatePassword "password"
-
-# 4. Finales USB-Paket erstellen
-.\Build-USBVersion.ps1 -Action Package
-
-# 5. Datei auf USB kopieren
-# → USB_Distribution Folder auf USB-Stick kopieren
+$file = "D:\MaterialManager_V01_komplett\USB_Installation\MaterialManager\MaterialManager_V01.exe"
+Get-AuthenticodeSignature $file | Format-List Status,StatusMessage,SignerCertificate
 ```
 
 ## 🛡️ Sicherheit & Best Practices
 
 ✅ **DO:**
-- Zertifikat-Passwort sicher lagern
-- Timestamp verwenden (bei jedem Signing)
-- Vor Distribution testen
-- Checksum-Dateien erstellen
+- `.pfx` nur auf Build-PC behalten
+- Immer Timestamp verwenden
+- Signatur nach jedem Release prüfen
+- Öffentliches `.cer` mit USB-Updatepaket mitgeben
 
 ❌ **DON'T:**
+- `.pfx` auf USB oder Ziel-PCs verteilen
 - Passwort in Scripts hardcodieren
 - Ohne Timestamp signieren
-- Abgelaufene Zertifikate verwenden
-- Zertifikat auf USB-Stick lagern
 
 ## 📊 Timing-Server (Timestamp)
 
 Beim Signieren sollte ein Timestamp-Server verwendet werden:
 
-```
-http://timestamp.comodoca.com/authenticode
-http://time.certum.pl
-https://tsa.starfieldtech.com
-```
-
-**Warum?** Die Signatur bleibt gültig, auch wenn das Zertifikat später abläuft.
-
-## 🔄 Automatische Lizenzschlüssel-Generierung
-
-Für Kunden Hardware-IDs in Lizenzen umwandeln:
-
-```batch
-REM GENERATE_LICENSE.bat ausführen:
-GENERATE_LICENSE.bat
-
-REM Eingaben:
-REM - Hardware-ID: CPU-DISK-MAC-Hash
-REM - Kundenname: Firma XYZ
-REM → Lizenzschlüssel: MM-XXXX-XXXX-XXXX-XXXX
-```
-
-## 📞 Support
-
-Bei Problemen mit Code-Signing:
-- Windows SDK installiert? → https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
-- SignTool.exe nicht gefunden? → Pfad in Build.ps1 anpassen
-- Zertifikat ungültig? → Neue selbstsignierte erstellen oder extern kaufen
+- `http://timestamp.digicert.com`
+- `http://timestamp.comodoca.com/authenticode`
+- `http://time.certum.pl`
 
 ---
 
-**Version:** 1.0.0  
-**Stand:** 2025-02-28  
+**Version:** 1.1.0  
+**Stand:** 2026-04-09  
 **Autor:** MaterialManager Development Team
-
-## 🚀 Neuer Ein-Klick Signier-Workflow (empfohlen)
-
-Im Projekt gibt es jetzt zwei Helfer:
-
-- `SIGN_RELEASE.ps1`
-- `SIGN_RELEASE.bat`
-
-Damit werden standardmäßig diese Dateien signiert:
-
-- `USB_Installation\MaterialManager\MaterialManager_V01.exe`
-- `USB_Installation\UpdateInstaller.exe`
-- `USB_Installation\Installer.exe`
-
-### Aufruf
-
-```bat
-SIGN_RELEASE.bat "C:\Pfad\zu\deinem_cert.pfx" "DEIN_PASSWORT"
-```
-
-### Hinweise
-
-- Der Workflow nutzt `SHA256` + Timestamp (`http://timestamp.digicert.com`).
-- Mit `-RemoveExistingSignature` werden alte Test-Signaturen vorher entfernt.
-- Nach dem Signieren wird die Signatur je Datei geprüft und ausgegeben.
-
-### Sicherheits-Hinweis
-
-- Nutze für produktive Auslieferung ein echtes OV/EV-Code-Signing-Zertifikat.
-- Selbstsignierte Zertifikate sind nur für interne Tests geeignet.

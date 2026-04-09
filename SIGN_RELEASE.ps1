@@ -13,10 +13,15 @@ param(
 
     [switch]$SignMainApp,
 
-    [switch]$RemoveExistingSignature
+    [switch]$RemoveExistingSignature,
+
+    [switch]$SkipPublicCertificateExport,
+
+    [string]$PublicCertificateOutput = "USB_Installation\MaterialManager_CodeSigning_PUBLIC.cer"
 )
 
 $ErrorActionPreference = "Stop"
+$repoRoot = Split-Path -Parent $PSScriptRoot
 
 function Resolve-SignTool {
     $cmd = Get-Command signtool.exe -ErrorAction SilentlyContinue
@@ -34,6 +39,16 @@ function Resolve-SignTool {
     }
 
     throw "signtool.exe nicht gefunden. Bitte Windows SDK installieren."
+}
+
+function Resolve-RepoPath {
+    param([string]$RelativePath)
+
+    if ([System.IO.Path]::IsPathRooted($RelativePath)) {
+        return $RelativePath
+    }
+
+    return [System.IO.Path]::GetFullPath((Join-Path $repoRoot $RelativePath))
 }
 
 function Sign-File {
@@ -57,6 +72,21 @@ function Sign-File {
     Write-Host "$FilePath => $($sig.Status) | $($sig.SignerCertificate.Subject)"
 }
 
+function Export-PublicCertificate {
+    param([string]$OutputPath)
+
+    $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+    $cert.Import($CertificatePath, $CertificatePassword, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
+
+    $dir = Split-Path -Parent $OutputPath
+    if (![string]::IsNullOrWhiteSpace($dir) -and !(Test-Path $dir)) {
+        New-Item -ItemType Directory -Path $dir | Out-Null
+    }
+
+    Export-Certificate -Cert $cert -FilePath $OutputPath -Force | Out-Null
+    Write-Host "Öffentliches Zertifikat exportiert: $OutputPath"
+}
+
 if (!(Test-Path $CertificatePath)) {
     throw "Zertifikat nicht gefunden: $CertificatePath"
 }
@@ -78,7 +108,13 @@ else {
 }
 
 foreach ($target in $targets) {
-    Sign-File -SignTool $signTool -FilePath $target
+    $resolvedTarget = Resolve-RepoPath $target
+    Sign-File -SignTool $signTool -FilePath $resolvedTarget
+}
+
+if (!$SkipPublicCertificateExport) {
+    $publicCertPath = Resolve-RepoPath $PublicCertificateOutput
+    Export-PublicCertificate -OutputPath $publicCertPath
 }
 
 Write-Host "Signierung abgeschlossen."

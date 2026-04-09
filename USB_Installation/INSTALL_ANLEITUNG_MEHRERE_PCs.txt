@@ -1,5 +1,5 @@
 ================================================================================
-MATERIALMANAGER V01 - KOMPLETTE INSTALLATIONSANLEITUNG (MEHRERE PCs)
+MATERIALMANAGER V01 - KOMPLETTE INSTALLATIONSANLEITUNG (MEHRERE PCS)
 ================================================================================
 
 Datum dieser Anleitung: 09.04.2026
@@ -16,6 +16,7 @@ Diese Anleitung beschreibt:
 - empfohlene Netzwerkkonfiguration
 - zentralen Speicherort für Materialdaten für alle PCs
 - Speicherort für Archive abgeschlossener Aufträge
+- Zertifikats-Setup für signierte Updates
 
 
 ================================================================================
@@ -29,10 +30,27 @@ Im Ordner `USB_Installation` sind die wichtigsten Dateien:
 - `Install_LocalPC.bat` (lokale feste Installation auf dem PC)
 - `INSTALL.bat` (Start des aktuellen GUI-Installers)
 - `INSTALL_GUI.ps1` (grafischer Installer)
+- `INSTALL_CERTIFICATE.bat` (Zertifikat einmalig auf Ziel-PC installieren)
+- `MaterialManager_CodeSigning_PUBLIC.cer` (öffentliches Zertifikat)
 
 
 ================================================================================
-3) INSTALLATION AUF MEHREREN PCS
+3) WICHTIG: ZERTIFIKAT PRO ZIEL-PC EINMALIG INSTALLIEREN
+================================================================================
+
+Vor dem eigentlichen Update/Installationslauf:
+
+1. `INSTALL_CERTIFICATE.bat` als Administrator ausführen.
+2. Danach Installation/Update wie gewohnt starten.
+
+Hinweis:
+
+- Die `.pfx` bleibt nur auf dem Build-PC.
+- Für Ziel-PCs wird nur das öffentliche `.cer` verwendet.
+
+
+================================================================================
+4) INSTALLATION AUF MEHREREN PCS
 ================================================================================
 
 Variante A: Schnellstart ohne feste Installation
@@ -65,7 +83,7 @@ Variante C: GUI-Installer
 
 
 ================================================================================
-4) NETZWERKEINSTELLUNGEN (MEHRERE PCS)
+5) NETZWERKEINSTELLUNGEN (MEHRERE PCS)
 ================================================================================
 
 In der App unter `Einstellungen -> Netzwerk`:
@@ -86,7 +104,7 @@ Wichtig:
 
 
 ================================================================================
-5) WO WERDEN DIE MATERIALDATEN FÜR ALLE PCS GESPEICHERT?
+6) WO WERDEN DIE MATERIALDATEN FÜR ALLE PCS GESPEICHERT?
 ================================================================================
 
 Wenn Netzwerkmodus aktiv ist:
@@ -107,7 +125,7 @@ Wenn Netzwerkmodus NICHT aktiv ist:
 
 
 ================================================================================
-6) WO WERDEN ARCHIVE ALTER AUFTRÄGE GESPEICHERT?
+7) WO WERDEN ARCHIVE ALTER AUFTRÄGE GESPEICHERT?
 ================================================================================
 
 Archiv-Basis wird so aufgelöst:
@@ -131,7 +149,7 @@ Beispiel:
 
 
 ================================================================================
-7) AUTOMATISCHE ARCHIV-REGELN
+8) AUTOMATISCHE ARCHIV-REGELN
 ================================================================================
 
 - Bei Abschluss eines Auftrags werden Daten + PDFs archiviert.
@@ -139,7 +157,7 @@ Beispiel:
 
 
 ================================================================================
-8) EMPFOHLENE FREIGABE-STRUKTUR IM NETZWERK
+9) EMPFOHLENE FREIGABE-STRUKTUR IM NETZWERK
 ================================================================================
 
 Auf Dateiserver (Beispiel):
@@ -155,9 +173,10 @@ Freigabe-Rechte:
 
 
 ================================================================================
-9) PRÜFCHECKLISTE JE PC
+10) PRÜFCHECKLISTE JE PC
 ================================================================================
 
+[ ] Zertifikat einmalig installiert
 [ ] App startet
 [ ] Netzwerkmodus korrekt gesetzt
 [ ] `materialbestand.xlsx` wird im Netzwerkpfad geschrieben
@@ -167,7 +186,7 @@ Freigabe-Rechte:
 
 
 ================================================================================
-10) FEHLERBILDER
+11) FEHLERBILDER
 ================================================================================
 
 Problem: Netzwerkpfad nicht erreichbar
@@ -184,6 +203,6 @@ Lösung: Sicherstellen, dass auf allen PCs derselbe Netzwerkpfad konfiguriert is
 LETZTE AKTUALISIERUNG
 ================================================================================
 
-09.04.2026 - Anleitung auf aktuellen USB-/Netzwerk-Stand gebracht.
+09.04.2026 - Anleitung um Zertifikatsverteilung für signierte Updates ergänzt.
 
 ================================================================================

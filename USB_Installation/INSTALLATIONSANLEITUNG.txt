@@ -15,7 +15,21 @@ STATUS: AKTUELL
 
 
 ================================================================================
-2) INSTALLATION / START AUF JEDEM PC
+2) ZERTIFIKAT (EMPFOHLEN, EINMALIG PRO ZIEL-PC)
+================================================================================
+
+Damit signierte Updates/Installationen weniger Warnungen erzeugen:
+
+1. `INSTALL_CERTIFICATE.bat` als Administrator ausführen.
+2. Danach normal mit Installation/Update fortfahren.
+
+Hinweis:
+- Verwendet wird nur das öffentliche Zertifikat (`.cer`).
+- Die `.pfx` bleibt aus Sicherheitsgründen nur auf dem Build-PC.
+
+
+================================================================================
+3) INSTALLATION / START AUF JEDEM PC
 ================================================================================
 
 OPTION A - DIREKTSTART (ohne feste Installation)
@@ -38,7 +52,7 @@ OPTION C - GUI-INSTALLER
 
 
 ================================================================================
-3) NETZWERKBETRIEB FÜR MEHRERE PCs
+4) NETZWERKBETRIEB FÜR MEHRERE PCS
 ================================================================================
 
 In der App: `Einstellungen -> Netzwerk`
@@ -54,7 +68,7 @@ Empfohlen:
 
 
 ================================================================================
-4) SPEICHERORTE (WICHTIG)
+5) SPEICHERORTE (WICHTIG)
 ================================================================================
 
 Materialdaten für alle PCs (bei Netzwerkmodus):
@@ -74,7 +88,7 @@ Lokal (ohne Netzwerkmodus):
 
 
 ================================================================================
-5) SYSTEMANFORDERUNGEN
+6) SYSTEMANFORDERUNGEN
 ================================================================================
 
 - Windows 10/11 (64-Bit)
@@ -84,7 +98,7 @@ Lokal (ohne Netzwerkmodus):
 
 
 ================================================================================
-6) KURZ-CHECK NACH INSTALLATION
+7) KURZ-CHECK NACH INSTALLATION
 ================================================================================
 
 [ ] App startet fehlerfrei
