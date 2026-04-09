@@ -403,9 +403,18 @@
                 </Grid>
             </StackPanel>
 
-            <!-- ── Restnummer (immer sichtbar) ────────────────────────────── -->
+            <!-- ── Restnummer & Lagerort (manuell) ─────────────────────────── -->
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Restnummer:" VerticalAlignment="Center" Margin="0,5"/>
-            <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding Restnummer}" Margin="0,5"/>
+            <StackPanel Grid.Row="8" Grid.Column="1" Margin="0,5">
+                <TextBox Text="{Binding Restnummer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Lagerort:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox Width="220"
+                              ItemsSource="{Binding AvailableLagerorte}"
+                              SelectedItem="{Binding SelectedLagerort, Mode=TwoWay}"
+                              IsEditable="True"/>
+                </StackPanel>
+            </StackPanel>
 
             <!-- ── Datum ───────────────────────────────────────────────────── -->
             <TextBlock Grid.Row="9" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5"/>
@@ -455,15 +464,6 @@
                 </StackPanel>
             </StackPanel>
 
-            <!-- ── Buttons ─────────────────────────────────────────────────── -->
-            <StackPanel Grid.Row="13" Grid.ColumnSpan="2" Orientation="Horizontal"
-                        HorizontalAlignment="Right" Margin="0,15,0,0">
-                <Button Content="🏷️ Etikett" Width="80" Margin="5" Click="OnEtikett"
-                        Visibility="{Binding EtiquetteVisible}" Background="#795548"/>
-                <Button Content="OK (Enter)" Width="100" Margin="5" Click="OnOk"
-                        IsDefault="True" IsEnabled="{Binding CanSave}"/>
-                <Button Content="Abbrechen" Width="80" Margin="5" Click="OnCancel" IsCancel="True"/>
-            </StackPanel>
             <!-- ── Buttons ─────────────────────────────────────────────────── -->
             <StackPanel Grid.Row="13" Grid.ColumnSpan="2" Orientation="Horizontal"
                         HorizontalAlignment="Right" Margin="0,15,0,0">
