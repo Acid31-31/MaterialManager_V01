@@ -14,7 +14,8 @@ namespace MaterialManager_V01.Services
 
             var list = db.Auftraege
                 .AsNoTracking()
-                .OrderBy(a => a.Auftragsnummer)
+                .OrderBy(a => a.SortIndex)
+                .ThenBy(a => a.Auftragsnummer)
                 .ToList();
 
             foreach (var auftrag in list)
@@ -72,13 +73,36 @@ namespace MaterialManager_V01.Services
                         GesamtStueckzahl = items.Sum(i => i.Stueckzahl),
                         GesamtGewichtKg = Math.Round(items.Sum(i => i.GewichtKg), 2),
                         PdfPfad = items.Select(i => i.PdfPfad).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
-                        PdfPfadAngefangeneTafel = items.Select(i => i.PdfPfadAngefangeneTafel).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty
+                        PdfPfadAngefangeneTafel = items.Select(i => i.PdfPfadAngefangeneTafel).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
+                        IsEilt = false,
+                        SortIndex = 0
                     };
                 })
                 .ToList();
 
             db.Auftraege.AddRange(auftraege);
             db.SaveChanges();
+        }
+
+        public static bool UpdateAuftrag(string auftragsnummer, Action<Auftrag> updateAction)
+        {
+            var normalized = (auftragsnummer ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(normalized))
+                return false;
+
+            using var db = new MaterialManagerDbContext();
+            db.Database.EnsureCreated();
+
+            var auftrag = db.Auftraege
+                .AsEnumerable()
+                .FirstOrDefault(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), normalized, StringComparison.OrdinalIgnoreCase));
+
+            if (auftrag == null)
+                return false;
+
+            updateAction(auftrag);
+            db.SaveChanges();
+            return true;
         }
     }
 }

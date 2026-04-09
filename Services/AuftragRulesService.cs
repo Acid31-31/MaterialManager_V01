@@ -17,7 +17,8 @@ namespace MaterialManager_V01.Services
                     return relevantDate.Year == jahr
                         && System.Globalization.ISOWeek.GetWeekOfYear(relevantDate) == kalenderWoche;
                 })
-                .OrderBy(a => a.Auftragsnummer)
+                .OrderBy(a => a.SortIndex)
+                .ThenBy(a => a.Auftragsnummer)
                 .ToList();
         }
 

@@ -19,6 +19,8 @@ namespace MaterialManager_V01.Models
         public string PdfPfadAngefangeneTafel { get; set; } = string.Empty;
         public DateTime? ProduktionStartDatum { get; set; }
         public DateTime? ProduktionEndDatum { get; set; }
+        public bool IsEilt { get; set; }
+        public int SortIndex { get; set; }
 
         [NotMapped]
         public string PdfPfadKantzeichnung { get; set; } = string.Empty;
@@ -58,6 +60,15 @@ namespace MaterialManager_V01.Models
                 return $"{duration.Minutes}min";
             }
         }
+
+        [NotMapped]
+        public string EiltText => IsEilt ? "EILT" : string.Empty;
+
+        [NotMapped]
+        public string ProduktionStartText => ProduktionStartDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
+
+        [NotMapped]
+        public string ProduktionEndText => ProduktionEndDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
     }
 
     public enum AuftragStatus

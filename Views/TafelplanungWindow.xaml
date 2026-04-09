@@ -383,6 +383,12 @@
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Kantbank freigeben" Click="OnAssignToKantbankClick" Background="#23A455" Foreground="White" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Auftragsaktionen" Foreground="#FFB74D" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftrag nach oben" Click="OnMoveAuftragUpClick" Background="#546E7A" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftrag nach unten" Click="OnMoveAuftragDownClick" Background="#455A64" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Als EILT markieren" Click="OnMarkEiltClick" Background="#B71C1C" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="EILT entfernen" Click="OnUnmarkEiltClick" Background="#6D4C41" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion starten (jetzt)" Click="OnStartNowClick" Background="#2E7D32" Foreground="White"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion beenden (jetzt)" Click="OnEndNowClick" Background="#8E24AA" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Auftrag buchen" Click="OnBookForOrderClick" Background="#00897B" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Reservierung aufheben" Click="OnReleaseReservationClick" Background="#8B1E1E" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion abschließen" Click="OnCompleteProductionClick" Background="#6A1B9A" Foreground="White"/>
@@ -435,14 +441,29 @@
                               SelectionUnit="FullRow"
                               MouseDoubleClick="OnAuftraegeGridDoubleClick"
                               RowHeight="28">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEilt}" Value="True">
+                                        <Setter Property="Background" Value="#7A1F1F"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#1E4E79"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
+                            <DataGridTextColumn Header="Hinweis" Binding="{Binding EiltText}" Width="70"/>
                             <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource ArbeitsbereichTextStyle}"/>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                            <DataGridTextColumn Header="Start" Binding="{Binding ProduktionStartText}" Width="130"/>
+                            <DataGridTextColumn Header="Ende" Binding="{Binding ProduktionEndText}" Width="130"/>
                             <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
                             <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
                             <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>

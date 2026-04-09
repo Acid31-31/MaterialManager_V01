@@ -1100,6 +1100,161 @@ namespace MaterialManager_V01.Views
 
             _alleMaterialien.Add(bookedItem);
         }
+
+        private Auftrag? GetSelectedAuftrag()
+        {
+            return AuftraegeGrid.SelectedItem as Auftrag;
+        }
+
+        private List<Auftrag> GetCurrentWeekAuftraegeSorted()
+        {
+            var alle = AuftragDataService.LoadAllAuftraege();
+            return AuftragRulesService.FilterByIsoCalendarWeek(alle, _aktuellesJahr, _ausgewaehlteKalenderWoche)
+                .OrderBy(a => a.SortIndex)
+                .ThenBy(a => a.Auftragsnummer)
+                .ToList();
+        }
+
+        private void PersistWeekSortOrder(List<Auftrag> weekOrders)
+        {
+            for (var i = 0; i < weekOrders.Count; i++)
+            {
+                var zielSortIndex = (i + 1) * 10;
+                var nr = weekOrders[i].Auftragsnummer;
+                AuftragDataService.UpdateAuftrag(nr, a =>
+                {
+                    a.SortIndex = zielSortIndex;
+                    a.GeaendertAm = DateTime.Now;
+                    a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                });
+            }
+        }
+
+        private void ReloadAuftraegeKeepingSelection(string? auftragsnummer)
+        {
+            RefreshAuftragFilter();
+            LoadAuftraegeGridForSelectedKw();
+            if (!string.IsNullOrWhiteSpace(auftragsnummer))
+            {
+                var selected = AuftraegeView.FirstOrDefault(a => string.Equals(a.Auftragsnummer, auftragsnummer, StringComparison.OrdinalIgnoreCase));
+                if (selected != null)
+                    AuftraegeGrid.SelectedItem = selected;
+            }
+            ApplyFilter();
+        }
+
+        private void OnMoveAuftragUpClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var list = GetCurrentWeekAuftraegeSorted();
+            var idx = list.FindIndex(a => string.Equals(a.Auftragsnummer, selected.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
+            if (idx <= 0)
+                return;
+
+            (list[idx - 1], list[idx]) = (list[idx], list[idx - 1]);
+            PersistWeekSortOrder(list);
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnMoveAuftragDownClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var list = GetCurrentWeekAuftraegeSorted();
+            var idx = list.FindIndex(a => string.Equals(a.Auftragsnummer, selected.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
+            if (idx < 0 || idx >= list.Count - 1)
+                return;
+
+            (list[idx], list[idx + 1]) = (list[idx + 1], list[idx]);
+            PersistWeekSortOrder(list);
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnMarkEiltClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragDataService.UpdateAuftrag(selected.Auftragsnummer, a =>
+            {
+                a.IsEilt = true;
+                a.GeaendertAm = DateTime.Now;
+                a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            });
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnUnmarkEiltClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragDataService.UpdateAuftrag(selected.Auftragsnummer, a =>
+            {
+                a.IsEilt = false;
+                a.GeaendertAm = DateTime.Now;
+                a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            });
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnStartNowClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragDataService.UpdateAuftrag(selected.Auftragsnummer, a =>
+            {
+                a.ProduktionStartDatum ??= DateTime.Now;
+                a.Status = AuftragStatus.InBearbeitung;
+                a.GeaendertAm = DateTime.Now;
+                a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            });
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnEndNowClick(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedAuftrag();
+            if (selected == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            AuftragDataService.UpdateAuftrag(selected.Auftragsnummer, a =>
+            {
+                a.ProduktionStartDatum ??= DateTime.Now;
+                a.ProduktionEndDatum = DateTime.Now;
+                a.Status = AuftragStatus.Abgeschlossen;
+                a.GeaendertAm = DateTime.Now;
+                a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            });
+            ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
     }
 
     public sealed class AuftragFilterItem

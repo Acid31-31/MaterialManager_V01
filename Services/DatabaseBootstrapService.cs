@@ -57,6 +57,22 @@ CREATE TABLE IF NOT EXISTS ""Auftraege"" (
             {
                 // Spalte existiert bereits
             }
+
+            try
+            {
+                db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Auftraege"" ADD COLUMN ""IsEilt"" INTEGER NOT NULL DEFAULT 0;");
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Auftraege"" ADD COLUMN ""SortIndex"" INTEGER NOT NULL DEFAULT 0;");
+            }
+            catch
+            {
+            }
         }
 
         private static void ImportExistingExcelData(MaterialManagerDbContext db)
