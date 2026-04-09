@@ -440,6 +440,11 @@
                               SelectionMode="Single"
                               SelectionUnit="FullRow"
                               MouseDoubleClick="OnAuftraegeGridDoubleClick"
+                              PreviewMouseLeftButtonDown="OnAuftraegeGridPreviewMouseLeftButtonDown"
+                              MouseMove="OnAuftraegeGridMouseMove"
+                              DragOver="OnAuftraegeGridDragOver"
+                              Drop="OnAuftraegeGridDrop"
+                              AllowDrop="True"
                               RowHeight="28">
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">

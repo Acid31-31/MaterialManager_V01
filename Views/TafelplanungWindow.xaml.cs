@@ -22,6 +22,8 @@ namespace MaterialManager_V01.Views
         private List<MaterialItem> _materialienCache = new();
         private readonly int _aktuellesJahr = DateTime.Now.Year;
         private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
+        private Point _auftragDragStartPoint;
+        private Auftrag? _draggedAuftrag;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -1254,6 +1256,70 @@ namespace MaterialManager_V01.Views
                 a.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
             });
             ReloadAuftraegeKeepingSelection(selected.Auftragsnummer);
+        }
+
+        private void OnAuftraegeGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _auftragDragStartPoint = e.GetPosition(null);
+            _draggedAuftrag = null;
+
+            if (e.OriginalSource is not DependencyObject dep)
+                return;
+
+            var row = FindVisualParent<DataGridRow>(dep);
+            if (row?.Item is Auftrag auftrag)
+                _draggedAuftrag = auftrag;
+        }
+
+        private void OnAuftraegeGridMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed || _draggedAuftrag == null)
+                return;
+
+            var current = e.GetPosition(null);
+            if (Math.Abs(current.X - _auftragDragStartPoint.X) < SystemParameters.MinimumHorizontalDragDistance
+                && Math.Abs(current.Y - _auftragDragStartPoint.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            var dragData = new DataObject(typeof(Auftrag), _draggedAuftrag);
+            DragDrop.DoDragDrop(AuftraegeGrid, dragData, DragDropEffects.Move);
+        }
+
+        private void OnAuftraegeGridDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = e.Data.GetDataPresent(typeof(Auftrag)) ? DragDropEffects.Move : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void OnAuftraegeGridDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(typeof(Auftrag)))
+                return;
+
+            var source = e.Data.GetData(typeof(Auftrag)) as Auftrag;
+            if (source == null)
+                return;
+
+            if (e.OriginalSource is not DependencyObject dep)
+                return;
+
+            var row = FindVisualParent<DataGridRow>(dep);
+            var target = row?.Item as Auftrag;
+            if (target == null || string.Equals(target.Auftragsnummer, source.Auftragsnummer, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var list = GetCurrentWeekAuftraegeSorted();
+            var srcIndex = list.FindIndex(a => string.Equals(a.Auftragsnummer, source.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
+            var dstIndex = list.FindIndex(a => string.Equals(a.Auftragsnummer, target.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
+            if (srcIndex < 0 || dstIndex < 0 || srcIndex == dstIndex)
+                return;
+
+            var moved = list[srcIndex];
+            list.RemoveAt(srcIndex);
+            list.Insert(dstIndex, moved);
+
+            PersistWeekSortOrder(list);
+            ReloadAuftraegeKeepingSelection(source.Auftragsnummer);
         }
     }
 
