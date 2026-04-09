@@ -32,7 +32,19 @@
         <TextBox x:Name="MengeTextBox" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Background="#222" Foreground="White" BorderBrush="#444" Padding="8,6" Margin="0,0,0,10"/>
 
         <TextBlock Grid.Row="3" Text="PDF-Datei" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,10"/>
-        <TextBox x:Name="PdfTextBox" Grid.Row="3" Grid.Column="1" Background="#222" Foreground="White" BorderBrush="#444" Padding="8,6" Margin="0,0,8,10" IsReadOnly="True"/>
+        <TextBox x:Name="PdfTextBox"
+                 Grid.Row="3"
+                 Grid.Column="1"
+                 Background="#222"
+                 Foreground="White"
+                 BorderBrush="#444"
+                 Padding="8,6"
+                 Margin="0,0,8,10"
+                 IsReadOnly="True"
+                 AllowDrop="True"
+                 PreviewDragOver="OnPdfTextBoxDragOver"
+                 Drop="OnPdfTextBoxDrop"
+                 ToolTip="PDF-Datei hier hineinziehen oder durchsuchen"/>
         <Button Grid.Row="3" Grid.Column="2" Content="Durchsuchen" Click="OnBrowsePdf" Background="#455A64" Foreground="White" Padding="12,8" Margin="0,0,0,10" MinWidth="110"/>
 
         <TextBlock Grid.Row="4" Grid.ColumnSpan="3" x:Name="InfoTextBlock" Foreground="#AAAAAA" Margin="0,0,0,16" TextWrapping="Wrap"/>

@@ -1,123 +1,49 @@
 ================================================================================
-MATERIALMANAGER 1.0.x - SCHNELLINSTALLATION MEHRERE PCs
+MATERIALMANAGER V01 - SCHNELLSTART MEHRERE PCs
 ================================================================================
 
-DATUM DIESER ANLEITUNG: 05.03.2026 (AKTUELL!)
-VERSION: 1.0.x
-STATUS: BEREIT ZUR DISTRIBUTION
+DATUM: 09.04.2026
+VERSION: 1.2.1
+STATUS: AKTUELL
 
 ================================================================================
-3 OPTIONEN ZUM INSTALLIEREN:
+SCHNELLSTART
 ================================================================================
 
-OPTION 1: INTERAKTIV (EMPFOHLEN)
-───────────────────────────────
-1. Doppelklick: Install_MultiPC.bat
-2. Menü wählen
-3. Anweisungen folgen
-4. Fertig!
+1) USB vorbereiten
+- Ordner `USB_Installation` komplett auf USB-Stick kopieren.
 
-OPTION 2: DIREKT VON HIER
-────────────────────────
-1. MaterialManager\MaterialManager_V01.exe starten
-2. Installation läuft ab
-3. Fertig!
+2) Auf Ziel-PC starten
+- Direktstart: `START_MaterialManager.bat`
+- Feste Installation: `Install_LocalPC.bat` (als Administrator)
+- GUI-Installer: `INSTALL.bat`
 
-OPTION 3: VON USB-STICK (MEHRERE PCs)
-──────────────────────────────────────
-1. USB_Installation Ordner auf USB kopieren
-2. USB einstecken auf Ziel-PC
-3. START_MaterialManager.bat doppelklicken
-4. Auf jedem PC wiederholen!
+3) Für mehrere PCs
+- Auf jedem PC denselben Ablauf wiederholen.
+- Danach in der App den gleichen Netzwerkpfad konfigurieren.
 
 
 ================================================================================
-USB-PAKET VORBEREITEN (einmalig)
+WICHTIG FÜR GEMEINSAME DATEN
 ================================================================================
 
-1. USB-Stick min. 250 MB bereitstellen
+Empfohlene Freigaben:
+- Daten: `\\SERVER\MaterialManager\Daten`
+- Archiv: `\\SERVER\MaterialManager\Archiv`
 
-2. USB_Installation Ordner VOLLSTÄNDIG kopieren:
-   Quelle: USB_Installation\
-   Ziel:   E:\ (Ihr USB-Laufwerk)
+Materialdatei:
+- `\\SERVER\MaterialManager\Daten\materialbestand.xlsx`
 
-3. Auf USB sollte dann so aussehen:
-   USB_Installation\
-   ├── MaterialManager\
-   │   ├── MaterialManager_V01.exe
-   │   └── [weitere Dateien]
-   ├── START_MaterialManager.bat
-   └── README.txt
-
-4. Fertig! USB ist jetzt einsatzbereit für beliebig viele PCs!
+Archivstruktur:
+- `<Archiv-Basis>\Jahr\KW_xx\Auftragsnummer\` (mit `auftrag.json` und `PDF`)
 
 
 ================================================================================
-AUF EINEM ZIEL-PC INSTALLIEREN
+DETAILS
 ================================================================================
 
-Von USB:
-  1. USB einstecken
-  2. Doppelklick: START_MaterialManager.bat
-  3. Installation läuft automatisch
-  4. Lizenzschlüssel eingeben
-  5. Fertig!
+Siehe:
+- `INSTALL_ANLEITUNG_MEHRERE_PCs.txt`
+- `INSTALLATIONSANLEITUNG.txt`
 
-Dauer: ca. 5 Minuten pro PC
-
-
-================================================================================
-WICHTIGE DATEIEN
-================================================================================
-
-INSTALL_ANLEITUNG_MEHRERE_PCs.txt    ← Vollständige Dokumentation
-Install_MultiPC.bat                  ← Schnell-Installer (Batch)
-Install_MultiPC.ps1                  ← Erweiterter Installer (PowerShell)
-USB_Installation\                    ← Das USB-Paket
-  ├── MaterialManager\               ← Hauptprogramm
-  ├── START_MaterialManager.bat      ← Launcher
-  └── README.txt                     ← USB Dokumentation
-
-
-================================================================================
-SYSTEM-ANFORDERUNGEN
-================================================================================
-
-✓ Windows 10 oder Windows 11 (64-Bit)
-✓ 500 MB freier Speicher
-✓ 2 GB RAM empfohlen
-✓ Administrator-Rechte (für Installation)
-✓ .NET 8 Runtime (ist enthalten - NICHT separat installieren!)
-
-
-================================================================================
-LIZENZIERUNG
-================================================================================
-
-- 1 Lizenzschlüssel = 1 PC
-- Jeder PC braucht seinen eigenen Schlüssel
-- Hardware-ID wird automatisch erkannt
-- Admin kontaktieren für neue Schlüssel
-
-
-================================================================================
-SCHNELL-REFERENZ
-================================================================================
-
-Auf DIESEM PC starten:
-  → Install_MultiPC.bat
-  
-USB vorbereiten:
-  → USB_Installation Ordner auf USB kopieren
-  
-Auf anderem PC installieren:
-  → USB einstecken → START_MaterialManager.bat
-  
-Vollständige Doku lesen:
-  → INSTALL_ANLEITUNG_MEHRERE_PCs.txt
-
-
-================================================================================
-LETZTE AKTUALISIERUNG: 05.03.2026 19:35 Uhr
-VERSION: 1.0.x - GÜLTIG UND AKTUELL
 ================================================================================

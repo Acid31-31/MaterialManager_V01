@@ -1,247 +1,189 @@
 ================================================================================
-  MATERIALMANAGER 1.0.x - KOMPLETTE INSTALLATIONSANLEITUNG (MEHRERE PCs)
+MATERIALMANAGER V01 - KOMPLETTE INSTALLATIONSANLEITUNG (MEHRERE PCs)
 ================================================================================
 
-Datum dieser Anleitung: 05.03.2026
-Version: 1.0.x
-Status: AKTUELL UND GÜLTIG
+Datum dieser Anleitung: 09.04.2026
+Version: 1.2.1
+Status: AKTUELL
 
 ================================================================================
-1. ÜBERBLICK
+1) ZIEL DIESER ANLEITUNG
 ================================================================================
 
-MaterialManager kann auf MEHREREN PCs installiert werden:
+Diese Anleitung beschreibt:
 
-✓ METHODE A: Direkt auf lokalen PC (wenn Programm vorhanden)
-✓ METHODE B: Von USB-Stick auf beliebig viele PCs
-✓ METHODE C: Über Netzwerk (für Unternehmens-Umgebung)
-✓ METHODE D: Automatisierte Multi-PC Deployment
-
-
-================================================================================
-2. METHODE A - DIREKT AUF DIESEM PC (LOKAL)
-================================================================================
-
-Voraussetzung:
-  - Programm-Dateien sind im Ordner vorhanden
-  - Oder: USB-Stick mit MaterialManager ist angesteckt
-
-SCHRITTE:
-
-1. PowerShell öffnen (Administrator)
-   Kommando: .\Install_MultiPC.ps1 -Interactive
-
-2. Menü wählen:
-   Option [1] = Auf DIESEM PC installieren
-
-3. Programm startet automatisch
-
-4. Installation abschließen:
-   - Lizenzschlüssel eingeben (falls verlangt)
-   - Einstellungen konfigurieren
-   - Fertig!
-
-Dauer: 2-5 Minuten
+- Installation auf mehreren PCs mit dem Ordner `USB_Installation`
+- empfohlene Netzwerkkonfiguration
+- zentralen Speicherort für Materialdaten für alle PCs
+- Speicherort für Archive abgeschlossener Aufträge
 
 
 ================================================================================
-3. METHODE B - VON USB-STICK (EMPFOHLEN FÜR MEHRERE PCs)
+2) USB-STRUKTUR (AKTUELLER STAND)
 ================================================================================
 
-SCHRITT 1: USB-PAKET VORBEREITEN (einmalig, auf Quell-PC)
-───────────────────────────────────────────────────────
+Im Ordner `USB_Installation` sind die wichtigsten Dateien:
 
-1. Diesen Ordner öffnen:
-   D:\MaterialManager_V01_komplett\USB_Installation\
-
-2. Gesamten USB_Installation Ordner KOPIEREN
-
-3. USB-Stick (min. 250 MB) formatieren (NTFS empfohlen)
-
-4. USB_Installation Ordner VOLLSTÄNDIG auf USB kopieren
-
-5. Fertig! USB-Stick ist einsatzbereit.
-
-STRUKTUR AUF USB:
-
-USB_Installation/
-├── MaterialManager/
-│   ├── MaterialManager_V01.exe          ← HAUPTPROGRAMM
-│   ├── [Alle .NET Runtime Dateien]
-│   └── [Weitere Abhängigkeiten]
-├── START_MaterialManager.bat            ← KLICK ZUM STARTEN!
-├── README.txt
-└── VERSION.txt
-
-
-SCHRITT 2: AUF ZIEL-PCs INSTALLIEREN (beliebig viele)
-──────────────────────────────────────────────────────
-
-Auf JEDEM PC:
-
-1. USB-Stick einstecken
-
-2. Doppelklick auf: START_MaterialManager.bat
-
-3. Programm startet automatisch
-
-4. Installation durchführen:
-   - Lizenzschlüssel eingeben
-   - Einstellungen wählen
-   - FERTIG!
-
-Dauer pro PC: 3-5 Minuten
-
-
-VORTEILE:
-  ✓ Keine Internetverbindung nötig
-  ✓ .NET Runtime ist bereits enthalten
-  ✓ Schnelle Installation auf mehreren PCs hintereinander
-  ✓ USB-Stick beliebig oft wiederverwendbar
+- `MaterialManager\MaterialManager_V01.exe` (Hauptprogramm)
+- `START_MaterialManager.bat` (Start direkt aus USB-Ordner)
+- `Install_LocalPC.bat` (lokale feste Installation auf dem PC)
+- `INSTALL.bat` (Start des aktuellen GUI-Installers)
+- `INSTALL_GUI.ps1` (grafischer Installer)
 
 
 ================================================================================
-4. METHODE C - NETZWERK-INSTALLATION (FÜR IT-PROFIS)
+3) INSTALLATION AUF MEHREREN PCS
 ================================================================================
 
-Für Unternehmens-Umgebung mit Domäne/AD:
+Variante A: Schnellstart ohne feste Installation
+-----------------------------------------------
 
-1. Netzwerk-Freigabe erstellen:
-   \\SERVER\MaterialManager\USB_Installation\
+1. `USB_Installation` auf den USB-Stick kopieren.
+2. Auf Ziel-PC USB einstecken.
+3. `START_MaterialManager.bat` ausführen.
+4. App startet direkt.
 
-2. Per PSEXEC oder GPO verteilen:
-   psexec \\[PC-NAME] -s cmd /c "\\SERVER\MaterialManager\USB_Installation\START_MaterialManager.bat"
-
-3. Oder per Batch auf allen PCs gleichzeitig:
-   for /f %i in (pc_list.txt) do psexec \\%i -s cmd /c "\\SERVER\MaterialManager\..."
+Geeignet für: schnelle Inbetriebnahme / Test.
 
 
-================================================================================
-5. SYSTEMANFORDERUNGEN
-================================================================================
+Variante B: Feste Installation pro PC (empfohlen)
+-------------------------------------------------
 
-HARDWARE:
-  ✓ Windows 10 / Windows 11 (64-bit)
-  ✓ Mindestens 500 MB freier Speicher
-  ✓ Moderne CPU (Intel/AMD, 2015+)
-  ✓ 2 GB RAM empfohlen
+1. USB einstecken.
+2. `Install_LocalPC.bat` per Rechtsklick als Administrator ausführen.
+3. Programm wird nach `C:\Program Files\MaterialManager` kopiert.
+4. Desktop-Verknüpfung wird angelegt.
 
-SOFTWARE:
-  ✓ .NET 8 Runtime (wird mitgeliefert - NICHT SEPARAT INSTALLIEREN!)
-  ✓ Windows Defender / Antivirus kann Installation verlangsamen
+Geeignet für: produktive Arbeitsplätze.
 
-BERECHTIGUNGEN:
-  ✓ Administrator-Rechte für Installation meist erforderlich
-  ⚠ Für Netzwerk-Admin: entsprechende Domänen-Rechte
+
+Variante C: GUI-Installer
+-------------------------
+
+1. `INSTALL.bat` starten.
+2. Der aktuelle GUI-Installer (`INSTALL_GUI.ps1`) führt durch den Ablauf.
 
 
 ================================================================================
-6. INSTALLATION VERIFIZIEREN
+4) NETZWERKEINSTELLUNGEN (MEHRERE PCS)
 ================================================================================
 
-Nach Installation:
+In der App unter `Einstellungen -> Netzwerk`:
 
-1. Doppelklick auf:
-   C:\Program Files\MaterialManager\MaterialManager_V01.exe
-   (oder wo installiert wurde)
+1. Netzwerkmodus aktivieren.
+2. Einen gemeinsamen Netzwerkordner für Materialdaten setzen.
+3. Optional einen separaten Archivordner setzen.
 
-2. Programm-Fenster sollte öffnen mit:
-   - Version: 1.0.x
-   - Aktuelle Systemeinstellungen
-   - Keine Fehlermeldungen
+Empfehlung (Beispiel):
 
-3. Lizenzschlüssel prüfen:
-   Programm → Einstellungen → Lizenz
-   Status sollte: AKTIV / GÜLTIG
+- Materialdaten-Basis: `\\SERVER\MaterialManager\Daten`
+- Auftragsarchiv-Basis: `\\SERVER\MaterialManager\Archiv`
 
+Wichtig:
 
-================================================================================
-7. TROUBLESHOOTING
-================================================================================
-
-PROBLEM: "Windows hat dieses Programm nicht erkannt"
-LÖSUNG: 
-  - Rechtsklick → Eigenschaften → Kompatibilität
-  - Oder: direkter Admin-Start probieren
-
-
-PROBLEM: ".NET Runtime nicht gefunden"
-LÖSUNG:
-  - USB_Installation ist unvollständig
-  - USB-Paket erneut von Quelle kopieren
-
-
-PROBLEM: "Lizenzschlüssel ungültig"
-LÖSUNG:
-  - Korrekte Hardware-ID prüfen (Programm → Einstellungen)
-  - Mit Admin kontaktieren für neuen Schlüssel
-
-
-PROBLEM: Installation friert ein
-LÖSUNG:
-  - Warten Sie 5 Minuten (Antivirus scannt)
-  - Administrator-Rechte prüfen
-  - Neustart versuchen
+- Alle PCs müssen Lese-/Schreibrechte auf diese Freigaben haben.
+- Der Pfad muss als Ordner angegeben werden, nicht als einzelne Datei.
 
 
 ================================================================================
-8. UPDATES UND PATCHES
+5) WO WERDEN DIE MATERIALDATEN FÜR ALLE PCS GESPEICHERT?
 ================================================================================
 
-Neue Versionen verfügbar?
+Wenn Netzwerkmodus aktiv ist:
 
-1. Neue USB_Installation vom Admin holen
+- Datei: `materialbestand.xlsx`
+- Speicherort: im eingestellten Netzwerkordner
+- Beispiel: `\\SERVER\MaterialManager\Daten\materialbestand.xlsx`
 
-2. USB_Installation Ordner aktualisieren
+Zusätzlich erstellt die App tägliche Sicherungen:
 
-3. Auf allen PCs neu installieren ODER Update starten
+- `\\SERVER\MaterialManager\Daten\Backups\YYYY-MM-DD\materialbestand_HHMMSS.xlsx`
+- Aufbewahrung: 30 Tage
 
-⚠ Wichtig: Vor Update immer Daten sichern!
+Wenn Netzwerkmodus NICHT aktiv ist:
 
-
-================================================================================
-9. LIZENZIERUNG FÜR MEHRERE PCs
-================================================================================
-
-LIZENZSCHLÜSSEL:
-  - 1 Schlüssel = 1 PC
-  - Bei Mehrfach-Installation: Ein Schlüssel pro PC erforderlich
-  - Hardware-ID (eindeutig pro PC) wird automatisch ermittelt
-
-NEUEN SCHLÜSSEL BEKOMMEN:
-  - Admin kontaktieren
-  - Hardware-ID vom neuen PC vorzeigen
-  - Neuer Schlüssel wird generiert
+- Lokal pro PC unter:
+  `%LOCALAPPDATA%\MaterialManager_V01\Data\materialbestand.xlsx`
 
 
 ================================================================================
-10. QUICK-REFERENCE CHECKLISTE
+6) WO WERDEN ARCHIVE ALTER AUFTRÄGE GESPEICHERT?
 ================================================================================
 
-[ ] USB-Stick (min. 250 MB) vorhanden?
-[ ] MaterialManager 1.0.x (aktuell) heruntergeladen?
-[ ] USB_Installation Ordner vollständig kopiert?
-[ ] Ziel-PCs haben Windows 10/11 64-bit?
-[ ] Ziel-PCs haben Admin-Rechte verfügbar?
-[ ] Genug Zeit für Installation eingeplant (5 min/PC)?
-[ ] Lizenzschlüssel pro PC vorhanden?
-[ ] Backup der Systemeinstellungen gemacht?
+Archiv-Basis wird so aufgelöst:
 
-READY? Los geht's! ✓
+1. Wenn in den Netzwerkeinstellungen ein Archivpfad gesetzt ist -> dieser Pfad.
+2. Sonst (bei aktivem Netzwerkmodus) -> `<Netzwerkpfad>\Auftragsarchiv`.
+3. Sonst lokal -> `%LOCALAPPDATA%\MaterialManager_V01\Auftragsarchiv`.
+
+Struktur im Archiv:
+
+`<Archiv-Basis>\<Jahr>\KW_<Kalenderwoche>\<Auftragsnummer>\`
+
+Darin:
+
+- `auftrag.json` (Auftrags- und Materialdaten)
+- Ordner `PDF\` mit kopierten PDF-Dateien
+
+Beispiel:
+
+`\\SERVER\MaterialManager\Archiv\2026\KW_15\A-12345\auftrag.json`
 
 
 ================================================================================
-KONTAKT & SUPPORT
+7) AUTOMATISCHE ARCHIV-REGELN
 ================================================================================
 
-Bei Fragen zur Installation:
-  → Install_MultiPC.ps1 -Interactive
+- Bei Abschluss eines Auftrags werden Daten + PDFs archiviert.
+- Alte KW-Archivdaten werden automatisch nach 12 Monaten bereinigt.
 
-Bei Problemen:
-  → Siehe TROUBLESHOOTING Sektion oben
-  → Log-Dateien prüfen: %APPDATA%\MaterialManager\logs\
 
-Letzte Aktualisierung dieser Anleitung: 05.03.2026 19:35 Uhr
-Version: 1.0.x
+================================================================================
+8) EMPFOHLENE FREIGABE-STRUKTUR IM NETZWERK
+================================================================================
+
+Auf Dateiserver (Beispiel):
+
+`\\SERVER\MaterialManager\`
+- `Daten\`           (enthält `materialbestand.xlsx` + `Backups`)
+- `Archiv\`          (enthält Jahres-/KW-Archiv)
+
+Freigabe-Rechte:
+
+- Anwendergruppe MaterialManager: Lesen + Ändern
+- IT/Admin: Vollzugriff
+
+
+================================================================================
+9) PRÜFCHECKLISTE JE PC
+================================================================================
+
+[ ] App startet
+[ ] Netzwerkmodus korrekt gesetzt
+[ ] `materialbestand.xlsx` wird im Netzwerkpfad geschrieben
+[ ] Archivpfad ist erreichbar
+[ ] Testauftrag kann archiviert werden
+[ ] Lizenz aktiviert
+
+
+================================================================================
+10) FEHLERBILDER
+================================================================================
+
+Problem: Netzwerkpfad nicht erreichbar
+Lösung: Freigabe, Rechte und UNC-Pfad prüfen.
+
+Problem: Archiv kann nicht erstellt werden
+Lösung: Archivpfad setzen oder Schreibrechte auf Freigabe prüfen.
+
+Problem: Unterschiedliche Datenstände auf PCs
+Lösung: Sicherstellen, dass auf allen PCs derselbe Netzwerkpfad konfiguriert ist.
+
+
+================================================================================
+LETZTE AKTUALISIERUNG
+================================================================================
+
+09.04.2026 - Anleitung auf aktuellen USB-/Netzwerk-Stand gebracht.
 
 ================================================================================

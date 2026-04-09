@@ -1,4 +1,4 @@
 MaterialManager 1.2.1
-Erstellt: 29.03.2026 13:11:16
+Erstellt: 09.04.2026 20:04:04
 Version: GUI Installer automatisch aktualisiert
 Hinweis: INSTALL.bat startet immer INSTALL_GUI.ps1 als aktuellen Installationsstand

@@ -1,0 +1,162 @@
+================================================================================
+MATERIALMANAGER V01 - IT-CHECKLISTE ROLLOUT (5 / 10 / 20 PCs)
+================================================================================
+
+Datum: 09.04.2026
+Version: 1.2.1
+Ziel: Standardisierte Einführung auf mehreren PCs mit gemeinsamen Daten.
+
+
+================================================================================
+A) SOLL-STRUKTUR (EMPFOHLEN)
+================================================================================
+
+Serverfreigaben:
+
+- Daten:  \\SERVER\MaterialManager\Daten
+- Archiv: \\SERVER\MaterialManager\Archiv
+
+Nutzung:
+
+- Materialdaten (gemeinsam):
+  \\SERVER\MaterialManager\Daten\materialbestand.xlsx
+
+- Tages-Backups (automatisch):
+  \\SERVER\MaterialManager\Daten\Backups\YYYY-MM-DD\materialbestand_HHMMSS.xlsx
+
+- Auftragsarchiv:
+  \\SERVER\MaterialManager\Archiv\<Jahr>\KW_<xx>\<Auftragsnummer>\
+  (mit `auftrag.json` und `PDF`-Ordner)
+
+
+================================================================================
+B) VOR DEM ROLLOUT (EINMALIG)
+================================================================================
+
+[ ] Aktuelles USB-Paket vorhanden (`USB_Installation`)
+[ ] Test auf 1 Referenz-PC erfolgreich
+[ ] Lizenzprozess geklärt (1 Schlüssel pro PC)
+[ ] Netzwerkfreigaben angelegt
+[ ] Rechte gesetzt (Anwender: Lesen/Ändern, IT: Vollzugriff)
+[ ] Virenscanner-Ausnahme geprüft (falls nötig)
+[ ] Kurzanleitung für Benutzer bereitgestellt
+
+
+================================================================================
+C) ROLLOUT 5 PCs (KLEINES TEAM)
+================================================================================
+
+Empfohlenes Zeitfenster: 30-60 Minuten
+
+Pro PC:
+
+[ ] `Install_LocalPC.bat` als Administrator ausführen
+[ ] App starten
+[ ] Lizenz aktivieren
+[ ] Netzwerkmodus aktivieren
+[ ] Datenpfad setzen: \\SERVER\MaterialManager\Daten
+[ ] Archivpfad setzen: \\SERVER\MaterialManager\Archiv
+[ ] Funktionscheck: Material ändern -> Speichern/Sync prüfen
+[ ] Funktionscheck: Testauftrag archivieren
+
+Abschluss:
+
+[ ] Alle 5 PCs zeigen denselben Materialstand
+[ ] Testprotokoll gespeichert
+
+
+================================================================================
+D) ROLLOUT 10 PCs (ABTEILUNG)
+================================================================================
+
+Empfohlenes Zeitfenster: 1-2 Stunden
+
+Zusätzlich zu 5-PC-Check:
+
+[ ] 2 Rollout-Wellen planen (z. B. 5 + 5)
+[ ] 1 IT-Ansprechpartner während Go-Live verfügbar
+[ ] Benutzerrollen je Arbeitsplatz vorab festlegen
+[ ] Netzwerklast im Blick behalten (gleichzeitige Starts vermeiden)
+
+Abschluss:
+
+[ ] Stichprobe auf 3 PCs: identischer Datenstand
+[ ] Stichprobe auf 3 PCs: Archivierung funktioniert
+[ ] Endanwender-Kurzeinweisung durchgeführt
+
+
+================================================================================
+E) ROLLOUT 20 PCs (STANDORT / SCHICHT)
+================================================================================
+
+Empfohlenes Zeitfenster: 0,5-1 Arbeitstag
+
+Zusätzlich zu 10-PC-Check:
+
+[ ] Pilotgruppe (2-3 PCs) zuerst, dann Massenrollout
+[ ] Rollout in Schichten/Blöcken (z. B. 5er-Gruppen)
+[ ] Fallback-Plan vorhanden (Pilot-Version/letzter Stand)
+[ ] Supportfenster in den ersten 2 Betriebstagen einplanen
+[ ] Monitoring: Freigabezugriffe + Fehlermeldungen prüfen
+
+Abschluss:
+
+[ ] Abnahme durch Fachbereich
+[ ] Abnahme durch IT
+[ ] Dokumentation im IT-Ablageort abgelegt
+
+
+================================================================================
+F) TECHNISCHE MINDESTPRÜFUNG PRO PC
+================================================================================
+
+[ ] Windows 10/11 (64-Bit)
+[ ] App startet ohne Fehler
+[ ] Rechte auf Datenfreigabe vorhanden
+[ ] Rechte auf Archivfreigabe vorhanden
+[ ] Lokale Uhrzeit korrekt (für Zeitstempel)
+
+
+================================================================================
+G) GO-LIVE-TEST (MUSS BESTEHEN)
+================================================================================
+
+1) PC A: Material reservieren/ändern
+2) PC B: Änderung sichtbar
+3) Auftrag abschließen
+4) Archivordner + PDF-Kopie prüfen
+5) Tages-Backup unter `Daten\Backups\...` prüfen
+
+Wenn alle 5 Punkte erfüllt sind: Go-Live freigeben.
+
+
+================================================================================
+H) HÄUFIGE FEHLER UND LÖSUNGEN
+================================================================================
+
+Problem: Unterschiedliche Datenstände
+- Ursache: Nicht identischer Netzwerkpfad
+- Lösung: Auf allen PCs exakt denselben UNC-Pfad setzen
+
+Problem: Archivierung schlägt fehl
+- Ursache: Keine Schreibrechte auf Archivfreigabe
+- Lösung: Rechte anpassen, Pfad prüfen
+
+Problem: Start langsam
+- Ursache: Echtzeitprüfung durch Virenscanner
+- Lösung: IT-Ausnahme für Programmordner/Freigaben prüfen
+
+
+================================================================================
+I) EMPFOHLENE BETRIEBSREGELN
+================================================================================
+
+- Freigabepfade nicht pro Benutzer ändern
+- Änderungen an Netzwerkpfaden nur über IT
+- Regelmäßig prüfen, ob Tages-Backups erzeugt werden
+- Monatlich Test-Archivierung durchführen
+
+
+================================================================================
+ENDE
+================================================================================

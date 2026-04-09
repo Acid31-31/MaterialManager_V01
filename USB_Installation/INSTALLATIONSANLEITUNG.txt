@@ -2,166 +2,97 @@
                   MATERIALMANAGER V01 - INSTALLATIONSANLEITUNG
 ================================================================================
 
-DATUM: 05.03.2026
-VERSION: 1.0.6
-STATUS: FERTIG - FUNKTIONIERT!
+DATUM: 09.04.2026
+VERSION: 1.2.1
+STATUS: AKTUELL
 
 ================================================================================
-SCHRITT 1: USB VORBEREITEN (Einmalig)
+1) USB VORBEREITEN (EINMALIG)
 ================================================================================
 
-1. USB-Stick (mind. 250 MB) bereitstellen
-2. Ordner öffnen: USB_Installation
-3. GESAMTEN Ordner "USB_Installation" kopieren
-4. AUF USB einfügen
+1. Ordner `USB_Installation` vollständig auf USB-Stick kopieren.
+2. Prüfen, dass `MaterialManager\MaterialManager_V01.exe` vorhanden ist.
 
-USB sieht dann so aus:
-   E:\USB_Installation\
-   ├── MaterialManager\
-   │   └── MaterialManager_V01.exe
-   ├── START_MaterialManager.bat
-   └── [weitere Dateien]
 
 ================================================================================
-SCHRITT 2: AUF JEDEM PC INSTALLIEREN
+2) INSTALLATION / START AUF JEDEM PC
 ================================================================================
 
-OPTION A - VON USB STARTEN (Schnell, kein Installation)
-─────────────────────────────────────────────────────
+OPTION A - DIREKTSTART (ohne feste Installation)
+-------------------------------------------------
 1. USB einstecken
-2. Ordner öffnen: USB_Installation
-3. Doppelklick: START_MaterialManager.bat
-4. App startet sofort!
-5. Fertig! ✅
+2. `START_MaterialManager.bat` doppelklicken
+3. App startet direkt
 
-Dauer: 2 Sekunden
-
-
-OPTION B - FEST AUF PC INSTALLIEREN (Mit Desktop-Verknüpfung)
-─────────────────────────────────────────────────────────
+OPTION B - FESTE INSTALLATION (empfohlen)
+-----------------------------------------
 1. USB einstecken
-2. Ordner öffnen: USB_Installation
-3. Doppelklick: Install_LocalPC.bat
-4. Rechtsklick → "Als Administrator ausführen"
-5. Installation läuft automatisch
-6. App wird installiert zu: C:\Program Files\MaterialManager
-7. Desktop-Verknüpfung wird erstellt
-8. Fertig! ✅
+2. `Install_LocalPC.bat` als Administrator ausführen
+3. Installation nach `C:\Program Files\MaterialManager`
+4. Desktop-Verknüpfung wird erstellt
 
-Dauer: ca. 1-2 Minuten
-
-
-================================================================================
-WICHTIG - UNTERSCHIED:
-================================================================================
-
-START_MaterialManager.bat
-→ App startet direkt von USB
-→ Schnell, einfach
-→ Kein Installation nötig
-→ Für Test oder Einzelplatz
-
-Install_LocalPC.bat
-→ App wird fest auf C:\ installiert
-→ Desktop-Verknüpfung
-→ Für mehrere Mitarbeiter
-→ Empfohlen für Büros
+OPTION C - GUI-INSTALLER
+------------------------
+1. `INSTALL.bat` ausführen
+2. Anweisungen im Installer folgen
 
 
 ================================================================================
-SYSTEMANFORDERUNGEN:
+3) NETZWERKBETRIEB FÜR MEHRERE PCs
 ================================================================================
 
-✓ Windows 10 oder Windows 11 (64-Bit)
-✓ 500 MB freier Speicher
-✓ 2 GB RAM empfohlen
-✓ Administrator-Rechte erforderlich
-✓ .NET 8 Runtime (ist ENTHALTEN - nichts extra installieren!)
+In der App: `Einstellungen -> Netzwerk`
 
+- Netzwerkmodus aktivieren
+- Gemeinsamen Datenordner wählen
+- Optional separaten Archivordner wählen
 
-================================================================================
-LIZENZIERUNG:
-================================================================================
+Empfohlen:
 
-⚠️  WICHTIG:
-- 1 Lizenzschlüssel = 1 PC
-- Jeder PC braucht seinen eigenen Schlüssel
-- Hardware-ID wird automatisch erkannt
-- Admin kontaktieren für neue Schlüssel
+- Daten: `\\SERVER\MaterialManager\Daten`
+- Archiv: `\\SERVER\MaterialManager\Archiv`
 
 
 ================================================================================
-HÄUFIGE FRAGEN:
+4) SPEICHERORTE (WICHTIG)
 ================================================================================
 
-F: Wo ist die EXE?
-A: USB_Installation\MaterialManager\MaterialManager_V01.exe
+Materialdaten für alle PCs (bei Netzwerkmodus):
+- `\\SERVER\MaterialManager\Daten\materialbestand.xlsx`
 
-F: Installation funktioniert nicht?
-A: Adminrechte erforderlich! Rechtsklick → "Als Administrator"
+Automatische Tages-Backups der Materialdatei:
+- `\\SERVER\MaterialManager\Daten\Backups\YYYY-MM-DD\...`
 
-F: Kann ich die App von USB und installiert haben?
-A: JA! Beides funktioniert gleichzeitig. Wähle eine Option!
+Archiv alter Aufträge:
+- Primär: eingestellter Archivpfad
+- Sonst: `<Netzwerkpfad>\Auftragsarchiv`
+- Struktur: `<Basis>\Jahr\KW_xx\Auftragsnummer\` mit `auftrag.json` + `PDF\`
 
-F: Wie viel Speicher braucht die App?
-A: ~150 MB installiert. USB braucht ~250 MB.
-
-F: Kann ich mehrere PCs mit 1 USB machen?
-A: JA! USB beliebig oft wiederverwendbar!
-
-
-================================================================================
-SUPPORT:
-================================================================================
-
-Problem → Lösung:
-
-"Admin-Fehler"
-→ Rechtsklick auf BAT → "Als Administrator ausführen"
-
-"Datei nicht gefunden"
-→ Prüfe: USB_Installation\MaterialManager\MaterialManager_V01.exe existiert?
-
-"Installation friert ein"
-→ Warten (Antivirus prüft) oder neu starten
-
-"App startet nicht nach Installation"
-→ Manuell starten: C:\Program Files\MaterialManager\MaterialManager_V01.exe
+Lokal (ohne Netzwerkmodus):
+- `%LOCALAPPDATA%\MaterialManager_V01\Data\materialbestand.xlsx`
+- `%LOCALAPPDATA%\MaterialManager_V01\Auftragsarchiv`
 
 
 ================================================================================
-SCHNELL-ANLEITUNG (Kurz):
+5) SYSTEMANFORDERUNGEN
 ================================================================================
 
-VON USB:
-  1. USB einstecken
-  2. Doppelklick: START_MaterialManager.bat
-  3. FERTIG!
-
-FEST INSTALLIEREN:
-  1. USB einstecken
-  2. Doppelklick: Install_LocalPC.bat (AS ADMIN)
-  3. FERTIG!
+- Windows 10/11 (64-Bit)
+- ausreichend Speicherplatz
+- Administrator-Rechte für feste Installation
+- .NET 8 ist im Paket enthalten
 
 
 ================================================================================
-KONTAKT:
+6) KURZ-CHECK NACH INSTALLATION
 ================================================================================
 
-Email: info@hoelzer.de
-Support: 12 Monate inkludiert
-Lizenz: Bitte Lizenzschlüssel bereithalten
-
-
-================================================================================
-VERSION HISTORY:
-================================================================================
-
-1.0.6 - Final Version (05.03.2026)
-- USB-Distribution ready
-- Multi-PC support
-- Deutsch & Lizenzierung
+[ ] App startet fehlerfrei
+[ ] Lizenz aktiviert
+[ ] Netzwerkpfade erreichbar
+[ ] Materialdatei wird im Zielordner aktualisiert
+[ ] Archivierung eines Testauftrags funktioniert
 
 ================================================================================
-BEREIT? LOS GEHT'S! ✅
+ENDE
 ================================================================================

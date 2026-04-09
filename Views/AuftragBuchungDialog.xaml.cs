@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 
 namespace MaterialManager_V01.Views
 {
@@ -23,8 +24,8 @@ namespace MaterialManager_V01.Views
             PdfTextBox.Text = PdfPfad;
             MengeTextBox.Text = maxMenge > 1 ? "1" : maxMenge.ToString();
             InfoTextBlock.Text = requirePdf
-                ? $"Verfügbar: {maxMenge} Stück\nBitte Auftragsnummer, Menge und PDF-Datei auswählen."
-                : $"Verfügbar: {maxMenge} Stück";
+                ? $"Verfügbar: {maxMenge} Stück\nBitte Auftragsnummer, Menge und PDF-Datei auswählen (Drag&Drop oder Durchsuchen)."
+                : $"Verfügbar: {maxMenge} Stück\nPDF-Datei optional per Drag&Drop oder Durchsuchen.";
             Loaded += (_, _) => AuftragTextBox.Focus();
         }
 
@@ -43,7 +44,54 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
-            PdfPfad = dlg.FileName;
+            SetPdfPath(dlg.FileName);
+        }
+
+        private void OnPdfTextBoxDragOver(object sender, DragEventArgs e)
+        {
+            if (TryGetDroppedPdfPath(e.Data, out _))
+            {
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+                return;
+            }
+
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void OnPdfTextBoxDrop(object sender, DragEventArgs e)
+        {
+            if (!TryGetDroppedPdfPath(e.Data, out var pdfPath))
+                return;
+
+            SetPdfPath(pdfPath);
+        }
+
+        private static bool TryGetDroppedPdfPath(IDataObject dataObject, out string pdfPath)
+        {
+            pdfPath = string.Empty;
+
+            if (!dataObject.GetDataPresent(DataFormats.FileDrop))
+                return false;
+
+            if (dataObject.GetData(DataFormats.FileDrop) is not string[] files || files.Length != 1)
+                return false;
+
+            var candidate = files[0];
+            if (string.IsNullOrWhiteSpace(candidate) || !File.Exists(candidate))
+                return false;
+
+            if (!string.Equals(Path.GetExtension(candidate), ".pdf", System.StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            pdfPath = candidate;
+            return true;
+        }
+
+        private void SetPdfPath(string pdfPath)
+        {
+            PdfPfad = pdfPath ?? string.Empty;
             PdfTextBox.Text = PdfPfad;
         }
 
