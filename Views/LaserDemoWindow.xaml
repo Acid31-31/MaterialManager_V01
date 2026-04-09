@@ -504,8 +504,21 @@
                               SelectionUnit="FullRow"
                               MouseDoubleClick="OnAuftraegeGridDoubleClick"
                               RowHeight="28">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEilt}" Value="True">
+                                        <Setter Property="Background" Value="#7A1F1F"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#1E4E79"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
+                            <DataGridTextColumn Header="Hinweis" Binding="{Binding EiltText}" Width="70"/>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
                             <DataGridTextColumn Header="Material" Binding="{Binding MaterialPositionen}" Width="80"/>
                             <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
