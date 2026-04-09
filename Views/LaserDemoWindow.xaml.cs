@@ -1074,13 +1074,16 @@ namespace MaterialManager_V01.Views
 
             PushUndoSnapshot("Reserviertes Material bearbeiten");
             dlg.Material.AuftragNr = string.Empty;
-            dlg.Material.Lagerort = RegalService.DetermineLagerort(
-                dlg.Material.MaterialArt,
-                dlg.Material.Legierung,
-                dlg.Material.Form,
-                dlg.Material.Staerke,
-                dlg.Material.Mass,
-                _alleMaterialien.Where(m => !ReferenceEquals(m, item)).ToList());
+            if (string.IsNullOrWhiteSpace(dlg.Material.Lagerort))
+            {
+                dlg.Material.Lagerort = RegalService.DetermineLagerort(
+                    dlg.Material.MaterialArt,
+                    dlg.Material.Legierung,
+                    dlg.Material.Form,
+                    dlg.Material.Staerke,
+                    dlg.Material.Mass,
+                    _alleMaterialien.Where(m => !ReferenceEquals(m, item)).ToList());
+            }
             dlg.Material.IsSelected = false;
             _alleMaterialien[index] = dlg.Material;
             SaveAllMaterials();

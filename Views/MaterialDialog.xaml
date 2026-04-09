@@ -178,17 +178,19 @@
                 <RowDefinition Height="Auto"/>
                 <!-- 7: Profil-Felder -->
                 <RowDefinition Height="Auto"/>
-                <!-- 8: Stückzahl + Restnummer -->
+                <!-- 8: Restnummer -->
                 <RowDefinition Height="Auto"/>
-                <!-- 9: Datum -->
+                <!-- 9: Lagerort -->
                 <RowDefinition Height="Auto"/>
-                <!-- 10: Lieferant / Lieferschein -->
+                <!-- 10: Datum -->
                 <RowDefinition Height="Auto"/>
-                <!-- 11: Preis / Wert -->
+                <!-- 11: Lieferant / Lieferschein -->
                 <RowDefinition Height="Auto"/>
-                <!-- 12: Regal-Auslastung -->
+                <!-- 12: Preis / Wert -->
                 <RowDefinition Height="Auto"/>
-                <!-- 13: Buttons -->
+                <!-- 13: Regal-Auslastung -->
+                <RowDefinition Height="Auto"/>
+                <!-- 14: Buttons -->
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -403,30 +405,31 @@
                 </Grid>
             </StackPanel>
 
-            <!-- ── Restnummer & Lagerort (manuell) ─────────────────────────── -->
+            <!-- ── Restnummer (manuell) ───────────────────────────────────── -->
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Restnummer:" VerticalAlignment="Center" Margin="0,5"/>
-            <StackPanel Grid.Row="8" Grid.Column="1" Margin="0,5">
-                <TextBox Text="{Binding Restnummer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Lagerort:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <ComboBox Width="220"
-                              ItemsSource="{Binding AvailableLagerorte}"
-                              SelectedItem="{Binding SelectedLagerort, Mode=TwoWay}"
-                              IsEditable="True"/>
-                </StackPanel>
-            </StackPanel>
+            <TextBox Grid.Row="8" Grid.Column="1"
+                     Text="{Binding Restnummer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0,5"/>
+
+            <!-- ── Lagerort (manuell) ──────────────────────────────────────── -->
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="Lagerort:" VerticalAlignment="Center" Margin="0,5"/>
+            <ComboBox Grid.Row="9" Grid.Column="1"
+                      ItemsSource="{Binding AvailableLagerorte}"
+                      SelectedItem="{Binding SelectedLagerort, Mode=TwoWay}"
+                      IsEditable="True"
+                      Margin="0,5"/>
 
             <!-- ── Datum ───────────────────────────────────────────────────── -->
-            <TextBlock Grid.Row="9" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5"/>
-            <DatePicker Grid.Row="9" Grid.Column="1"
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5"/>
+            <DatePicker Grid.Row="10" Grid.Column="1"
                         SelectedDate="{Binding SelectedDatum, Mode=TwoWay}"
                         Margin="0,5"
                         Background="#222" Foreground="White" BorderBrush="#444"/>
 
             <!-- ── Lieferant / Lieferschein ────────────────────────────────── -->
-            <TextBlock Grid.Row="10" Grid.Column="0" Text="Lieferant:" VerticalAlignment="Center" Margin="0,5"
+            <TextBlock Grid.Row="11" Grid.Column="0" Text="Lieferant:" VerticalAlignment="Center" Margin="0,5"
                        Visibility="{Binding LieferantVisible}"/>
-            <StackPanel Grid.Row="10" Grid.Column="1" Visibility="{Binding LieferantVisible}">
+            <StackPanel Grid.Row="11" Grid.Column="1" Visibility="{Binding LieferantVisible}">
                 <TextBox Text="{Binding SelectedLieferant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5"/>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Lieferschein-Nr:" VerticalAlignment="Center" Margin="0,0,6,0"/>
@@ -435,8 +438,8 @@
             </StackPanel>
 
             <!-- ── Preis / Wert ────────────────────────────────────────────── -->
-            <TextBlock Grid.Row="11" Grid.Column="0" Text="Preis (€/kg):" VerticalAlignment="Center" Margin="0,5"/>
-            <StackPanel Grid.Row="11" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Preis (€/kg):" VerticalAlignment="Center" Margin="0,5"/>
+            <StackPanel Grid.Row="12" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
                 <TextBox Text="{Binding PreisProKg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"
                          Background="#222" Foreground="White" BorderBrush="#444" Padding="4"/>
                 <TextBlock Text="€/kg" Foreground="#888" VerticalAlignment="Center" Margin="4,0,8,0"/>
@@ -444,8 +447,8 @@
             </StackPanel>
 
             <!-- ── Regal-Auslastung (nur Bleche relevant) ─────────────────── -->
-            <TextBlock Grid.Row="12" Grid.Column="0" Text="Regal-Auslastung:" VerticalAlignment="Center" Margin="0,5"/>
-            <StackPanel Grid.Row="12" Grid.Column="1" Margin="0,5">
+            <TextBlock Grid.Row="13" Grid.Column="0" Text="Regal-Auslastung:" VerticalAlignment="Center" Margin="0,5"/>
+            <StackPanel Grid.Row="13" Grid.Column="1" Margin="0,5">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding CurrentLoadKg, StringFormat={}{0:N2} kg}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <TextBlock Text="/" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -465,7 +468,7 @@
             </StackPanel>
 
             <!-- ── Buttons ─────────────────────────────────────────────────── -->
-            <StackPanel Grid.Row="13" Grid.ColumnSpan="2" Orientation="Horizontal"
+            <StackPanel Grid.Row="14" Grid.ColumnSpan="2" Orientation="Horizontal"
                         HorizontalAlignment="Right" Margin="0,15,0,0">
                 <Button Content="🏷️ Etikett" Width="80" Margin="5" Click="OnEtikett"
                         Visibility="{Binding EtiquetteVisible}" Background="#795548"/>
