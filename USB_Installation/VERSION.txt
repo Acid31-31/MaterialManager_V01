@@ -1,5 +1,4 @@
 MaterialManager 1.2.1
-Erstellt: 09.04.2026 20:33:00
-Stand: USB-Paket, Signier-Workflow und Zertifikatsverteilung aktualisiert
-Hinweis: INSTALL.bat startet den aktuellen GUI-Installer (INSTALL_GUI.ps1)
-Hinweis: MaterialManager_CodeSigning_PUBLIC.cer + INSTALL_CERTIFICATE.bat für Ziel-PCs enthalten
+Erstellt: 09.04.2026 20:37:33
+Version: GUI Installer automatisch aktualisiert
+Hinweis: INSTALL.bat startet immer INSTALL_GUI.ps1 als aktuellen Installationsstand
