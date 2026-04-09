@@ -2,14 +2,13 @@
 
 ## Project Guidelines
 - Antworte immer auf Deutsch.
-- Vor jeder Codeänderung immer ein vollständiges Projekt-Backup im `Backup`-Verzeichnis erstellen; keine Einzeldatei-Backups als Ersatz verwenden.
+- Vor jeder Codeänderung immer ein vollständiges Projekt-Backup im `Backup`-Verzeichnis erstellen; keine Einzeldatei-Backups als Ersatz verwenden. **Benutzer erwartet vor jeder Änderung ein sichtbares vollständiges Backup und klare Rückmeldung dazu.**
 - **Backup-Regel:** Maximal 3 Backup-Ordner im `Backup`-Verzeichnis. Vor jedem neuen Backup zuerst prüfen, ob bereits 3 vorhanden sind – wenn ja, den ältesten löschen, dann das neue erstellen. Niemals mehr als 3 Backups anlegen. Beim Kopieren immer folgende Ordner ausschließen: `Backup`, `bin`, `obj`, `.git`, `dist`, `publish`, `publish_release`, `update-installer`, `update-installer-release`, `_ARCHIVE_TO_REVIEW`, `_Multi`, sowie alle alten Backup-Ordner im Projektstamm (Muster: `BACKUP_*`, `Backup_*`).
 - Bei riskanten Änderungen zuerst kurz den Plan nennen; keine funktionierenden Dateien ohne ausdrückliche Zustimmung löschen oder ersetzen.
 - Nach Änderungen standardmäßig sowohl lokal als auch auf GitHub aktualisieren. Bei `komplett aktualisieren` den lokalen USB-Ordner inklusive `USB_Installation` und GitHub vollständig synchronisieren.
 - Immer den aktuellen `COPILOTWORKSPACE CONTEXT` und `IDESTATE CONTEXT` berücksichtigen.
 - Neue vom Benutzer genannte Arbeitsregeln nach Möglichkeit in diese Datei übernehmen, damit sie nicht wiederholt werden müssen.
-- Verbindliche UI-Regel: Bei allen neu erstellten UI-Elementen immer ein dunkles Design verwenden (Fenster, Dialoge, Dropdowns, ContextMenus, Popups); keine hellen Standard-Hintergründe oder helle Titelleisten verwenden.
-- **Neue UI-Regel:** Bei allen neu erstellten UI-Elementen (Fenster, Dialoge, Dropdowns, ContextMenus, Popups) immer durchgehend dunkles Design verwenden; keine hellen Standard-Elemente zulassen.
+- Verbindliche UI-Regel: Bei allen neu erstellten UI-Elementen immer ein dunkles Design verwenden (Fenster, Dialoge, Dropdowns, ContextMenus, Popups); keine hellen Standard-Hintergründe oder helle Titelleisten verwenden. Bei neuen/angepassten UI-Elementen soll ausnahmslos ein dunkles Design verwendet werden; helle Hintergründe oder helle Auswahlfelder sind nicht akzeptabel. **Herko-Grün soll im UI dezent als Akzent eingesetzt werden; keine großflächigen grünen Flächen oder zu dominante grüne Gestaltung.**
 - Keine neuen Verzeichnisse oder zusätzlichen Git-Branches ohne ausdrückliche Zustimmung anlegen.
 - Das bestehende `USB_Installation`-Layout beibehalten. Vorhandene Installationsdateien, Erklärungen und sonstige Inhalte nicht durch Publish ersetzen oder entfernen, außer mit ausdrücklicher Zustimmung.
 - Der `UpdateInstaller` soll den Installationspfad automatisch erkennen, damit Updates auf mehreren Rechnern und in unterschiedlichen Installationsordnern ohne manuelle Pfadangabe funktionieren.
@@ -24,6 +23,9 @@
 - Sichtbare UI-Texte dürfen keine Encoding-/Sonderzeichenfehler enthalten; sie sollen in deutscher Sprache korrekt mit Umlauten angezeigt werden und Umlaute dürfen nicht durch Ersatzschreibweisen wie ae/oe/ue ersetzt werden. Bei Meldungen und Beschriftungen sollen fehleranfällige Sonderzeichen vermieden bzw. robust dargestellt werden.
 - Netzwerk-Synchronisation soll beim Start nicht erzwungen werden; zuerst Programm testen, Einrichtung später manuell über Einstellungen.
 - **Installer-/USB-Stand:** Der Installer- und USB-Stand soll nach Änderungen immer aktualisiert sein, damit in der Firma keine veraltete Installation verwendet wird.
+- **C:-Laufwerk ist tabu; nur nutzen, wenn der Benutzer es ausdrücklich verlangt.**
+- In der Auftragssteuerung sollen Zurück/Vorwärts nicht in der linken Buttonliste stehen, sondern oben rechts neben dem Menübereich (bei Hilfe) als Pfeil-Buttons dargestellt werden.
+- Wenn der Benutzer eine bestehende App 'einbauen' sagt, soll sie als fester Bestandteil in MaterialManager integriert werden (internes Modul), nicht nur als Starter-Button zur externen EXE.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.
@@ -31,6 +33,7 @@
 - Bei Abschluss sowohl Auftragsdaten als auch PDF-Kopien in KW-Archiv (nur aktuelles Jahr) verschieben.
 - Automatische Löschung/Überschreibung von Archivdaten nach 12 Monaten.
 - KW-Auswahl im UI mit aktueller KW als Standard und Umschalten auf andere KWs des aktuellen Jahres ermöglichen.
+- **Kantbank-Aufträge benötigen zwei PDFs:** 1) Originalzeichnung und 2) Kantzeichnung aus dem Kundenordner; die Kantzeichnung soll automatisch über die Zeichnungsnummer gefunden/zugeordnet werden, ohne manuelle Suche.
 
 ## License Key Generation
 - Die beiden Lizenzschlüssel-Mechanismen müssen vereinheitlicht bleiben:
@@ -38,3 +41,6 @@
   - `LicenseService.cs` darf keine abweichende eigene Schlüsselgenerierung mehr verwenden.
 - `LicenseService.ActivateFullLicense()` muss `LicenseKeyGenerator.GenerateLicenseKey()` verwenden.
 - **Preisdarstellung in der Lizenzaktivierung** soll auf professionelles Software-Niveau angehoben werden; die bisherigen niedrigen Beispielpreise sind nicht passend. Lizenzpreise sollen marktgerecht bleiben und klar unter ca. 30.000 EUR/Jahr für Firmenlizenz liegen; Wettbewerberpreise sollen als Referenz genutzt werden. Lizenzpreise sollen nicht pauschal sein, sondern abhängig vom Software-Umfang und den enthaltenen Funktionen bewertet und daraus berechnet werden.
+
+## Aufgabenmanagement
+- Bei der Nennung einer konkreten neuen Aufgabe soll nur diese umgesetzt werden und nicht erneut bereits erledigte Änderungen wiederholt werden.
