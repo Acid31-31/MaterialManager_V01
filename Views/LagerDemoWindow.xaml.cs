@@ -136,6 +136,11 @@ namespace MaterialManager_V01.Views
                 return true;
 
             var normalized = filter.Replace(',', '.').Trim();
+
+            // Sonderfall: Eingabe "0" soll alle Stärken < 1 mm zeigen (z. B. 0.2, 0.3, 0.5, 0.8)
+            if (string.Equals(normalized, "0", StringComparison.Ordinal))
+                return value > 0 && value < 1;
+
             if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var target))
                 return false;
 
