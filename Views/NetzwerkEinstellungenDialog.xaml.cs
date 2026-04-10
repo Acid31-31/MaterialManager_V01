@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -25,6 +27,46 @@ namespace MaterialManager_V01.Views
         {
             DialogResult = false;
             Close();
+        }
+
+        private void OnBrowsePfad(object sender, RoutedEventArgs e)
+        {
+            var selectedPath = SelectFolder(PfadBox.Text);
+            if (!string.IsNullOrWhiteSpace(selectedPath))
+                PfadBox.Text = selectedPath;
+        }
+
+        private void OnBrowseArchivPfad(object sender, RoutedEventArgs e)
+        {
+            var selectedPath = SelectFolder(ArchivPfadBox.Text);
+            if (!string.IsNullOrWhiteSpace(selectedPath))
+                ArchivPfadBox.Text = selectedPath;
+        }
+
+        private string SelectFolder(string initialPath)
+        {
+            var dialog = new OpenFolderDialog
+            {
+                Multiselect = false,
+                Title = "Bitte Ordner auswählen"
+            };
+
+            if (!string.IsNullOrWhiteSpace(initialPath))
+            {
+                try
+                {
+                    var resolved = Path.GetFullPath(initialPath.Trim().Trim('"'));
+                    if (Directory.Exists(resolved))
+                        dialog.InitialDirectory = resolved;
+                }
+                catch
+                {
+                }
+            }
+
+            return dialog.ShowDialog(this) == true
+                ? (dialog.FolderName ?? string.Empty)
+                : string.Empty;
         }
 
         private void OnSave(object sender, RoutedEventArgs e)

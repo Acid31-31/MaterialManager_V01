@@ -86,10 +86,24 @@
                     <CheckBox x:Name="AktivCheck" Content="Netzwerk-Modus aktivieren" FontSize="17" />
 
                     <TextBlock Text="Gemeinsamer Netzwerkpfad (Materialdaten):" Margin="0,8,0,4"/>
-                    <TextBox x:Name="PfadBox" HorizontalScrollBarVisibility="Auto" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="PfadBox" Grid.Column="0" HorizontalScrollBarVisibility="Auto" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="Durchsuchen" Width="120" Height="40" Click="OnBrowsePfad"/>
+                    </Grid>
 
                     <TextBlock Text="Gemeinsamer Auftrags-Archivpfad (Laser/Auftragssteuerung):" Margin="0,10,0,4"/>
-                    <TextBox x:Name="ArchivPfadBox" HorizontalScrollBarVisibility="Auto" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="ArchivPfadBox" Grid.Column="0" HorizontalScrollBarVisibility="Auto" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="Durchsuchen" Width="120" Height="40" Click="OnBrowseArchivPfad"/>
+                    </Grid>
 
                     <TextBlock Foreground="#A0A0A0" TextWrapping="Wrap" Margin="0,6,0,0"
                                Text="Pfad muss auf allen Rechnern identisch sein (z.B. \\SERVER\MaterialManager\Auftragsarchiv oder Z:\Auftragsarchiv)."/>
