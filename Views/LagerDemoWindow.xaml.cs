@@ -336,6 +336,53 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnReserveMaterialClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials();
+            if (items.Count == 0)
+                return;
+
+            var existingAuftrag = items.Count == 1 ? items[0].AuftragNr : string.Empty;
+            var dlg = new ResteReservierungDialog(existingAuftrag) { Owner = this };
+            if (dlg.ShowDialog() != true)
+                return;
+
+            if (dlg.DeleteMaterialFromLager)
+            {
+                var confirm = MessageBox.Show(
+                    items.Count == 1
+                        ? "Material nach Eintrag-Löschung wirklich aus dem Lager entfernen?"
+                        : $"{items.Count} Materialien nach Eintrag-Löschung wirklich aus dem Lager entfernen?",
+                    "Lager",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (confirm != MessageBoxResult.Yes)
+                    return;
+
+                PushUndoSnapshot(items.Count == 1 ? "Eintrag löschen + Material löschen" : "Einträge löschen + Materialien löschen");
+                foreach (var item in items)
+                    _alleMaterialien.Remove(item);
+
+                SaveAllMaterials();
+                LoadMaterials();
+                return;
+            }
+
+            var auftragNr = dlg.AuftragNr?.Trim() ?? string.Empty;
+            PushUndoSnapshot(items.Count == 1 ? "Reservierung ändern" : "Reservierung ändern (mehrere)");
+
+            foreach (var item in items)
+            {
+                item.AuftragNr = auftragNr;
+                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                item.AenderungsDatum = DateTime.Now;
+            }
+
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
         private void OnGridMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (MaterialGrid.SelectedItem is not MaterialItem item)
