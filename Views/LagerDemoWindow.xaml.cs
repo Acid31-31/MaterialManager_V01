@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -84,53 +85,80 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private string GetSelectedFilter()
+        private static string NormalizeFilterValue(string? value)
         {
-            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            if (!string.IsNullOrWhiteSpace(selected))
-                return selected.Trim();
+            return (value ?? string.Empty).Trim().ToLowerInvariant();
+        }
 
-            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
-                return FormFilterBox.Text.Trim();
+        private static bool ContainsFilter(string? source, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
 
-            return "Alle";
+            return (source ?? string.Empty)
+                .ToLowerInvariant()
+                .Contains(filter);
+        }
+
+        private static bool ContainsNumericFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var numeric = value.ToString("0.###", CultureInfo.InvariantCulture).ToLowerInvariant();
+            var filterNormalized = filter.Replace(',', '.');
+            return numeric.Contains(filterNormalized);
+        }
+
+        private static bool ContainsIntFilter(int value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            return value.ToString(CultureInfo.InvariantCulture).Contains(filter);
         }
 
         private void ApplyFilter()
         {
-            var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var selectedFilter = GetSelectedFilter();
+            var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
+            var fLegierung = NormalizeFilterValue(FilterLegierungBox?.Text);
+            var fOberflaeche = NormalizeFilterValue(FilterOberflaecheBox?.Text);
+            var fKategorie = NormalizeFilterValue(FilterKategorieBox?.Text);
+            var fForm = NormalizeFilterValue(FilterFormBox?.Text);
+            var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
+            var fMass = NormalizeFilterValue(FilterMassBox?.Text);
+            var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
+            var fStueck = NormalizeFilterValue(FilterStueckBox?.Text);
+            var fGewicht = NormalizeFilterValue(FilterGewichtBox?.Text);
+            var fLagerort = NormalizeFilterValue(FilterLagerortBox?.Text);
+            var fAngelegtVon = NormalizeFilterValue(FilterAngelegtVonBox?.Text);
+            var fGeaendertVon = NormalizeFilterValue(FilterGeaendertVonBox?.Text);
+            var fDatum = NormalizeFilterValue(FilterDatumBox?.Text);
+            var fAenderungsDatum = NormalizeFilterValue(FilterAenderungsDatumBox?.Text);
+            var fRestnummer = NormalizeFilterValue(FilterRestnummerBox?.Text);
+            var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
+            var fPdf = NormalizeFilterValue(FilterPdfBox?.Text);
 
             var filtered = _alleMaterialien.Where(m =>
-            {
-                var filterMatch = selectedFilter switch
-                {
-                    "Alle" => true,
-                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
-                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
-                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
-                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
-                    _ => true
-                };
-
-                if (!filterMatch)
-                    return false;
-
-                if (string.IsNullOrWhiteSpace(query))
-                    return true;
-
-                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Oberflaeche ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       m.Kategorie.ToString().ToLowerInvariant().Contains(query) ||
-                       (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.ProfilTyp ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       m.Laenge.ToString().ToLowerInvariant().Contains(query) ||
-                       (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
-            }).ToList();
+                ContainsFilter(m.MaterialArt, fMaterial)
+                && ContainsFilter(m.Legierung, fLegierung)
+                && ContainsFilter(m.Oberflaeche, fOberflaeche)
+                && ContainsFilter(m.Kategorie.ToString(), fKategorie)
+                && ContainsFilter(m.Form, fForm)
+                && ContainsNumericFilter(m.Staerke, fStaerke)
+                && ContainsFilter(m.Mass, fMass)
+                && ContainsNumericFilter(m.Laenge, fLaenge)
+                && ContainsIntFilter(m.Stueckzahl, fStueck)
+                && ContainsNumericFilter(m.GewichtKg, fGewicht)
+                && ContainsFilter(m.Lagerort, fLagerort)
+                && ContainsFilter(m.AngelegtVon, fAngelegtVon)
+                && ContainsFilter(m.GeaendertVon, fGeaendertVon)
+                && ContainsFilter(m.Datum?.ToString("dd.MM.yyyy HH:mm") ?? string.Empty, fDatum)
+                && ContainsFilter(m.AenderungsDatum?.ToString("dd.MM.yyyy HH:mm") ?? string.Empty, fAenderungsDatum)
+                && ContainsFilter(m.Restnummer, fRestnummer)
+                && ContainsFilter(m.AuftragNr, fAuftrag)
+                && ContainsFilter(m.PdfDateiname, fPdf)
+            ).ToList();
 
             GefilterteMaterialien.Clear();
             foreach (var item in filtered)
@@ -481,6 +509,11 @@ namespace MaterialManager_V01.Views
             Application.Current.MainWindow = laserWindow;
             laserWindow.Show();
             Close();
+        }
+
+        private void OnColumnFilterChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilter();
         }
     }
 }
