@@ -166,15 +166,13 @@ namespace MaterialManager_V01.Views
 
             var normalizedFilter = filter.Replace(',', '.').Trim().ToLowerInvariant();
 
-            // Wenn ein komplettes Maß mit Trenner gesucht wird, direkt auf den Gesamttext prüfen.
             if (normalizedFilter.Contains('x') || normalizedFilter.Contains('×'))
             {
-                var normalizedSource = source.Replace('×', 'x').Replace(' ', ' ');
+                var normalizedSource = source.Replace('×', 'x');
                 var nf = normalizedFilter.Replace('×', 'x');
                 return normalizedSource.Contains(nf, StringComparison.OrdinalIgnoreCase);
             }
 
-            // Sonst: segmentweise Suche auf einzelnen Maßteilen (z.B. 2000x470 -> 2000 / 470)
             var parts = source
                 .Replace('×', 'x')
                 .Split(new[] { 'x', '*', '/', '-', ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -188,6 +186,43 @@ namespace MaterialManager_V01.Views
             return parts.Any(p => p.StartsWith(normalizedFilter, StringComparison.OrdinalIgnoreCase));
         }
 
+        private static bool TryParseMass(string? mass, out double minSide, out double maxSide)
+        {
+            minSide = 0;
+            maxSide = 0;
+
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var normalized = mass
+                .ToLowerInvariant()
+                .Replace("mm", string.Empty)
+                .Replace('×', 'x')
+                .Replace(',', '.')
+                .Trim();
+
+            var parts = normalized.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .ToArray();
+
+            if (parts.Length != 2)
+                return false;
+
+            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var a))
+                return false;
+            if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var b))
+                return false;
+
+            minSide = Math.Min(a, b);
+            maxSide = Math.Max(a, b);
+            return true;
+        }
+
+        private static double GetMassArea(double minSide, double maxSide)
+        {
+            return minSide * maxSide;
+        }
+
         private void ApplyFilter()
         {
             var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
@@ -198,15 +233,53 @@ namespace MaterialManager_V01.Views
             var fRestnummer = NormalizeFilterValue(FilterRestnummerBox?.Text);
             var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
 
-            var filtered = _alleMaterialien.Where(m =>
+            var baseFiltered = _alleMaterialien.Where(m =>
                 ContainsFilter(m.MaterialArt, fMaterial)
                 && MatchesNumericExactFilter(m.Staerke, fStaerke)
-                && MatchesMassFilter(m.Mass, fMass)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
                 && ContainsFilter(m.Lagerort, fLagerort)
                 && ContainsFilter(m.Restnummer, fRestnummer)
                 && ContainsFilter(m.AuftragNr, fAuftrag)
-            ).ToList();
+            );
+
+            List<MaterialItem> filtered;
+
+            if (TryParseMass(fMass, out var queryMin, out var queryMax))
+            {
+                var parsedItems = baseFiltered
+                    .Select(m =>
+                    {
+                        var ok = TryParseMass(m.Mass, out var minSide, out var maxSide);
+                        return new { Item = m, Ok = ok, MinSide = minSide, MaxSide = maxSide };
+                    })
+                    .Where(x => x.Ok)
+                    .ToList();
+
+                var exact = parsedItems
+                    .Where(x => Math.Abs(x.MinSide - queryMin) < 0.001 && Math.Abs(x.MaxSide - queryMax) < 0.001)
+                    .OrderBy(x => GetMassArea(x.MinSide, x.MaxSide))
+                    .Select(x => x.Item)
+                    .ToList();
+
+                if (exact.Count > 0)
+                {
+                    filtered = exact;
+                }
+                else
+                {
+                    filtered = parsedItems
+                        .Where(x => x.MinSide >= queryMin && x.MaxSide >= queryMax)
+                        .OrderBy(x => GetMassArea(x.MinSide, x.MaxSide))
+                        .Select(x => x.Item)
+                        .ToList();
+                }
+            }
+            else
+            {
+                filtered = baseFiltered
+                    .Where(m => MatchesMassFilter(m.Mass, fMass))
+                    .ToList();
+            }
 
             GefilterteMaterialien.Clear();
             foreach (var item in filtered)
