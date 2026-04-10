@@ -1385,7 +1385,7 @@ namespace MaterialManager_V01
             var expiration = Services.LicenseService.GetExpirationDate();
             var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
 
-            LicenseTrialDisplayText = $"Testversion: {remainingDays} Tage{expiryText}";
+            LicenseTrialDisplayText = $"Pilotbetrieb: {remainingDays} Tage{expiryText}";
             LicenseTrialDisplayBrush = remainingDays <= 7
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));

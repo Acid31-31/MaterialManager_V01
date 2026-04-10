@@ -26,6 +26,7 @@
 - **C:-Laufwerk ist tabu; nur nutzen, wenn der Benutzer es ausdrücklich verlangt.**
 - In der Auftragssteuerung sollen Zurück/Vorwärts nicht in der linken Buttonliste stehen, sondern oben rechts neben dem Menübereich (bei Hilfe) als Pfeil-Buttons dargestellt werden.
 - Wenn der Benutzer eine bestehende App 'einbauen' sagt, soll sie als fester Bestandteil in MaterialManager integriert werden (internes Modul), nicht nur als Starter-Button zur externen EXE.
+- Der Markenname 'MaterialManager V01' darf nicht geändert werden; nur die Bezeichnung der Test-/Statusanzeige soll angepasst werden.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.
