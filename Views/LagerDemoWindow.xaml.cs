@@ -128,16 +128,9 @@ namespace MaterialManager_V01.Views
             var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
             var fMass = NormalizeFilterValue(FilterMassBox?.Text);
             var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
-            var fStueck = NormalizeFilterValue(FilterStueckBox?.Text);
-            var fGewicht = NormalizeFilterValue(FilterGewichtBox?.Text);
             var fLagerort = NormalizeFilterValue(FilterLagerortBox?.Text);
-            var fAngelegtVon = NormalizeFilterValue(FilterAngelegtVonBox?.Text);
-            var fGeaendertVon = NormalizeFilterValue(FilterGeaendertVonBox?.Text);
-            var fDatum = NormalizeFilterValue(FilterDatumBox?.Text);
-            var fAenderungsDatum = NormalizeFilterValue(FilterAenderungsDatumBox?.Text);
             var fRestnummer = NormalizeFilterValue(FilterRestnummerBox?.Text);
             var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
-            var fPdf = NormalizeFilterValue(FilterPdfBox?.Text);
 
             var filtered = _alleMaterialien.Where(m =>
                 ContainsFilter(m.MaterialArt, fMaterial)
@@ -148,16 +141,9 @@ namespace MaterialManager_V01.Views
                 && ContainsNumericFilter(m.Staerke, fStaerke)
                 && ContainsFilter(m.Mass, fMass)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
-                && ContainsIntFilter(m.Stueckzahl, fStueck)
-                && ContainsNumericFilter(m.GewichtKg, fGewicht)
                 && ContainsFilter(m.Lagerort, fLagerort)
-                && ContainsFilter(m.AngelegtVon, fAngelegtVon)
-                && ContainsFilter(m.GeaendertVon, fGeaendertVon)
-                && ContainsFilter(m.Datum?.ToString("dd.MM.yyyy HH:mm") ?? string.Empty, fDatum)
-                && ContainsFilter(m.AenderungsDatum?.ToString("dd.MM.yyyy HH:mm") ?? string.Empty, fAenderungsDatum)
                 && ContainsFilter(m.Restnummer, fRestnummer)
                 && ContainsFilter(m.AuftragNr, fAuftrag)
-                && ContainsFilter(m.PdfDateiname, fPdf)
             ).ToList();
 
             GefilterteMaterialien.Clear();
