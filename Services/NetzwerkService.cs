@@ -88,14 +88,7 @@ namespace MaterialManager_V01.Services
             if (!TryGetValidatedNetworkPath(out var networkPath))
                 return true;
 
-            try
-            {
-                return Directory.Exists(networkPath);
-            }
-            catch
-            {
-                return false;
-            }
+            return IsDirectoryReachableWithRetry(networkPath, attempts: 3, delayMs: 350);
         }
 
         public static bool AcquireLock(string benutzer)
@@ -256,23 +249,12 @@ namespace MaterialManager_V01.Services
                 };
             }
 
-            try
-            {
-                if (!Directory.Exists(netzPfad))
-                {
-                    return new NetzwerkHealthStatus
-                    {
-                        IsHealthy = false,
-                        Message = $"Netzwerkpfad nicht erreichbar:\n{netzPfad}"
-                    };
-                }
-            }
-            catch (Exception ex)
+            if (!IsDirectoryReachableWithRetry(netzPfad, attempts: 6, delayMs: 500))
             {
                 return new NetzwerkHealthStatus
                 {
                     IsHealthy = false,
-                    Message = $"Netzwerkpfad kann nicht geprüft werden:\n{ex.Message}"
+                    Message = $"Netzwerkpfad nicht erreichbar:\n{netzPfad}"
                 };
             }
 
@@ -464,6 +446,26 @@ namespace MaterialManager_V01.Services
                 File.WriteAllText(ConfigFile, JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch { }
+        }
+
+        private static bool IsDirectoryReachableWithRetry(string path, int attempts, int delayMs)
+        {
+            for (var i = 0; i < attempts; i++)
+            {
+                try
+                {
+                    if (Directory.Exists(path))
+                        return true;
+                }
+                catch
+                {
+                }
+
+                if (i < attempts - 1)
+                    System.Threading.Thread.Sleep(delayMs);
+            }
+
+            return false;
         }
     }
 
