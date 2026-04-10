@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -12,7 +13,27 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             RefreshLicenseTitle();
+            RefreshLicenseBanner();
             FitToWorkArea();
+        }
+
+        private void RefreshLicenseBanner()
+        {
+            if (LicenseService.IsFullLicenseActive())
+            {
+                LicenseBannerTextBlock.Text = "Vollversion aktiv";
+                LicenseBannerTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                return;
+            }
+
+            var remainingDays = LicenseService.GetRemainingTrialDays();
+            var expiration = LicenseService.GetExpirationDate();
+            var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
+
+            LicenseBannerTextBlock.Text = $"Pilotbetrieb: {remainingDays} Tage{expiryText}";
+            LicenseBannerTextBlock.Foreground = remainingDays <= 7
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
         }
 
         private void RefreshLicenseTitle()

@@ -158,6 +158,15 @@
                     </MenuItem>
                 </Menu>
 
+                <TextBlock x:Name="LicenseBannerTextBlock"
+                           Grid.ColumnSpan="4"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           FontSize="14"
+                           IsHitTestVisible="False"
+                           TextTrimming="CharacterEllipsis"/>
+
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
                     <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>
