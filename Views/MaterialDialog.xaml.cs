@@ -117,7 +117,49 @@ namespace MaterialManager_V01.Views
         }
 
         private double _selectedStaerke;
-        public double SelectedStaerke { get => _selectedStaerke; set { _selectedStaerke = value; OnPropertyChanged(nameof(SelectedStaerke)); OnPropertyChanged(nameof(GeschaetzterWert)); } }
+        public double SelectedStaerke
+        {
+            get => _selectedStaerke;
+            set
+            {
+                _selectedStaerke = value;
+                _selectedStaerkeText = value.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',');
+                OnPropertyChanged(nameof(SelectedStaerke));
+                OnPropertyChanged(nameof(SelectedStaerkeText));
+                OnPropertyChanged(nameof(GeschaetzterWert));
+            }
+        }
+
+        private string _selectedStaerkeText = string.Empty;
+        public string SelectedStaerkeText
+        {
+            get => _selectedStaerkeText;
+            set
+            {
+                _selectedStaerkeText = value ?? string.Empty;
+                OnPropertyChanged(nameof(SelectedStaerkeText));
+
+                if (TryParseStaerke(_selectedStaerkeText, out var parsed))
+                {
+                    if (System.Math.Abs(_selectedStaerke - parsed) > 0.0001)
+                    {
+                        _selectedStaerke = parsed;
+                        OnPropertyChanged(nameof(SelectedStaerke));
+                        OnPropertyChanged(nameof(GeschaetzterWert));
+                    }
+                }
+            }
+        }
+
+        private static bool TryParseStaerke(string? text, out double value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            var normalized = text.Trim().ToLowerInvariant().Replace("mm", string.Empty).Trim().Replace(',', '.');
+            return double.TryParse(normalized, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value);
+        }
 
         private string _mass = "";
         public string Mass { get => _mass; set { _mass = value; OnPropertyChanged(nameof(Mass)); OnPropertyChanged(nameof(GeschaetzterWert)); } }

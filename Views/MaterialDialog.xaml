@@ -250,8 +250,13 @@
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Stärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="1" Grid.Column="1"
+                              x:Name="StaerkeBox"
                               ItemsSource="{Binding Staerken}"
                               SelectedItem="{Binding SelectedStaerke, Mode=TwoWay}"
+                              Text="{Binding SelectedStaerkeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              IsEditable="True"
+                              IsTextSearchEnabled="True"
+                              StaysOpenOnEdit="True"
                               Margin="0,5">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
