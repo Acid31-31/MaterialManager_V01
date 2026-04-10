@@ -218,6 +218,16 @@ namespace MaterialManager_V01.Services
         {
             var cleanBody = string.IsNullOrWhiteSpace(body) ? string.Empty : body.Trim();
 
+            // 1) Vorrang: Release-Text aus GitHub (wenn vorhanden)
+            var parsedBodyLines = ParseBodyToBulletLines(cleanBody);
+            if (parsedBodyLines.Count > 0)
+            {
+                var lines = new List<string> { "Änderungen in dieser Version:" };
+                lines.AddRange(parsedBodyLines.Select(x => $"• {x}"));
+                return string.Join(Environment.NewLine, lines);
+            }
+
+            // 2) Fallback: technische Änderungen zählen, aber keine englischen Commit-Texte anzeigen
             var commits = await TryGetCompareCommitsAsync(currentTag, latestTag);
             if (commits.Count == 0)
             {
@@ -233,25 +243,12 @@ namespace MaterialManager_V01.Services
             {
                 var lines = new List<string>
                 {
-                    "Änderungen in dieser Version:"
+                    "Änderungen in dieser Version:",
+                    "• Interne Verbesserungen und Fehlerbehebungen",
+                    "• Stabilitäts- und Performanceoptimierungen",
+                    $"• Enthält {commits.Count} technische Änderung(en) im Quellcode"
                 };
 
-                foreach (var msg in commits.Take(20))
-                    lines.Add($"• {msg}");
-
-                if (commits.Count > 20)
-                    lines.Add($"• ... und {commits.Count - 20} weitere Commits");
-
-                lines.Add(string.Empty);
-                lines.Add($"Vergleich: https://github.com/Acid31-31/MaterialManager_V01/compare/{currentTag}...{latestTag}");
-                return string.Join(Environment.NewLine, lines);
-            }
-
-            var parsedBodyLines = ParseBodyToBulletLines(cleanBody);
-            if (parsedBodyLines.Count > 0)
-            {
-                var lines = new List<string> { "Änderungen in dieser Version:" };
-                lines.AddRange(parsedBodyLines.Select(x => $"• {x}"));
                 return string.Join(Environment.NewLine, lines);
             }
 
