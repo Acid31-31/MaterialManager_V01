@@ -141,6 +141,10 @@ namespace MaterialManager_V01.Views
 
                 if (TryParseStaerke(_selectedStaerkeText, out var parsed))
                 {
+                    // 0 oder ungültig kleine Werte nicht als Auswahl übernehmen
+                    if (parsed < 0.2)
+                        return;
+
                     if (System.Math.Abs(_selectedStaerke - parsed) > 0.0001)
                     {
                         _selectedStaerke = parsed;
@@ -598,6 +602,17 @@ namespace MaterialManager_V01.Views
                     Restnummer = string.IsNullOrWhiteSpace(Restnummer) ? MaterialDefinitions.NeueRestnummer() : Restnummer;
                     Stueckzahl = 1;
                 }
+
+                var staerkeForSave = SelectedStaerke;
+                if (staerkeForSave < 0.2 && TryParseStaerke(SelectedStaerkeText, out var parsedStaerke) && parsedStaerke >= 0.2)
+                    staerkeForSave = parsedStaerke;
+
+                if (staerkeForSave < 0.2)
+                {
+                    MessageBox.Show("Bitte eine Stärke zwischen 0,2 mm und 25 mm auswählen.", "Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 Material = new MaterialItem
                 {
                     Kategorie      = MaterialKategorie.Blech,
@@ -606,7 +621,7 @@ namespace MaterialManager_V01.Views
                     Oberflaeche    = SelectedOberflaeche,
                     Guete          = SelectedGuete,
                     Form           = SelectedForm,
-                    Staerke        = SelectedStaerke,
+                    Staerke        = staerkeForSave,
                     Mass           = Mass,
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
@@ -616,7 +631,7 @@ namespace MaterialManager_V01.Views
                                         ? SelectedLagerort
                                         : (_isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
                                             ? _originalLagerort
-                                            : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, SelectedStaerke, Mass, _inventory)),
+                                            : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory)),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
