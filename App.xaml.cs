@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using MaterialManager_V01.Services;
 using MaterialManager_V01.Views;
 
 namespace MaterialManager_V01
@@ -19,6 +21,10 @@ namespace MaterialManager_V01
 
         private static Mutex? _singleInstanceMutex;
         private static bool _ownsSingleInstanceMutex;
+
+        private readonly DispatcherTimer _globalUpdateTimer = new();
+        private bool _globalUpdateCheckRunning;
+        private string? _lastGlobalPromptedVersion;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -114,6 +120,8 @@ namespace MaterialManager_V01
                 MainWindow = startWindow;
                 startWindow.Show();
 
+                StartGlobalUpdateChecks();
+
                 File.AppendAllText(logPath, "App.OnStartup() erfolgreich beendet\n");
             }
             catch (Exception ex)
@@ -128,8 +136,68 @@ namespace MaterialManager_V01
             }
         }
 
+        private void StartGlobalUpdateChecks()
+        {
+            _ = Dispatcher.InvokeAsync(async () =>
+            {
+                await System.Threading.Tasks.Task.Delay(1200);
+                await CheckForUpdatesAndPromptAsync("startup");
+            });
+
+            _globalUpdateTimer.Stop();
+            _globalUpdateTimer.Interval = TimeSpan.FromMinutes(3);
+            _globalUpdateTimer.Tick -= OnGlobalUpdateTimerTick;
+            _globalUpdateTimer.Tick += OnGlobalUpdateTimerTick;
+            _globalUpdateTimer.Start();
+        }
+
+        private async void OnGlobalUpdateTimerTick(object? sender, EventArgs e)
+        {
+            await CheckForUpdatesAndPromptAsync("timer");
+        }
+
+        private async System.Threading.Tasks.Task CheckForUpdatesAndPromptAsync(string source)
+        {
+            if (_globalUpdateCheckRunning)
+                return;
+
+            _globalUpdateCheckRunning = true;
+            try
+            {
+                var result = await GitHubUpdateService.CheckForUpdatesAsync();
+                if (!result.IsUpdateAvailable || string.IsNullOrWhiteSpace(result.DownloadUrl))
+                    return;
+
+                if (!string.IsNullOrWhiteSpace(_lastGlobalPromptedVersion) &&
+                    string.Equals(_lastGlobalPromptedVersion, result.LatestVersion, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                var owner = Current.Windows
+                    .OfType<Window>()
+                    .FirstOrDefault(w => w.IsVisible && w.IsActive)
+                    ?? Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsVisible)
+                    ?? MainWindow;
+
+                var dlg = new UpdateDialog(result) { Owner = owner };
+                dlg.ShowDialog();
+                _lastGlobalPromptedVersion = result.LatestVersion;
+            }
+            catch
+            {
+            }
+            finally
+            {
+                _globalUpdateCheckRunning = false;
+            }
+        }
+
         protected override void OnExit(ExitEventArgs e)
         {
+            _globalUpdateTimer.Stop();
+            _globalUpdateTimer.Tick -= OnGlobalUpdateTimerTick;
+
             try
             {
                 if (_ownsSingleInstanceMutex)
