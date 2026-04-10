@@ -130,13 +130,42 @@ namespace MaterialManager_V01.Views
             return value.ToString(CultureInfo.InvariantCulture).Contains(filter);
         }
 
+        private static bool MatchesMassFilter(string? mass, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var source = (mass ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(source))
+                return false;
+
+            var normalizedFilter = filter.Replace(',', '.').Trim().ToLowerInvariant();
+
+            // Wenn ein komplettes Maß mit Trenner gesucht wird, direkt auf den Gesamttext prüfen.
+            if (normalizedFilter.Contains('x') || normalizedFilter.Contains('×'))
+            {
+                var normalizedSource = source.Replace('×', 'x').Replace(' ', ' ');
+                var nf = normalizedFilter.Replace('×', 'x');
+                return normalizedSource.Contains(nf, StringComparison.OrdinalIgnoreCase);
+            }
+
+            // Sonst: segmentweise Suche auf einzelnen Maßteilen (z.B. 2000x470 -> 2000 / 470)
+            var parts = source
+                .Replace('×', 'x')
+                .Split(new[] { 'x', '*', '/', '-', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .ToList();
+
+            if (parts.Count == 0)
+                return false;
+
+            return parts.Any(p => p.StartsWith(normalizedFilter, StringComparison.OrdinalIgnoreCase));
+        }
+
         private void ApplyFilter()
         {
             var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
-            var fLegierung = NormalizeFilterValue(FilterLegierungBox?.Text);
-            var fOberflaeche = NormalizeFilterValue(FilterOberflaecheBox?.Text);
-            var fKategorie = NormalizeFilterValue(FilterKategorieBox?.Text);
-            var fForm = NormalizeFilterValue(FilterFormBox?.Text);
             var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
             var fMass = NormalizeFilterValue(FilterMassBox?.Text);
             var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
@@ -146,12 +175,8 @@ namespace MaterialManager_V01.Views
 
             var filtered = _alleMaterialien.Where(m =>
                 ContainsFilter(m.MaterialArt, fMaterial)
-                && ContainsFilter(m.Legierung, fLegierung)
-                && ContainsFilter(m.Oberflaeche, fOberflaeche)
-                && ContainsFilter(m.Kategorie.ToString(), fKategorie)
-                && ContainsFilter(m.Form, fForm)
                 && MatchesNumericExactFilter(m.Staerke, fStaerke)
-                && ContainsFilter(m.Mass, fMass)
+                && MatchesMassFilter(m.Mass, fMass)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
                 && ContainsFilter(m.Lagerort, fLagerort)
                 && ContainsFilter(m.Restnummer, fRestnummer)
