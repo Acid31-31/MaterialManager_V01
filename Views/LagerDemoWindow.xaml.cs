@@ -110,6 +110,18 @@ namespace MaterialManager_V01.Views
             return numeric.Contains(filterNormalized);
         }
 
+        private static bool MatchesNumericExactFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var normalized = filter.Replace(',', '.').Trim();
+            if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var target))
+                return false;
+
+            return Math.Abs(value - target) < 0.0001;
+        }
+
         private static bool ContainsIntFilter(int value, string filter)
         {
             if (string.IsNullOrWhiteSpace(filter))
@@ -138,7 +150,7 @@ namespace MaterialManager_V01.Views
                 && ContainsFilter(m.Oberflaeche, fOberflaeche)
                 && ContainsFilter(m.Kategorie.ToString(), fKategorie)
                 && ContainsFilter(m.Form, fForm)
-                && ContainsNumericFilter(m.Staerke, fStaerke)
+                && MatchesNumericExactFilter(m.Staerke, fStaerke)
                 && ContainsFilter(m.Mass, fMass)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
                 && ContainsFilter(m.Lagerort, fLagerort)
