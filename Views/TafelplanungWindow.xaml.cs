@@ -103,10 +103,29 @@ namespace MaterialManager_V01.Views
             InitializeComponent();
             DataContext = this;
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName}";
+            RefreshLicenseBanner();
             UpdateAuftragsKwText();
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
+        }
+
+        private void RefreshLicenseBanner()
+        {
+            if (LicenseService.IsFullLicenseActive())
+            {
+                LicenseBannerTextBlock.Text = "Vollversion aktiv";
+                LicenseBannerTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                return;
+            }
+
+            var remainingDays = LicenseService.GetRemainingTrialDays();
+            var expiration = LicenseService.GetExpirationDate();
+            var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
+            LicenseBannerTextBlock.Text = $"Pilotbetrieb: {remainingDays} Tage{expiryText}";
+            LicenseBannerTextBlock.Foreground = remainingDays <= 7
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
         }
 
         private void FitToWorkArea()

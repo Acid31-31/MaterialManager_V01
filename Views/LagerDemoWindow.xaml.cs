@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 
@@ -48,9 +49,28 @@ namespace MaterialManager_V01.Views
             InitializeComponent();
             DataContext = this;
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager";
+            RefreshLicenseBanner();
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
+        }
+
+        private void RefreshLicenseBanner()
+        {
+            if (LicenseService.IsFullLicenseActive())
+            {
+                LicenseBannerTextBlock.Text = "Vollversion aktiv";
+                LicenseBannerTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                return;
+            }
+
+            var remainingDays = LicenseService.GetRemainingTrialDays();
+            var expiration = LicenseService.GetExpirationDate();
+            var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
+            LicenseBannerTextBlock.Text = $"Pilotbetrieb: {remainingDays} Tage{expiryText}";
+            LicenseBannerTextBlock.Foreground = remainingDays <= 7
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
         }
 
         private void FitToWorkArea()

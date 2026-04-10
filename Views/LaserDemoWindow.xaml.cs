@@ -107,6 +107,7 @@ namespace MaterialManager_V01.Views
             DataContext = this;
             WorkspaceTitle = "Laser – Auftragsübersicht";
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
+            RefreshLicenseBanner();
             UpdateAuftragsKwText();
             FitToWorkArea();
             ConfigureArbeitsbereichLayout();
@@ -1382,6 +1383,24 @@ namespace MaterialManager_V01.Views
 
             var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
             dlg.ShowDialog();
+        }
+
+        private void RefreshLicenseBanner()
+        {
+            if (LicenseService.IsFullLicenseActive())
+            {
+                LicenseBannerTextBlock.Text = "Vollversion aktiv";
+                LicenseBannerTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"));
+                return;
+            }
+
+            var remainingDays = LicenseService.GetRemainingTrialDays();
+            var expiration = LicenseService.GetExpirationDate();
+            var expiryText = expiration.HasValue ? $" (bis {expiration.Value:dd.MM.yyyy})" : string.Empty;
+            LicenseBannerTextBlock.Text = $"Pilotbetrieb: {remainingDays} Tage{expiryText}";
+            LicenseBannerTextBlock.Foreground = remainingDays <= 7
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
         }
     }
 }
