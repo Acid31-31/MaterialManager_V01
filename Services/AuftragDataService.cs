@@ -21,11 +21,7 @@ namespace MaterialManager_V01.Services
             foreach (var auftrag in list)
             {
                 auftrag.Arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftrag.Auftragsnummer);
-
-                var originalPdf = !string.IsNullOrWhiteSpace(auftrag.PdfPfadAngefangeneTafel)
-                    ? auftrag.PdfPfadAngefangeneTafel
-                    : auftrag.PdfPfad;
-                auftrag.PdfPfadKantzeichnung = KantzeichnungPdfService.FindKantzeichnungPdf(originalPdf);
+                auftrag.PdfPfadKantzeichnung = string.Empty;
             }
 
             return list;
