@@ -266,13 +266,7 @@ namespace MaterialManager_V01.Views
 
         private void OnKantbankClick(object sender, RoutedEventArgs e)
         {
-            if (!PromptForOperatorName())
-                return;
-
-            var window = new KantbankDemoWindow();
-            Application.Current.MainWindow = window;
-            window.Show();
-            Close();
+            MessageBox.Show("Kantbank ist vorerst deaktiviert.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnGeoSucheClick(object sender, RoutedEventArgs e)

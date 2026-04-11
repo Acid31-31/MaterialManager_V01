@@ -1089,10 +1089,7 @@ namespace MaterialManager_V01
 
         private void OnOpenKantbankView(object sender, MouseButtonEventArgs e)
         {
-            var window = new KantbankDemoWindow();
-            Application.Current.MainWindow = window;
-            window.Show();
-            Close();
+            MessageBox.Show("Kantbank ist vorerst deaktiviert.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             e.Handled = true;
         }
 
