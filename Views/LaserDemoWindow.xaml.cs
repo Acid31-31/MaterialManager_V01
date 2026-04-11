@@ -108,11 +108,25 @@ namespace MaterialManager_V01.Views
             WorkspaceTitle = "Laser – Auftragsübersicht";
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
             RefreshLicenseBanner();
+            RefreshNetworkStatusBanner();
             UpdateAuftragsKwText();
             FitToWorkArea();
             ConfigureArbeitsbereichLayout();
             Loaded += (_, _) => LoadMaterials();
             PreviewKeyDown += OnWindowPreviewKeyDown;
+        }
+
+        private void RefreshNetworkStatusBanner()
+        {
+            var status = NetzwerkService.GetNetzwerkStatusText();
+            NetworkModeTextBlock.Text = status;
+            NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
+
+            NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", StringComparison.OrdinalIgnoreCase)
+                ? Brushes.LimeGreen
+                : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
+                    ? Brushes.OrangeRed
+                    : Brushes.DeepSkyBlue;
         }
 
         private void ConfigureArbeitsbereichLayout()

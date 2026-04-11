@@ -167,6 +167,20 @@
                            IsHitTestVisible="False"
                            TextTrimming="CharacterEllipsis"/>
 
+                <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" Margin="0,0,10,0">
+                    <TextBlock x:Name="NetworkModeTextBlock"
+                               Foreground="#9E9E9E"
+                               FontSize="10"
+                               HorizontalAlignment="Right"
+                               Margin="0,0,0,2"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="NetworkExcelTextBlock"
+                               Foreground="#9E9E9E"
+                               FontSize="9"
+                               HorizontalAlignment="Right"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
                     <Button Style="{StaticResource TitleBarButtonStyle}" Content="▢" Click="OnMaximizeRestoreWindow"/>

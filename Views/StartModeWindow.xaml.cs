@@ -14,6 +14,7 @@ namespace MaterialManager_V01.Views
             InitializeComponent();
             RefreshLicenseTitle();
             RefreshLicenseBanner();
+            RefreshNetworkStatusBanner();
             FitToWorkArea();
         }
 
@@ -43,6 +44,19 @@ namespace MaterialManager_V01.Views
             Title = string.IsNullOrWhiteSpace(device)
                 ? $"MaterialManager V01 - {mode}"
                 : $"MaterialManager V01 - {mode} | {device}";
+        }
+
+        private void RefreshNetworkStatusBanner()
+        {
+            var status = NetzwerkService.GetNetzwerkStatusText();
+            NetworkModeTextBlock.Text = status;
+            NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
+
+            NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", StringComparison.OrdinalIgnoreCase)
+                ? Brushes.LimeGreen
+                : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
+                    ? Brushes.OrangeRed
+                    : Brushes.DeepSkyBlue;
         }
 
         private void FitToWorkArea()

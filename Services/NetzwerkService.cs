@@ -302,6 +302,55 @@ namespace MaterialManager_V01.Services
             };
         }
 
+        public static string GetNetzwerkStatusText()
+        {
+            if (!HasConfiguredNetworkPath())
+                return "Modus: Lokal (nicht konfiguriert)";
+
+            if (!IsNetzwerkModus)
+                return "Modus: Lokal (Netzwerk aus)";
+
+            var configuredPath = (NetzwerkPfad ?? string.Empty).Trim().Trim('"');
+            var isUncPath = configuredPath.StartsWith(@"\\");
+            var isNetworkDrive = false;
+
+            try
+            {
+                if (!isUncPath && Path.IsPathRooted(configuredPath))
+                {
+                    var root = Path.GetPathRoot(configuredPath);
+                    if (!string.IsNullOrWhiteSpace(root))
+                    {
+                        var drive = new DriveInfo(root);
+                        isNetworkDrive = drive.DriveType == DriveType.Network;
+                    }
+                }
+            }
+            catch
+            {
+                isNetworkDrive = false;
+            }
+
+            var isNetworkLocation = isUncPath || isNetworkDrive;
+
+            if (IstPfadErreichbar())
+                return isNetworkLocation ? "Modus: Server verbunden" : "Modus: Lokal (kein Server)";
+
+            return "Modus: Server nicht erreichbar";
+        }
+
+        public static string GetExcelStatusText()
+        {
+            try
+            {
+                return $"Excel: {GetSavePath()}";
+            }
+            catch
+            {
+                return "Excel: Pfad nicht verfügbar";
+            }
+        }
+
         private static string GetLocalDataDirectory()
         {
             var dataDir = Path.Combine(

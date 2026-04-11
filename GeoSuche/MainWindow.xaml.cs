@@ -19,6 +19,7 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel(settingsService, geoFileService, dialogService);
 
         RefreshLicenseBanner();
+        RefreshNetworkStatusBanner();
     }
 
     private void RefreshLicenseBanner()
@@ -38,6 +39,19 @@ public partial class MainWindow : Window
         LicenseBannerTextBlock.Foreground = remainingDays <= 7
             ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
             : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
+    }
+
+    private void RefreshNetworkStatusBanner()
+    {
+        var status = LicenseService.IsFullLicenseActive() ? NetzwerkService.GetNetzwerkStatusText() : NetzwerkService.GetNetzwerkStatusText();
+        NetworkModeTextBlock.Text = status;
+        NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
+
+        NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", System.StringComparison.OrdinalIgnoreCase)
+            ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50"))
+            : status.Contains("nicht erreichbar", System.StringComparison.OrdinalIgnoreCase)
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF5722"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#03A9F4"));
     }
 
     private void OnOpenStartProgrammClick(object sender, RoutedEventArgs e)
