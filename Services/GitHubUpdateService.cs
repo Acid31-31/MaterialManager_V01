@@ -308,17 +308,21 @@ namespace MaterialManager_V01.Services
             {
                 " add ", " added ", " update ", " updated ", " improve ", " improved ",
                 " remove ", " removed ", " delete ", " deleted ", " fix ", " fixed ",
-                " refactor ", " release ", " merge ", " branch ", " options ", " dialog"
+                " refactor ", " release ", " merge ", " branch ", " options ", " dialog",
+                " remaining ", " controls ", " logic ", " window "
             };
 
             var padded = $" {lower} ";
             var markerHits = englishMarkers.Count(m => padded.Contains(m, StringComparison.Ordinal));
 
-            // Mindestens zwei Marker oder ein sehr typisches englisches Muster
+            // Mindestens zwei Marker oder ein sehr typisches englisches Startmuster
             return markerHits >= 2 ||
                    lower.StartsWith("add ", StringComparison.Ordinal) ||
                    lower.StartsWith("update ", StringComparison.Ordinal) ||
-                   lower.StartsWith("fix ", StringComparison.Ordinal);
+                   lower.StartsWith("fix ", StringComparison.Ordinal) ||
+                   lower.StartsWith("remove ", StringComparison.Ordinal) ||
+                   lower.StartsWith("delete ", StringComparison.Ordinal) ||
+                   lower.StartsWith("refactor ", StringComparison.Ordinal);
         }
 
         private static async Task<List<string>> TryGetCompareCommitsAsync(string baseTag, string headTag)
