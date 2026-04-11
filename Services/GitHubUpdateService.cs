@@ -272,15 +272,53 @@ namespace MaterialManager_V01.Services
                     continue;
 
                 if (cleaned.StartsWith("Full Changelog", StringComparison.OrdinalIgnoreCase) ||
-                    cleaned.Contains("/compare/"))
+                    cleaned.Contains("/compare/") ||
+                    cleaned.StartsWith("##", StringComparison.OrdinalIgnoreCase) ||
+                    cleaned.StartsWith("#", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 cleaned = cleaned.TrimStart('-', '*', '•').Trim();
-                if (!string.IsNullOrWhiteSpace(cleaned))
+                if (string.IsNullOrWhiteSpace(cleaned))
+                    continue;
+
+                if (cleaned.Equals("Änderungen in dieser Version:", StringComparison.OrdinalIgnoreCase) ||
+                    cleaned.Equals("Was wurde geändert", StringComparison.OrdinalIgnoreCase) ||
+                    cleaned.Equals("Was wurde geändert:", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (LooksLikeEnglishChangelogLine(cleaned))
+                    continue;
+
+                if (!result.Contains(cleaned, StringComparer.OrdinalIgnoreCase))
                     result.Add(cleaned);
             }
 
             return result;
+        }
+
+        private static bool LooksLikeEnglishChangelogLine(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            var lower = text.Trim().ToLowerInvariant();
+
+            // Typische englische Commit-/Release-Wörter
+            var englishMarkers = new[]
+            {
+                " add ", " added ", " update ", " updated ", " improve ", " improved ",
+                " remove ", " removed ", " delete ", " deleted ", " fix ", " fixed ",
+                " refactor ", " release ", " merge ", " branch ", " options ", " dialog"
+            };
+
+            var padded = $" {lower} ";
+            var markerHits = englishMarkers.Count(m => padded.Contains(m, StringComparison.Ordinal));
+
+            // Mindestens zwei Marker oder ein sehr typisches englisches Muster
+            return markerHits >= 2 ||
+                   lower.StartsWith("add ", StringComparison.Ordinal) ||
+                   lower.StartsWith("update ", StringComparison.Ordinal) ||
+                   lower.StartsWith("fix ", StringComparison.Ordinal);
         }
 
         private static async Task<List<string>> TryGetCompareCommitsAsync(string baseTag, string headTag)
