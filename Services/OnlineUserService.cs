@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MaterialManager_V01.Services
@@ -11,7 +12,6 @@ namespace MaterialManager_V01.Services
 
         public static void RegisterCurrentUser()
         {
-            _userActivity.Clear();
             UpdateUserActivity(OperatorIdentityService.CurrentOperatorName);
         }
 
@@ -19,9 +19,54 @@ namespace MaterialManager_V01.Services
         {
             var now = DateTime.Now;
             var onlineThreshold = now.AddMinutes(-ONLINE_THRESHOLD_MINUTES);
-            
-            return _userActivity
-                .Where(kvp => kvp.Value >= onlineThreshold)
+            var result = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var kvp in _userActivity.Where(kvp => kvp.Value >= onlineThreshold))
+                result[kvp.Key] = kvp.Value;
+
+            try
+            {
+                var presenceDir = GetPresenceDirectory();
+                if (Directory.Exists(presenceDir))
+                {
+                    foreach (var file in Directory.GetFiles(presenceDir, "*.online"))
+                    {
+                        DateTime lastSeen;
+                        try
+                        {
+                            lastSeen = File.GetLastWriteTime(file);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                        if (lastSeen < onlineThreshold)
+                            continue;
+
+                        string username;
+                        try
+                        {
+                            username = (File.ReadAllText(file) ?? string.Empty).Trim();
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(username))
+                            continue;
+
+                        if (!result.TryGetValue(username, out var existing) || lastSeen > existing)
+                            result[username] = lastSeen;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return result
                 .OrderByDescending(kvp => kvp.Value)
                 .Select(kvp => kvp.Key)
                 .ToList();
@@ -40,10 +85,48 @@ namespace MaterialManager_V01.Services
 
         public static void UpdateUserActivity(string username)
         {
-            if (!string.IsNullOrEmpty(username))
+            if (string.IsNullOrWhiteSpace(username))
+                return;
+
+            var now = DateTime.Now;
+            _userActivity[username] = now;
+
+            try
             {
-                _userActivity[username] = DateTime.Now;
+                var presenceDir = GetPresenceDirectory();
+                if (!Directory.Exists(presenceDir))
+                    Directory.CreateDirectory(presenceDir);
+
+                var safeFileName = MakeSafeFileName(username);
+                var presenceFile = Path.Combine(presenceDir, safeFileName + ".online");
+                File.WriteAllText(presenceFile, username.Trim());
             }
+            catch
+            {
+            }
+        }
+
+        private static string GetPresenceDirectory()
+        {
+            try
+            {
+                var savePath = NetzwerkService.GetSavePath();
+                var baseDir = Path.GetDirectoryName(savePath);
+                if (!string.IsNullOrWhiteSpace(baseDir))
+                    return Path.Combine(baseDir, ".online-users");
+            }
+            catch
+            {
+            }
+
+            return Path.Combine(PathService.DataDirectory, ".online-users");
+        }
+
+        private static string MakeSafeFileName(string value)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var cleaned = new string((value ?? string.Empty).Trim().Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
+            return string.IsNullOrWhiteSpace(cleaned) ? "unknown" : cleaned;
         }
     }
 }

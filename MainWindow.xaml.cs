@@ -395,11 +395,15 @@ namespace MaterialManager_V01
         {
             try
             {
+                Services.OnlineUserService.UpdateUserActivity(Services.OperatorIdentityService.CurrentOperatorName);
+
                 var onlineUsers = Services.OnlineUserService.GetOnlineUsers();
                 var display = this.FindName("OnlineUsersDisplay") as TextBlock;
                 if (display != null)
                 {
-                    display.Text = string.Join("\n", onlineUsers.Take(2).Select(u => $"User: {u}"));
+                    display.Text = onlineUsers.Count == 0
+                        ? "Niemand online"
+                        : string.Join("\n", onlineUsers.Select(u => $"User: {u}"));
                 }
             }
             catch { }
