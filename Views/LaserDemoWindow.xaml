@@ -354,12 +354,26 @@
                         <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
                     </StackPanel>
 
-                    <Button Grid.Column="2"
-                            Content="Schließen"
-                            Click="OnCloseClick"
-                            Background="#C42B1C"
-                            Foreground="White"
-                            Padding="14,8"/>
+                    <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
+                        <TextBlock x:Name="NetworkModeTextBlock"
+                                   Foreground="#9E9E9E"
+                                   FontSize="10"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,0,2"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="NetworkExcelTextBlock"
+                                   Foreground="#9E9E9E"
+                                   FontSize="9"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,0,6"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <Button Content="Schließen"
+                                Click="OnCloseClick"
+                                Background="#C42B1C"
+                                Foreground="White"
+                                Padding="14,8"
+                                HorizontalAlignment="Right"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 

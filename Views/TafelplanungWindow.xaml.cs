@@ -104,6 +104,7 @@ namespace MaterialManager_V01.Views
             DataContext = this;
             HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName}";
             RefreshLicenseBanner();
+            RefreshNetworkStatusBanner();
             UpdateAuftragsKwText();
             FitToWorkArea();
             Loaded += (_, _) => LoadMaterials();
@@ -126,6 +127,19 @@ namespace MaterialManager_V01.Views
             LicenseBannerTextBlock.Foreground = remainingDays <= 7
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
+        }
+
+        private void RefreshNetworkStatusBanner()
+        {
+            var status = NetzwerkService.GetNetzwerkStatusText();
+            NetworkModeTextBlock.Text = status;
+            NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
+
+            NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", StringComparison.OrdinalIgnoreCase)
+                ? Brushes.LimeGreen
+                : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
+                    ? Brushes.OrangeRed
+                    : Brushes.DeepSkyBlue;
         }
 
         private void FitToWorkArea()
