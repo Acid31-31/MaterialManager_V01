@@ -277,7 +277,28 @@ namespace MaterialManager_V01
                 if (health.IsHealthy)
                     return true;
 
-                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen: {health.Message}\n");
+                File.AppendAllText(logPath, $"Netzwerk-Healthcheck fehlgeschlagen (1. Versuch): {health.Message}\n");
+
+                MessageBox.Show(
+                    "Serververbindung wird geprüft. Bitte kurz warten ...",
+                    "Netzwerkprüfung",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                // Zweite Prüfphase nach kurzer Wartezeit (z. B. nach Update/Anmeldung kann Netzwerk verzögert bereit sein)
+                const int extraRetries = 3;
+                for (var i = 0; i < extraRetries; i++)
+                {
+                    Thread.Sleep(800);
+                    health = Services.NetzwerkService.CheckStartupHealth();
+                    if (health.IsHealthy)
+                    {
+                        File.AppendAllText(logPath, $"Netzwerk nach Verzögerung erreichbar (Retry {i + 1}/{extraRetries}).\n");
+                        return true;
+                    }
+                }
+
+                File.AppendAllText(logPath, $"Netzwerk-Healthcheck endgültig fehlgeschlagen: {health.Message}\n");
 
                 MessageBox.Show(
                     "Netzwerkpfad ist aktuell nicht erreichbar.\n" +
