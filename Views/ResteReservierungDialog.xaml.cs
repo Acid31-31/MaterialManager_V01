@@ -6,27 +6,57 @@ namespace MaterialManager_V01.Views
     {
         public string AuftragNr { get; private set; } = string.Empty;
         public bool DeleteMaterialFromLager { get; private set; }
+        public bool IsNachproduktion { get; private set; }
 
         public ResteReservierungDialog(string existingAuftrag)
         {
             InitializeComponent();
-            AuftragBox.Text = existingAuftrag ?? string.Empty;
-            AuftragBox.SelectAll();
-            AuftragBox.Focus();
+
+            var existing = existingAuftrag ?? string.Empty;
+            if (string.Equals(existing.Trim(), "Nachproduktion", System.StringComparison.OrdinalIgnoreCase))
+            {
+                NachproduktionCheck.IsChecked = true;
+                AuftragBox.Text = string.Empty;
+                AuftragBox.IsEnabled = false;
+                IsNachproduktion = true;
+            }
+            else
+            {
+                AuftragBox.Text = existing;
+                AuftragBox.SelectAll();
+                AuftragBox.Focus();
+            }
         }
 
         private void OnOk(object sender, RoutedEventArgs e)
         {
-            AuftragNr = AuftragBox.Text?.Trim() ?? string.Empty;
-            DeleteMaterialFromLager = false;
+            DeleteMaterialFromLager = DeleteMaterialCheck.IsChecked == true;
+            IsNachproduktion = NachproduktionCheck.IsChecked == true;
+
+            if (DeleteMaterialFromLager)
+            {
+                AuftragNr = string.Empty;
+                DialogResult = true;
+                return;
+            }
+
+            AuftragNr = IsNachproduktion
+                ? "Nachproduktion"
+                : (AuftragBox.Text?.Trim() ?? string.Empty);
+
             DialogResult = true;
         }
 
-        private void OnDeleteEntry(object sender, RoutedEventArgs e)
+        private void OnNachproduktionChecked(object sender, RoutedEventArgs e)
         {
-            DeleteMaterialFromLager = true;
-            AuftragNr = string.Empty;
-            DialogResult = true;
+            AuftragBox.Text = string.Empty;
+            AuftragBox.IsEnabled = false;
+        }
+
+        private void OnNachproduktionUnchecked(object sender, RoutedEventArgs e)
+        {
+            AuftragBox.IsEnabled = true;
+            AuftragBox.Focus();
         }
 
         private void OnCancel(object sender, RoutedEventArgs e)
