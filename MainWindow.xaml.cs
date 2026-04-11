@@ -401,9 +401,12 @@ namespace MaterialManager_V01
                 var display = this.FindName("OnlineUsersDisplay") as TextBlock;
                 if (display != null)
                 {
-                    display.Text = onlineUsers.Count == 0
-                        ? "Niemand online"
-                        : string.Join("\n", onlineUsers.Select(u => $"User: {u}"));
+                    display.Text = onlineUsers.Count switch
+                    {
+                        0 => "Niemand online",
+                        1 => $"1 Benutzer online: {onlineUsers[0]}",
+                        _ => $"{onlineUsers.Count} Benutzer online"
+                    };
                 }
             }
             catch { }
@@ -414,13 +417,15 @@ namespace MaterialManager_V01
         {
             try
             {
+                Services.OnlineUserService.UpdateUserActivity(Services.OperatorIdentityService.CurrentOperatorName);
+
                 var popup = this.FindName("OnlineUsersPopup") as System.Windows.Controls.Primitives.Popup;
                 var listBox = this.FindName("OnlineUsersList") as ListBox;
                 
                 if (popup != null && listBox != null)
                 {
                     var onlineUsers = Services.OnlineUserService.GetOnlineUsers();
-                    listBox.ItemsSource = onlineUsers;
+                    listBox.ItemsSource = onlineUsers.Count == 0 ? new[] { "Niemand online" } : onlineUsers;
                     popup.IsOpen = true;
                 }
                 e.Handled = true;
