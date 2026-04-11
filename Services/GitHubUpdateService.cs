@@ -245,14 +245,14 @@ namespace MaterialManager_V01.Services
                 {
                     "Änderungen in dieser Version:",
                     "• Interne Verbesserungen und Fehlerbehebungen",
-                    "• Stabilitäts- und Performanceoptimierungen",
-                    $"• Enthält {commits.Count} technische Änderung(en) im Quellcode"
+                    "• Stabilitäts- und Leistungsoptimierungen",
+                    $"• Enthält {commits.Count} technische Anpassung(en)"
                 };
 
                 return string.Join(Environment.NewLine, lines);
             }
 
-            return "Änderungsdetails konnten gerade nicht geladen werden. Bitte später erneut auf 'Nach Updates suchen' klicken.";
+            return "Änderungsdetails sind derzeit nicht verfügbar. Bitte versuchen Sie die Update-Prüfung später erneut.";
         }
 
         private static List<string> ParseBodyToBulletLines(string body)
