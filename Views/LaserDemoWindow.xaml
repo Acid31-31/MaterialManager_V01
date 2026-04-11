@@ -392,30 +392,6 @@
                                 Foreground="White"
                                 Padding="16,12"
                                 Margin="0,0,8,0"/>
-                        <Button Content="Excel speichern"
-                                x:Name="SaveExcelButton"
-                                Click="OnSaveExcelClick"
-                                Background="#2E7D32"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"
-                                Visibility="Collapsed"/>
-                        <Button Content="Excel-Auftragsdatei öffnen"
-                                x:Name="OpenExcelButton"
-                                Click="OnOpenExcelClick"
-                                Background="#455A64"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"
-                                Visibility="Collapsed"/>
-                        <Button Content="Excel auswählen"
-                                x:Name="SelectExcelButton"
-                                Click="OnSelectExcelPathClick"
-                                Background="#546E7A"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"
-                                Visibility="Collapsed"/>
                         <Button Content="Aktualisieren"
                                 Click="OnRefreshClick"
                                 Background="#555"
@@ -424,48 +400,6 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" x:Name="MaterialActionPanel">
-                        <TextBlock x:Name="ExcelPathLabel" Text="Excel:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
-                        <TextBox x:Name="ExcelPathBox"
-                                 Width="360"
-                                 Background="#1A1A1A"
-                                 Foreground="#DDDDDD"
-                                 BorderBrush="#444"
-                                 Padding="8,5"
-                                 Margin="0,0,8,0"
-                                 IsReadOnly="True"
-                                 Visibility="Collapsed"/>
-                        <TextBlock x:Name="SheetFilterLabel" Text="Blatt:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
-                        <ComboBox x:Name="KantbankSheetBox"
-                                  Width="180"
-                                  Background="#222"
-                                  Foreground="White"
-                                  BorderBrush="#444"
-                                  Padding="8,5"
-                                  Margin="0,0,8,0"
-                                  SelectionChanged="OnKantbankSheetChanged"
-                                  Visibility="Collapsed"/>
-                        <TextBlock x:Name="CustomerFilterLabel" Text="Kunde:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
-                        <TextBox x:Name="KantbankCustomerFilterBox"
-                                 Width="160"
-                                 Background="#222"
-                                 Foreground="White"
-                                 BorderBrush="#444"
-                                 Padding="8,5"
-                                 Margin="0,0,8,0"
-                                 TextChanged="OnKantbankFilterChanged"
-                                 Visibility="Collapsed"/>
-                        <TextBlock x:Name="DateFilterLabel" Text="Datum:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="0,0,8,0" Visibility="Collapsed"/>
-                        <DatePicker x:Name="KantbankDateFilterPicker"
-                                    Width="145"
-                                    Margin="0,0,8,0"
-                                    SelectedDateChanged="OnKantbankFilterChanged"
-                                    Visibility="Collapsed"/>
-                        <TextBlock x:Name="KantbankDetectInfoText"
-                                   Foreground="#90A4AE"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,12,0"
-                                   Visibility="Collapsed"/>
-
                         <Button x:Name="EditRestButton" Content="Material bearbeiten"
                                 Click="OnEditRestClick"
                                 Background="#455A64"
@@ -561,22 +495,8 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <!-- Kantbank-bezogene PDF-Spalten vorerst entfernt -->
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <DataGrid x:Name="KantbankExcelGrid"
-                              Grid.Row="2"
-                              Grid.Column="0"
-                              Grid.ColumnSpan="2"
-                              AutoGenerateColumns="True"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              IsReadOnly="False"
-                              SelectionMode="Single"
-                              SelectionUnit="CellOrRowHeader"
-                              RowHeight="28"
-                              Visibility="Collapsed"/>
                 </Grid>
             </Border>
 
