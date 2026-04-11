@@ -110,10 +110,29 @@ namespace MaterialManager_V01.Services
         {
             try
             {
+                // Bevorzugt neben dem Auftragsarchiv platzieren (gleiches Elternverzeichnis)
+                var archivDir = NetzwerkService.GetAuftragsArchivBasisPfad();
+                if (!string.IsNullOrWhiteSpace(archivDir))
+                {
+                    var archiveParent = Directory.GetParent(archivDir)?.FullName;
+                    if (!string.IsNullOrWhiteSpace(archiveParent))
+                        return Path.Combine(archiveParent, ".online-users");
+
+                    return Path.Combine(archivDir, ".online-users");
+                }
+
+                // Fallback: eine Ebene über dem Materialbestand-Ordner
                 var savePath = NetzwerkService.GetSavePath();
-                var baseDir = Path.GetDirectoryName(savePath);
-                if (!string.IsNullOrWhiteSpace(baseDir))
-                    return Path.Combine(baseDir, ".online-users");
+                var materialDir = Path.GetDirectoryName(savePath);
+                var materialParent = string.IsNullOrWhiteSpace(materialDir)
+                    ? null
+                    : Directory.GetParent(materialDir)?.FullName;
+
+                if (!string.IsNullOrWhiteSpace(materialParent))
+                    return Path.Combine(materialParent, ".online-users");
+
+                if (!string.IsNullOrWhiteSpace(materialDir))
+                    return Path.Combine(materialDir, ".online-users");
             }
             catch
             {
