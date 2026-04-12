@@ -36,32 +36,22 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="28"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.ColumnSpan="2"
-                                    Background="{TemplateBinding Background}"
+                            <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="1"/>
 
-                            <ContentPresenter Grid.Column="0"
-                                              Content="{TemplateBinding SelectionBoxItem}"
+                            <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               Margin="{TemplateBinding Padding}"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"/>
 
-                            <ToggleButton Grid.Column="1"
-                                          Focusable="False"
+                            <ToggleButton Focusable="False"
                                           ClickMode="Press"
                                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                          Background="#1A1A1A"
-                                          BorderBrush="#444"
-                                          BorderThickness="1,0,0,0">
-                                <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </ToggleButton>
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Opacity="0.01"/>
 
                             <Popup x:Name="PART_Popup"
                                    IsOpen="{TemplateBinding IsDropDownOpen}"
