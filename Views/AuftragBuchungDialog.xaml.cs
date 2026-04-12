@@ -110,12 +110,6 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            if (_requirePdf && string.IsNullOrWhiteSpace(PdfPfad))
-            {
-                MessageBox.Show("Bitte eine PDF-Datei auswählen.", "Auftrag", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
             Menge = menge;
             DialogResult = true;
         }

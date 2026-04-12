@@ -27,6 +27,7 @@
 - In der Auftragssteuerung sollen Zurück/Vorwärts nicht in der linken Buttonliste stehen, sondern oben rechts neben dem Menübereich (bei Hilfe) als Pfeil-Buttons dargestellt werden.
 - Wenn der Benutzer eine bestehende App 'einbauen' sagt, soll sie als fester Bestandteil in MaterialManager integriert werden (internes Modul), nicht nur als Starter-Button zur externen EXE.
 - Der Markenname 'MaterialManager V01' darf nicht geändert werden; nur die Bezeichnung der Test-/Statusanzeige soll angepasst werden.
+- Update-Beschreibungen/Changelogs müssen vollständig auf Deutsch sein; englische Commit-Texte dürfen im UI nicht erscheinen.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.

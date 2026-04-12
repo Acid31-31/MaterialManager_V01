@@ -51,11 +51,32 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Produktionsverfolgung" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
 
-        <Border Grid.Row="1" Background="#1E1E1E" Padding="16" CornerRadius="4" Margin="0,0,0,16">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
+            <Button Content="Laser"
+                    Click="OnOpenLaserProgramClick"
+                    Background="#2E7D32"
+                    Foreground="White"
+                    Padding="14,8"
+                    Margin="0,0,8,0"/>
+            <Button Content="Lager"
+                    Click="OnOpenLagerProgramClick"
+                    Background="#00897B"
+                    Foreground="White"
+                    Padding="14,8"
+                    Margin="0,0,8,0"/>
+            <Button Content="Schließen"
+                    Click="OnCloseWindow"
+                    Background="#C42B1C"
+                    Foreground="White"
+                    Padding="14,8"/>
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="#1E1E1E" Padding="16" CornerRadius="4" Margin="0,0,0,16">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -79,27 +100,27 @@
             </Grid>
         </Border>
 
-        <TextBlock Grid.Row="2" Text="Produktionsbeginn:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
-        <Border Grid.Row="3" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+        <TextBlock Grid.Row="3" Text="Produktionsbeginn:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
+        <Border Grid.Row="4" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
             <TextBlock x:Name="StartZeitTextBlock" FontSize="16" Text="Nicht gestartet" Foreground="White"/>
         </Border>
 
-        <TextBlock Grid.Row="4" Text="Produktionsende:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
-        <Border Grid.Row="5" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+        <TextBlock Grid.Row="5" Text="Produktionsende:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
+        <Border Grid.Row="6" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
             <TextBlock x:Name="EndZeitTextBlock" FontSize="16" Text="Nicht beendet" Foreground="White"/>
         </Border>
 
-        <Border Grid.Row="6" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,20">
+        <Border Grid.Row="7" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,20">
             <TextBlock x:Name="DauerTextBlock" FontSize="14" Text="Dauer: –" Foreground="White"/>
         </Border>
 
-        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Content="▶ Start" Style="{StaticResource GreenButtonStyle}" Click="OnStartClick" x:Name="StartButton"/>
             <Button Content="⏹ Ende" Style="{StaticResource RedButtonStyle}" Click="OnEndClick" x:Name="EndButton" IsEnabled="False" Margin="12,0,0,0"/>
             <Button Content="Schließen" Background="#555" Click="OnCloseClick" Margin="24,0,0,0"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
             <Button Content="PDF nachtragen" Background="#1565C0" Click="OnAttachOrderPdfClick" MinWidth="170" Height="40" Padding="14,8"/>
             <Button Content="Auftrag löschen" Background="#8B1E1E" Click="OnDeleteOrderClick" MinWidth="170" Height="40" Padding="14,8" Margin="12,0,0,0"/>
         </StackPanel>

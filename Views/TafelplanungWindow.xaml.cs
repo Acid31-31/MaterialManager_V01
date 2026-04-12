@@ -853,6 +853,20 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenLaserProgramClick(object sender, RoutedEventArgs e)
+        {
+            var laserWindow = new LaserDemoWindow();
+            laserWindow.Show();
+            Close();
+        }
+
+        private void OnOpenLagerProgramClick(object sender, RoutedEventArgs e)
+        {
+            var lagerWindow = new LagerDemoWindow();
+            lagerWindow.Show();
+            Close();
+        }
+
         private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dep = e.OriginalSource as DependencyObject;

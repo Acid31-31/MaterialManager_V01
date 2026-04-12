@@ -58,26 +58,6 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            if (!CanStartProductionWithCompletePdfs(out var fehlendePdfsText))
-            {
-                var action = MessageBox.Show(
-                    $"Produktion kann nicht gestartet werden. Für diesen Auftrag fehlen PDF-Dateien:\n\n{fehlendePdfsText}\n\nJa = PDF jetzt nachtragen\nNein = Auftrag löschen\nAbbrechen = nichts tun",
-                    "PDF-Pflicht vor Start",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Warning);
-
-                if (action == MessageBoxResult.Yes)
-                {
-                    OnAttachOrderPdfClick(sender, e);
-                }
-                else if (action == MessageBoxResult.No)
-                {
-                    OnDeleteOrderClick(sender, e);
-                }
-
-                return;
-            }
-
             _auftrag.ProduktionStartDatum = DateTime.Now;
             _auftrag.Status = AuftragStatus.InBearbeitung;
             StartButton.IsEnabled = false;
@@ -176,6 +156,25 @@ namespace MaterialManager_V01.Views
 
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
+            Close();
+        }
+
+        private void OnCloseWindow(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void OnOpenLaserProgramClick(object sender, RoutedEventArgs e)
+        {
+            var laserWindow = new LaserDemoWindow();
+            laserWindow.Show();
+            Close();
+        }
+
+        private void OnOpenLagerProgramClick(object sender, RoutedEventArgs e)
+        {
+            var lagerWindow = new LagerDemoWindow();
+            lagerWindow.Show();
             Close();
         }
 
