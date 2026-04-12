@@ -215,49 +215,183 @@ namespace MaterialManager_V01.Views
             return "Alle";
         }
 
+        private static string NormalizeFilterValue(string? value)
+        {
+            return (value ?? string.Empty).Trim().ToLowerInvariant();
+        }
+
+        private static bool ContainsFilter(string? source, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            return (source ?? string.Empty)
+                .ToLowerInvariant()
+                .Contains(filter);
+        }
+
+        private static bool ContainsNumericFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var numeric = value.ToString("0.###", CultureInfo.InvariantCulture).ToLowerInvariant();
+            var filterNormalized = filter.Replace(',', '.');
+            return numeric.Contains(filterNormalized);
+        }
+
+        private static bool MatchesNumericExactFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var normalized = filter.Replace(',', '.').Trim();
+
+            if (string.Equals(normalized, "0", StringComparison.Ordinal))
+                return value > 0 && value < 1;
+
+            if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var target))
+                return false;
+
+            return Math.Abs(value - target) < 0.0001;
+        }
+
+        private static bool MatchesMassFilter(string? mass, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var source = (mass ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(source))
+                return false;
+
+            var normalizedFilter = filter.Replace(',', '.').Trim().ToLowerInvariant();
+
+            if (normalizedFilter.Contains('x') || normalizedFilter.Contains('×'))
+            {
+                var normalizedSource = source.Replace('×', 'x');
+                var nf = normalizedFilter.Replace('×', 'x');
+                return normalizedSource.Contains(nf, StringComparison.OrdinalIgnoreCase);
+            }
+
+            var parts = source
+                .Replace('×', 'x')
+                .Split(new[] { 'x', '*', '/', '-', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .ToList();
+
+            if (parts.Count == 0)
+                return false;
+
+            return parts.Any(p => p.StartsWith(normalizedFilter, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool TryParseMass(string? mass, out double minSide, out double maxSide)
+        {
+            minSide = 0;
+            maxSide = 0;
+
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var normalized = mass
+                .ToLowerInvariant()
+                .Replace("mm", string.Empty)
+                .Replace('×', 'x')
+                .Replace(',', '.')
+                .Trim();
+
+            var parts = normalized.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .ToArray();
+
+            if (parts.Length != 2)
+                return false;
+
+            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var a))
+                return false;
+            if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var b))
+                return false;
+
+            minSide = Math.Min(a, b);
+            maxSide = Math.Max(a, b);
+            return true;
+        }
+
+        private static double GetMassArea(double minSide, double maxSide)
+        {
+            return minSide * maxSide;
+        }
+
         private void ApplyFilter()
         {
-            var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var selectedFilter = GetSelectedFilter();
-            var selectedAuftrag = SelectedAuftragFilter?.Auftragsnummer ?? string.Empty;
+            var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
+            var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
+            var fMass = NormalizeFilterValue(FilterMassBox?.Text);
+            var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
+            var fLagerort = NormalizeFilterValue(FilterLagerortBox?.Text);
+            var fRestnummer = NormalizeFilterValue(FilterRestnummerBox?.Text);
+            var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
 
-            var filtered = _materialienCache.Where(m =>
+            var baseFiltered = _materialienCache.Where(m =>
+                ContainsFilter(m.MaterialArt, fMaterial)
+                && MatchesNumericExactFilter(m.Staerke, fStaerke)
+                && ContainsNumericFilter(m.Laenge, fLaenge)
+                && ContainsFilter(m.Lagerort, fLagerort)
+                && ContainsFilter(m.Restnummer, fRestnummer)
+                && ContainsFilter(m.AuftragNr, fAuftrag)
+            );
+
+            List<MaterialItem> filtered;
+
+            if (TryParseMass(fMass, out var queryMin, out var queryMax))
             {
-                var filterMatch = selectedFilter switch
+                var parsedItems = baseFiltered
+                    .Select(m =>
+                    {
+                        var ok = TryParseMass(m.Mass, out var minSide, out var maxSide);
+                        return new { Item = m, Ok = ok, MinSide = minSide, MaxSide = maxSide };
+                    })
+                    .Where(x => x.Ok)
+                    .ToList();
+
+                var exact = parsedItems
+                    .Where(x => Math.Abs(x.MinSide - queryMin) < 0.001 && Math.Abs(x.MaxSide - queryMax) < 0.001)
+                    .OrderBy(x => GetMassArea(x.MinSide, x.MaxSide))
+                    .Select(x => x.Item)
+                    .ToList();
+
+                if (exact.Count > 0)
                 {
-                    "Alle" => true,
-                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
-                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
-                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
-                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
-                    _ => true
-                };
-
-                if (!filterMatch)
-                    return false;
-
-                if (!string.IsNullOrWhiteSpace(selectedAuftrag) && !string.Equals(m.AuftragNr, selectedAuftrag, StringComparison.OrdinalIgnoreCase))
-                    return false;
-
-                if (string.IsNullOrWhiteSpace(query))
-                    return true;
-
-                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       m.Kategorie.ToString().ToLowerInvariant().Contains(query) ||
-                       (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
-            }).ToList();
+                    filtered = exact;
+                }
+                else
+                {
+                    filtered = parsedItems
+                        .Where(x => x.MinSide >= queryMin && x.MaxSide >= queryMax)
+                        .OrderBy(x => GetMassArea(x.MinSide, x.MaxSide))
+                        .Select(x => x.Item)
+                        .ToList();
+                }
+            }
+            else
+            {
+                filtered = baseFiltered
+                    .Where(m => MatchesMassFilter(m.Mass, fMass))
+                    .ToList();
+            }
 
             RestMaterialien.Clear();
             foreach (var item in filtered)
                 RestMaterialien.Add(item);
 
-            var gebucht = filtered.Count(m => !string.IsNullOrWhiteSpace(m.AuftragNr));
-            SummaryText = $"{RestMaterialien.Count} Material(ien), {gebucht} gebucht";
+            SummaryText = $"{filtered.Count} Material(ien)";
+        }
+
+        private void OnColumnFilterChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilter();
         }
 
         private void SaveAllMaterials()
