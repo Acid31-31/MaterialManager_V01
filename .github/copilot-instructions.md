@@ -2,7 +2,8 @@
 
 ## Project Guidelines
 - Antworte immer auf Deutsch.
-- Vor jeder Codeänderung immer ein vollständiges Projekt-Backup im `Backup`-Verzeichnis erstellen; keine Einzeldatei-Backups als Ersatz verwenden. **Benutzer erwartet vor jeder Änderung ein sichtbares vollständiges Backup und klare Rückmeldung dazu.**
+- Der Benutzer erwartet, dass die vorgeschriebenen Arbeitsregeln aus `.github/copilot-instructions.md` ohne erneute Erinnerung bei jeder Änderung automatisch eingehalten werden, insbesondere: vor jeder Änderung sichtbares schnelles Änderungs-Backup im `Backup`-Ordner, danach Build/Prüfung sowie lokale und GitHub-Aktualisierung.
+- Vor jeder Codeänderung immer ein schnelles aktuelles Änderungs-Backup im vorhandenen `Backup`-Ordner erstellen; maximal 3 Backups, das älteste wird überschrieben/ersetzt. Nur betroffene Änderungen bzw. geänderte Dateien sichern, keine vollständige Projektkopie, um Wartezeit zu vermeiden. **Benutzer erwartet vor jeder Änderung ein sichtbares aktuelles Backup und klare Rückmeldung dazu.**
 - **Backup-Regel:** Maximal 3 Backup-Ordner im `Backup`-Verzeichnis. Vor jedem neuen Backup zuerst prüfen, ob bereits 3 vorhanden sind – wenn ja, den ältesten löschen, dann das neue erstellen. Niemals mehr als 3 Backups anlegen. Beim Kopieren immer folgende Ordner ausschließen: `Backup`, `bin`, `obj`, `.git`, `dist`, `publish`, `publish_release`, `update-installer`, `update-installer-release`, `_ARCHIVE_TO_REVIEW`, `_Multi`, sowie alle alten Backup-Ordner im Projektstamm (Muster: `BACKUP_*`, `Backup_*`).
 - Bei riskanten Änderungen zuerst kurz den Plan nennen; keine funktionierenden Dateien ohne ausdrückliche Zustimmung löschen oder ersetzen.
 - Nach Änderungen standardmäßig sowohl lokal als auch auf GitHub aktualisieren. Bei `komplett aktualisieren` den lokalen USB-Ordner inklusive `USB_Installation` und GitHub vollständig synchronisieren.
