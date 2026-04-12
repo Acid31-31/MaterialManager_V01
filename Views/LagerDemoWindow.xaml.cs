@@ -693,6 +693,14 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenTafelplanungProgramClick(object sender, RoutedEventArgs e)
+        {
+            var tafWindow = new TafelplanungWindow();
+            Application.Current.MainWindow = tafWindow;
+            tafWindow.Show();
+            Close();
+        }
+
         private void OnColumnFilterChanged(object sender, TextChangedEventArgs e)
         {
             ApplyFilter();

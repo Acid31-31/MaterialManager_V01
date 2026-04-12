@@ -340,6 +340,12 @@
                                     Foreground="White"
                                     Padding="14,8"
                                     Margin="0,0,8,0"/>
+                            <Button Content="Auftragssteuerung"
+                                    Click="OnOpenTafelplanungProgramClick"
+                                    Background="#00897B"
+                                    Foreground="White"
+                                    Padding="14,8"
+                                    Margin="0,0,8,0"/>
                             <Button Content="Schließen"
                                     Click="OnCloseClick"
                                     Background="#C42B1C"
