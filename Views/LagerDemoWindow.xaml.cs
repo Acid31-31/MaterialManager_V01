@@ -111,6 +111,7 @@ namespace MaterialManager_V01.Views
             try
             {
                 _alleMaterialien = MaterialDataService.LoadAllMaterials();
+                RefreshManualFilterOptions();
                 ApplyFilter();
             }
             catch (Exception ex)
@@ -237,10 +238,72 @@ namespace MaterialManager_V01.Views
             return minSide * maxSide;
         }
 
+        private static bool MatchesSelection(string? source, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            return string.Equals((source ?? string.Empty).Trim(), filter, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GetComboFilterValue(ComboBox? comboBox)
+        {
+            var value = comboBox?.SelectedItem switch
+            {
+                ComboBoxItem item => item.Content?.ToString(),
+                string text => text,
+                _ => comboBox?.Text
+            };
+
+            value = (value ?? string.Empty).Trim();
+            return string.Equals(value, "Alle", StringComparison.OrdinalIgnoreCase) ? string.Empty : value;
+        }
+
+        private static void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
+        {
+            if (comboBox == null)
+                return;
+
+            comboBox.Items.Clear();
+            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
+
+            foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
+                comboBox.Items.Add(new ComboBoxItem { Content = value });
+
+            var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
+            comboBox.SelectedItem = comboBox.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
+
+            comboBox.SelectedIndex = comboBox.SelectedIndex >= 0 ? comboBox.SelectedIndex : 0;
+        }
+
+        private void RefreshManualFilterOptions()
+        {
+            var selectedMaterial = GetComboFilterValue(FilterMaterialBox);
+            var selectedStaerke = GetComboFilterValue(FilterStaerkeBox);
+
+            var materialien = _alleMaterialien
+                .Select(m => (m.MaterialArt ?? string.Empty).Trim())
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .OrderBy(v => v, StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+
+            var staerken = _alleMaterialien
+                .Where(m => m.Staerke > 0)
+                .Select(m => m.Staerke.ToString("0.###", CultureInfo.InvariantCulture).Replace('.', ','))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(v => double.TryParse(v.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) ? parsed : double.MaxValue)
+                .ToList();
+
+            PopulateFilterComboBox(FilterMaterialBox, materialien, selectedMaterial);
+            PopulateFilterComboBox(FilterStaerkeBox, staerken, selectedStaerke);
+        }
+
         private void ApplyFilter()
         {
-            var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
-            var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
+            var fMaterial = NormalizeFilterValue(GetComboFilterValue(FilterMaterialBox));
+            var fStaerke = NormalizeFilterValue(GetComboFilterValue(FilterStaerkeBox));
             var fMass = NormalizeFilterValue(FilterMassBox?.Text);
             var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
             var fLagerort = NormalizeFilterValue(FilterLagerortBox?.Text);
@@ -248,7 +311,7 @@ namespace MaterialManager_V01.Views
             var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
 
             var baseFiltered = _alleMaterialien.Where(m =>
-                ContainsFilter(m.MaterialArt, fMaterial)
+                MatchesSelection(m.MaterialArt, fMaterial)
                 && MatchesNumericExactFilter(m.Staerke, fStaerke)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
                 && ContainsFilter(m.Lagerort, fLagerort)
@@ -702,6 +765,11 @@ namespace MaterialManager_V01.Views
         }
 
         private void OnColumnFilterChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void OnColumnFilterSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilter();
         }

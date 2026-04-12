@@ -168,6 +168,7 @@ namespace MaterialManager_V01.Views
                 var items = await MaterialDataService.LoadAllMaterialsAsync();
                 _alleMaterialien = items;
                 _materialienCache = _alleMaterialien.ToList();
+                RefreshManualFilterOptions();
                 RefreshAuftragFilter();
                 LoadAuftraegeGridForSelectedKw();
                 ApplyFilter();
@@ -178,156 +179,72 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private void RefreshAuftragFilter()
+        private static bool MatchesSelection(string? source, string filter)
         {
-            var bisherigeAuswahl = SelectedAuftragFilter?.Auftragsnummer ?? string.Empty;
-            var auftraege = AuftragDataService.LoadAllAuftraege();
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
 
-            AuftragFilterItems.Clear();
-            AuftragFilterItems.Add(new AuftragFilterItem(string.Empty, "Alle Aufträge"));
+            return string.Equals((source ?? string.Empty).Trim(), filter, StringComparison.OrdinalIgnoreCase);
+        }
 
-            foreach (var auftrag in auftraege)
+        private static string GetComboFilterValue(ComboBox? comboBox)
+        {
+            var value = comboBox?.SelectedItem switch
             {
-                AuftragFilterItems.Add(new AuftragFilterItem(
-                    auftrag.Auftragsnummer,
-                    $"{auftrag.Auftragsnummer} - {auftrag.Status} ({auftrag.MaterialPositionen} Pos. / {auftrag.GesamtStueckzahl} Stk.)"));
-            }
+                ComboBoxItem item => item.Content?.ToString(),
+                string text => text,
+                _ => comboBox?.Text
+            };
 
-            SelectedAuftragFilter = AuftragFilterItems.FirstOrDefault(a => a.Auftragsnummer == bisherigeAuswahl)
-                ?? AuftragFilterItems.FirstOrDefault();
-
-            var offen = auftraege.Count(a => a.Status == AuftragStatus.Offen);
-            var inBearbeitung = auftraege.Count(a => a.Status == AuftragStatus.InBearbeitung);
-            AuftragOverviewText = auftraege.Count == 0
-                ? "Keine aktiven Aufträge"
-                : $"{auftraege.Count} Aufträge - {offen} offen, {inBearbeitung} in Bearbeitung";
+            value = (value ?? string.Empty).Trim();
+            return string.Equals(value, "Alle", StringComparison.OrdinalIgnoreCase) ? string.Empty : value;
         }
 
-        private string GetSelectedFilter()
+        private static void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
         {
-            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            if (!string.IsNullOrWhiteSpace(selected))
-                return selected.Trim();
+            if (comboBox == null)
+                return;
 
-            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
-                return FormFilterBox.Text.Trim();
+            comboBox.Items.Clear();
+            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
 
-            return "Alle";
+            foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
+                comboBox.Items.Add(new ComboBoxItem { Content = value });
+
+            var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
+            comboBox.SelectedItem = comboBox.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
+
+            comboBox.SelectedIndex = comboBox.SelectedIndex >= 0 ? comboBox.SelectedIndex : 0;
         }
 
-        private static string NormalizeFilterValue(string? value)
+        private void RefreshManualFilterOptions()
         {
-            return (value ?? string.Empty).Trim().ToLowerInvariant();
-        }
+            var selectedMaterial = GetComboFilterValue(FilterMaterialBox);
+            var selectedStaerke = GetComboFilterValue(FilterStaerkeBox);
 
-        private static bool ContainsFilter(string? source, string filter)
-        {
-            if (string.IsNullOrWhiteSpace(filter))
-                return true;
-
-            return (source ?? string.Empty)
-                .ToLowerInvariant()
-                .Contains(filter);
-        }
-
-        private static bool ContainsNumericFilter(double value, string filter)
-        {
-            if (string.IsNullOrWhiteSpace(filter))
-                return true;
-
-            var numeric = value.ToString("0.###", CultureInfo.InvariantCulture).ToLowerInvariant();
-            var filterNormalized = filter.Replace(',', '.');
-            return numeric.Contains(filterNormalized);
-        }
-
-        private static bool MatchesNumericExactFilter(double value, string filter)
-        {
-            if (string.IsNullOrWhiteSpace(filter))
-                return true;
-
-            var normalized = filter.Replace(',', '.').Trim();
-
-            if (string.Equals(normalized, "0", StringComparison.Ordinal))
-                return value > 0 && value < 1;
-
-            if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var target))
-                return false;
-
-            return Math.Abs(value - target) < 0.0001;
-        }
-
-        private static bool MatchesMassFilter(string? mass, string filter)
-        {
-            if (string.IsNullOrWhiteSpace(filter))
-                return true;
-
-            var source = (mass ?? string.Empty).Trim().ToLowerInvariant();
-            if (string.IsNullOrWhiteSpace(source))
-                return false;
-
-            var normalizedFilter = filter.Replace(',', '.').Trim().ToLowerInvariant();
-
-            if (normalizedFilter.Contains('x') || normalizedFilter.Contains('×'))
-            {
-                var normalizedSource = source.Replace('×', 'x');
-                var nf = normalizedFilter.Replace('×', 'x');
-                return normalizedSource.Contains(nf, StringComparison.OrdinalIgnoreCase);
-            }
-
-            var parts = source
-                .Replace('×', 'x')
-                .Split(new[] { 'x', '*', '/', '-', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(p => p.Trim())
-                .Where(p => p.Length > 0)
+            var materialien = _materialienCache
+                .Select(m => (m.MaterialArt ?? string.Empty).Trim())
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .OrderBy(v => v, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
 
-            if (parts.Count == 0)
-                return false;
+            var staerken = _materialienCache
+                .Where(m => m.Staerke > 0)
+                .Select(m => m.Staerke.ToString("0.###", CultureInfo.InvariantCulture).Replace('.', ','))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(v => double.TryParse(v.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) ? parsed : double.MaxValue)
+                .ToList();
 
-            return parts.Any(p => p.StartsWith(normalizedFilter, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static bool TryParseMass(string? mass, out double minSide, out double maxSide)
-        {
-            minSide = 0;
-            maxSide = 0;
-
-            if (string.IsNullOrWhiteSpace(mass))
-                return false;
-
-            var normalized = mass
-                .ToLowerInvariant()
-                .Replace("mm", string.Empty)
-                .Replace('×', 'x')
-                .Replace(',', '.')
-                .Trim();
-
-            var parts = normalized.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(p => p.Trim())
-                .ToArray();
-
-            if (parts.Length != 2)
-                return false;
-
-            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var a))
-                return false;
-            if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var b))
-                return false;
-
-            minSide = Math.Min(a, b);
-            maxSide = Math.Max(a, b);
-            return true;
-        }
-
-        private static double GetMassArea(double minSide, double maxSide)
-        {
-            return minSide * maxSide;
+            PopulateFilterComboBox(FilterMaterialBox, materialien, selectedMaterial);
+            PopulateFilterComboBox(FilterStaerkeBox, staerken, selectedStaerke);
         }
 
         private void ApplyFilter()
         {
-            var fMaterial = NormalizeFilterValue(FilterMaterialBox?.Text);
-            var fStaerke = NormalizeFilterValue(FilterStaerkeBox?.Text);
+            var fMaterial = NormalizeFilterValue(GetComboFilterValue(FilterMaterialBox));
+            var fStaerke = NormalizeFilterValue(GetComboFilterValue(FilterStaerkeBox));
             var fMass = NormalizeFilterValue(FilterMassBox?.Text);
             var fLaenge = NormalizeFilterValue(FilterLaengeBox?.Text);
             var fLagerort = NormalizeFilterValue(FilterLagerortBox?.Text);
@@ -335,7 +252,7 @@ namespace MaterialManager_V01.Views
             var fAuftrag = NormalizeFilterValue(FilterAuftragBox?.Text);
 
             var baseFiltered = _materialienCache.Where(m =>
-                ContainsFilter(m.MaterialArt, fMaterial)
+                MatchesSelection(m.MaterialArt, fMaterial)
                 && MatchesNumericExactFilter(m.Staerke, fStaerke)
                 && ContainsNumericFilter(m.Laenge, fLaenge)
                 && ContainsFilter(m.Lagerort, fLagerort)
@@ -390,6 +307,11 @@ namespace MaterialManager_V01.Views
         }
 
         private void OnColumnFilterChanged(object sender, TextChangedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void OnColumnFilterSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilter();
         }
@@ -1483,6 +1405,152 @@ namespace MaterialManager_V01.Views
 
             PersistWeekSortOrder(list);
             ReloadAuftraegeKeepingSelection(source.Auftragsnummer);
+        }
+
+        private void RefreshAuftragFilter()
+        {
+            var bisherigeAuswahl = SelectedAuftragFilter?.Auftragsnummer ?? string.Empty;
+            var auftraege = AuftragDataService.LoadAllAuftraege();
+
+            AuftragFilterItems.Clear();
+            AuftragFilterItems.Add(new AuftragFilterItem(string.Empty, "Alle Aufträge"));
+
+            foreach (var auftrag in auftraege)
+            {
+                AuftragFilterItems.Add(new AuftragFilterItem(
+                    auftrag.Auftragsnummer,
+                    $"{auftrag.Auftragsnummer} - {auftrag.Status} ({auftrag.MaterialPositionen} Pos. / {auftrag.GesamtStueckzahl} Stk.)"));
+            }
+
+            SelectedAuftragFilter = AuftragFilterItems.FirstOrDefault(a => a.Auftragsnummer == bisherigeAuswahl)
+                ?? AuftragFilterItems.FirstOrDefault();
+
+            var offen = auftraege.Count(a => a.Status == AuftragStatus.Offen);
+            var inBearbeitung = auftraege.Count(a => a.Status == AuftragStatus.InBearbeitung);
+            AuftragOverviewText = auftraege.Count == 0
+                ? "Keine aktiven Aufträge"
+                : $"{auftraege.Count} Aufträge - {offen} offen, {inBearbeitung} in Bearbeitung";
+        }
+
+        private string GetSelectedFilter()
+        {
+            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (!string.IsNullOrWhiteSpace(selected))
+                return selected.Trim();
+
+            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
+                return FormFilterBox.Text.Trim();
+
+            return "Alle";
+        }
+
+        private static string NormalizeFilterValue(string? value)
+        {
+            return (value ?? string.Empty).Trim().ToLowerInvariant();
+        }
+
+        private static bool ContainsFilter(string? source, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            return (source ?? string.Empty)
+                .ToLowerInvariant()
+                .Contains(filter);
+        }
+
+        private static bool ContainsNumericFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var numeric = value.ToString("0.###", CultureInfo.InvariantCulture).ToLowerInvariant();
+            var filterNormalized = filter.Replace(',', '.');
+            return numeric.Contains(filterNormalized);
+        }
+
+        private static bool MatchesNumericExactFilter(double value, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var normalized = filter.Replace(',', '.').Trim();
+
+            if (string.Equals(normalized, "0", StringComparison.Ordinal))
+                return value > 0 && value < 1;
+
+            if (!double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var target))
+                return false;
+
+            return Math.Abs(value - target) < 0.0001;
+        }
+
+        private static bool MatchesMassFilter(string? mass, string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            var source = (mass ?? string.Empty).Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(source))
+                return false;
+
+            var normalizedFilter = filter.Replace(',', '.').Trim().ToLowerInvariant();
+
+            if (normalizedFilter.Contains('x') || normalizedFilter.Contains('×'))
+            {
+                var normalizedSource = source.Replace('×', 'x');
+                var nf = normalizedFilter.Replace('×', 'x');
+                return normalizedSource.Contains(nf, StringComparison.OrdinalIgnoreCase);
+            }
+
+            var parts = source
+                .Replace('×', 'x')
+                .Split(new[] { 'x', '*', '/', '-', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .ToList();
+
+            if (parts.Count == 0)
+                return false;
+
+            return parts.Any(p => p.StartsWith(normalizedFilter, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool TryParseMass(string? mass, out double minSide, out double maxSide)
+        {
+            minSide = 0;
+            maxSide = 0;
+
+            if (string.IsNullOrWhiteSpace(mass))
+                return false;
+
+            var normalized = mass
+                .ToLowerInvariant()
+                .Replace("mm", string.Empty)
+                .Replace('×', 'x')
+                .Replace(',', '.')
+                .Trim();
+
+            var parts = normalized.Split(new[] { 'x' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .ToArray();
+
+            if (parts.Length != 2)
+                return false;
+
+            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var a))
+                return false;
+            if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var b))
+                return false;
+
+            minSide = Math.Min(a, b);
+            maxSide = Math.Max(a, b);
+            return true;
+        }
+
+        private static double GetMassArea(double minSide, double maxSide)
+        {
+            return minSide * maxSide;
         }
     }
 
