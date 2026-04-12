@@ -557,6 +557,14 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnOpenTafelplanungProgramClick(object sender, RoutedEventArgs e)
+        {
+            var tafelWindow = new TafelplanungWindow();
+            Application.Current.MainWindow = tafelWindow;
+            tafelWindow.Show();
+            Close();
+        }
+
         private void OnOpenMainProgramClick(object sender, RoutedEventArgs e)
         {
             var mainWindow = new MainWindow();
