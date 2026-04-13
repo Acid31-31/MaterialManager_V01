@@ -230,6 +230,7 @@ namespace MaterialManager_V01.Services
 
                 var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
                 FileWatcherService.RegisterLocalWrite(path);
+                AutoSyncManager.RegisterLocalSave(path);
                 File.WriteAllText(path, json);
             }
             catch

@@ -201,6 +201,7 @@ namespace MaterialManager_V01.Services
                 Directory.CreateDirectory(directory);
 
             FileWatcherService.RegisterLocalWrite(savePath);
+            AutoSyncManager.RegisterLocalSave(savePath);
             ExcelService.Export(savePath, materialien);
             CreateNetworkBackupCopy(savePath);
         }

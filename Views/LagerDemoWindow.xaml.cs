@@ -69,6 +69,7 @@ namespace MaterialManager_V01.Views
         private void OnWindowClosed(object? sender, EventArgs e)
         {
             FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
+            AutoSyncManager.OnAutoSyncTriggered -= OnAutoSyncTriggered;
         }
 
         private void InitializeAutoSync()
@@ -77,9 +78,22 @@ namespace MaterialManager_V01.Views
             FileWatcherService.StartWatching(savePath);
             FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
             FileWatcherService.OnFileChanged += OnAutoSyncFileChanged;
+            AutoSyncManager.StartAutoSync(savePath);
+            AutoSyncManager.OnAutoSyncTriggered -= OnAutoSyncTriggered;
+            AutoSyncManager.OnAutoSyncTriggered += OnAutoSyncTriggered;
+        }
+
+        private void OnAutoSyncTriggered()
+        {
+            OnAutoSyncReloadRequested();
         }
 
         private void OnAutoSyncFileChanged(string path)
+        {
+            OnAutoSyncReloadRequested();
+        }
+
+        private void OnAutoSyncReloadRequested()
         {
             if (!IsLoaded)
                 return;
