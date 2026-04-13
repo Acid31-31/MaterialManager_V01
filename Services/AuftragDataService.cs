@@ -21,7 +21,6 @@ namespace MaterialManager_V01.Services
                 .ToList();
 
             ApplySharedAuftragsState(list);
-            PersistLocalAuftraegeSnapshot(list);
 
             foreach (var auftrag in list)
             {
