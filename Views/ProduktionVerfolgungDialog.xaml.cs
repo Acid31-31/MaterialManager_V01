@@ -146,6 +146,7 @@ namespace MaterialManager_V01.Views
                     existingAuftrag.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
                     context.SaveChanges();
                     _auftrag.Id = existingAuftrag.Id;
+                    AuftragDataService.TryUpsertSharedAuftrag(existingAuftrag);
                 }
             }
             catch (Exception ex)

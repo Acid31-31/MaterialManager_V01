@@ -115,6 +115,8 @@ namespace MaterialManager_V01.Services
             SyncAuftraege(db, snapshot);
             db.SaveChanges();
             transaction.Commit();
+
+            AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
         }
 
         private static void SyncAuftraege(MaterialManagerDbContext db, IEnumerable<MaterialItem> materialien)
@@ -123,6 +125,10 @@ namespace MaterialManager_V01.Services
                 .AsNoTracking()
                 .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
                 .ToDictionary(a => a.Auftragsnummer.Trim(), StringComparer.OrdinalIgnoreCase);
+
+            var sharedByNumber = AuftragDataService.LoadSharedAuftraegeLookup();
+            foreach (var pair in sharedByNumber)
+                existingByNumber[pair.Key] = pair.Value;
 
             db.Auftraege.RemoveRange(db.Auftraege);
 
@@ -160,7 +166,9 @@ namespace MaterialManager_V01.Services
                         PdfPfad = items.Select(i => i.PdfPfad).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
                         PdfPfadAngefangeneTafel = items.Select(i => i.PdfPfadAngefangeneTafel).FirstOrDefault(v => !string.IsNullOrWhiteSpace(v)) ?? string.Empty,
                         ProduktionStartDatum = existing?.ProduktionStartDatum,
-                        ProduktionEndDatum = existing?.ProduktionEndDatum
+                        ProduktionEndDatum = existing?.ProduktionEndDatum,
+                        IsEilt = existing?.IsEilt ?? false,
+                        SortIndex = existing?.SortIndex ?? 0
                     };
                 })
                 .ToList();

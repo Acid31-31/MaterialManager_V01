@@ -1,3 +1,5 @@
+using System.IO;
+using System.Text.Json;
 using MaterialManager_V01.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +20,9 @@ namespace MaterialManager_V01.Services
                 .ThenBy(a => a.Auftragsnummer)
                 .ToList();
 
+            ApplySharedAuftragsState(list);
+            PersistLocalAuftraegeSnapshot(list);
+
             foreach (var auftrag in list)
             {
                 auftrag.Arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftrag.Auftragsnummer);
@@ -25,6 +30,49 @@ namespace MaterialManager_V01.Services
             }
 
             return list;
+        }
+
+        public static Dictionary<string, Auftrag> LoadSharedAuftraegeLookup()
+        {
+            return LoadSharedAuftraege()
+                .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
+                .GroupBy(a => a.Auftragsnummer.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.Last())
+                .ToDictionary(a => a.Auftragsnummer.Trim(), CloneAuftrag, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public static void TryUpsertSharedAuftrag(Auftrag auftrag)
+        {
+            if (!NetzwerkService.IsNetzwerkModus || string.IsNullOrWhiteSpace(auftrag?.Auftragsnummer))
+                return;
+
+            var list = LoadSharedAuftraege();
+            var normalized = auftrag.Auftragsnummer.Trim();
+            var existingIndex = list.FindIndex(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), normalized, StringComparison.OrdinalIgnoreCase));
+            var snapshot = CloneAuftrag(auftrag);
+
+            if (existingIndex >= 0)
+                list[existingIndex] = snapshot;
+            else
+                list.Add(snapshot);
+
+            SaveSharedAuftraege(list);
+        }
+
+        public static void TrySyncSharedAuftraegeFromDatabase()
+        {
+            if (!NetzwerkService.IsNetzwerkModus)
+                return;
+
+            using var db = new MaterialManagerDbContext();
+            db.Database.EnsureCreated();
+            var list = db.Auftraege
+                .AsNoTracking()
+                .OrderBy(a => a.SortIndex)
+                .ThenBy(a => a.Auftragsnummer)
+                .ToList();
+
+            SaveSharedAuftraege(list);
         }
 
         private static void EnsureAuftraegeFromMaterialienIfMissing()
@@ -78,6 +126,7 @@ namespace MaterialManager_V01.Services
 
             db.Auftraege.AddRange(auftraege);
             db.SaveChanges();
+            SaveSharedAuftraege(auftraege);
         }
 
         public static bool UpdateAuftrag(string auftragsnummer, Action<Auftrag> updateAction)
@@ -98,7 +147,128 @@ namespace MaterialManager_V01.Services
 
             updateAction(auftrag);
             db.SaveChanges();
+            TryUpsertSharedAuftrag(auftrag);
             return true;
+        }
+
+        private static void ApplySharedAuftragsState(List<Auftrag> localAuftraege)
+        {
+            var sharedByNumber = LoadSharedAuftraegeLookup();
+            if (sharedByNumber.Count == 0)
+                return;
+
+            foreach (var local in localAuftraege)
+            {
+                var normalized = (local.Auftragsnummer ?? string.Empty).Trim();
+                if (string.IsNullOrWhiteSpace(normalized) || !sharedByNumber.TryGetValue(normalized, out var shared))
+                    continue;
+
+                local.Status = shared.Status;
+                local.ProduktionStartDatum = shared.ProduktionStartDatum;
+                local.ProduktionEndDatum = shared.ProduktionEndDatum;
+                local.IsEilt = shared.IsEilt;
+                local.SortIndex = shared.SortIndex;
+                local.ErstelltAm = shared.ErstelltAm;
+                local.GeaendertAm = shared.GeaendertAm;
+                local.AngelegtVon = shared.AngelegtVon;
+                local.GeaendertVon = shared.GeaendertVon;
+                if (!string.IsNullOrWhiteSpace(shared.PdfPfad))
+                    local.PdfPfad = shared.PdfPfad;
+                if (!string.IsNullOrWhiteSpace(shared.PdfPfadAngefangeneTafel))
+                    local.PdfPfadAngefangeneTafel = shared.PdfPfadAngefangeneTafel;
+            }
+        }
+
+        private static void PersistLocalAuftraegeSnapshot(List<Auftrag> auftraege)
+        {
+            using var db = new MaterialManagerDbContext();
+            db.Database.EnsureCreated();
+            db.Auftraege.RemoveRange(db.Auftraege);
+            db.SaveChanges();
+            db.Auftraege.AddRange(auftraege.Select(CloneAuftrag));
+            db.SaveChanges();
+        }
+
+        private static List<Auftrag> LoadSharedAuftraege()
+        {
+            try
+            {
+                var path = GetSharedAuftraegePath();
+                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                    return new List<Auftrag>();
+
+                var json = File.ReadAllText(path);
+                return JsonSerializer.Deserialize<List<Auftrag>>(json) ?? new List<Auftrag>();
+            }
+            catch
+            {
+                return new List<Auftrag>();
+            }
+        }
+
+        private static void SaveSharedAuftraege(IEnumerable<Auftrag> auftraege)
+        {
+            if (!NetzwerkService.IsNetzwerkModus)
+                return;
+
+            try
+            {
+                var path = GetSharedAuftraegePath();
+                if (string.IsNullOrWhiteSpace(path))
+                    return;
+
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var snapshot = auftraege
+                    .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
+                    .Select(CloneAuftrag)
+                    .OrderBy(a => a.SortIndex)
+                    .ThenBy(a => a.Auftragsnummer)
+                    .ToList();
+
+                var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(path, json);
+            }
+            catch
+            {
+            }
+        }
+
+        private static string GetSharedAuftraegePath()
+        {
+            if (!NetzwerkService.IsNetzwerkModus)
+                return string.Empty;
+
+            var materialPath = NetzwerkService.GetSavePath();
+            var dir = Path.GetDirectoryName(materialPath);
+            return string.IsNullOrWhiteSpace(dir) ? string.Empty : Path.Combine(dir, "auftraege.json");
+        }
+
+        private static Auftrag CloneAuftrag(Auftrag source)
+        {
+            return new Auftrag
+            {
+                Id = source.Id,
+                Auftragsnummer = source.Auftragsnummer,
+                Arbeitsplatz = source.Arbeitsplatz,
+                Status = source.Status,
+                ProduktionStartDatum = source.ProduktionStartDatum,
+                ProduktionEndDatum = source.ProduktionEndDatum,
+                ErstelltAm = source.ErstelltAm,
+                GeaendertAm = source.GeaendertAm,
+                AngelegtVon = source.AngelegtVon,
+                GeaendertVon = source.GeaendertVon,
+                MaterialPositionen = source.MaterialPositionen,
+                GesamtStueckzahl = source.GesamtStueckzahl,
+                GesamtGewichtKg = source.GesamtGewichtKg,
+                PdfPfad = source.PdfPfad,
+                PdfPfadAngefangeneTafel = source.PdfPfadAngefangeneTafel,
+                PdfPfadKantzeichnung = source.PdfPfadKantzeichnung,
+                IsEilt = source.IsEilt,
+                SortIndex = source.SortIndex
+            };
         }
     }
 }
