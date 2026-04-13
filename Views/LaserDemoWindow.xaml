@@ -362,8 +362,15 @@
                                    Foreground="#9E9E9E"
                                    FontSize="9"
                                    HorizontalAlignment="Right"
-                                   Margin="0,0,0,6"
+                                   Margin="0,0,0,2"
                                    TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="AutoSyncStatusTextBlock"
+                                   Foreground="#81C784"
+                                   FontSize="10"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,0,6"
+                                   Visibility="Collapsed"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Content="Lager"
                                     Click="OnOpenLagerProgramClick"

@@ -25,6 +25,7 @@ namespace MaterialManager_V01.Views
         private Point _auftragDragStartPoint;
         private Auftrag? _draggedAuftrag;
         private DateTime _lastAutoReloadUtc = DateTime.MinValue;
+        private int _autoSyncStatusVersion;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -145,8 +146,25 @@ namespace MaterialManager_V01.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (IsLoaded)
+                {
                     LoadMaterials();
+                    ShowAutoSyncStatus();
+                }
             }));
+        }
+
+        private async void ShowAutoSyncStatus()
+        {
+            if (AutoSyncStatusTextBlock == null)
+                return;
+
+            var version = ++_autoSyncStatusVersion;
+            AutoSyncStatusTextBlock.Text = $"Daten automatisch aktualisiert ({DateTime.Now:HH:mm:ss})";
+            AutoSyncStatusTextBlock.Visibility = Visibility.Visible;
+
+            await Task.Delay(2500);
+            if (version == _autoSyncStatusVersion)
+                AutoSyncStatusTextBlock.Visibility = Visibility.Collapsed;
         }
 
         private void RefreshLicenseBanner()
