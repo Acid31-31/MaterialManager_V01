@@ -350,6 +350,40 @@ namespace MaterialManager_V01.Views
         private string _originalPdfPfad = "";
         private string _originalPdfPfadAngefangeneTafel = "";
 
+        public bool PreserveOriginalAuftragOnEdit { get; set; } = true;
+
+        private bool ShouldPreserveOriginalAuftrag()
+        {
+            return _isEdit && PreserveOriginalAuftragOnEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr);
+        }
+
+        private string ResolveAuftragNrForSave()
+        {
+            return ShouldPreserveOriginalAuftrag() ? _originalAuftragNr : string.Empty;
+        }
+
+        private string ResolveLagerortForSave(string defaultLagerort, Func<string>? calculatedFallback = null)
+        {
+            var selected = SelectedLagerort?.Trim() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(selected))
+            {
+                if (!ShouldPreserveOriginalAuftrag()
+                    && !string.IsNullOrWhiteSpace(_originalAuftragNr)
+                    && string.Equals(selected, _originalLagerort, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(selected, "Gebucht", StringComparison.OrdinalIgnoreCase))
+                {
+                    return calculatedFallback?.Invoke() ?? defaultLagerort;
+                }
+
+                return selected;
+            }
+
+            if (ShouldPreserveOriginalAuftrag())
+                return _originalLagerort;
+
+            return calculatedFallback?.Invoke() ?? defaultLagerort;
+        }
+
         private bool _canSave = true;
         public bool CanSave { get => _canSave; set { _canSave = value; OnPropertyChanged(nameof(CanSave)); } }
 
@@ -627,17 +661,15 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort)
-                                        ? SelectedLagerort
-                                        : (_isEdit && !string.IsNullOrWhiteSpace(_originalAuftragNr)
-                                            ? _originalLagerort
-                                            : Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory)),
+                    Lagerort       = ResolveLagerortForSave(
+                                        defaultLagerort: Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory),
+                                        calculatedFallback: () => Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory)),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    AuftragNr      = ResolveAuftragNrForSave(),
                     PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
                     PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };
@@ -681,13 +713,13 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort) ? SelectedLagerort : "Rohrlager",
+                    Lagerort       = ResolveLagerortForSave("Rohrlager"),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    AuftragNr      = ResolveAuftragNrForSave(),
                     PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
                     PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };
@@ -714,13 +746,13 @@ namespace MaterialManager_V01.Views
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
                     AenderungsDatum = _isEdit ? DateTime.Now : null,
-                    Lagerort       = !string.IsNullOrWhiteSpace(SelectedLagerort) ? SelectedLagerort : "Profillager",
+                    Lagerort       = ResolveLagerortForSave("Profillager"),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
                     PreisProKg     = preis,
                     AngelegtVon    = angelegtVon,
                     GeaendertVon   = geaendertVon,
-                    AuftragNr      = _isEdit ? _originalAuftragNr : string.Empty,
+                    AuftragNr      = ResolveAuftragNrForSave(),
                     PdfPfad        = _isEdit ? _originalPdfPfad : string.Empty,
                     PdfPfadAngefangeneTafel = _isEdit ? _originalPdfPfadAngefangeneTafel : string.Empty
                 };

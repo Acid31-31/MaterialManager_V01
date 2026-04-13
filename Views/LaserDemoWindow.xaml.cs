@@ -467,7 +467,7 @@ namespace MaterialManager_V01.Views
             if (item == null)
                 return;
 
-            var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
+            var dlg = new MaterialDialog(_alleMaterialien) { Owner = this, PreserveOriginalAuftragOnEdit = false };
             dlg.SetEditMode(item);
             if (dlg.ShowDialog() != true)
                 return;
@@ -478,7 +478,7 @@ namespace MaterialManager_V01.Views
 
             PushUndoSnapshot("Reserviertes Material bearbeiten");
             dlg.Material.AuftragNr = string.Empty;
-            if (string.IsNullOrWhiteSpace(dlg.Material.Lagerort))
+            if (string.IsNullOrWhiteSpace(dlg.Material.Lagerort) || string.Equals(dlg.Material.Lagerort, "Gebucht", StringComparison.OrdinalIgnoreCase))
             {
                 dlg.Material.Lagerort = RegalService.DetermineLagerort(
                     dlg.Material.MaterialArt,
