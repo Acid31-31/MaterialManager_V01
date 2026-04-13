@@ -200,6 +200,7 @@ namespace MaterialManager_V01.Services
             if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
+            FileWatcherService.RegisterLocalWrite(savePath);
             ExcelService.Export(savePath, materialien);
             CreateNetworkBackupCopy(savePath);
         }

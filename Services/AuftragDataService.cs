@@ -229,6 +229,7 @@ namespace MaterialManager_V01.Services
                     .ToList();
 
                 var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+                FileWatcherService.RegisterLocalWrite(path);
                 File.WriteAllText(path, json);
             }
             catch
