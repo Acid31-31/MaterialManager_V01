@@ -15,6 +15,7 @@ using System.Windows.Media;
 using MaterialManager_V01.Models;
 using MaterialManager_V01.Services;
 using Microsoft.Win32;
+using System.Windows.Threading;
 
 namespace MaterialManager_V01.Views
 {
@@ -29,6 +30,9 @@ namespace MaterialManager_V01.Views
         private readonly int _aktuellesJahr = DateTime.Now.Year;
         private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
         private DateTime _lastAutoReloadUtc = DateTime.MinValue;
+        private DateTime _lastObservedMaterialWriteUtc = DateTime.MinValue;
+        private DateTime _lastObservedAuftraegeWriteUtc = DateTime.MinValue;
+        private readonly DispatcherTimer _autoRefreshTimer = new() { Interval = TimeSpan.FromSeconds(2) };
         private int _autoSyncStatusVersion;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
@@ -116,34 +120,32 @@ namespace MaterialManager_V01.Views
 
         private void OnWindowClosed(object? sender, EventArgs e)
         {
-            FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
-            AutoSyncManager.OnAutoSyncTriggered -= OnAutoSyncTriggered;
+            _autoRefreshTimer.Stop();
+            _autoRefreshTimer.Tick -= OnAutoRefreshTimerTick;
         }
 
         private void InitializeAutoSync()
         {
-            var savePath = NetzwerkService.GetSavePath();
-            FileWatcherService.StartWatching(savePath);
-            FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
-            FileWatcherService.OnFileChanged += OnAutoSyncFileChanged;
-            AutoSyncManager.StartAutoSync(savePath);
-            AutoSyncManager.OnAutoSyncTriggered -= OnAutoSyncTriggered;
-            AutoSyncManager.OnAutoSyncTriggered += OnAutoSyncTriggered;
+            _lastObservedMaterialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
+            _lastObservedAuftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
+            _autoRefreshTimer.Tick -= OnAutoRefreshTimerTick;
+            _autoRefreshTimer.Tick += OnAutoRefreshTimerTick;
+            _autoRefreshTimer.Start();
         }
 
-        private void OnAutoSyncTriggered()
-        {
-            OnAutoSyncReloadRequested();
-        }
-
-        private void OnAutoSyncFileChanged(string path)
-        {
-            OnAutoSyncReloadRequested();
-        }
-
-        private void OnAutoSyncReloadRequested()
+        private void OnAutoRefreshTimerTick(object? sender, EventArgs e)
         {
             if (!IsLoaded)
+                return;
+
+            var materialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
+            var auftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
+            var hasChanged = materialWriteUtc > _lastObservedMaterialWriteUtc || auftraegeWriteUtc > _lastObservedAuftraegeWriteUtc;
+
+            _lastObservedMaterialWriteUtc = materialWriteUtc;
+            _lastObservedAuftraegeWriteUtc = auftraegeWriteUtc;
+
+            if (!hasChanged)
                 return;
 
             var now = DateTime.UtcNow;
@@ -151,60 +153,29 @@ namespace MaterialManager_V01.Views
                 return;
 
             _lastAutoReloadUtc = now;
-            Dispatcher.BeginInvoke(new Action(() =>
+            LoadMaterials();
+            ShowAutoSyncStatus();
+        }
+
+        private static DateTime GetObservedWriteTimeUtc(string? path)
+        {
+            try
             {
-                if (IsLoaded)
-                {
-                    LoadMaterials();
-                    ShowAutoSyncStatus();
-                }
-            }));
-        }
-
-        private async void ShowAutoSyncStatus()
-        {
-            if (AutoSyncStatusTextBlock == null)
-                return;
-
-            var version = ++_autoSyncStatusVersion;
-            AutoSyncStatusTextBlock.Text = $"Daten automatisch aktualisiert ({DateTime.Now:HH:mm:ss})";
-            AutoSyncStatusTextBlock.Visibility = Visibility.Visible;
-
-            await Task.Delay(2500);
-            if (version == _autoSyncStatusVersion)
-                AutoSyncStatusTextBlock.Visibility = Visibility.Collapsed;
-        }
-
-        private void RefreshNetworkStatusBanner()
-        {
-            var status = NetzwerkService.GetNetzwerkStatusText();
-            NetworkModeTextBlock.Text = status;
-            NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
-
-            NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", StringComparison.OrdinalIgnoreCase)
-                ? Brushes.LimeGreen
-                : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
-                    ? Brushes.OrangeRed
-                    : Brushes.DeepSkyBlue;
-        }
-
-        private void FitToWorkArea()
-        {
-            var wa = SystemParameters.WorkArea;
-            Left = wa.Left;
-            Top = wa.Top;
-            Width = wa.Width;
-            Height = wa.Height;
-            MaxWidth = wa.Width;
-            MaxHeight = wa.Height;
-        }
-
-        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left && WindowState != WindowState.Maximized)
-            {
-                DragMove();
+                return !string.IsNullOrWhiteSpace(path) && File.Exists(path)
+                    ? File.GetLastWriteTimeUtc(path)
+                    : DateTime.MinValue;
             }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        private static string GetSharedAuftraegePath()
+        {
+            var materialPath = NetzwerkService.GetSavePath();
+            var directory = Path.GetDirectoryName(materialPath);
+            return string.IsNullOrWhiteSpace(directory) ? string.Empty : Path.Combine(directory, "auftraege.json");
         }
 
         private async void LoadMaterials()
@@ -831,6 +802,52 @@ namespace MaterialManager_V01.Views
             LicenseBannerTextBlock.Foreground = remainingDays <= 7
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF9800"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107"));
+        }
+
+        private async void ShowAutoSyncStatus()
+        {
+            if (AutoSyncStatusTextBlock == null)
+                return;
+
+            var version = ++_autoSyncStatusVersion;
+            AutoSyncStatusTextBlock.Text = $"Daten automatisch aktualisiert ({DateTime.Now:HH:mm:ss})";
+            AutoSyncStatusTextBlock.Visibility = Visibility.Visible;
+
+            await Task.Delay(2500);
+            if (version == _autoSyncStatusVersion)
+                AutoSyncStatusTextBlock.Visibility = Visibility.Collapsed;
+        }
+
+        private void RefreshNetworkStatusBanner()
+        {
+            var status = NetzwerkService.GetNetzwerkStatusText();
+            NetworkModeTextBlock.Text = status;
+            NetworkExcelTextBlock.Text = NetzwerkService.GetExcelStatusText();
+
+            NetworkModeTextBlock.Foreground = status.Contains("Server verbunden", StringComparison.OrdinalIgnoreCase)
+                ? Brushes.LimeGreen
+                : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
+                    ? Brushes.OrangeRed
+                    : Brushes.DeepSkyBlue;
+        }
+
+        private void FitToWorkArea()
+        {
+            var wa = SystemParameters.WorkArea;
+            Left = wa.Left;
+            Top = wa.Top;
+            Width = wa.Width;
+            Height = wa.Height;
+            MaxWidth = wa.Width;
+            MaxHeight = wa.Height;
+        }
+
+        private void OnTitleBarMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && WindowState != WindowState.Maximized)
+            {
+                DragMove();
+            }
         }
     }
 }
