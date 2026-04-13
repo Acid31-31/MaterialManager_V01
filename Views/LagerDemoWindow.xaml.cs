@@ -558,6 +558,87 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
+        private void OnReleaseReservationClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("Bitte reservierte Materialien auswählen oder markieren.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                items.Count == 1
+                    ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' global aufheben?"
+                    : $"Reservierung für {items.Count} markierte Materialien global aufheben?",
+                "Lager",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes)
+                return;
+
+            PushUndoSnapshot(items.Count == 1 ? "Reservierung global aufheben" : "Reservierungen global aufheben");
+
+            MaterialItem? releasedItem = items.Count == 1 ? items[0] : null;
+            var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
+
+            foreach (var item in items)
+            {
+                item.AuftragNr = string.Empty;
+                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                item.AenderungsDatum = DateTime.Now;
+                item.IsSelected = false;
+            }
+
+            AuditLogService.LogAction(
+                OperatorIdentityService.CurrentOperatorName,
+                "RELEASE",
+                "MaterialItem",
+                string.Join(",", auftragsNummern),
+                oldValue: "Reserviert",
+                newValue: "Verfügbar",
+                reason: $"Reservierung im Lager global aufgehoben ({items.Count} Positionen)");
+
+            if (releasedItem != null)
+            {
+                var action = MessageBox.Show(
+                    "Reservierung wurde aufgehoben.\n\nJa = Material bearbeiten\nNein = Material löschen\nAbbrechen = nur Reservierung aufheben",
+                    "Lager",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question);
+
+                if (action == MessageBoxResult.Yes)
+                {
+                    var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
+                    dlg.SetEditMode(releasedItem);
+                    if (dlg.ShowDialog() == true)
+                    {
+                        var index = _alleMaterialien.IndexOf(releasedItem);
+                        if (index >= 0)
+                        {
+                            dlg.Material.IsSelected = false;
+                            _alleMaterialien[index] = dlg.Material;
+                        }
+                    }
+                }
+                else if (action == MessageBoxResult.No)
+                {
+                    var deleteConfirm = MessageBox.Show(
+                        $"Material '{releasedItem.MaterialArt} {releasedItem.Mass}' wirklich löschen?",
+                        "Lager",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+
+                    if (deleteConfirm == MessageBoxResult.Yes)
+                        _alleMaterialien.Remove(releasedItem);
+                }
+            }
+
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
         private void OnGridMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (MaterialGrid.SelectedItem is not MaterialItem item)
