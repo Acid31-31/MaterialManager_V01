@@ -93,7 +93,10 @@ namespace MaterialManager_V01.Views
             if (!archivResult.Success)
             {
                 MessageBox.Show(archivResult.Message, "Archivierung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            HandleCompletedOrderMaterials();
 
             AuditLogService.LogAction(
                 OperatorIdentityService.CurrentOperatorName,
@@ -102,9 +105,7 @@ namespace MaterialManager_V01.Views
                 _auftrag.Auftragsnummer,
                 oldValue: AuftragStatus.InBearbeitung.ToString(),
                 newValue: AuftragStatus.Abgeschlossen.ToString(),
-                reason: archivResult.Success
-                    ? $"Produktion abgeschlossen. {archivResult.Message}"
-                    : $"Produktion abgeschlossen, Archivierung fehlgeschlagen: {archivResult.Message}");
+                reason: $"Produktion abgeschlossen. {archivResult.Message}");
         }
 
         private void SaveChanges()
@@ -306,6 +307,168 @@ namespace MaterialManager_V01.Views
         {
             KwAuswahlButton.Content = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
             KwAuswahlButton.ToolTip = $"Archivansicht für Kalenderwoche {_ausgewaehlteKalenderWoche:D2} im Jahr {_aktuellesJahr}";
+        }
+
+        private void HandleCompletedOrderMaterials()
+        {
+            var orderNo = (_auftrag.Auftragsnummer ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(orderNo))
+            {
+                DialogResult = true;
+                Close();
+                return;
+            }
+
+            var materials = MaterialDataService.LoadAllMaterials();
+            var matched = materials
+                .Where(m => string.Equals((m.AuftragNr ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (matched.Count == 0)
+            {
+                RemoveOrderFromActiveList(orderNo);
+                DialogResult = true;
+                Close();
+                return;
+            }
+
+            if (matched.Count == 1)
+            {
+                var item = matched[0];
+                var action = MessageBox.Show(
+                    "Auftrag wurde abgeschlossen und archiviert.\n\nJa = Material bearbeiten\nNein = Material löschen\nAbbrechen = Material ins Lager übernehmen",
+                    "Produktion abgeschlossen",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question);
+
+                if (action == MessageBoxResult.Yes)
+                {
+                    ReleaseMaterialToStock(item, materials);
+                    MaterialDataService.SaveAllMaterials(materials);
+                    OpenCompletedMaterialEditor(materials, item);
+                }
+                else if (action == MessageBoxResult.No)
+                {
+                    BuchungsService.BucheAusgang(item, orderNo, OperatorIdentityService.CurrentOperatorName);
+                    materials.Remove(item);
+                    MaterialDataService.SaveAllMaterials(materials);
+                }
+                else
+                {
+                    ReleaseMaterialToStock(item, materials);
+                    MaterialDataService.SaveAllMaterials(materials);
+                }
+            }
+            else
+            {
+                var action = MessageBox.Show(
+                    $"Auftrag wurde abgeschlossen und archiviert.\n\nEs gibt {matched.Count} Materialpositionen.\n\nJa = Reservierung aufheben und ins Lager übernehmen\nNein = Materialien löschen",
+                    "Produktion abgeschlossen",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (action == MessageBoxResult.Yes)
+                {
+                    foreach (var item in matched)
+                        ReleaseMaterialToStock(item, materials);
+
+                    MaterialDataService.SaveAllMaterials(materials);
+                }
+                else
+                {
+                    foreach (var item in matched.ToList())
+                    {
+                        BuchungsService.BucheAusgang(item, orderNo, OperatorIdentityService.CurrentOperatorName);
+                        materials.Remove(item);
+                    }
+
+                    MaterialDataService.SaveAllMaterials(materials);
+                }
+            }
+
+            RemoveOrderFromActiveList(orderNo);
+            DialogResult = true;
+            Close();
+        }
+
+        private void OpenCompletedMaterialEditor(List<MaterialItem> materials, MaterialItem item)
+        {
+            var dlg = new MaterialDialog(materials)
+            {
+                Owner = this,
+                PreserveOriginalAuftragOnEdit = false
+            };
+            dlg.SetEditMode(item);
+            if (dlg.ShowDialog() != true)
+                return;
+
+            var index = materials.IndexOf(item);
+            if (index < 0)
+                return;
+
+            dlg.Material.AuftragNr = string.Empty;
+            if (string.IsNullOrWhiteSpace(dlg.Material.Lagerort) || string.Equals(dlg.Material.Lagerort, "Gebucht", StringComparison.OrdinalIgnoreCase))
+            {
+                dlg.Material.Lagerort = IsAngefangeneTafel(item)
+                    ? "Angefangene Tafel"
+                    : RegalService.DetermineLagerort(
+                        dlg.Material.MaterialArt,
+                        dlg.Material.Legierung,
+                        dlg.Material.Form,
+                        dlg.Material.Staerke,
+                        dlg.Material.Mass,
+                        materials.Where(m => !ReferenceEquals(m, item)).ToList());
+            }
+
+            dlg.Material.IsSelected = false;
+            materials[index] = dlg.Material;
+            MaterialDataService.SaveAllMaterials(materials);
+        }
+
+        private void ReleaseMaterialToStock(MaterialItem item, List<MaterialItem> materials)
+        {
+            item.AuftragNr = string.Empty;
+            item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+            item.AenderungsDatum = DateTime.Now;
+            item.IsSelected = false;
+
+            if (IsAngefangeneTafel(item))
+            {
+                item.Lagerort = "Angefangene Tafel";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(item.Lagerort) || string.Equals(item.Lagerort, "Gebucht", StringComparison.OrdinalIgnoreCase))
+            {
+                item.Lagerort = RegalService.DetermineLagerort(
+                    item.MaterialArt,
+                    item.Legierung,
+                    item.Form,
+                    item.Staerke,
+                    item.Mass,
+                    materials.Where(m => !ReferenceEquals(m, item)).ToList());
+            }
+        }
+
+        private void RemoveOrderFromActiveList(string orderNo)
+        {
+            using var context = new MaterialManagerDbContext();
+            var dbOrder = context.Auftraege
+                .AsEnumerable()
+                .FirstOrDefault(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase));
+            if (dbOrder != null)
+            {
+                context.Auftraege.Remove(dbOrder);
+                context.SaveChanges();
+                AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
+            }
+        }
+
+        private static bool IsAngefangeneTafel(MaterialItem item)
+        {
+            return item.Kategorie == MaterialKategorie.Blech
+                && (string.Equals(item.Lagerort, "Angefangene Tafel", StringComparison.OrdinalIgnoreCase)
+                    || !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel));
         }
 
         private bool CanStartProductionWithCompletePdfs(out string fehlendePdfsText)
