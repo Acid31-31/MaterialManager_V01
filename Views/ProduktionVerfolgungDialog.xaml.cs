@@ -332,28 +332,26 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            var actionDialog = new AuftragAbschlussAktionDialog(matched.Count) { Owner = this };
+            if (actionDialog.ShowDialog() != true || actionDialog.SelectedAction == AuftragAbschlussAktion.Keine)
+                return;
+
             if (matched.Count == 1)
             {
                 var item = matched[0];
-                var action = MessageBox.Show(
-                    "Auftrag wurde abgeschlossen und archiviert.\n\nJa = Material bearbeiten\nNein = Material löschen\nAbbrechen = Material ins Lager übernehmen",
-                    "Produktion abgeschlossen",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
-
-                if (action == MessageBoxResult.Yes)
+                if (actionDialog.SelectedAction == AuftragAbschlussAktion.Bearbeiten)
                 {
                     ReleaseMaterialToStock(item, materials);
                     MaterialDataService.SaveAllMaterials(materials);
                     OpenCompletedMaterialEditor(materials, item);
                 }
-                else if (action == MessageBoxResult.No)
+                else if (actionDialog.SelectedAction == AuftragAbschlussAktion.Loeschen)
                 {
                     BuchungsService.BucheAusgang(item, orderNo, OperatorIdentityService.CurrentOperatorName);
                     materials.Remove(item);
                     MaterialDataService.SaveAllMaterials(materials);
                 }
-                else
+                else if (actionDialog.SelectedAction == AuftragAbschlussAktion.InsLagerUebernehmen)
                 {
                     ReleaseMaterialToStock(item, materials);
                     MaterialDataService.SaveAllMaterials(materials);
@@ -361,20 +359,14 @@ namespace MaterialManager_V01.Views
             }
             else
             {
-                var action = MessageBox.Show(
-                    $"Auftrag wurde abgeschlossen und archiviert.\n\nEs gibt {matched.Count} Materialpositionen.\n\nJa = Reservierung aufheben und ins Lager übernehmen\nNein = Materialien löschen",
-                    "Produktion abgeschlossen",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (action == MessageBoxResult.Yes)
+                if (actionDialog.SelectedAction == AuftragAbschlussAktion.InsLagerUebernehmen)
                 {
                     foreach (var item in matched)
                         ReleaseMaterialToStock(item, materials);
 
                     MaterialDataService.SaveAllMaterials(materials);
                 }
-                else
+                else if (actionDialog.SelectedAction == AuftragAbschlussAktion.Loeschen)
                 {
                     foreach (var item in matched.ToList())
                     {
