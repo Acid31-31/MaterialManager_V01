@@ -24,6 +24,7 @@ namespace MaterialManager_V01.Views
         private int _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
         private Point _auftragDragStartPoint;
         private Auftrag? _draggedAuftrag;
+        private DateTime _lastAutoReloadUtc = DateTime.MinValue;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
@@ -107,8 +108,45 @@ namespace MaterialManager_V01.Views
             RefreshNetworkStatusBanner();
             UpdateAuftragsKwText();
             FitToWorkArea();
-            Loaded += (_, _) => LoadMaterials();
+            Loaded += OnWindowLoaded;
+            Closed += OnWindowClosed;
             PreviewKeyDown += OnWindowPreviewKeyDown;
+        }
+
+        private void OnWindowLoaded(object? sender, RoutedEventArgs e)
+        {
+            InitializeAutoSync();
+            LoadMaterials();
+        }
+
+        private void OnWindowClosed(object? sender, EventArgs e)
+        {
+            FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
+        }
+
+        private void InitializeAutoSync()
+        {
+            var savePath = NetzwerkService.GetSavePath();
+            FileWatcherService.StartWatching(savePath);
+            FileWatcherService.OnFileChanged -= OnAutoSyncFileChanged;
+            FileWatcherService.OnFileChanged += OnAutoSyncFileChanged;
+        }
+
+        private void OnAutoSyncFileChanged(string path)
+        {
+            if (!IsLoaded)
+                return;
+
+            var now = DateTime.UtcNow;
+            if ((now - _lastAutoReloadUtc).TotalMilliseconds < 800)
+                return;
+
+            _lastAutoReloadUtc = now;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (IsLoaded)
+                    LoadMaterials();
+            }));
         }
 
         private void RefreshLicenseBanner()
