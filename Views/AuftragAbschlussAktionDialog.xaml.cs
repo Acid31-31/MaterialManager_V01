@@ -72,9 +72,9 @@ namespace MaterialManager_V01.Views
                 Content = title,
                 Background = (Brush)new BrushConverter().ConvertFromString(colorHex),
                 Foreground = Brushes.White,
-                Padding = new Thickness(14, 8, 14, 8),
-                Margin = new Thickness(0, 0, 8, 0),
-                MinWidth = 140,
+                Padding = new Thickness(16, 8, 16, 8),
+                Margin = new Thickness(0, 0, 10, 10),
+                MinWidth = 170,
                 Cursor = System.Windows.Input.Cursors.Hand
             };
         }
