@@ -660,7 +660,7 @@ namespace MaterialManager_V01.Views
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
-                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    AenderungsDatum = ResolveAenderungsDatumForSave(),
                     Lagerort       = ResolveLagerortForSave(
                                         defaultLagerort: Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory),
                                         calculatedFallback: () => Services.RegalService.DetermineLagerort(SelectedMaterialArt, SelectedLegierung, SelectedForm, staerkeForSave, Mass, _inventory)),
@@ -712,7 +712,7 @@ namespace MaterialManager_V01.Views
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
-                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    AenderungsDatum = ResolveAenderungsDatumForSave(),
                     Lagerort       = ResolveLagerortForSave("Rohrlager"),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
@@ -745,7 +745,7 @@ namespace MaterialManager_V01.Views
                     Stueckzahl     = Stueckzahl,
                     Restnummer     = Restnummer,
                     Datum          = _isEdit ? _originalDatum : (SelectedDatum ?? DateTime.Today),
-                    AenderungsDatum = _isEdit ? DateTime.Now : null,
+                    AenderungsDatum = ResolveAenderungsDatumForSave(),
                     Lagerort       = ResolveLagerortForSave("Profillager"),
                     Lieferant      = SelectedLieferant,
                     LieferscheinNr = SelectedLieferscheinNr,
@@ -759,6 +759,18 @@ namespace MaterialManager_V01.Views
             }
 
             DialogResult = true;
+        }
+
+        private DateTime? ResolveAenderungsDatumForSave()
+        {
+            if (!_isEdit)
+                return null;
+
+            var now = DateTime.Now;
+            if (MaterialItem.HatLegacyMitternachtszeit(_originalAenderungsDatum))
+                return now;
+
+            return now;
         }
 
         private void OnCancel(object sender, RoutedEventArgs e)

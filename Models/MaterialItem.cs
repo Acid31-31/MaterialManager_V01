@@ -34,6 +34,8 @@
         public string Restnummer { get; set; } = "";
         public DateTime? Datum { get; set; }
         public DateTime? AenderungsDatum { get; set; }
+        public static bool HatLegacyMitternachtszeit(DateTime? wert)
+            => wert.HasValue && wert.Value.TimeOfDay == TimeSpan.Zero;
         public string Lagerort { get; set; } = "";
         public string AngelegtVon { get; set; } = "";
         public string GeaendertVon { get; set; } = "";
