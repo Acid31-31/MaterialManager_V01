@@ -19,6 +19,12 @@ namespace MaterialManager_V01.Views
 {
     public partial class TafelplanungWindow : Window, INotifyPropertyChanged
     {
+        private sealed class MaterialSelectionSnapshot
+        {
+            public HashSet<string> CheckedKeys { get; } = new(StringComparer.Ordinal);
+            public string? SelectedKey { get; set; }
+        }
+
         private List<MaterialItem> _alleMaterialien = new();
         private List<MaterialItem> _materialienCache = new();
         private readonly int _aktuellesJahr = DateTime.Now.Year;
@@ -144,6 +150,9 @@ namespace MaterialManager_V01.Views
             if (!IsLoaded)
                 return;
 
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                return;
+
             var materialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
             var auftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
             var hasChanged = materialWriteUtc > _lastObservedMaterialWriteUtc || auftraegeWriteUtc > _lastObservedAuftraegeWriteUtc;
@@ -191,11 +200,11 @@ namespace MaterialManager_V01.Views
 
             var version = ++_autoSyncStatusVersion;
             AutoSyncStatusTextBlock.Text = $"Daten automatisch aktualisiert ({DateTime.Now:HH:mm:ss})";
-            AutoSyncStatusTextBlock.Visibility = Visibility.Visible;
+            AutoSyncStatusTextBlock.Opacity = 1;
 
             await Task.Delay(2500);
             if (version == _autoSyncStatusVersion)
-                AutoSyncStatusTextBlock.Visibility = Visibility.Collapsed;
+                AutoSyncStatusTextBlock.Opacity = 0;
         }
 
         private void RefreshLicenseBanner()
@@ -250,6 +259,8 @@ namespace MaterialManager_V01.Views
 
         private async void LoadMaterials()
         {
+            var selectionSnapshot = CaptureMaterialSelection();
+
             try
             {
                 var items = await MaterialDataService.LoadAllMaterialsAsync();
@@ -259,11 +270,56 @@ namespace MaterialManager_V01.Views
                 RefreshAuftragFilter();
                 LoadAuftraegeGridForSelectedKw();
                 ApplyFilter();
+                RestoreMaterialSelection(selectionSnapshot);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private MaterialSelectionSnapshot CaptureMaterialSelection()
+        {
+            var snapshot = new MaterialSelectionSnapshot();
+
+            foreach (var item in RestMaterialien.Where(m => m.IsSelected))
+                snapshot.CheckedKeys.Add(GetMaterialSelectionKey(item));
+
+            if (RestMaterialGrid?.SelectedItem is MaterialItem selectedItem)
+                snapshot.SelectedKey = GetMaterialSelectionKey(selectedItem);
+
+            return snapshot;
+        }
+
+        private void RestoreMaterialSelection(MaterialSelectionSnapshot snapshot)
+        {
+            MaterialItem? selectedItem = null;
+
+            foreach (var item in RestMaterialien)
+            {
+                var key = GetMaterialSelectionKey(item);
+                item.IsSelected = snapshot.CheckedKeys.Contains(key);
+                if (snapshot.SelectedKey == key)
+                    selectedItem = item;
+            }
+
+            if (RestMaterialGrid != null)
+                RestMaterialGrid.SelectedItem = selectedItem ?? RestMaterialien.FirstOrDefault(m => m.IsSelected);
+        }
+
+        private static string GetMaterialSelectionKey(MaterialItem item)
+        {
+            if (item.Id > 0)
+                return $"ID:{item.Id}";
+
+            return string.Join("|",
+                item.Restnummer ?? string.Empty,
+                item.AuftragNr ?? string.Empty,
+                item.MaterialArt ?? string.Empty,
+                item.Legierung ?? string.Empty,
+                item.Form ?? string.Empty,
+                item.Mass ?? string.Empty,
+                item.Staerke.ToString(CultureInfo.InvariantCulture));
         }
 
         private static bool MatchesSelection(string? source, string filter)

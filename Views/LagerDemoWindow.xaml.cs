@@ -18,6 +18,12 @@ namespace MaterialManager_V01.Views
 {
     public partial class LagerDemoWindow : Window, INotifyPropertyChanged
     {
+        private sealed class MaterialSelectionSnapshot
+        {
+            public HashSet<string> CheckedKeys { get; } = new(StringComparer.Ordinal);
+            public string? SelectedKey { get; set; }
+        }
+
         private List<MaterialItem> _alleMaterialien = new();
         private DateTime _lastAutoReloadUtc = DateTime.MinValue;
         private DateTime _lastObservedMaterialWriteUtc = DateTime.MinValue;
@@ -90,6 +96,9 @@ namespace MaterialManager_V01.Views
             if (!IsLoaded)
                 return;
 
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                return;
+
             var materialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
             var auftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
             var hasChanged = materialWriteUtc > _lastObservedMaterialWriteUtc || auftraegeWriteUtc > _lastObservedAuftraegeWriteUtc;
@@ -116,11 +125,11 @@ namespace MaterialManager_V01.Views
 
             var version = ++_autoSyncStatusVersion;
             AutoSyncStatusTextBlock.Text = $"Daten automatisch aktualisiert ({DateTime.Now:HH:mm:ss})";
-            AutoSyncStatusTextBlock.Visibility = Visibility.Visible;
+            AutoSyncStatusTextBlock.Opacity = 1;
 
             await Task.Delay(2500);
             if (version == _autoSyncStatusVersion)
-                AutoSyncStatusTextBlock.Visibility = Visibility.Collapsed;
+                AutoSyncStatusTextBlock.Opacity = 0;
         }
 
         private void RefreshLicenseBanner()
@@ -175,16 +184,63 @@ namespace MaterialManager_V01.Views
 
         private void LoadMaterials()
         {
+            var selectionSnapshot = CaptureMaterialSelection();
+
             try
             {
                 _alleMaterialien = MaterialDataService.LoadAllMaterials();
                 RefreshManualFilterOptions();
                 ApplyFilter();
+                RestoreMaterialSelection(selectionSnapshot);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Laden der Materialien:\n{ex.Message}", "Lager", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private MaterialSelectionSnapshot CaptureMaterialSelection()
+        {
+            var snapshot = new MaterialSelectionSnapshot();
+
+            foreach (var item in GefilterteMaterialien.Where(m => m.IsSelected))
+                snapshot.CheckedKeys.Add(GetMaterialSelectionKey(item));
+
+            if (MaterialGrid?.SelectedItem is MaterialItem selectedItem)
+                snapshot.SelectedKey = GetMaterialSelectionKey(selectedItem);
+
+            return snapshot;
+        }
+
+        private void RestoreMaterialSelection(MaterialSelectionSnapshot snapshot)
+        {
+            MaterialItem? selectedItem = null;
+
+            foreach (var item in GefilterteMaterialien)
+            {
+                var key = GetMaterialSelectionKey(item);
+                item.IsSelected = snapshot.CheckedKeys.Contains(key);
+                if (snapshot.SelectedKey == key)
+                    selectedItem = item;
+            }
+
+            if (MaterialGrid != null)
+                MaterialGrid.SelectedItem = selectedItem ?? GefilterteMaterialien.FirstOrDefault(m => m.IsSelected);
+        }
+
+        private static string GetMaterialSelectionKey(MaterialItem item)
+        {
+            if (item.Id > 0)
+                return $"ID:{item.Id}";
+
+            return string.Join("|",
+                item.Restnummer ?? string.Empty,
+                item.AuftragNr ?? string.Empty,
+                item.MaterialArt ?? string.Empty,
+                item.Legierung ?? string.Empty,
+                item.Form ?? string.Empty,
+                item.Mass ?? string.Empty,
+                item.Staerke.ToString(CultureInfo.InvariantCulture));
         }
 
         private static string NormalizeFilterValue(string? value)
