@@ -123,9 +123,9 @@ namespace MaterialManager_V01
                 ws.Cell(r, 8).Value = m.Stueckzahl;
                 ws.Cell(r, 9).Value = Math.Round(m.GewichtKg, 2);
                 ws.Cell(r, 10).Value = m.Restnummer;
-                ws.Cell(r, 11).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 11).Value = m.Datum?.ToString("dd.MM.yyyy HH:mm:ss") ?? "";
                 ws.Cell(r, 12).Value = m.Lagerort;
-                ws.Cell(r, 13).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 13).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy HH:mm:ss") ?? "";
                 ws.Cell(r, 14).Value = m.AuftragNr;
                 ws.Cell(r, 15).Value = m.Lieferant;
                 ws.Cell(r, 16).Value = m.LieferscheinNr;

@@ -647,15 +647,17 @@ namespace MaterialManager_V01.Views
 
             if (dlg.DeleteMaterialFromLager)
             {
-                var confirm = MessageBox.Show(
+                var confirmDialog = new BestaetigungsDialog(
+                    "Material aus dem Lager entfernen",
                     items.Count == 1
                         ? "Material nach Eintrag-Löschung wirklich aus dem Lager entfernen?"
                         : $"{items.Count} Materialien nach Eintrag-Löschung wirklich aus dem Lager entfernen?",
-                    "Lager",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                    confirmText: "Entfernen",
+                    cancelText: "Abbrechen",
+                    confirmColorHex: "#8B1E1E")
+                { Owner = this };
 
-                if (confirm != MessageBoxResult.Yes)
+                if (confirmDialog.ShowDialog() != true)
                     return;
 
                 PushUndoSnapshot(items.Count == 1 ? "Eintrag löschen + Material löschen" : "Einträge löschen + Materialien löschen");
@@ -690,15 +692,17 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            var confirm = MessageBox.Show(
+            var confirmDialog = new BestaetigungsDialog(
+                "Reservierung global aufheben",
                 items.Count == 1
                     ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' global aufheben?"
                     : $"Reservierung für {items.Count} markierte Materialien global aufheben?",
-                "Lager",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                confirmText: "Aufheben",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#1976D2")
+            { Owner = this };
 
-            if (confirm != MessageBoxResult.Yes)
+            if (confirmDialog.ShowDialog() != true)
                 return;
 
             PushUndoSnapshot(items.Count == 1 ? "Reservierung global aufheben" : "Reservierungen global aufheben");
@@ -731,15 +735,15 @@ namespace MaterialManager_V01.Views
                 {
                     if (actionDialog.SelectedAction == ReservierungAufhebenAktion.Bearbeiten)
                     {
-                        var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
-                        dlg.SetEditMode(releasedItem);
-                        if (dlg.ShowDialog() == true)
+                        var editDialog = new MaterialDialog(_alleMaterialien) { Owner = this };
+                        editDialog.SetEditMode(releasedItem);
+                        if (editDialog.ShowDialog() == true)
                         {
                             var index = _alleMaterialien.IndexOf(releasedItem);
                             if (index >= 0)
                             {
-                                dlg.Material.IsSelected = false;
-                                _alleMaterialien[index] = dlg.Material;
+                                editDialog.Material.IsSelected = false;
+                                _alleMaterialien[index] = editDialog.Material;
                             }
                         }
                     }
@@ -748,6 +752,35 @@ namespace MaterialManager_V01.Views
                         _alleMaterialien.Remove(releasedItem);
                     }
                 }
+            }
+
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
+        {
+            var items = GetMarkedMaterials();
+            if (items.Count == 0)
+                return;
+
+            var confirmDialog = new BestaetigungsDialog(
+                "Material löschen",
+                items.Count == 1
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
+                confirmText: "Löschen",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#8B1E1E")
+            { Owner = this };
+
+            if (confirmDialog.ShowDialog() != true)
+                return;
+
+            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
+            foreach (var item in items)
+            {
+                _alleMaterialien.Remove(item);
             }
 
             SaveAllMaterials();
@@ -763,7 +796,6 @@ namespace MaterialManager_V01.Views
                 ? item.PdfPfadAngefangeneTafel
                 : item.PdfPfad;
 
-            // Prüfe ob PDF vorhanden ist und zeige PDF-Dialog
             if (!string.IsNullOrWhiteSpace(pdfPfad) && System.IO.File.Exists(pdfPfad))
             {
                 var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
@@ -771,7 +803,6 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            // Sonst öffne Bearbeitungs-Dialog
             OnEditMaterialClick(sender, null);
         }
 
@@ -829,33 +860,6 @@ namespace MaterialManager_V01.Views
                 child = System.Windows.Media.VisualTreeHelper.GetParent(child);
             }
             return null;
-        }
-
-        private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
-        {
-            var items = GetMarkedMaterials();
-            if (items.Count == 0)
-                return;
-
-            var confirm = MessageBox.Show(
-                items.Count == 1
-                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
-                    : $"{items.Count} markierte Materialien wirklich löschen?",
-                "Lager",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (confirm != MessageBoxResult.Yes)
-                return;
-
-            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
-            foreach (var item in items)
-            {
-                _alleMaterialien.Remove(item);
-            }
-
-            SaveAllMaterials();
-            LoadMaterials();
         }
 
         private void OnShelfUtilizationClick(object sender, RoutedEventArgs e)
