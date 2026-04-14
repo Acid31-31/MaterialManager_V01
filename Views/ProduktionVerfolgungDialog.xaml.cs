@@ -143,6 +143,8 @@ namespace MaterialManager_V01.Views
                     existingAuftrag.ProduktionStartDatum = _auftrag.ProduktionStartDatum;
                     existingAuftrag.ProduktionEndDatum = _auftrag.ProduktionEndDatum;
                     existingAuftrag.Status = _auftrag.Status;
+                    existingAuftrag.PdfPfad = _auftrag.PdfPfad;
+                    existingAuftrag.PdfPfadAngefangeneTafel = _auftrag.PdfPfadAngefangeneTafel;
                     existingAuftrag.GeaendertAm = DateTime.Now;
                     existingAuftrag.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
                     context.SaveChanges();
@@ -196,6 +198,7 @@ namespace MaterialManager_V01.Views
             if (dlg.ShowDialog() != true)
                 return;
 
+            var archivPdfPfad = AuftragArchivService.TryArchivePdfForOrder(orderNo, dlg.FileName, _ausgewaehlteKalenderWoche, _aktuellesJahr) ?? dlg.FileName;
             var materials = MaterialDataService.LoadAllMaterials();
             var matched = materials
                 .Where(m => string.Equals((m.AuftragNr ?? string.Empty).Trim(), orderNo, StringComparison.OrdinalIgnoreCase))
@@ -209,18 +212,16 @@ namespace MaterialManager_V01.Views
 
             foreach (var item in matched)
             {
-                if (string.IsNullOrWhiteSpace(item.PdfPfad))
-                    item.PdfPfad = dlg.FileName;
-
+                item.PdfPfad = archivPdfPfad;
                 item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
                 item.AenderungsDatum = DateTime.Now;
             }
 
-            _auftrag.PdfPfad = dlg.FileName;
+            _auftrag.PdfPfad = archivPdfPfad;
             SaveChanges();
             MaterialDataService.SaveAllMaterials(materials);
 
-            MessageBox.Show("PDF wurde für den Auftrag übernommen.", "Auftrag", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("PDF wurde für den Auftrag übernommen und im KW-Archiv abgelegt.", "Auftrag", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnDeleteOrderClick(object sender, RoutedEventArgs e)

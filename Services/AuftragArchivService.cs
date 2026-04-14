@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using MaterialManager_V01.Models;
 
 namespace MaterialManager_V01.Services
@@ -25,70 +26,20 @@ namespace MaterialManager_V01.Services
 
                 CleanupArchivesOlderThan12Months(basisPfad);
 
-                var safeAuftrag = SanitizePathSegment(auftrag.Auftragsnummer);
-                var zielOrdner = Path.Combine(basisPfad, jahr.ToString(), $"KW_{kalenderWoche:D2}", safeAuftrag);
-                var pdfOrdner = Path.Combine(zielOrdner, "PDF");
-                Directory.CreateDirectory(zielOrdner);
-                Directory.CreateDirectory(pdfOrdner);
+                var kwOrdner = GetKwFolderPath(jahr, kalenderWoche);
+                Directory.CreateDirectory(kwOrdner);
 
                 var materialien = MaterialDataService.LoadAllMaterials()
                     .Where(m => string.Equals(m.AuftragNr, auftrag.Auftragsnummer, StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-                var archivDatensatz = new
-                {
-                    Auftrag = new
-                    {
-                        auftrag.Id,
-                        auftrag.Auftragsnummer,
-                        Status = auftrag.Status.ToString(),
-                        auftrag.ErstelltAm,
-                        auftrag.GeaendertAm,
-                        auftrag.AngelegtVon,
-                        auftrag.GeaendertVon,
-                        auftrag.MaterialPositionen,
-                        auftrag.GesamtStueckzahl,
-                        auftrag.GesamtGewichtKg,
-                        auftrag.ProduktionStartDatum,
-                        auftrag.ProduktionEndDatum,
-                        ProduktionsDauer = auftrag.ProduktionsDauer
-                    },
-                    ArchivInfo = new
-                    {
-                        ArchiviertAm = DateTime.Now,
-                        ArchiviertVon = OperatorIdentityService.CurrentOperatorName,
-                        Jahr = jahr,
-                        KalenderWoche = kalenderWoche
-                    },
-                    Materialien = materialien.Select(m => new
-                    {
-                        m.MaterialArt,
-                        m.Legierung,
-                        m.Form,
-                        m.Staerke,
-                        m.Mass,
-                        m.Stueckzahl,
-                        m.Lagerort,
-                        m.Restnummer,
-                        m.PdfPfad,
-                        m.PdfPfadAngefangeneTafel
-                    })
-                };
-
-                var jsonPath = Path.Combine(zielOrdner, "auftrag.json");
-                File.WriteAllText(jsonPath, JsonSerializer.Serialize(archivDatensatz, new JsonSerializerOptions { WriteIndented = true }));
-
                 var pdfQuellen = CollectPdfPaths(auftrag, materialien);
                 var kopiertePdf = 0;
                 foreach (var quelle in pdfQuellen)
                 {
-                    if (!File.Exists(quelle))
-                        continue;
-
-                    var dateiName = Path.GetFileName(quelle);
-                    var zielDatei = GetUniqueTargetPath(Path.Combine(pdfOrdner, dateiName));
-                    File.Copy(quelle, zielDatei, overwrite: false);
-                    kopiertePdf++;
+                    var archivPfad = TryArchivePdfForOrder(auftrag.Auftragsnummer, quelle, kalenderWoche, jahr);
+                    if (!string.IsNullOrWhiteSpace(archivPfad))
+                        kopiertePdf++;
                 }
 
                 AuditLogService.LogAction(
@@ -100,12 +51,80 @@ namespace MaterialManager_V01.Services
                     newValue: $"Archiviert in KW {kalenderWoche:D2}/{jahr}, PDFs: {kopiertePdf}",
                     reason: "Auftrag abgeschlossen und archiviert");
 
-                return (true, $"Archivierung abgeschlossen: {kopiertePdf} PDF-Datei(en) kopiert.");
+                return (true, $"Archivierung abgeschlossen: {kopiertePdf} PDF-Datei(en) im KW-Ordner bereitgestellt.");
             }
             catch (Exception ex)
             {
                 return (false, $"Archivierung fehlgeschlagen: {ex.Message}");
             }
+        }
+
+        public static string ResolveAccessiblePdfPath(string? auftragsnummer, string? currentPdfPath)
+        {
+            if (!string.IsNullOrWhiteSpace(currentPdfPath) && File.Exists(currentPdfPath))
+                return currentPdfPath;
+
+            return TryFindPdfForAuftrag(auftragsnummer) ?? (currentPdfPath ?? string.Empty);
+        }
+
+        public static string? TryFindPdfForAuftrag(string? auftragsnummer)
+        {
+            var tokens = BuildPdfSearchTokens(auftragsnummer);
+            if (tokens.Count == 0)
+                return null;
+
+            var basisPfad = ResolveArchiveBasePath();
+            if (string.IsNullOrWhiteSpace(basisPfad) || !Directory.Exists(basisPfad))
+                return null;
+
+            try
+            {
+                var searchRoot = Path.Combine(basisPfad, DateTime.Now.Year.ToString());
+                if (!Directory.Exists(searchRoot))
+                    searchRoot = basisPfad;
+
+                return Directory
+                    .EnumerateFiles(searchRoot, "*.pdf", SearchOption.AllDirectories)
+                    .Select(path => new
+                    {
+                        Path = path,
+                        Name = Path.GetFileNameWithoutExtension(path) ?? string.Empty
+                    })
+                    .Select(x => new
+                    {
+                        x.Path,
+                        x.Name,
+                        Score = GetPdfMatchScore(x.Name, tokens)
+                    })
+                    .Where(x => x.Score > 0)
+                    .OrderByDescending(x => x.Score)
+                    .ThenBy(x => x.Name.Length)
+                    .Select(x => x.Path)
+                    .FirstOrDefault();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static string? TryArchivePdfForOrder(string? auftragsnummer, string? sourcePdfPath, int kalenderWoche, int jahr)
+        {
+            if (string.IsNullOrWhiteSpace(auftragsnummer) || string.IsNullOrWhiteSpace(sourcePdfPath) || !File.Exists(sourcePdfPath))
+                return null;
+
+            var kwOrdner = GetKwFolderPath(jahr, kalenderWoche);
+            Directory.CreateDirectory(kwOrdner);
+
+            var sourceFullPath = Path.GetFullPath(sourcePdfPath);
+            var sourceDir = Path.GetDirectoryName(sourceFullPath) ?? string.Empty;
+            if (string.Equals(sourceDir.TrimEnd(Path.DirectorySeparatorChar), kwOrdner.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
+                return sourceFullPath;
+
+            var archivedFileName = BuildArchivedPdfFileName(auftragsnummer, sourceFullPath);
+            var targetPath = GetUniqueTargetPath(Path.Combine(kwOrdner, archivedFileName));
+            File.Copy(sourceFullPath, targetPath, overwrite: false);
+            return targetPath;
         }
 
         public static List<ArchivAuftragEintrag> GetArchivedOrdersForWeek(int jahr, int kalenderWoche)
@@ -114,7 +133,7 @@ namespace MaterialManager_V01.Services
             if (string.IsNullOrWhiteSpace(basisPfad))
                 return new List<ArchivAuftragEintrag>();
 
-            var kwFolder = Path.Combine(basisPfad, jahr.ToString(), $"KW_{kalenderWoche:D2}");
+            var kwFolder = GetKwFolderPath(jahr, kalenderWoche);
             if (!Directory.Exists(kwFolder))
                 return new List<ArchivAuftragEintrag>();
 
@@ -155,6 +174,34 @@ namespace MaterialManager_V01.Services
                 });
             }
 
+            var flatPdfGroups = Directory.EnumerateFiles(kwFolder, "*.pdf", SearchOption.TopDirectoryOnly)
+                .GroupBy(path => ExtractOrderNumberFromArchivedPdf(Path.GetFileNameWithoutExtension(path) ?? string.Empty), StringComparer.OrdinalIgnoreCase)
+                .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+                .ToList();
+
+            foreach (var group in flatPdfGroups)
+            {
+                var files = group.ToList();
+                var existing = result.FirstOrDefault(x => string.Equals(x.Auftragsnummer, group.Key, StringComparison.OrdinalIgnoreCase));
+                if (existing != null)
+                {
+                    existing.ErstePdfPfad = string.IsNullOrWhiteSpace(existing.ErstePdfPfad) ? files[0] : existing.ErstePdfPfad;
+                    existing.PdfAnzahl += files.Count;
+                    existing.ArchiviertAm = files.Max(File.GetLastWriteTime);
+                    continue;
+                }
+
+                result.Add(new ArchivAuftragEintrag
+                {
+                    Auftragsnummer = group.Key,
+                    OrdnerPfad = kwFolder,
+                    AuftragJsonPfad = string.Empty,
+                    ErstePdfPfad = files.FirstOrDefault() ?? string.Empty,
+                    PdfAnzahl = files.Count,
+                    ArchiviertAm = files.Max(File.GetLastWriteTime)
+                });
+            }
+
             return result
                 .OrderByDescending(x => x.ArchiviertAm)
                 .ToList();
@@ -167,6 +214,11 @@ namespace MaterialManager_V01.Services
                 return basisPfad;
 
             return Path.Combine(PathService.DataDirectory, "Auftragsarchiv");
+        }
+
+        private static string GetKwFolderPath(int jahr, int kalenderWoche)
+        {
+            return Path.Combine(ResolveArchiveBasePath(), jahr.ToString(), $"KW_{kalenderWoche:D2}");
         }
 
         private static List<string> CollectPdfPaths(Auftrag auftrag, List<MaterialItem> materialien)
@@ -189,6 +241,75 @@ namespace MaterialManager_V01.Services
             return pfade
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
+        }
+
+        private static string BuildArchivedPdfFileName(string auftragsnummer, string sourcePdfPath)
+        {
+            var prefix = SanitizePathSegment((auftragsnummer ?? string.Empty).Trim());
+            var originalName = SanitizePathSegment(Path.GetFileName(sourcePdfPath));
+            return originalName.StartsWith(prefix + "__", StringComparison.OrdinalIgnoreCase)
+                ? originalName
+                : $"{prefix}__{originalName}";
+        }
+
+        private static string ExtractOrderNumberFromArchivedPdf(string fileNameWithoutExtension)
+        {
+            var markerIndex = fileNameWithoutExtension.IndexOf("__", StringComparison.OrdinalIgnoreCase);
+            return markerIndex > 0 ? fileNameWithoutExtension[..markerIndex] : string.Empty;
+        }
+
+        private static List<string> BuildPdfSearchTokens(string? auftragsnummer)
+        {
+            var raw = (auftragsnummer ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(raw))
+                return new List<string>();
+
+            var withoutLst = Regex.Replace(raw, @"(?:[\s\-_]+)?LST$", string.Empty, RegexOptions.IgnoreCase).Trim().Trim('-', '_');
+            var parts = Regex.Split(withoutLst, @"[\s\-_]+")
+                .Where(p => !string.IsNullOrWhiteSpace(p) && !string.Equals(p, "LST", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            var tokens = new List<string> { raw, withoutLst };
+            if (parts.Count > 0)
+                tokens.Add(parts[^1]);
+            if (parts.Count > 1)
+                tokens.Add(string.Join(string.Empty, parts.Skip(1)));
+
+            return tokens
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        private static int GetPdfMatchScore(string fileNameWithoutExtension, List<string> tokens)
+        {
+            var normalizedFileName = NormalizeSearchText(fileNameWithoutExtension);
+            var bestScore = 0;
+
+            foreach (var token in tokens)
+            {
+                var normalizedToken = NormalizeSearchText(token);
+                if (string.IsNullOrWhiteSpace(normalizedToken))
+                    continue;
+
+                if (string.Equals(normalizedFileName, normalizedToken, StringComparison.OrdinalIgnoreCase))
+                    bestScore = Math.Max(bestScore, 500);
+                else if (normalizedFileName.StartsWith(normalizedToken, StringComparison.OrdinalIgnoreCase))
+                    bestScore = Math.Max(bestScore, 400);
+                else if (normalizedFileName.Contains(normalizedToken, StringComparison.OrdinalIgnoreCase))
+                    bestScore = Math.Max(bestScore, 300);
+            }
+
+            return bestScore;
+        }
+
+        private static string NormalizeSearchText(string value)
+        {
+            return new string((value ?? string.Empty)
+                .Where(char.IsLetterOrDigit)
+                .ToArray())
+                .ToUpperInvariant();
         }
 
         private static string GetUniqueTargetPath(string targetPath)
@@ -227,7 +348,6 @@ namespace MaterialManager_V01.Services
                 }
                 catch
                 {
-                    // bewusst ignorieren, damit Archivierung nicht abbricht
                 }
             }
         }

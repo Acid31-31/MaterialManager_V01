@@ -722,6 +722,7 @@ namespace MaterialManager_V01.Views
                 ? auftrag.PdfPfadAngefangeneTafel
                 : auftrag.PdfPfad;
 
+            pdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, pdfPfad);
             OpenPdfPreview(pdfPfad);
             e.Handled = true;
         }
@@ -882,16 +883,17 @@ namespace MaterialManager_V01.Views
             }
 
             var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
-
-            var confirm = MessageBox.Show(
+            var confirmDialog = new BestaetigungsDialog(
+                "Reservierung aufheben",
                 items.Count == 1
                     ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' aufheben?"
                     : $"Reservierung für {items.Count} markierte Materialien aufheben?",
-                "Auftragssteuerung",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                confirmText: "Aufheben",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#1976D2")
+            { Owner = this };
 
-            if (confirm != MessageBoxResult.Yes)
+            if (confirmDialog.ShowDialog() != true)
                 return;
 
             PushUndoSnapshot(items.Count == 1 ? "Reservierung aufheben" : "Reservierungen aufheben");
@@ -957,16 +959,17 @@ namespace MaterialManager_V01.Views
             }
 
             var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
-
-            var confirm = MessageBox.Show(
+            var confirmDialog = new BestaetigungsDialog(
+                "Produktion abschließen",
                 items.Count == 1
-                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchter Material entfernen?"
+                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchtes Material entfernen?"
                     : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchtes Material entfernen?",
-                "Auftragssteuerung",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                confirmText: "Abschließen",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#8E24AA")
+            { Owner = this };
 
-            if (confirm != MessageBoxResult.Yes)
+            if (confirmDialog.ShowDialog() != true)
                 return;
 
             PushUndoSnapshot(items.Count == 1 ? "Produktion abschließen" : "Produktionen abschließen");
@@ -989,51 +992,34 @@ namespace MaterialManager_V01.Views
             LoadMaterials();
         }
 
-        private MaterialItem? FindAvailableMaterial(MaterialItem bookedItem)
+        private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
         {
-            return _alleMaterialien.FirstOrDefault(m =>
-                string.IsNullOrWhiteSpace(m.AuftragNr) &&
-                !IsAngefangeneTafel(m) &&
-                m.MaterialArt == bookedItem.MaterialArt &&
-                m.Legierung == bookedItem.Legierung &&
-                m.Oberflaeche == bookedItem.Oberflaeche &&
-                m.Guete == bookedItem.Guete &&
-                m.Form == bookedItem.Form &&
-                Math.Abs(m.Staerke - bookedItem.Staerke) < 0.0001 &&
-                m.Mass == bookedItem.Mass);
-        }
-
-        private static bool IsAngefangeneTafel(MaterialItem item)
-        {
-            return item.Kategorie == MaterialKategorie.Blech
-                && (string.Equals(item.Lagerort, "Angefangene Tafel", StringComparison.OrdinalIgnoreCase)
-                    || !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel));
-        }
-
-        private static MaterialItem CloneMaterial(MaterialItem source)
-        {
-            return new MaterialItem
+            var items = GetMarkedMaterials();
+            if (items.Count == 0)
             {
-                MaterialArt = source.MaterialArt,
-                Legierung = source.Legierung,
-                Oberflaeche = source.Oberflaeche,
-                Guete = source.Guete,
-                Form = source.Form,
-                Staerke = source.Staerke,
-                Mass = source.Mass,
-                Stueckzahl = source.Stueckzahl,
-                Restnummer = source.Restnummer,
-                Datum = source.Datum,
-                AenderungsDatum = source.AenderungsDatum,
-                Lagerort = source.Lagerort,
-                AngelegtVon = source.AngelegtVon,
-                GeaendertVon = source.GeaendertVon,
-                Lieferant = source.Lieferant,
-                LieferscheinNr = source.LieferscheinNr,
-                AuftragNr = source.AuftragNr,
-                PdfPfad = source.PdfPfad,
-                PdfPfadAngefangeneTafel = source.PdfPfadAngefangeneTafel
-            };
+                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirmDialog = new BestaetigungsDialog(
+                "Material löschen",
+                items.Count == 1
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
+                confirmText: "Löschen",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#8B1E1E")
+            { Owner = this };
+
+            if (confirmDialog.ShowDialog() != true)
+                return;
+
+            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
+            foreach (var item in items.ToList())
+                _alleMaterialien.Remove(item);
+
+            SaveAllMaterials();
+            LoadMaterials();
         }
 
         private void OnCloseClick(object sender, RoutedEventArgs e)
@@ -1237,34 +1223,6 @@ namespace MaterialManager_V01.Views
             OnCloseClick(sender, e);
         }
 
-        private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
-        {
-            var items = GetMarkedMaterials();
-            if (items.Count == 0)
-            {
-                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            var confirm = MessageBox.Show(
-                items.Count == 1
-                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
-                    : $"{items.Count} markierte Materialien wirklich löschen?",
-                "Auftragssteuerung",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (confirm != MessageBoxResult.Yes)
-                return;
-
-            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
-            foreach (var item in items.ToList())
-                _alleMaterialien.Remove(item);
-
-            SaveAllMaterials();
-            LoadMaterials();
-        }
-
         private string? WaehlePdfDatei(string titel, string vorhandenerPfad = "")
         {
             var dlg = new OpenFileDialog
@@ -1311,10 +1269,14 @@ namespace MaterialManager_V01.Views
             if (string.IsNullOrWhiteSpace(auftragNr) || menge <= 0 || menge > item.Stueckzahl)
                 return;
 
+            var archivedPdfPfad = string.IsNullOrWhiteSpace(pdfPfad)
+                ? string.Empty
+                : AuftragArchivService.TryArchivePdfForOrder(auftragNr.Trim(), pdfPfad.Trim(), _ausgewaehlteKalenderWoche, _aktuellesJahr) ?? pdfPfad.Trim();
+
             var bookedItem = CloneMaterial(item);
             bookedItem.Stueckzahl = menge;
             bookedItem.AuftragNr = auftragNr.Trim();
-            bookedItem.PdfPfad = string.IsNullOrWhiteSpace(pdfPfad) ? bookedItem.PdfPfad : pdfPfad.Trim();
+            bookedItem.PdfPfad = string.IsNullOrWhiteSpace(archivedPdfPfad) ? bookedItem.PdfPfad : archivedPdfPfad;
             bookedItem.Lagerort = "Gebucht";
             bookedItem.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
             bookedItem.AenderungsDatum = DateTime.Now;
@@ -1694,6 +1656,64 @@ namespace MaterialManager_V01.Views
         private static double GetMassArea(double minSide, double maxSide)
         {
             return minSide * maxSide;
+        }
+
+        private MaterialItem? FindAvailableMaterial(MaterialItem bookedItem)
+        {
+            return _alleMaterialien.FirstOrDefault(m =>
+                string.IsNullOrWhiteSpace(m.AuftragNr) &&
+                !IsAngefangeneTafel(m) &&
+                m.MaterialArt == bookedItem.MaterialArt &&
+                m.Legierung == bookedItem.Legierung &&
+                m.Oberflaeche == bookedItem.Oberflaeche &&
+                m.Guete == bookedItem.Guete &&
+                m.Form == bookedItem.Form &&
+                Math.Abs(m.Staerke - bookedItem.Staerke) < 0.0001 &&
+                m.Mass == bookedItem.Mass);
+        }
+
+        private static bool IsAngefangeneTafel(MaterialItem item)
+        {
+            return item.Kategorie == MaterialKategorie.Blech
+                && (string.Equals(item.Lagerort, "Angefangene Tafel", StringComparison.OrdinalIgnoreCase)
+                    || !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel));
+        }
+
+        private static MaterialItem CloneMaterial(MaterialItem source)
+        {
+            return new MaterialItem
+            {
+                Id = source.Id,
+                Kategorie = source.Kategorie,
+                MaterialArt = source.MaterialArt,
+                Legierung = source.Legierung,
+                Oberflaeche = source.Oberflaeche,
+                Guete = source.Guete,
+                SuchTrefferArt = source.SuchTrefferArt,
+                Form = source.Form,
+                Staerke = source.Staerke,
+                Mass = source.Mass,
+                Durchmesser = source.Durchmesser,
+                Laenge = source.Laenge,
+                ProfilTyp = source.ProfilTyp,
+                ProfilHoehe = source.ProfilHoehe,
+                ProfilBreite = source.ProfilBreite,
+                Stueckzahl = source.Stueckzahl,
+                Restnummer = source.Restnummer,
+                Datum = source.Datum,
+                AenderungsDatum = source.AenderungsDatum,
+                Lagerort = source.Lagerort,
+                AngelegtVon = source.AngelegtVon,
+                GeaendertVon = source.GeaendertVon,
+                Lieferant = source.Lieferant,
+                LieferscheinNr = source.LieferscheinNr,
+                AuftragNr = source.AuftragNr,
+                PdfPfad = source.PdfPfad,
+                PdfPfadAngefangeneTafel = source.PdfPfadAngefangeneTafel,
+                PreisProKg = source.PreisProKg,
+                IsHighlighted = source.IsHighlighted,
+                IsSelected = source.IsSelected
+            };
         }
     }
 

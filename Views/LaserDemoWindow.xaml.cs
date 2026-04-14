@@ -559,15 +559,17 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            var confirm = MessageBox.Show(
+            var confirmDialog = new BestaetigungsDialog(
+                "Reserviertes Material löschen",
                 items.Count == 1
                     ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
                     : $"{items.Count} reservierte Materialien wirklich löschen?",
-                "Laser",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                confirmText: "Löschen",
+                cancelText: "Abbrechen",
+                confirmColorHex: "#8B1E1E")
+            { Owner = this };
 
-            if (confirm != MessageBoxResult.Yes)
+            if (confirmDialog.ShowDialog() != true)
                 return;
 
             PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material löschen" : "Reservierte Materialien löschen");
@@ -689,6 +691,7 @@ namespace MaterialManager_V01.Views
                 ? auftrag.PdfPfadAngefangeneTafel
                 : auftrag.PdfPfad;
 
+            pdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, pdfPfad);
             OpenPdfPreview(pdfPfad, "Diesem Auftrag ist keine Original-PDF zugeordnet.");
             e.Handled = true;
         }
@@ -699,6 +702,7 @@ namespace MaterialManager_V01.Views
                 ? auftrag.PdfPfadAngefangeneTafel
                 : auftrag.PdfPfad;
 
+            pdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, pdfPfad);
             OpenPdfPreview(pdfPfad, "Diesem Auftrag ist keine PDF-Datei zugeordnet.");
         }
 

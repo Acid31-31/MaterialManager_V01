@@ -77,6 +77,17 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            if (!string.IsNullOrWhiteSpace(entry.ErstePdfPfad) && File.Exists(entry.ErstePdfPfad))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = $"/select,\"{entry.ErstePdfPfad}\"",
+                    UseShellExecute = true
+                });
+                return;
+            }
+
             if (!Directory.Exists(entry.OrdnerPfad))
             {
                 MessageBox.Show("Archivordner wurde nicht gefunden.", "Archiv", MessageBoxButton.OK, MessageBoxImage.Warning);

@@ -25,6 +25,7 @@ namespace MaterialManager_V01.Services
             foreach (var auftrag in list)
             {
                 auftrag.Arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftrag.Auftragsnummer);
+                auftrag.PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, auftrag.PdfPfad);
                 auftrag.PdfPfadKantzeichnung = string.Empty;
             }
 
