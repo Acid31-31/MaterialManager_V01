@@ -108,6 +108,7 @@ namespace MaterialManager_V01.Services
 
             db.Materialien.RemoveRange(db.Materialien);
             db.SaveChanges();
+            db.ChangeTracker.Clear();
 
             db.Materialien.AddRange(snapshot.Select(CloneMaterial));
             db.SaveChanges();
