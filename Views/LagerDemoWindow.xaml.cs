@@ -725,36 +725,28 @@ namespace MaterialManager_V01.Views
 
             if (releasedItem != null)
             {
-                var action = MessageBox.Show(
-                    "Reservierung wurde aufgehoben.\n\nJa = Material bearbeiten\nNein = Material löschen\nAbbrechen = nur Reservierung aufheben",
-                    "Lager",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
-
-                if (action == MessageBoxResult.Yes)
+                var materialText = $"{releasedItem.MaterialArt} {releasedItem.Mass}".Trim();
+                var actionDialog = new ReservierungAufhebenAktionDialog(materialText) { Owner = this };
+                if (actionDialog.ShowDialog() == true)
                 {
-                    var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
-                    dlg.SetEditMode(releasedItem);
-                    if (dlg.ShowDialog() == true)
+                    if (actionDialog.SelectedAction == ReservierungAufhebenAktion.Bearbeiten)
                     {
-                        var index = _alleMaterialien.IndexOf(releasedItem);
-                        if (index >= 0)
+                        var dlg = new MaterialDialog(_alleMaterialien) { Owner = this };
+                        dlg.SetEditMode(releasedItem);
+                        if (dlg.ShowDialog() == true)
                         {
-                            dlg.Material.IsSelected = false;
-                            _alleMaterialien[index] = dlg.Material;
+                            var index = _alleMaterialien.IndexOf(releasedItem);
+                            if (index >= 0)
+                            {
+                                dlg.Material.IsSelected = false;
+                                _alleMaterialien[index] = dlg.Material;
+                            }
                         }
                     }
-                }
-                else if (action == MessageBoxResult.No)
-                {
-                    var deleteConfirm = MessageBox.Show(
-                        $"Material '{releasedItem.MaterialArt} {releasedItem.Mass}' wirklich löschen?",
-                        "Lager",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-
-                    if (deleteConfirm == MessageBoxResult.Yes)
+                    else if (actionDialog.SelectedAction == ReservierungAufhebenAktion.Loeschen)
+                    {
                         _alleMaterialien.Remove(releasedItem);
+                    }
                 }
             }
 
