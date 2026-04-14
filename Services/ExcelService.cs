@@ -45,7 +45,7 @@ namespace MaterialManager_V01
         private static readonly string[] HeaderMaterialien =
         {
             "MaterialArt","Legierung","Oberflaeche","Guete","Form","Staerke","Mass",
-            "Stueckzahl","GewichtKg","Restnummer","Datum","Lagerort","AenderungsDatum","AuftragNr",
+            "Stueckzahl","GewichtKg","Restnummer","Datum","Uhrzeit","Lagerort","AenderungsDatum","AenderungsUhrzeit","AuftragNr",
             "Lieferant","LieferscheinNr","PreisProKg","AngelegtVon","GeaendertVon","PdfPfad","PdfPfadAngefangeneTafel",
             "Kategorie","Durchmesser","Laenge","ProfilTyp","ProfilHoehe","ProfilBreite"
         };
@@ -123,23 +123,25 @@ namespace MaterialManager_V01
                 ws.Cell(r, 8).Value = m.Stueckzahl;
                 ws.Cell(r, 9).Value = Math.Round(m.GewichtKg, 2);
                 ws.Cell(r, 10).Value = m.Restnummer;
-                ws.Cell(r, 11).Value = m.Datum?.ToString("dd.MM.yyyy HH:mm:ss") ?? "";
-                ws.Cell(r, 12).Value = m.Lagerort;
-                ws.Cell(r, 13).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy HH:mm:ss") ?? "";
-                ws.Cell(r, 14).Value = m.AuftragNr;
-                ws.Cell(r, 15).Value = m.Lieferant;
-                ws.Cell(r, 16).Value = m.LieferscheinNr;
-                ws.Cell(r, 17).Value = (double)m.PreisProKg;
-                ws.Cell(r, 18).Value = m.AngelegtVon;
-                ws.Cell(r, 19).Value = m.GeaendertVon;
-                ws.Cell(r, 20).Value = m.PdfPfad;
-                ws.Cell(r, 21).Value = m.PdfPfadAngefangeneTafel;
-                ws.Cell(r, 22).Value = m.Kategorie.ToString();
-                ws.Cell(r, 23).Value = m.Durchmesser;
-                ws.Cell(r, 24).Value = m.Laenge;
-                ws.Cell(r, 25).Value = m.ProfilTyp;
-                ws.Cell(r, 26).Value = m.ProfilHoehe;
-                ws.Cell(r, 27).Value = m.ProfilBreite;
+                ws.Cell(r, 11).Value = m.Datum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 12).Value = m.Datum?.ToString("HH:mm:ss") ?? "";
+                ws.Cell(r, 13).Value = m.Lagerort;
+                ws.Cell(r, 14).Value = m.AenderungsDatum?.ToString("dd.MM.yyyy") ?? "";
+                ws.Cell(r, 15).Value = m.AenderungsDatum?.ToString("HH:mm:ss") ?? "";
+                ws.Cell(r, 16).Value = m.AuftragNr;
+                ws.Cell(r, 17).Value = m.Lieferant;
+                ws.Cell(r, 18).Value = m.LieferscheinNr;
+                ws.Cell(r, 19).Value = (double)m.PreisProKg;
+                ws.Cell(r, 20).Value = m.AngelegtVon;
+                ws.Cell(r, 21).Value = m.GeaendertVon;
+                ws.Cell(r, 22).Value = m.PdfPfad;
+                ws.Cell(r, 23).Value = m.PdfPfadAngefangeneTafel;
+                ws.Cell(r, 24).Value = m.Kategorie.ToString();
+                ws.Cell(r, 25).Value = m.Durchmesser;
+                ws.Cell(r, 26).Value = m.Laenge;
+                ws.Cell(r, 27).Value = m.ProfilTyp;
+                ws.Cell(r, 28).Value = m.ProfilHoehe;
+                ws.Cell(r, 29).Value = m.ProfilBreite;
                 r++;
             }
 
@@ -444,7 +446,7 @@ namespace MaterialManager_V01
                 var rest = GetCell(r, "Restnummer");
                 var datum = ParseDate(GetCell(r, "Datum"));
                 var lager = GetCell(r, "Lagerort");
-                var aenderung = ParseDate(GetCell(r, "AenderungsDatum"));
+                var aenderung = ParseDateTimeFromColumns(GetCell(r, "AenderungsDatum"), GetCell(r, "AenderungsUhrzeit"));
                 var auftragNr = GetCell(r, "AuftragNr");
                 var lieferant = GetCell(r, "Lieferant");
                 var lieferschein = GetCell(r, "LieferscheinNr");
@@ -598,6 +600,18 @@ namespace MaterialManager_V01
         {
             if (string.IsNullOrWhiteSpace(s)) return null;
             return DateTime.TryParse(s, out var d) ? d : (DateTime?)null;
+        }
+
+        private static DateTime? ParseDateTimeFromColumns(string dateText, string timeText)
+        {
+            if (string.IsNullOrWhiteSpace(dateText))
+                return null;
+
+            if (string.IsNullOrWhiteSpace(timeText))
+                return ParseDate(dateText);
+
+            var combined = $"{dateText.Trim()} {timeText.Trim()}";
+            return ParseDate(combined) ?? ParseDate(dateText);
         }
 
         private static bool TryExtractMass(string? mass, out double laenge, out double breite)
