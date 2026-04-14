@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -18,6 +20,7 @@ namespace MaterialManager_V01.Services
     public static class GitHubUpdateService
     {
         private const string LatestReleaseApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases/latest";
+        private const string ReleasesApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/releases?per_page=25";
         private const string LatestReleasePage = "https://github.com/Acid31-31/MaterialManager_V01/releases/latest";
         private const string CompareApiBase = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/compare/";
         private const string CommitsApi = "https://api.github.com/repos/Acid31-31/MaterialManager_V01/commits?per_page=20";
@@ -44,122 +47,59 @@ namespace MaterialManager_V01.Services
 
             try
             {
-                using var response = await Http.GetAsync(LatestReleaseApi);
-                if (!response.IsSuccessStatusCode)
+                var releases = await GetPublishedReleasesAsync();
+                if (releases.Count == 0)
                 {
-                    if (response.StatusCode == HttpStatusCode.Forbidden ||
-                        response.StatusCode == HttpStatusCode.TooManyRequests)
-                    {
-                        var fallback = await TryCheckForUpdatesViaReleasePageAsync(current);
-                        if (fallback != null)
-                            return fallback;
-                    }
-
-                    var msg = $"GitHub-API Fehler: {(int)response.StatusCode}";
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                        msg = "Kein GitHub Release vorhanden. Bitte erst ein Release veröffentlichen.";
-
                     return new UpdateCheckResult
                     {
                         CurrentVersion = current,
                         LatestVersion = current,
                         IsUpdateAvailable = false,
-                        ErrorMessage = msg
+                        ErrorMessage = "Kein GitHub Release vorhanden. Bitte erst ein Release veröffentlichen."
                     };
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
+                var latestRelease = releases[0];
+                var missedReleases = releases
+                    .Where(r => ParseVersion(r.Tag) > ParseVersion(current))
+                    .OrderBy(r => ParseVersion(r.Tag))
+                    .ToList();
 
-                var tag = root.TryGetProperty("tag_name", out var tagProp)
-                    ? (tagProp.GetString() ?? current)
-                    : current;
+                var updateAvailable = missedReleases.Count > 0;
+                SelectBestAsset(latestRelease, out var selectedUrl, out var selectedName, out var selectedType, out var msiUrl);
 
-                var body = root.TryGetProperty("body", out var bodyProp)
-                    ? (bodyProp.GetString() ?? string.Empty)
-                    : string.Empty;
-
-                var htmlUrl = root.TryGetProperty("html_url", out var htmlProp)
-                    ? htmlProp.GetString()
-                    : null;
-
-                string? selectedUrl = null;
-                string? selectedName = null;
-                string? selectedType = null;
-                string? msiUrl = null;
-
-                if (root.TryGetProperty("assets", out var assetsProp) && assetsProp.ValueKind == JsonValueKind.Array)
-                {
-                    string? updateInstallerUrl = null; string? updateInstallerName = null;
-                    string? zipUrl = null; string? zipName = null;
-
-                    foreach (var asset in assetsProp.EnumerateArray())
-                    {
-                        var name = asset.TryGetProperty("name", out var n) ? (n.GetString() ?? string.Empty) : string.Empty;
-                        var url = asset.TryGetProperty("browser_download_url", out var u) ? u.GetString() : null;
-                        if (string.IsNullOrWhiteSpace(url))
-                            continue;
-
-                        if (name.Equals("UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            updateInstallerUrl ??= url;
-                            updateInstallerName ??= name;
-                        }
-                        else if (name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
-                        {
-                            msiUrl ??= url;
-                        }
-                        else if (name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-                        {
-                            zipUrl ??= url;
-                            zipName ??= name;
-                        }
-                    }
-
-                    if (updateInstallerUrl != null)
-                    {
-                        selectedUrl = updateInstallerUrl;
-                        selectedName = updateInstallerName;
-                        selectedType = "update-exe";
-                    }
-                    else if (msiUrl != null)
-                    {
-                        selectedUrl = msiUrl;
-                        selectedName = Path.GetFileName(msiUrl);
-                        selectedType = "msi";
-                    }
-                    else if (zipUrl != null)
-                    {
-                        selectedUrl = zipUrl;
-                        selectedName = zipName;
-                        selectedType = "zip";
-                    }
-                }
-
-                var updateAvailable = ParseVersion(tag) > ParseVersion(current);
-                var changelog = await BuildReadableChangelogAsync(body, current, tag);
-
-                var assetError = selectedUrl == null
-                    ? "Kein UpdateInstaller/MSI/ZIP Asset im Release gefunden."
-                    : null;
+                var changelogSource = BuildCumulativeReleaseBody(missedReleases, current, latestRelease.Tag);
+                var changelog = await BuildReadableChangelogAsync(changelogSource, current, latestRelease.Tag);
 
                 return new UpdateCheckResult
                 {
                     CurrentVersion = current,
-                    LatestVersion = tag,
+                    LatestVersion = latestRelease.Tag,
+                    IsUpdateAvailable = updateAvailable,
                     Changelog = changelog,
                     MsiDownloadUrl = msiUrl,
                     DownloadUrl = selectedUrl,
                     AssetName = selectedName,
                     AssetType = selectedType,
-                    ReleasePageUrl = htmlUrl,
-                    IsUpdateAvailable = updateAvailable,
-                    ErrorMessage = assetError
+                    ReleasePageUrl = latestRelease.HtmlUrl,
+                    ErrorMessage = selectedUrl == null ? "Kein UpdateInstaller/MSI/ZIP Asset im Release gefunden." : null,
+                    MissingReleaseCount = missedReleases.Count,
+                    IsCumulativeUpdate = updateAvailable,
+                    IncludedReleaseTags = missedReleases.Select(r => r.Tag).ToList()
                 };
             }
             catch (Exception ex)
             {
+                try
+                {
+                    var fallback = await TryCheckForUpdatesViaReleasePageAsync(current);
+                    if (fallback != null)
+                        return fallback;
+                }
+                catch
+                {
+                }
+
                 return new UpdateCheckResult
                 {
                     CurrentVersion = current,
@@ -194,13 +134,18 @@ namespace MaterialManager_V01.Services
                 {
                     CurrentVersion = current,
                     LatestVersion = tag,
-                    Changelog = "Änderungsdetails werden wegen API-Limit aus dem Release geladen.",
+                    Changelog = updateAvailable
+                        ? "Kumulatives Vollupdate: Dieses Update enthält alle fehlenden Änderungen bis zur neuesten Version."
+                        : "Die installierte Version ist bereits aktuell.",
                     DownloadUrl = downloadUrl,
                     AssetName = "UpdateInstaller.exe",
                     AssetType = "update-exe",
                     ReleasePageUrl = releasePageUrl,
                     IsUpdateAvailable = updateAvailable,
-                    ErrorMessage = null
+                    ErrorMessage = null,
+                    MissingReleaseCount = updateAvailable ? 1 : 0,
+                    IsCumulativeUpdate = updateAvailable,
+                    IncludedReleaseTags = updateAvailable ? new List<string> { tag } : new List<string>()
                 };
             }
             catch
@@ -664,7 +609,121 @@ namespace MaterialManager_V01.Services
             var cleaned = (tag ?? string.Empty).Trim().TrimStart('v', 'V');
             return Version.TryParse(cleaned, out var v) ? v : new Version(0, 0, 0);
         }
+
+        private static async Task<List<GitHubReleaseInfo>> GetPublishedReleasesAsync()
+        {
+            using var response = await Http.GetAsync(ReleasesApi);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    return new List<GitHubReleaseInfo>();
+
+                throw new HttpRequestException($"GitHub-API Fehler: {(int)response.StatusCode}");
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                return new List<GitHubReleaseInfo>();
+
+            var releases = new List<GitHubReleaseInfo>();
+            foreach (var root in doc.RootElement.EnumerateArray())
+            {
+                if (root.TryGetProperty("draft", out var draftProp) && draftProp.ValueKind == JsonValueKind.True)
+                    continue;
+                if (root.TryGetProperty("prerelease", out var prereleaseProp) && prereleaseProp.ValueKind == JsonValueKind.True)
+                    continue;
+
+                var tag = root.TryGetProperty("tag_name", out var tagProp) ? tagProp.GetString() ?? string.Empty : string.Empty;
+                if (string.IsNullOrWhiteSpace(tag))
+                    continue;
+
+                var body = root.TryGetProperty("body", out var bodyProp) ? bodyProp.GetString() ?? string.Empty : string.Empty;
+                var htmlUrl = root.TryGetProperty("html_url", out var htmlProp) ? htmlProp.GetString() : null;
+                var assets = new List<GitHubReleaseAssetInfo>();
+
+                if (root.TryGetProperty("assets", out var assetsProp) && assetsProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var asset in assetsProp.EnumerateArray())
+                    {
+                        var name = asset.TryGetProperty("name", out var n) ? n.GetString() ?? string.Empty : string.Empty;
+                        var url = asset.TryGetProperty("browser_download_url", out var u) ? u.GetString() : null;
+                        if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(url))
+                            assets.Add(new GitHubReleaseAssetInfo(name, url));
+                    }
+                }
+
+                releases.Add(new GitHubReleaseInfo(tag, body, htmlUrl, assets));
+            }
+
+            return releases
+                .OrderByDescending(r => ParseVersion(r.Tag))
+                .ToList();
+        }
+
+        private static void SelectBestAsset(GitHubReleaseInfo release, out string? selectedUrl, out string? selectedName, out string? selectedType, out string? msiUrl)
+        {
+            selectedUrl = null;
+            selectedName = null;
+            selectedType = null;
+            msiUrl = null;
+
+            var updateInstaller = release.Assets.FirstOrDefault(a => a.Name.Equals("UpdateInstaller.exe", StringComparison.OrdinalIgnoreCase));
+            var msi = release.Assets.FirstOrDefault(a => a.Name.EndsWith(".msi", StringComparison.OrdinalIgnoreCase));
+            var zip = release.Assets.FirstOrDefault(a => a.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
+
+            if (updateInstaller != null)
+            {
+                selectedUrl = updateInstaller.Url;
+                selectedName = updateInstaller.Name;
+                selectedType = "update-exe";
+            }
+            else if (msi != null)
+            {
+                selectedUrl = msi.Url;
+                selectedName = msi.Name;
+                selectedType = "msi";
+            }
+            else if (zip != null)
+            {
+                selectedUrl = zip.Url;
+                selectedName = zip.Name;
+                selectedType = "zip";
+            }
+
+            msiUrl = msi?.Url;
+        }
+
+        private static string BuildCumulativeReleaseBody(List<GitHubReleaseInfo> missedReleases, string currentTag, string latestTag)
+        {
+            if (missedReleases.Count == 0)
+                return string.Empty;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("Kumulatives Vollupdate");
+            builder.AppendLine($"Enthält {missedReleases.Count} fehlende Update(s) von {currentTag} bis {latestTag}.");
+            builder.AppendLine();
+
+            foreach (var release in missedReleases)
+            {
+                builder.AppendLine($"Version {release.Tag}");
+                if (!string.IsNullOrWhiteSpace(release.Body))
+                {
+                    builder.AppendLine(release.Body.Trim());
+                }
+                else
+                {
+                    builder.AppendLine("- Technische Aktualisierung und Fehlerbehebungen");
+                }
+                builder.AppendLine();
+            }
+
+            return builder.ToString().Trim();
+        }
     }
+
+    internal sealed record GitHubReleaseAssetInfo(string Name, string Url);
+    internal sealed record GitHubReleaseInfo(string Tag, string Body, string? HtmlUrl, List<GitHubReleaseAssetInfo> Assets);
 
     public sealed class UpdateCheckResult
     {
@@ -678,6 +737,9 @@ namespace MaterialManager_V01.Services
         public string? AssetType { get; init; }
         public string? ReleasePageUrl { get; init; }
         public string? ErrorMessage { get; init; }
+        public int MissingReleaseCount { get; init; }
+        public bool IsCumulativeUpdate { get; init; }
+        public IReadOnlyList<string> IncludedReleaseTags { get; init; } = Array.Empty<string>();
     }
 
     public sealed class PreparedUpdateResult

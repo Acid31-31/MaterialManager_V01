@@ -61,6 +61,15 @@ namespace MaterialManager_V01.Views
         private void LoadUpdateInfo()
         {
             VersionInfo = $"Aktuell: {_updateInfo.CurrentVersion} → Neu: {_updateInfo.LatestVersion}";
+
+            if (_updateInfo.IsUpdateAvailable && _updateInfo.IsCumulativeUpdate)
+            {
+                var countText = _updateInfo.MissingReleaseCount > 1
+                    ? $"Kumulatives Vollupdate: {_updateInfo.MissingReleaseCount} fehlende Updates sind enthalten."
+                    : "Kumulatives Vollupdate: alle fehlenden Änderungen sind enthalten.";
+                VersionInfo += Environment.NewLine + countText;
+            }
+
             Changelog = "Änderungen werden geladen...";
         }
 

@@ -129,6 +129,8 @@ jobs:
           $lines = New-Object System.Collections.Generic.List[string]
           $lines.Add("## 📝 Was wurde geändert")
           $lines.Add("")
+          $lines.Add("> Dieses Release ist ein **kumulatives Vollupdate**. Ein PC mit älterem Stand benötigt nur dieses neueste Update, um alle fehlenden Änderungen zu erhalten.")
+          $lines.Add("")
 
           if (-not [string]::IsNullOrWhiteSpace($previousTag)) {
             $commitLines = git log "$previousTag..HEAD" --pretty=format:"- %s" --no-merges
