@@ -59,7 +59,7 @@ namespace MaterialManager_V01.Views
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var source = ((SourceFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle").Trim();
+            var source = ((SourceFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Archiviert").Trim();
 
             List<Auftrag> basis = source switch
             {
