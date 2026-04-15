@@ -264,9 +264,7 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                _auftraegeCache = AuftragDataService.LoadAllAuftraege()
-                    .Where(a => AuftragArbeitsplatzService.IsMatchForBereich(a.Arbeitsplatz, Arbeitsbereich))
-                    .ToList();
+                _auftraegeCache = AuftragDataService.LoadAllAuftraege();
                 ApplyAuftragsKwFilter();
             }
             catch (Exception ex)
@@ -275,15 +273,40 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private static DateTime GetRelevantAuftragDate(Auftrag auftrag)
+        {
+            return auftrag.GeaendertAm != default ? auftrag.GeaendertAm : auftrag.ErstelltAm;
+        }
+
+        private static DateTime GetIsoWeekStartDate(int year, int week)
+        {
+            var jan4 = new DateTime(year, 1, 4);
+            var jan4IsoDay = jan4.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)jan4.DayOfWeek;
+            var firstIsoWeekMonday = jan4.AddDays(1 - jan4IsoDay);
+            return firstIsoWeekMonday.AddDays((week - 1) * 7);
+        }
+
         private void ApplyAuftragsKwFilter()
         {
-            var gefilterteAuftraege = AuftragRulesService.FilterByIsoCalendarWeek(_auftraegeCache, _aktuellesJahr, _ausgewaehlteKalenderWoche);
+            var selectedWeekStart = GetIsoWeekStartDate(_aktuellesJahr, _ausgewaehlteKalenderWoche);
+            var windowStart = selectedWeekStart.AddDays(-28);
+            var windowEndExclusive = selectedWeekStart.AddDays(7);
+
+            var gefilterteAuftraege = _auftraegeCache
+                .Where(a =>
+                {
+                    var relevantDate = GetRelevantAuftragDate(a);
+                    return relevantDate >= windowStart && relevantDate < windowEndExclusive;
+                })
+                .OrderByDescending(a => GetRelevantAuftragDate(a))
+                .ToList();
 
             AuftraegeView.Clear();
             foreach (var auftrag in gefilterteAuftraege)
                 AuftraegeView.Add(auftrag);
 
-            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/Aufträge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
+            AuftragsKwInfoText =
+                $"{AuftraegeView.Count} Auftrag/Aufträge im 5-Wochen-Fenster ({windowStart:dd.MM.yyyy} - {windowEndExclusive.AddDays(-1):dd.MM.yyyy})";
         }
 
         private string GetSelectedFilter()
@@ -726,7 +749,7 @@ namespace MaterialManager_V01.Views
 
         private void UpdateAuftragsKwText()
         {
-            AuftragsKwText = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
+            AuftragsKwText = $"Bis KW {_ausgewaehlteKalenderWoche:D2} ▾";
         }
 
         private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
