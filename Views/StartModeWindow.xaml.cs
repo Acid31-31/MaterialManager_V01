@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -56,7 +56,7 @@ namespace MaterialManager_V01.Views
                 ? Brushes.LimeGreen
                 : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
                     ? Brushes.OrangeRed
-                    : Brushes.DeepSkyBlue;
+                    : Brushes.Gray;
         }
 
         private void FitToWorkArea()
@@ -87,7 +87,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -102,7 +102,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler bei Update-PrÃ¼fung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -124,7 +124,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -169,17 +169,17 @@ namespace MaterialManager_V01.Views
 
             if (killed == 0 && failed == 0)
             {
-                MessageBox.Show("Es waren keine hängenden Update-Prozesse aktiv.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es waren keine hÃ¤ngenden Update-Prozesse aktiv.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             if (failed > 0)
             {
-                MessageBox.Show($"{killed} Update-Prozesse beendet, {failed} konnten nicht beendet werden.\n\nBei Bedarf die App einmal als Administrator starten und erneut ausführen.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"{killed} Update-Prozesse beendet, {failed} konnten nicht beendet werden.\n\nBei Bedarf die App einmal als Administrator starten und erneut ausfÃ¼hren.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            MessageBox.Show($"{killed} hängende Update-Prozesse wurden beendet.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"{killed} hÃ¤ngende Update-Prozesse wurden beendet.", "Update-Prozesse", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnSelectOperatorClick(object sender, RoutedEventArgs e)
@@ -227,7 +227,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Hauptprogramm konnte nicht geöffnet werden:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Hauptprogramm konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -283,7 +283,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Geo Suche konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Geo Suche konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

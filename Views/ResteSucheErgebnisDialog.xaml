@@ -11,7 +11,7 @@
                     <Setter Property="Background" Value="#2A2A2A"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#1976D2"/>
+                    <Setter Property="Background" Value="#4A4A4A"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -43,8 +43,9 @@
             </StackPanel>
         </Border>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="✅ Reservieren" Click="OnReservieren" Width="150" Background="#1976D2" Foreground="White" Padding="16,8" Margin="8" Cursor="Hand"/>
+            <Button Content="✅ Reservieren" Click="OnReservieren" Width="150" Background="#4A4A4A" Foreground="White" Padding="16,8" Margin="8" Cursor="Hand"/>
             <Button Content="Abbrechen" Click="OnAbbrechen" Width="120" Background="#555" Foreground="White" Padding="16,8" Margin="8" Cursor="Hand"/>
         </StackPanel>
     </Grid>
 </Window>
+

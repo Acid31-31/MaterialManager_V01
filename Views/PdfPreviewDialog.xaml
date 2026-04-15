@@ -1,4 +1,4 @@
-<Window x:Class="MaterialManager_V01.Views.PdfPreviewDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.PdfPreviewDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PDF-Vorschau"
@@ -69,7 +69,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="PDF-Vorschau" VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"/>
-                    <Button Grid.Column="1" Style="{StaticResource CloseTitleBarButtonStyle}" Content="✕" Click="OnCloseClick"/>
+                    <Button Grid.Column="1" Style="{StaticResource CloseTitleBarButtonStyle}" Content="âœ•" Click="OnCloseClick"/>
                 </Grid>
             </Border>
 
@@ -119,27 +119,28 @@
                         <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Dateigröße:" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    <TextBlock Text="DateigrÃ¶ÃŸe:" Foreground="#AAAAAA" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="1" x:Name="FileSizeTextBlock" Margin="8,0,0,0"/>
 
-                    <TextBlock Grid.Column="2" Text="Änderungsdatum:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                    <TextBlock Grid.Column="2" Text="Ã„nderungsdatum:" Foreground="#AAAAAA" VerticalAlignment="Center" Margin="24,0,0,0"/>
                     <TextBlock Grid.Column="3" x:Name="ModifiedDateTextBlock" Margin="8,0,0,0"/>
                 </Grid>
 
                 <Border Grid.Row="4" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,16">
-                    <TextBlock x:Name="StatusTextBlock" Text="PDF ist bereit zum Öffnen" Foreground="White"/>
+                    <TextBlock x:Name="StatusTextBlock" Text="PDF ist bereit zum Ã–ffnen" Foreground="White"/>
                 </Border>
 
                 <Border Grid.Row="6" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,12">
-                    <TextBlock x:Name="InfoTextBlock" Text="Diese PDF wird in der Standard-Anwendung Ihres Systems geöffnet." Foreground="#AAAAAA" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="InfoTextBlock" Text="Diese PDF wird in der Standard-Anwendung Ihres Systems geÃ¶ffnet." Foreground="#AAAAAA" TextWrapping="Wrap"/>
                 </Border>
 
                 <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="📄 Extern öffnen" Click="OnOpenExternalClick" Background="#1976D2" Margin="0,0,8,0"/>
+                    <Button Content="ðŸ“„ Extern Ã¶ffnen" Click="OnOpenExternalClick" Background="#4A4A4A" Margin="0,0,8,0"/>
                     <Button Content="Kopieren (Pfad)" Click="OnCopyPathClick" Background="#455A64" Margin="0,0,8,0"/>
-                    <Button Content="Schließen" Click="OnCloseClick" Background="#555"/>
+                    <Button Content="SchlieÃŸen" Click="OnCloseClick" Background="#555"/>
                 </StackPanel>
             </Grid>
         </Grid>
     </Border>
 </Window>
+

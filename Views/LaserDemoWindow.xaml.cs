@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -44,7 +44,7 @@ namespace MaterialManager_V01.Views
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
 
-        private string _workspaceTitle = "Laser – Auftragsübersicht";
+        private string _workspaceTitle = "Laser â€“ AuftragsÃ¼bersicht";
         public string WorkspaceTitle
         {
             get => _workspaceTitle;
@@ -107,8 +107,8 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
-            WorkspaceTitle = "Laser – Auftragsübersicht";
-            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
+            WorkspaceTitle = "Laser â€“ AuftragsÃ¼bersicht";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} â€“ Produktionssicht";
             RefreshLicenseBanner();
             RefreshNetworkStatusBanner();
             UpdateAuftragsKwText();
@@ -271,7 +271,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Aufträge:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der AuftrÃ¤ge:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -283,7 +283,7 @@ namespace MaterialManager_V01.Views
             foreach (var auftrag in gefilterteAuftraege)
                 AuftraegeView.Add(auftrag);
 
-            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/Aufträge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
+            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/AuftrÃ¤ge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
         }
 
         private string GetSelectedFilter()
@@ -361,7 +361,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Undo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum ZurÃ¼cksetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -373,7 +373,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Redo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum Vorwärtszetten.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum VorwÃ¤rtszetten.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -430,7 +430,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -555,16 +555,16 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst reserviertes Material auswählen oder markieren.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst reserviertes Material auswÃ¤hlen oder markieren.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirmDialog = new BestaetigungsDialog(
-                "Reserviertes Material löschen",
+                "Reserviertes Material lÃ¶schen",
                 items.Count == 1
-                    ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
-                    : $"{items.Count} reservierte Materialien wirklich löschen?",
-                confirmText: "Löschen",
+                    ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich lÃ¶schen?"
+                    : $"{items.Count} reservierte Materialien wirklich lÃ¶schen?",
+                confirmText: "LÃ¶schen",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#8B1E1E")
             { Owner = this };
@@ -572,7 +572,7 @@ namespace MaterialManager_V01.Views
             if (confirmDialog.ShowDialog() != true)
                 return;
 
-            PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material löschen" : "Reservierte Materialien löschen");
+            PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material lÃ¶schen" : "Reservierte Materialien lÃ¶schen");
             foreach (var item in items)
             {
                 BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
@@ -592,7 +592,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -726,7 +726,7 @@ namespace MaterialManager_V01.Views
 
         private void UpdateAuftragsKwText()
         {
-            AuftragsKwText = $"KW {_ausgewaehlteKalenderWoche:D2} ▾";
+            AuftragsKwText = $"KW {_ausgewaehlteKalenderWoche:D2} â–¾";
         }
 
         private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
@@ -743,7 +743,7 @@ namespace MaterialManager_V01.Views
                 var item = new MenuItem
                 {
                     Header = istAktiv
-                        ? $"▶ KW {kw:D2} ({_aktuellesJahr})"
+                        ? $"â–¶ KW {kw:D2} ({_aktuellesJahr})"
                         : $"KW {kw:D2} ({_aktuellesJahr})",
                     Tag = kw
                 };
@@ -817,7 +817,7 @@ namespace MaterialManager_V01.Views
             var item = GetPrimarySelectedMaterial();
             if (item == null)
             {
-                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst ein Material auswÃ¤hlen.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -888,7 +888,7 @@ namespace MaterialManager_V01.Views
                 ? Brushes.LimeGreen
                 : status.Contains("nicht erreichbar", StringComparison.OrdinalIgnoreCase)
                     ? Brushes.OrangeRed
-                    : Brushes.DeepSkyBlue;
+                    : Brushes.Gray;
         }
 
         private void FitToWorkArea()

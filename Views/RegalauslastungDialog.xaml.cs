@@ -137,7 +137,7 @@ namespace MaterialManager_V01.Views
 
             var summaryBorder = new Border
             {
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1976D2")),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")),
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(15),
                 Margin = new Thickness(0, 10, 0, 0)
@@ -208,3 +208,4 @@ namespace MaterialManager_V01.Views
         }
     }
 }
+

@@ -58,7 +58,7 @@
             <!-- LOGIN BUTTON -->
             <Button Content="🔓 Anmelden" 
                     Click="OnLoginClick"
-                    Background="#1976D2" 
+                    Background="#4A4A4A" 
                     Foreground="White" 
                     Padding="10,12" 
                     Height="45"
@@ -84,3 +84,4 @@
         </StackPanel>
     </Grid>
 </Window>
+

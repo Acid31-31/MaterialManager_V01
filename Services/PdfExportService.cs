@@ -34,9 +34,9 @@ namespace MaterialManager_V01.Services
             background: white;
         }}
         h1 {{
-            color: #1976D2;
+            color: #4A4A4A;
             text-align: center;
-            border-bottom: 3px solid #1976D2;
+            border-bottom: 3px solid #4A4A4A;
             padding-bottom: 10px;
         }}
         .header {{
@@ -56,7 +56,7 @@ namespace MaterialManager_V01.Services
             margin-top: 20px;
         }}
         th {{
-            background-color: #1976D2;
+            background-color: #4A4A4A;
             color: white;
             padding: 10px;
             text-align: left;
@@ -159,9 +159,9 @@ namespace MaterialManager_V01.Services
             margin: 20px;
         }}
         h1 {{
-            color: #1976D2;
+            color: #4A4A4A;
             text-align: center;
-            border-bottom: 3px solid #1976D2;
+            border-bottom: 3px solid #4A4A4A;
         }}
         .stats {{
             display: grid;
@@ -173,7 +173,7 @@ namespace MaterialManager_V01.Services
             background: #f0f0f0;
             padding: 15px;
             border-radius: 5px;
-            border-left: 4px solid #1976D2;
+            border-left: 4px solid #4A4A4A;
         }}
         .stat-box h3 {{
             margin: 0;
@@ -182,7 +182,7 @@ namespace MaterialManager_V01.Services
         }}
         .stat-box .value {{
             font-size: 24pt;
-            color: #1976D2;
+            color: #4A4A4A;
             font-weight: bold;
             margin: 5px 0;
         }}
@@ -192,7 +192,7 @@ namespace MaterialManager_V01.Services
             margin-top: 20px;
         }}
         th {{
-            background-color: #1976D2;
+            background-color: #4A4A4A;
             color: white;
             padding: 10px;
             text-align: left;
@@ -310,7 +310,7 @@ namespace MaterialManager_V01.Services
             background: white;
         }}
         h1 {{
-            color: #1976D2;
+            color: #4A4A4A;
         }}
         table {{
             width: 100%;
@@ -318,7 +318,7 @@ namespace MaterialManager_V01.Services
             font-size: 9pt;
         }}
         th {{
-            background-color: #1976D2;
+            background-color: #4A4A4A;
             color: white;
             padding: 8px;
             text-align: left;
@@ -371,3 +371,4 @@ namespace MaterialManager_V01.Services
         }
     }
 }
+

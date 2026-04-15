@@ -107,7 +107,7 @@
         </Style>
 
         <Style TargetType="Button">
-            <Setter Property="Background" Value="#1976D2" />
+            <Setter Property="Background" Value="#4A4A4A" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="16,8" />
@@ -199,3 +199,4 @@
         </StackPanel>
     </Grid>
 </Window>
+

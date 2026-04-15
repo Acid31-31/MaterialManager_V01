@@ -18,7 +18,7 @@
 
                 <TextBlock Text="Netzwerkpfad für Materialdaten (z.B. \\SERVER\MaterialManager oder Z:\MaterialManager):" Foreground="White" FontSize="12" Margin="0,0,0,5"/>
                 <DockPanel Margin="0,0,0,10">
-                    <Button DockPanel.Dock="Right" Content="📁 Durchsuchen" Click="OnDurchsuchen" Width="120" Background="#1976D2" Foreground="White" Padding="8" Margin="5,0,0,0" Cursor="Hand"/>
+                    <Button DockPanel.Dock="Right" Content="📁 Durchsuchen" Click="OnDurchsuchen" Width="120" Background="#4A4A4A" Foreground="White" Padding="8" Margin="5,0,0,0" Cursor="Hand"/>
                     <TextBox x:Name="NetzwerkPfadBox" Background="#222" Foreground="White" Padding="8" Height="32" VerticalContentAlignment="Center"/>
                 </DockPanel>
 
@@ -70,3 +70,4 @@
         </StackPanel>
     </Grid>
 </Window>
+

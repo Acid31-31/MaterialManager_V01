@@ -102,7 +102,7 @@
                 </Border>
 
                 <Border DockPanel.Dock="Bottom" Background="#1F1F1F" Padding="10">
-                    <Button Content="Schließen" Click="OnSchliessen" Width="100" Background="#1976D2" Foreground="White" Padding="8"/>
+                    <Button Content="Schließen" Click="OnSchliessen" Width="100" Background="#4A4A4A" Foreground="White" Padding="8"/>
                 </Border>
 
                 <DataGrid x:Name="ReservierteResteGrid"
@@ -146,3 +146,4 @@
         </Grid>
     </Border>
 </Window>
+

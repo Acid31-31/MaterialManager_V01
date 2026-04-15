@@ -17,7 +17,7 @@
             
             <Button Content="📊 Bestandsliste drucken" 
                     Click="OnPrintBestand"
-                    Background="#1976D2" 
+                    Background="#4A4A4A" 
                     Foreground="White" 
                     Padding="15,15" 
                     Height="50"
@@ -55,3 +55,4 @@
         </StackPanel>
     </Grid>
 </Window>
+

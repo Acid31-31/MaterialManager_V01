@@ -118,7 +118,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#1976D2" />
+                                <Setter TargetName="Border" Property="Background" Value="#4A4A4A" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Border" Property="Background" Value="#333" />
@@ -130,7 +130,7 @@
         </Style>
 
         <Style TargetType="Button">
-            <Setter Property="Background" Value="#1976D2" />
+            <Setter Property="Background" Value="#4A4A4A" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="16,8" />
@@ -297,3 +297,4 @@
         </Grid>
     </Border>
 </Window>
+
