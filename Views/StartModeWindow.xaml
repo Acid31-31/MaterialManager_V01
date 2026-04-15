@@ -181,9 +181,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="â–¢" Click="OnMaximizeRestoreWindow"/>
-                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="âœ•" Click="OnCloseWindow"/>
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="-" Click="OnMinimizeWindow"/>
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="[ ]" Click="OnMaximizeRestoreWindow"/>
+                    <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="X" Click="OnCloseWindow"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -228,37 +228,37 @@
             <UniformGrid Grid.Row="2" Columns="6" Margin="48,0">
                 <Button Click="OnStandardClick" Margin="0,0,8,0" Height="150" Background="#4A4A4A" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="ðŸ " FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Start" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Hauptprogramm" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnLagerClick" Margin="4,0,4,0" Height="150" Background="#6A1B9A" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="ðŸ“¦" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Lager" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Lager" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnTafelplanungClick" Margin="4,0,4,0" Height="150" Background="#00897B" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="ðŸ“‹" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Auftrag" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Auftragssteuerung" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnLaserClick" Margin="4,0,4,0" Height="150" Background="#2E7D32" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="âš¡" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Laser" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Laser" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnKundenMaterialClick" Margin="4,0,4,0" Height="150" Background="#455A64" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="ðŸ§¾" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Kunde" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Kunden Material" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button Click="OnGeoSucheClick" Margin="8,0,0,0" Height="150" Background="#3949AB" Foreground="White" Cursor="Hand" BorderThickness="0">
                     <StackPanel>
-                        <TextBlock Text="ðŸ—ºï¸" FontSize="40" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Geo" FontSize="28" HorizontalAlignment="Center"/>
                         <TextBlock Text="Geo Suche" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
                     </StackPanel>
                 </Button>
