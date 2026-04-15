@@ -129,6 +129,29 @@ namespace MaterialManager_V01.Services
             SaveSharedAuftraege(auftraege);
         }
 
+        public static bool AddAuftrag(Auftrag auftrag)
+        {
+            if (auftrag == null || string.IsNullOrWhiteSpace(auftrag.Auftragsnummer))
+                return false;
+
+            var normalized = auftrag.Auftragsnummer.Trim();
+
+            using var db = new MaterialManagerDbContext();
+            db.Database.EnsureCreated();
+
+            var exists = db.Auftraege
+                .AsEnumerable()
+                .Any(a => string.Equals((a.Auftragsnummer ?? string.Empty).Trim(), normalized, StringComparison.OrdinalIgnoreCase));
+            if (exists)
+                return false;
+
+            auftrag.Auftragsnummer = normalized;
+            db.Auftraege.Add(CloneAuftrag(auftrag));
+            db.SaveChanges();
+            TryUpsertSharedAuftrag(auftrag);
+            return true;
+        }
+
         public static bool UpdateAuftrag(string auftragsnummer, Action<Auftrag> updateAction)
         {
             var normalized = (auftragsnummer ?? string.Empty).Trim();

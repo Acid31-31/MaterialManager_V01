@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -40,11 +40,12 @@ namespace MaterialManager_V01.Views
         private DateTime _lastObservedAuftraegeWriteUtc = DateTime.MinValue;
         private readonly DispatcherTimer _autoRefreshTimer = new() { Interval = TimeSpan.FromSeconds(2) };
         private int _autoSyncStatusVersion;
+        private bool _nachproduktionModus;
 
         public ObservableCollection<MaterialItem> RestMaterialien { get; } = new();
         public ObservableCollection<Auftrag> AuftraegeView { get; } = new();
 
-        private string _workspaceTitle = "Laser – Auftragsübersicht";
+        private string _workspaceTitle = "Laser ÔÇô Auftrags├╝bersicht";
         public string WorkspaceTitle
         {
             get => _workspaceTitle;
@@ -103,12 +104,23 @@ namespace MaterialManager_V01.Views
             }
         }
 
+        private string _nachproduktionButtonText = "Nachproduktion";
+        public string NachproduktionButtonText
+        {
+            get => _nachproduktionButtonText;
+            set
+            {
+                _nachproduktionButtonText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NachproduktionButtonText)));
+            }
+        }
+
         public LaserDemoWindow()
         {
             InitializeComponent();
             DataContext = this;
-            WorkspaceTitle = "Laser – Auftragsübersicht";
-            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Produktionssicht";
+            WorkspaceTitle = "Laser ÔÇô Auftrags├╝bersicht";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} ÔÇô Produktionssicht";
             RefreshLicenseBanner();
             RefreshNetworkStatusBanner();
             UpdateAuftragsKwText();
@@ -264,42 +276,42 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                var aktiveAuftraege = AuftragDataService.LoadAllAuftraege();
-
-                try
+                if (_nachproduktionModus)
                 {
-                    AuftragArchivService.BackfillArchiveMetadataForYear(_aktuellesJahr);
-                }
-                catch
-                {
-                }
-
-                var archivAuftraege = AuftragArchivService.GetArchivedOrdersForYear(_aktuellesJahr)
-                    .Where(x => !string.IsNullOrWhiteSpace(x.Auftragsnummer))
-                    .Select(x => new Auftrag
+                    try
                     {
-                        Auftragsnummer = x.Auftragsnummer,
-                        Arbeitsplatz = "Archiv",
-                        Status = AuftragStatus.Abgeschlossen,
-                        ErstelltAm = x.ProduktionStartDatum ?? x.ArchiviertAm,
-                        GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
-                        ProduktionStartDatum = x.ProduktionStartDatum,
-                        ProduktionEndDatum = x.ProduktionEndDatum,
-                        MaterialPositionen = x.MaterialPositionen,
-                        GesamtStueckzahl = x.GesamtStueckzahl,
-                        GesamtGewichtKg = x.GesamtGewichtKg,
-                        AngelegtVon = x.AngelegtVon,
-                        GeaendertVon = x.GeaendertVon,
-                        PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(x.Auftragsnummer, x.ErstePdfPfad)
-                    })
-                    .ToList();
+                        AuftragArchivService.BackfillArchiveMetadataForYear(_aktuellesJahr);
+                    }
+                    catch
+                    {
+                    }
 
-                _auftraegeCache = aktiveAuftraege
-                    .Concat(archivAuftraege)
-                    .GroupBy(a => a.Auftragsnummer ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                    .Select(g => g.OrderByDescending(GetRelevantAuftragDate).First())
-                    .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
-                    .ToList();
+                    _auftraegeCache = AuftragArchivService.GetArchivedOrdersForYear(_aktuellesJahr)
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Auftragsnummer))
+                        .Select(x => new Auftrag
+                        {
+                            Auftragsnummer = x.Auftragsnummer,
+                            Arbeitsplatz = "Archiv",
+                            Status = AuftragStatus.Abgeschlossen,
+                            ErstelltAm = x.ProduktionStartDatum ?? x.ArchiviertAm,
+                            GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
+                            ProduktionStartDatum = x.ProduktionStartDatum,
+                            ProduktionEndDatum = x.ProduktionEndDatum,
+                            MaterialPositionen = x.MaterialPositionen,
+                            GesamtStueckzahl = x.GesamtStueckzahl,
+                            GesamtGewichtKg = x.GesamtGewichtKg,
+                            AngelegtVon = x.AngelegtVon,
+                            GeaendertVon = x.GeaendertVon,
+                            PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(x.Auftragsnummer, x.ErstePdfPfad)
+                        })
+                        .ToList();
+                }
+                else
+                {
+                    _auftraegeCache = AuftragDataService.LoadAllAuftraege()
+                        .Where(a => a.Status != AuftragStatus.Abgeschlossen)
+                        .ToList();
+                }
 
                 ApplyAuftragsKwFilter();
             }
@@ -307,6 +319,46 @@ namespace MaterialManager_V01.Views
             {
                 MessageBox.Show($"Fehler beim Laden der Aufträge:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ApplyAuftragsKwFilter()
+        {
+            List<Auftrag> gefilterteAuftraege;
+
+            if (_nachproduktionModus)
+            {
+                var selectedWeekStart = GetIsoWeekStartDate(_aktuellesJahr, _ausgewaehlteKalenderWoche);
+                var windowStart = selectedWeekStart.AddDays(-28);
+                var windowEndExclusive = selectedWeekStart.AddDays(7);
+
+                gefilterteAuftraege = _auftraegeCache
+                    .Where(a => a.Status == AuftragStatus.Abgeschlossen)
+                    .Where(a =>
+                    {
+                        var relevantDate = GetRelevantAuftragDate(a);
+                        return relevantDate >= windowStart && relevantDate < windowEndExclusive;
+                    })
+                    .OrderByDescending(GetRelevantAuftragDate)
+                    .ToList();
+
+                AuftragsKwInfoText =
+                    $"{gefilterteAuftraege.Count} abgeschlossene Auftrag/Aufträge im 5-Wochen-Fenster ({windowStart:dd.MM.yyyy} - {windowEndExclusive.AddDays(-1):dd.MM.yyyy})";
+            }
+            else
+            {
+                gefilterteAuftraege = _auftraegeCache
+                    .OrderByDescending(GetRelevantAuftragDate)
+                    .ToList();
+
+                var offen = gefilterteAuftraege.Count(a => a.Status == AuftragStatus.Offen);
+                var inBearbeitung = gefilterteAuftraege.Count(a => a.Status == AuftragStatus.InBearbeitung);
+                AuftragsKwInfoText =
+                    $"{gefilterteAuftraege.Count} aktive Auftrag/Aufträge ({offen} offen, {inBearbeitung} in Bearbeitung)";
+            }
+
+            AuftraegeView.Clear();
+            foreach (var auftrag in gefilterteAuftraege)
+                AuftraegeView.Add(auftrag);
         }
 
         private static DateTime GetRelevantAuftragDate(Auftrag auftrag)
@@ -322,121 +374,13 @@ namespace MaterialManager_V01.Views
             return firstIsoWeekMonday.AddDays((week - 1) * 7);
         }
 
-        private void ApplyAuftragsKwFilter()
+        private void UpdateAuftragsKwText()
         {
-            var selectedWeekStart = GetIsoWeekStartDate(_aktuellesJahr, _ausgewaehlteKalenderWoche);
-            var windowStart = selectedWeekStart.AddDays(-28);
-            var windowEndExclusive = selectedWeekStart.AddDays(7);
+            AuftragsKwText = _nachproduktionModus
+                ? $"Nachproduktion bis KW {_ausgewaehlteKalenderWoche:D2}"
+                : "Aktive Aufträge";
 
-            var gefilterteAuftraege = _auftraegeCache
-                .Where(a =>
-                {
-                    var relevantDate = GetRelevantAuftragDate(a);
-                    return relevantDate >= windowStart && relevantDate < windowEndExclusive;
-                })
-                .OrderByDescending(a => GetRelevantAuftragDate(a))
-                .ToList();
-
-            AuftraegeView.Clear();
-            foreach (var auftrag in gefilterteAuftraege)
-                AuftraegeView.Add(auftrag);
-
-            AuftragsKwInfoText =
-                $"{AuftraegeView.Count} Auftrag/Aufträge im 5-Wochen-Fenster ({windowStart:dd.MM.yyyy} - {windowEndExclusive.AddDays(-1):dd.MM.yyyy})";
-        }
-
-        private string GetSelectedFilter()
-        {
-            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            if (!string.IsNullOrWhiteSpace(selected))
-                return selected.Trim();
-
-            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
-                return FormFilterBox.Text.Trim();
-
-            return "Alle";
-        }
-
-        private void ApplyFilter()
-        {
-            var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-            var selectedFilter = GetSelectedFilter();
-
-            var filtered = _restMaterialienCache.Where(m =>
-            {
-                var filterMatch = selectedFilter switch
-                {
-                    "Alle" => true,
-                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
-                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
-                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
-                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
-                    _ => true
-                };
-
-                if (!filterMatch)
-                    return false;
-
-                if (string.IsNullOrWhiteSpace(query))
-                    return true;
-
-                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       (m.Form ?? string.Empty).ToLowerInvariant().Contains(query) ||
-                       m.Kategorie.ToString().ToLowerInvariant().Contains(query) ||
-                       (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
-            }).ToList();
-
-            RestMaterialien.Clear();
-            foreach (var item in filtered)
-                RestMaterialien.Add(item);
-
-            SummaryText = $"{RestMaterialien.Count} gebuchte Material(ien)";
-        }
-
-        private void SaveAllMaterials()
-        {
-            MaterialDataService.SaveAllMaterials(_alleMaterialien);
-        }
-
-        private void PushUndoSnapshot(string beschreibung)
-        {
-            UndoService.PushSnapshot($"Laser: {beschreibung}", _alleMaterialien);
-        }
-
-        private void RestoreMaterials(List<MaterialItem> materialien)
-        {
-            _alleMaterialien = materialien;
-            _restMaterialienCache = _alleMaterialien.Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
-            SaveAllMaterials();
-            LoadMaterials();
-        }
-
-        private void ExecuteUndo()
-        {
-            var materialien = UndoService.Undo(_alleMaterialien);
-            if (materialien == null)
-            {
-                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            RestoreMaterials(materialien);
-        }
-
-        private void ExecuteRedo()
-        {
-            var materialien = UndoService.Redo(_alleMaterialien);
-            if (materialien == null)
-            {
-                MessageBox.Show("Es gibt keine Aktion zum Vorwärtszetten.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            RestoreMaterials(materialien);
+            NachproduktionButtonText = _nachproduktionModus ? "Aktive Aufträge" : "Nachproduktion";
         }
 
         private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
@@ -489,7 +433,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht ge├Âffnet werden:\n{ex.Message}", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -614,16 +558,16 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst reserviertes Material auswählen oder markieren.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst reserviertes Material ausw├ñhlen oder markieren.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirmDialog = new BestaetigungsDialog(
-                "Reserviertes Material löschen",
+                "Reserviertes Material l├Âschen",
                 items.Count == 1
-                    ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
-                    : $"{items.Count} reservierte Materialien wirklich löschen?",
-                confirmText: "Löschen",
+                    ? $"Reserviertes Material '{items[0].MaterialArt} {items[0].Mass}' wirklich l├Âschen?"
+                    : $"{items.Count} reservierte Materialien wirklich l├Âschen?",
+                confirmText: "L├Âschen",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#8B1E1E")
             { Owner = this };
@@ -631,7 +575,7 @@ namespace MaterialManager_V01.Views
             if (confirmDialog.ShowDialog() != true)
                 return;
 
-            PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material löschen" : "Reservierte Materialien löschen");
+            PushUndoSnapshot(items.Count == 1 ? "Reserviertes Material l├Âschen" : "Reservierte Materialien l├Âschen");
             foreach (var item in items)
             {
                 BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
@@ -651,7 +595,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Pr├╝fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -736,9 +680,134 @@ namespace MaterialManager_V01.Views
             if (AuftraegeGrid.SelectedItem is not Auftrag auftrag)
                 return;
 
+            if (_nachproduktionModus)
+            {
+                if (CopyArchivedOrderToActiveNachproduktion(auftrag, out var neueNummer))
+                {
+                    MessageBox.Show($"Nachproduktion erstellt: {neueNummer}\nDer Auftrag ist jetzt aktiv und kann gestartet/beendet werden.",
+                        "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    _nachproduktionModus = false;
+                    UpdateAuftragsKwText();
+                    LoadAuftraege();
+
+                    var neu = AuftraegeView.FirstOrDefault(a => string.Equals(a.Auftragsnummer, neueNummer, StringComparison.OrdinalIgnoreCase));
+                    if (neu != null)
+                    {
+                        AuftraegeGrid.SelectedItem = neu;
+                        var dlgNeu = new ProduktionVerfolgungDialog(neu) { Owner = this };
+                        dlgNeu.ShowDialog();
+                        LoadAuftraege();
+                    }
+                }
+
+                return;
+            }
+
             var dlg = new ProduktionVerfolgungDialog(auftrag) { Owner = this };
             dlg.ShowDialog();
             LoadAuftraege();
+        }
+
+        private bool CopyArchivedOrderToActiveNachproduktion(Auftrag archivAuftrag, out string neueAuftragsnummer)
+        {
+            neueAuftragsnummer = string.Empty;
+            if (archivAuftrag == null || string.IsNullOrWhiteSpace(archivAuftrag.Auftragsnummer))
+                return false;
+
+            var basis = archivAuftrag.Auftragsnummer.Trim();
+            for (var i = 0; i < 50; i++)
+            {
+                var suffix = DateTime.Now.ToString("yyMMddHHmm");
+                var candidate = i == 0 ? $"{basis}-NP-{suffix}" : $"{basis}-NP-{suffix}-{i}";
+
+                var neuerAuftrag = new Auftrag
+                {
+                    Auftragsnummer = candidate,
+                    Arbeitsplatz = AuftragArbeitsplatzService.Laser,
+                    Status = AuftragStatus.Offen,
+                    ErstelltAm = DateTime.Now,
+                    GeaendertAm = DateTime.Now,
+                    AngelegtVon = OperatorIdentityService.CurrentOperatorName,
+                    GeaendertVon = OperatorIdentityService.CurrentOperatorName,
+                    MaterialPositionen = archivAuftrag.MaterialPositionen,
+                    GesamtStueckzahl = archivAuftrag.GesamtStueckzahl,
+                    GesamtGewichtKg = archivAuftrag.GesamtGewichtKg,
+                    PdfPfad = archivAuftrag.PdfPfad,
+                    PdfPfadAngefangeneTafel = archivAuftrag.PdfPfadAngefangeneTafel,
+                    ProduktionStartDatum = null,
+                    ProduktionEndDatum = null,
+                    IsEilt = false,
+                    SortIndex = 0
+                };
+
+                if (!AuftragDataService.AddAuftrag(neuerAuftrag))
+                    continue;
+
+                AuftragArbeitsplatzService.SetArbeitsplatz(candidate, AuftragArbeitsplatzService.Laser);
+                neueAuftragsnummer = candidate;
+                return true;
+            }
+
+            MessageBox.Show("Nachproduktion konnte nicht erstellt werden (Auftragsnummernkonflikt).", "Laser", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
+        }
+
+        private void ToggleNachproduktionModus()
+        {
+            _nachproduktionModus = !_nachproduktionModus;
+            if (_nachproduktionModus && (_ausgewaehlteKalenderWoche < 1 || _ausgewaehlteKalenderWoche > 53))
+                _ausgewaehlteKalenderWoche = ISOWeek.GetWeekOfYear(DateTime.Now);
+
+            UpdateAuftragsKwText();
+            LoadAuftraege();
+        }
+
+        private void OnToggleNachproduktionClick(object sender, RoutedEventArgs e)
+        {
+            ToggleNachproduktionModus();
+        }
+
+        private void SaveAllMaterials()
+        {
+            MaterialDataService.SaveAllMaterials(_alleMaterialien);
+        }
+
+        private void PushUndoSnapshot(string beschreibung)
+        {
+            UndoService.PushSnapshot($"Laser: {beschreibung}", _alleMaterialien);
+        }
+
+        private void RestoreMaterials(List<MaterialItem> materialien)
+        {
+            _alleMaterialien = materialien;
+            _restMaterialienCache = _alleMaterialien.Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
+            SaveAllMaterials();
+            LoadMaterials();
+        }
+
+        private void ExecuteUndo()
+        {
+            var materialien = UndoService.Undo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Zur├╝cksetzen.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
+        }
+
+        private void ExecuteRedo()
+        {
+            var materialien = UndoService.Redo(_alleMaterialien);
+            if (materialien == null)
+            {
+                MessageBox.Show("Es gibt keine Aktion zum Vorw├ñrtszetten.", "Laser", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            RestoreMaterials(materialien);
         }
 
         private void OnAuftragPdfButtonClick(object sender, RoutedEventArgs e)
@@ -770,128 +839,6 @@ namespace MaterialManager_V01.Views
             if (string.IsNullOrWhiteSpace(pdfPfad))
             {
                 MessageBox.Show(emptyMessage, "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            if (!System.IO.File.Exists(pdfPfad))
-            {
-                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
-            dlg.ShowDialog();
-        }
-
-        private void UpdateAuftragsKwText()
-        {
-            AuftragsKwText = $"Bis KW {_ausgewaehlteKalenderWoche:D2} ▾";
-        }
-
-        private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
-        {
-            var menu = new ContextMenu
-            {
-                Style = (Style)FindResource("DarkContextMenuStyle"),
-                ItemContainerStyle = (Style)FindResource("DarkContextMenuItemStyle")
-            };
-
-            for (var kw = 1; kw <= 53; kw++)
-            {
-                var istAktiv = kw == _ausgewaehlteKalenderWoche;
-                var item = new MenuItem
-                {
-                    Header = istAktiv
-                        ? $"▶ KW {kw:D2} ({_aktuellesJahr})"
-                        : $"KW {kw:D2} ({_aktuellesJahr})",
-                    Tag = kw
-                };
-                item.Click += OnAuftragKwAuswahlItemClick;
-                menu.Items.Add(item);
-            }
-
-            if (sender is Button button)
-            {
-                button.ContextMenu = menu;
-                menu.PlacementTarget = button;
-            }
-
-            menu.IsOpen = true;
-        }
-
-        private void OnAuftragKwAuswahlItemClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is not MenuItem item || item.Tag is not int kw)
-                return;
-
-            _ausgewaehlteKalenderWoche = kw;
-            UpdateAuftragsKwText();
-            ApplyAuftragsKwFilter();
-
-            var archivDialog = new ArchivAuftraegeDialog(_ausgewaehlteKalenderWoche, _aktuellesJahr)
-            {
-                Owner = this
-            };
-            archivDialog.ShowDialog();
-        }
-
-        private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var dep = e.OriginalSource as DependencyObject;
-            if (dep == null) return;
-
-            var cell = FindVisualParent<DataGridCell>(dep);
-            if (cell == null) return;
-
-            if (cell.DataContext is not MaterialItem item) return;
-
-            if (cell.Column is DataGridBoundColumn boundColumn &&
-                boundColumn.Binding is Binding binding &&
-                binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
-            {
-                OpenPdfPreviewForItem(item);
-                e.Handled = true;
-                return;
-            }
-
-            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0]) return;
-
-            item.IsSelected = !item.IsSelected;
-            RestMaterialGrid.SelectedItem = item;
-            e.Handled = true;
-        }
-
-        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
-        {
-            while (child != null)
-            {
-                if (child is T t) return t;
-                child = VisualTreeHelper.GetParent(child);
-            }
-            return null;
-        }
-
-        private void OnOpenPdfClick(object sender, RoutedEventArgs e)
-        {
-            var item = GetPrimarySelectedMaterial();
-            if (item == null)
-            {
-                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            OpenPdfPreviewForItem(item);
-        }
-
-        private void OpenPdfPreviewForItem(MaterialItem item)
-        {
-            var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
-                ? item.PdfPfadAngefangeneTafel
-                : item.PdfPfad;
-
-            if (string.IsNullOrWhiteSpace(pdfPfad))
-            {
-                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -968,5 +915,175 @@ namespace MaterialManager_V01.Views
                 DragMove();
             }
         }
+
+        private string GetSelectedFilter()
+        {
+            var selected = (FormFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (!string.IsNullOrWhiteSpace(selected))
+                return selected.Trim();
+
+            if (!string.IsNullOrWhiteSpace(FormFilterBox?.Text))
+                return FormFilterBox.Text.Trim();
+
+            return "Alle";
+        }
+
+        private void ApplyFilter()
+        {
+            var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+            var selectedFilter = GetSelectedFilter();
+
+            var filtered = _restMaterialienCache.Where(m =>
+            {
+                var filterMatch = selectedFilter switch
+                {
+                    "Alle" => true,
+                    "Blech" => m.Kategorie == MaterialKategorie.Blech,
+                    "Rohr" => m.Kategorie == MaterialKategorie.Rohr,
+                    "Profil" => m.Kategorie == MaterialKategorie.Profil,
+                    "GF" or "MF" or "KF" or "Rest" => string.Equals(m.Form, selectedFilter, StringComparison.OrdinalIgnoreCase),
+                    _ => true
+                };
+
+                if (!filterMatch)
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(query))
+                    return true;
+
+                return (m.MaterialArt ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || (m.Legierung ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || (m.Mass ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || (m.Restnummer ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || (m.AuftragNr ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || (m.Form ?? string.Empty).ToLowerInvariant().Contains(query)
+                    || m.Kategorie.ToString().ToLowerInvariant().Contains(query)
+                    || (m.Lagerort ?? string.Empty).ToLowerInvariant().Contains(query);
+            }).ToList();
+
+            RestMaterialien.Clear();
+            foreach (var item in filtered)
+                RestMaterialien.Add(item);
+
+            SummaryText = $"{RestMaterialien.Count} gebuchte Material(ien)";
+        }
+
+        private void OnAuftragKwAuswahlClick(object sender, RoutedEventArgs e)
+        {
+            if (!_nachproduktionModus)
+                return;
+
+            var menu = new ContextMenu
+            {
+                Style = (Style)FindResource("DarkContextMenuStyle"),
+                ItemContainerStyle = (Style)FindResource("DarkContextMenuItemStyle")
+            };
+
+            for (var kw = 1; kw <= 53; kw++)
+            {
+                var istAktiv = kw == _ausgewaehlteKalenderWoche;
+                var item = new MenuItem
+                {
+                    Header = istAktiv
+                        ? $"> KW {kw:D2} ({_aktuellesJahr})"
+                        : $"KW {kw:D2} ({_aktuellesJahr})",
+                    Tag = kw
+                };
+                item.Click += OnAuftragKwAuswahlItemClick;
+                menu.Items.Add(item);
+            }
+
+            if (sender is Button button)
+            {
+                button.ContextMenu = menu;
+                menu.PlacementTarget = button;
+            }
+
+            menu.IsOpen = true;
+        }
+
+        private void OnAuftragKwAuswahlItemClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MenuItem item || item.Tag is not int kw)
+                return;
+
+            _ausgewaehlteKalenderWoche = kw;
+            UpdateAuftragsKwText();
+            LoadAuftraege();
+        }
+
+        private void OnOpenPdfClick(object sender, RoutedEventArgs e)
+        {
+            var item = GetPrimarySelectedMaterial();
+            if (item == null)
+            {
+                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            OpenPdfPreviewForItem(item);
+        }
+
+        private void OpenPdfPreviewForItem(MaterialItem item)
+        {
+            var pdfPfad = !string.IsNullOrWhiteSpace(item.PdfPfadAngefangeneTafel)
+                ? item.PdfPfadAngefangeneTafel
+                : item.PdfPfad;
+
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Diesem Material ist keine PDF-Datei zugeordnet.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dlg = new PdfPreviewDialog(pdfPfad) { Owner = this };
+            dlg.ShowDialog();
+        }
+
+        private void OnGridPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dep = e.OriginalSource as DependencyObject;
+            if (dep == null)
+                return;
+
+            var cell = FindVisualParent<DataGridCell>(dep);
+            if (cell == null || cell.DataContext is not MaterialItem item)
+                return;
+
+            if (cell.Column is DataGridBoundColumn boundColumn
+                && boundColumn.Binding is Binding binding
+                && binding.Path?.Path == nameof(MaterialItem.PdfDateiname))
+            {
+                OpenPdfPreviewForItem(item);
+                e.Handled = true;
+                return;
+            }
+
+            if (RestMaterialGrid.Columns.Count == 0 || cell.Column != RestMaterialGrid.Columns[0])
+                return;
+
+            item.IsSelected = !item.IsSelected;
+            RestMaterialGrid.SelectedItem = item;
+            e.Handled = true;
+        }
+
+        private static T? FindVisualParent<T>(DependencyObject? child) where T : DependencyObject
+        {
+            while (child != null)
+            {
+                if (child is T t)
+                    return t;
+                child = VisualTreeHelper.GetParent(child);
+            }
+
+            return null;
+        }
+
     }
 }

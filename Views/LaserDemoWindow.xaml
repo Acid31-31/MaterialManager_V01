@@ -441,16 +441,24 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Auftragsverfolgung (5 Wochen bis zur ausgewählten KW)" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-                    <Button Grid.Row="0"
-                            Grid.Column="1"
-                            Content="{Binding AuftragsKwText}"
-                            Click="OnAuftragKwAuswahlClick"
-                            Background="#455A64"
-                            Foreground="White"
-                            Padding="12,6"
-                            Height="30"
-                            MinWidth="140"
-                            Margin="8,0,0,8"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <Button Content="{Binding NachproduktionButtonText}"
+                                Click="OnToggleNachproduktionClick"
+                                Background="#455A64"
+                                Foreground="White"
+                                Padding="12,6"
+                                Height="30"
+                                MinWidth="140"
+                                Margin="0,0,8,8"/>
+                        <Button Content="{Binding AuftragsKwText}"
+                                Click="OnAuftragKwAuswahlClick"
+                                Background="#455A64"
+                                Foreground="White"
+                                Padding="12,6"
+                                Height="30"
+                                MinWidth="180"
+                                Margin="0,0,0,8"/>
+                    </StackPanel>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
 
