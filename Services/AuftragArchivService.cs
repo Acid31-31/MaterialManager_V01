@@ -477,17 +477,158 @@ namespace MaterialManager_V01.Services
         private static void UpsertArchiveMetadata(ArchivAuftragMeta meta)
         {
             var list = LoadArchiveMetadata();
+            _ = UpsertArchiveMetadataInList(list, meta);
+            SaveArchiveMetadata(list);
+        }
+
+        public static int BackfillArchiveMetadataForYear(int jahr)
+        {
+            var basisPfad = ResolveArchiveBasePath();
+            if (string.IsNullOrWhiteSpace(basisPfad))
+                return 0;
+
+            var yearFolder = Path.Combine(basisPfad, jahr.ToString());
+            if (!Directory.Exists(yearFolder))
+                return 0;
+
+            var metaList = LoadArchiveMetadata();
+            var changed = 0;
+
+            foreach (var kwFolder in Directory.EnumerateDirectories(yearFolder, "KW_*", SearchOption.TopDirectoryOnly))
+            {
+                var kwText = Path.GetFileName(kwFolder);
+                if (kwText?.StartsWith("KW_", StringComparison.OrdinalIgnoreCase) != true || !int.TryParse(kwText.Substring(3), out var kwNumber))
+                    continue;
+
+                foreach (var orderFolder in Directory.EnumerateDirectories(kwFolder, "*", SearchOption.TopDirectoryOnly))
+                {
+                    var jsonPath = Path.Combine(orderFolder, "auftrag.json");
+                    if (!File.Exists(jsonPath))
+                        continue;
+
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(File.ReadAllText(jsonPath));
+                        if (!doc.RootElement.TryGetProperty("Auftrag", out var orderElement))
+                            continue;
+
+                        var auftragsnummer = orderElement.TryGetProperty("Auftragsnummer", out var nr) ? (nr.GetString() ?? string.Empty).Trim() : string.Empty;
+                        if (string.IsNullOrWhiteSpace(auftragsnummer))
+                            auftragsnummer = Path.GetFileName(orderFolder);
+
+                        var meta = new ArchivAuftragMeta
+                        {
+                            Jahr = jahr,
+                            Kalenderwoche = kwNumber,
+                            Auftragsnummer = auftragsnummer,
+                            ArchiviertAm = Directory.GetLastWriteTime(orderFolder),
+                            MaterialPositionen = GetInt(orderElement, "MaterialPositionen"),
+                            GesamtStueckzahl = GetInt(orderElement, "GesamtStueckzahl"),
+                            GesamtGewichtKg = GetDouble(orderElement, "GesamtGewichtKg"),
+                            AngelegtVon = GetString(orderElement, "AngelegtVon"),
+                            GeaendertVon = GetString(orderElement, "GeaendertVon"),
+                            ProduktionStartDatum = GetDateTime(orderElement, "ProduktionStartDatum"),
+                            ProduktionEndDatum = GetDateTime(orderElement, "ProduktionEndDatum")
+                        };
+
+                        changed += UpsertArchiveMetadataInList(metaList, meta);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            if (changed > 0)
+                SaveArchiveMetadata(metaList);
+
+            return changed;
+        }
+
+        private static int UpsertArchiveMetadataInList(List<ArchivAuftragMeta> list, ArchivAuftragMeta meta)
+        {
             var idx = list.FindIndex(x =>
                 x.Jahr == meta.Jahr
                 && x.Kalenderwoche == meta.Kalenderwoche
                 && string.Equals(x.Auftragsnummer, meta.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
 
             if (idx >= 0)
-                list[idx] = meta;
-            else
-                list.Add(meta);
+            {
+                var existing = list[idx];
+                if (existing.ArchiviertAm == meta.ArchiviertAm
+                    && existing.MaterialPositionen == meta.MaterialPositionen
+                    && existing.GesamtStueckzahl == meta.GesamtStueckzahl
+                    && Math.Abs(existing.GesamtGewichtKg - meta.GesamtGewichtKg) < 0.0001
+                    && string.Equals(existing.AngelegtVon, meta.AngelegtVon, StringComparison.Ordinal)
+                    && string.Equals(existing.GeaendertVon, meta.GeaendertVon, StringComparison.Ordinal)
+                    && existing.ProduktionStartDatum == meta.ProduktionStartDatum
+                    && existing.ProduktionEndDatum == meta.ProduktionEndDatum)
+                    return 0;
 
-            SaveArchiveMetadata(list);
+                list[idx] = meta;
+                return 1;
+            }
+
+            list.Add(meta);
+            return 1;
+        }
+
+        private static string GetString(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName, out var value) && value.ValueKind != JsonValueKind.Null)
+                return value.GetString() ?? string.Empty;
+            return string.Empty;
+        }
+
+        private static int GetInt(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var value) || value.ValueKind == JsonValueKind.Null)
+                return 0;
+
+            if (value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var number))
+                return number;
+
+            if (value.ValueKind == JsonValueKind.String && int.TryParse(value.GetString(), out number))
+                return number;
+
+            return 0;
+        }
+
+        private static double GetDouble(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var value) || value.ValueKind == JsonValueKind.Null)
+                return 0;
+
+            if (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number))
+                return number;
+
+            if (value.ValueKind == JsonValueKind.String && double.TryParse(value.GetString(), out number))
+                return number;
+
+            return 0;
+        }
+
+        private static DateTime? GetDateTime(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var value) || value.ValueKind == JsonValueKind.Null)
+                return null;
+
+            if (value.ValueKind == JsonValueKind.String && DateTime.TryParse(value.GetString(), out var dt))
+                return dt;
+
+            if (value.ValueKind == JsonValueKind.Number && value.TryGetInt64(out var unix))
+            {
+                try
+                {
+                    return DateTimeOffset.FromUnixTimeSeconds(unix).LocalDateTime;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         private static ArchivAuftragMeta? TryGetArchiveMetadata(int jahr, int kalenderwoche, string? auftragsnummer)

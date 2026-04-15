@@ -30,6 +30,14 @@ namespace MaterialManager_V01.Views
         {
             _alleAuftraegeAktiv = AuftragDataService.LoadAllAuftraege();
 
+            try
+            {
+                AuftragArchivService.BackfillArchiveMetadataForYear(System.DateTime.Now.Year);
+            }
+            catch
+            {
+            }
+
             var archivEintraege = AuftragArchivService.GetArchivedOrdersForYear(System.DateTime.Now.Year);
             _alleAuftraegeArchiv = archivEintraege
                 .GroupBy(x => x.Auftragsnummer, System.StringComparer.OrdinalIgnoreCase)
