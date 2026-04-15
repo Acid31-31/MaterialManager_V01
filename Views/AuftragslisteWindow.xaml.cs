@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,9 @@ namespace MaterialManager_V01.Views
     {
         private List<Auftrag> _alleAuftraegeAktiv = new();
         private List<Auftrag> _alleAuftraegeArchiv = new();
+        private int _selectedYear = DateTime.Now.Year;
+        private int _selectedKw = 0;
+        private bool _suppressFilterEvents;
         public ObservableCollection<Auftrag> Auftraege { get; } = new();
         public string? SelectedAuftragsnummer { get; private set; }
 
@@ -23,7 +28,41 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
+            InitializeTimeFilters();
             LoadAuftraege();
+        }
+
+        private void InitializeTimeFilters()
+        {
+            _suppressFilterEvents = true;
+
+            YearFilterBox.Items.Clear();
+            var years = AuftragArchivService.GetArchivedYears();
+            if (!years.Contains(DateTime.Now.Year))
+                years.Insert(0, DateTime.Now.Year);
+
+            foreach (var year in years.Distinct().OrderByDescending(y => y))
+                YearFilterBox.Items.Add(new ComboBoxItem { Content = year.ToString(CultureInfo.InvariantCulture), Tag = year });
+
+            YearFilterBox.SelectedItem = YearFilterBox.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => (i.Tag as int?) == _selectedYear)
+                ?? YearFilterBox.Items.OfType<ComboBoxItem>().FirstOrDefault();
+
+            if (YearFilterBox.SelectedItem is ComboBoxItem selectedYearItem && selectedYearItem.Tag is int y)
+                _selectedYear = y;
+
+            KwFilterBox.Items.Clear();
+            KwFilterBox.Items.Add(new ComboBoxItem { Content = "Alle", Tag = 0 });
+            for (var kw = 1; kw <= 53; kw++)
+                KwFilterBox.Items.Add(new ComboBoxItem { Content = $"KW {kw:D2}", Tag = kw });
+
+            KwFilterBox.SelectedItem = KwFilterBox.Items
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => (i.Tag as int?) == _selectedKw)
+                ?? KwFilterBox.Items.OfType<ComboBoxItem>().FirstOrDefault();
+
+            _suppressFilterEvents = false;
         }
 
         private void LoadAuftraege()
@@ -32,15 +71,15 @@ namespace MaterialManager_V01.Views
 
             try
             {
-                AuftragArchivService.BackfillArchiveMetadataForYear(System.DateTime.Now.Year);
+                AuftragArchivService.BackfillArchiveMetadataForYear(_selectedYear);
             }
             catch
             {
             }
 
-            var archivEintraege = AuftragArchivService.GetArchivedOrdersForYear(System.DateTime.Now.Year);
+            var archivEintraege = AuftragArchivService.GetArchivedOrdersForYear(_selectedYear);
             _alleAuftraegeArchiv = archivEintraege
-                .GroupBy(x => x.Auftragsnummer, System.StringComparer.OrdinalIgnoreCase)
+                .GroupBy(x => x.Auftragsnummer, StringComparer.OrdinalIgnoreCase)
                 .Select(g => g.OrderByDescending(x => x.ArchiviertAm).First())
                 .Select(x => new Auftrag
                 {
@@ -64,6 +103,11 @@ namespace MaterialManager_V01.Views
             ApplyFilter();
         }
 
+        private static DateTime GetRelevantDate(Auftrag auftrag)
+        {
+            return auftrag.GeaendertAm != default ? auftrag.GeaendertAm : auftrag.ErstelltAm;
+        }
+
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -74,9 +118,15 @@ namespace MaterialManager_V01.Views
                 "Aktiv" => _alleAuftraegeAktiv,
                 "Archiviert" => _alleAuftraegeArchiv,
                 _ => _alleAuftraegeAktiv
-                    .Concat(_alleAuftraegeArchiv.Where(a => !_alleAuftraegeAktiv.Any(b => string.Equals(b.Auftragsnummer, a.Auftragsnummer, System.StringComparison.OrdinalIgnoreCase))))
+                    .Concat(_alleAuftraegeArchiv.Where(a => !_alleAuftraegeAktiv.Any(b => string.Equals(b.Auftragsnummer, a.Auftragsnummer, StringComparison.OrdinalIgnoreCase))))
                     .ToList()
             };
+
+            if (_selectedYear > 0)
+                basis = basis.Where(a => GetRelevantDate(a).Year == _selectedYear).ToList();
+
+            if (_selectedKw > 0)
+                basis = basis.Where(a => ISOWeek.GetWeekOfYear(GetRelevantDate(a)) == _selectedKw).ToList();
 
             var filtered = string.IsNullOrWhiteSpace(query)
                 ? basis
@@ -113,14 +163,37 @@ namespace MaterialManager_V01.Views
 
         private void OnSourceFilterChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _suppressFilterEvents)
                 return;
+
+            ApplyFilter();
+        }
+
+        private void OnYearFilterChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded || _suppressFilterEvents)
+                return;
+
+            if (YearFilterBox.SelectedItem is ComboBoxItem item && item.Tag is int year)
+                _selectedYear = year;
+
+            LoadAuftraege();
+        }
+
+        private void OnKwFilterChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded || _suppressFilterEvents)
+                return;
+
+            if (KwFilterBox.SelectedItem is ComboBoxItem item && item.Tag is int kw)
+                _selectedKw = kw;
 
             ApplyFilter();
         }
 
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
+            InitializeTimeFilters();
             LoadAuftraege();
         }
 

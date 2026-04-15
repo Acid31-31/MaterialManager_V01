@@ -144,6 +144,21 @@ namespace MaterialManager_V01.Services
             return targetPath;
         }
 
+        public static List<int> GetArchivedYears()
+        {
+            var basisPfad = ResolveArchiveBasePath();
+            if (string.IsNullOrWhiteSpace(basisPfad) || !Directory.Exists(basisPfad))
+                return new List<int>();
+
+            return Directory.EnumerateDirectories(basisPfad, "*", SearchOption.TopDirectoryOnly)
+                .Select(Path.GetFileName)
+                .Where(name => int.TryParse(name, out _))
+                .Select(name => int.Parse(name!))
+                .Distinct()
+                .OrderByDescending(y => y)
+                .ToList();
+        }
+
         public static List<ArchivAuftragEintrag> GetArchivedOrdersForYear(int jahr)
         {
             var basisPfad = ResolveArchiveBasePath();

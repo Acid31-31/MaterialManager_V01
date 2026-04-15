@@ -157,12 +157,36 @@
                       Foreground="White"
                       BorderBrush="#444"
                       Padding="8,4"
-                      Margin="0,0,12,0"
+                      Margin="0,0,10,0"
                       SelectionChanged="OnSourceFilterChanged">
                  <ComboBoxItem>Alle</ComboBoxItem>
                  <ComboBoxItem>Aktiv</ComboBoxItem>
                  <ComboBoxItem IsSelected="True">Archiviert</ComboBoxItem>
              </ComboBox>
+            <TextBlock Text="Jahr:"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+            <ComboBox x:Name="YearFilterBox"
+                      Width="95"
+                      Background="#222"
+                      Foreground="White"
+                      BorderBrush="#444"
+                      Padding="8,4"
+                      Margin="0,0,10,0"
+                      SelectionChanged="OnYearFilterChanged"/>
+            <TextBlock Text="KW:"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+            <ComboBox x:Name="KwFilterBox"
+                      Width="110"
+                      Background="#222"
+                      Foreground="White"
+                      BorderBrush="#444"
+                      Padding="8,4"
+                      Margin="0,0,12,0"
+                      SelectionChanged="OnKwFilterChanged"/>
             <TextBlock Text="Suchen:"
                        Foreground="White"
                        VerticalAlignment="Center"
