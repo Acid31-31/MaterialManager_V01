@@ -131,7 +131,7 @@
 
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
-                   Text="Doppelklick oder 'Auftrag anzeigen' übernimmt den Auftrag direkt in die Auftragssteuerung."
+                   Text="Doppelklick öffnet die PDF des Auftrags. 'Auftrag anzeigen' übernimmt den Auftrag in die Auftragssteuerung."
                    Foreground="#AAAAAA"
                    Margin="0,0,0,10"/>
 

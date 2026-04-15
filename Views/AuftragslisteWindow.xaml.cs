@@ -212,7 +212,34 @@ namespace MaterialManager_V01.Views
 
         private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            UseSelectedAuftrag();
+            if (AuftragsGrid.SelectedItem is not Auftrag auftrag)
+                return;
+
+            var pdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, auftrag.PdfPfad);
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Für diesen Auftrag wurde keine PDF gefunden.", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = pdfPfad,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnOpenPdfClick(object sender, RoutedEventArgs e)
