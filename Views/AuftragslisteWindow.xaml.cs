@@ -43,11 +43,11 @@ namespace MaterialManager_V01.Views
                     GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
                     ProduktionStartDatum = x.ProduktionStartDatum,
                     ProduktionEndDatum = x.ProduktionEndDatum,
-                    MaterialPositionen = 0,
-                    GesamtStueckzahl = 0,
-                    GesamtGewichtKg = 0,
-                    AngelegtVon = string.Empty,
-                    GeaendertVon = string.Empty,
+                    MaterialPositionen = x.MaterialPositionen,
+                    GesamtStueckzahl = x.GesamtStueckzahl,
+                    GesamtGewichtKg = x.GesamtGewichtKg,
+                    AngelegtVon = x.AngelegtVon,
+                    GeaendertVon = x.GeaendertVon,
                     PdfPfad = x.ErstePdfPfad
                 })
                 .OrderByDescending(x => x.GeaendertAm)

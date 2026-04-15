@@ -10,6 +10,8 @@ namespace MaterialManager_V01.Services
 {
     public static class AuftragArchivService
     {
+        private const string ArchiveMetaFileName = "archiv_meta.json";
+
         public static (bool Success, string Message) ArchiveCompletedOrder(Auftrag auftrag, int kalenderWoche, int jahr)
         {
             if (auftrag == null || string.IsNullOrWhiteSpace(auftrag.Auftragsnummer))
@@ -41,6 +43,21 @@ namespace MaterialManager_V01.Services
                     if (!string.IsNullOrWhiteSpace(archivPfad))
                         kopiertePdf++;
                 }
+
+                UpsertArchiveMetadata(new ArchivAuftragMeta
+                {
+                    Jahr = jahr,
+                    Kalenderwoche = kalenderWoche,
+                    Auftragsnummer = auftrag.Auftragsnummer,
+                    ArchiviertAm = DateTime.Now,
+                    MaterialPositionen = auftrag.MaterialPositionen > 0 ? auftrag.MaterialPositionen : materialien.Count,
+                    GesamtStueckzahl = auftrag.GesamtStueckzahl > 0 ? auftrag.GesamtStueckzahl : materialien.Sum(m => m.Stueckzahl),
+                    GesamtGewichtKg = auftrag.GesamtGewichtKg > 0 ? auftrag.GesamtGewichtKg : Math.Round(materialien.Sum(m => m.GewichtKg), 2),
+                    AngelegtVon = auftrag.AngelegtVon ?? string.Empty,
+                    GeaendertVon = auftrag.GeaendertVon ?? string.Empty,
+                    ProduktionStartDatum = auftrag.ProduktionStartDatum,
+                    ProduktionEndDatum = auftrag.ProduktionEndDatum
+                });
 
                 AuditLogService.LogAction(
                     OperatorIdentityService.CurrentOperatorName,
@@ -201,16 +218,25 @@ namespace MaterialManager_V01.Services
                 {
                 }
 
+                var meta = TryGetArchiveMetadata(jahr, kalenderWoche, orderNumber);
+
                 result.Add(new ArchivAuftragEintrag
                 {
+                    Jahr = jahr,
+                    Kalenderwoche = kalenderWoche,
                     Auftragsnummer = orderNumber,
                     OrdnerPfad = auftragFolder,
                     AuftragJsonPfad = auftragJson,
                     ErstePdfPfad = pdfFiles.FirstOrDefault() ?? string.Empty,
                     PdfAnzahl = pdfFiles.Count,
-                    ArchiviertAm = Directory.GetLastWriteTime(auftragFolder),
-                    ProduktionStartDatum = produktionStart,
-                    ProduktionEndDatum = produktionEnde
+                    ArchiviertAm = meta?.ArchiviertAm ?? Directory.GetLastWriteTime(auftragFolder),
+                    ProduktionStartDatum = meta?.ProduktionStartDatum ?? produktionStart,
+                    ProduktionEndDatum = meta?.ProduktionEndDatum ?? produktionEnde,
+                    MaterialPositionen = meta?.MaterialPositionen ?? 0,
+                    GesamtStueckzahl = meta?.GesamtStueckzahl ?? 0,
+                    GesamtGewichtKg = meta?.GesamtGewichtKg ?? 0,
+                    AngelegtVon = meta?.AngelegtVon ?? string.Empty,
+                    GeaendertVon = meta?.GeaendertVon ?? string.Empty
                 });
             }
 
@@ -231,14 +257,24 @@ namespace MaterialManager_V01.Services
                     continue;
                 }
 
+                var meta = TryGetArchiveMetadata(jahr, kalenderWoche, group.Key);
                 result.Add(new ArchivAuftragEintrag
                 {
+                    Jahr = jahr,
+                    Kalenderwoche = kalenderWoche,
                     Auftragsnummer = group.Key,
                     OrdnerPfad = kwFolder,
                     AuftragJsonPfad = string.Empty,
                     ErstePdfPfad = files.FirstOrDefault() ?? string.Empty,
                     PdfAnzahl = files.Count,
-                    ArchiviertAm = files.Max(File.GetLastWriteTime)
+                    ArchiviertAm = meta?.ArchiviertAm ?? files.Max(File.GetLastWriteTime),
+                    ProduktionStartDatum = meta?.ProduktionStartDatum,
+                    ProduktionEndDatum = meta?.ProduktionEndDatum,
+                    MaterialPositionen = meta?.MaterialPositionen ?? 0,
+                    GesamtStueckzahl = meta?.GesamtStueckzahl ?? 0,
+                    GesamtGewichtKg = meta?.GesamtGewichtKg ?? 0,
+                    AngelegtVon = meta?.AngelegtVon ?? string.Empty,
+                    GeaendertVon = meta?.GeaendertVon ?? string.Empty
                 });
             }
 
@@ -398,10 +434,79 @@ namespace MaterialManager_V01.Services
             var cleaned = new string(value.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
             return string.IsNullOrWhiteSpace(cleaned) ? "Auftrag" : cleaned;
         }
+
+        private static string GetArchiveMetaFilePath()
+        {
+            return Path.Combine(ResolveArchiveBasePath(), ArchiveMetaFileName);
+        }
+
+        private static List<ArchivAuftragMeta> LoadArchiveMetadata()
+        {
+            try
+            {
+                var path = GetArchiveMetaFilePath();
+                if (!File.Exists(path))
+                    return new List<ArchivAuftragMeta>();
+
+                var json = File.ReadAllText(path);
+                return JsonSerializer.Deserialize<List<ArchivAuftragMeta>>(json) ?? new List<ArchivAuftragMeta>();
+            }
+            catch
+            {
+                return new List<ArchivAuftragMeta>();
+            }
+        }
+
+        private static void SaveArchiveMetadata(List<ArchivAuftragMeta> list)
+        {
+            try
+            {
+                var path = GetArchiveMetaFilePath();
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var json = JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(path, json);
+            }
+            catch
+            {
+            }
+        }
+
+        private static void UpsertArchiveMetadata(ArchivAuftragMeta meta)
+        {
+            var list = LoadArchiveMetadata();
+            var idx = list.FindIndex(x =>
+                x.Jahr == meta.Jahr
+                && x.Kalenderwoche == meta.Kalenderwoche
+                && string.Equals(x.Auftragsnummer, meta.Auftragsnummer, StringComparison.OrdinalIgnoreCase));
+
+            if (idx >= 0)
+                list[idx] = meta;
+            else
+                list.Add(meta);
+
+            SaveArchiveMetadata(list);
+        }
+
+        private static ArchivAuftragMeta? TryGetArchiveMetadata(int jahr, int kalenderwoche, string? auftragsnummer)
+        {
+            if (string.IsNullOrWhiteSpace(auftragsnummer))
+                return null;
+
+            var list = LoadArchiveMetadata();
+            return list
+                .Where(x => x.Jahr == jahr && x.Kalenderwoche == kalenderwoche)
+                .OrderByDescending(x => x.ArchiviertAm)
+                .FirstOrDefault(x => string.Equals(x.Auftragsnummer, auftragsnummer, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public sealed class ArchivAuftragEintrag
     {
+        public int Jahr { get; set; }
+        public int Kalenderwoche { get; set; }
         public string Auftragsnummer { get; set; } = string.Empty;
         public string OrdnerPfad { get; set; } = string.Empty;
         public string AuftragJsonPfad { get; set; } = string.Empty;
@@ -410,6 +515,11 @@ namespace MaterialManager_V01.Services
         public DateTime ArchiviertAm { get; set; }
         public DateTime? ProduktionStartDatum { get; set; }
         public DateTime? ProduktionEndDatum { get; set; }
+        public int MaterialPositionen { get; set; }
+        public int GesamtStueckzahl { get; set; }
+        public double GesamtGewichtKg { get; set; }
+        public string AngelegtVon { get; set; } = string.Empty;
+        public string GeaendertVon { get; set; } = string.Empty;
         public string ProduktionStartText => ProduktionStartDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
         public string ProduktionEndText => ProduktionEndDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
         public string ProduktionsDauer
@@ -425,5 +535,20 @@ namespace MaterialManager_V01.Services
                 return $"{Math.Max(0, diff.Minutes)}min";
             }
         }
+    }
+
+    public sealed class ArchivAuftragMeta
+    {
+        public int Jahr { get; set; }
+        public int Kalenderwoche { get; set; }
+        public string Auftragsnummer { get; set; } = string.Empty;
+        public DateTime ArchiviertAm { get; set; }
+        public int MaterialPositionen { get; set; }
+        public int GesamtStueckzahl { get; set; }
+        public double GesamtGewichtKg { get; set; }
+        public string AngelegtVon { get; set; } = string.Empty;
+        public string GeaendertVon { get; set; } = string.Empty;
+        public DateTime? ProduktionStartDatum { get; set; }
+        public DateTime? ProduktionEndDatum { get; set; }
     }
 }

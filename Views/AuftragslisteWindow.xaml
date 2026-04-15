@@ -2,9 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Auftragsliste"
-        Height="720"
-        Width="1200"
+        Height="820"
+        Width="1680"
+        MinWidth="1400"
         WindowStartupLocation="CenterOwner"
+        WindowState="Maximized"
         Background="#0B0B0B"
         FontSize="13">
     <Window.Resources>
@@ -183,23 +185,24 @@
                   IsReadOnly="True"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
+                  HorizontalScrollBarVisibility="Auto"
                   MouseDoubleClick="OnGridMouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="180"/>
-                <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="100">
+                <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="240"/>
+                <DataGridTextColumn Header="Bereich" Binding="{Binding Arbeitsplatz}" Width="110">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource ArbeitsbereichTextStyle}"/>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
-                <DataGridTextColumn Header="Positionen" Binding="{Binding MaterialPositionen}" Width="90"/>
-                <DataGridTextColumn Header="Stückzahl" Binding="{Binding GesamtStueckzahl}" Width="90"/>
-                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
-                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="120"/>
-                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="120"/>
-                <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="140"/>
-                <DataGridTextColumn Header="Geändert" Binding="{Binding GeaendertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="140"/>
-                <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>
+                <DataGridTextColumn Header="Positionen" Binding="{Binding MaterialPositionen}" Width="95"/>
+                <DataGridTextColumn Header="Stückzahl" Binding="{Binding GesamtStueckzahl}" Width="95"/>
+                <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="110"/>
+                <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="170"/>
+                <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="170"/>
+                <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                <DataGridTextColumn Header="Geändert" Binding="{Binding GeaendertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="110"/>
             </DataGrid.Columns>
         </DataGrid>
 
