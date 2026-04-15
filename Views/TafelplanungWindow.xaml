@@ -408,20 +408,13 @@
                     </StackPanel.Resources>
 
                     <TextBlock Text="Freigabe" Foreground="#90CAF9" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftragsliste" Click="OnOrderListClick" Background="#455A64" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Laser freigeben" Click="OnAssignToLaserClick" Background="#2E7D32" Foreground="White" Margin="0,0,0,10"/>
+                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftragsliste" Click="OnOrderListClick" Background="#455A64" Foreground="White" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Auftragsaktionen" Foreground="#FFB74D" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftrag nach oben" Click="OnMoveAuftragUpClick" Background="#546E7A" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Auftrag nach unten" Click="OnMoveAuftragDownClick" Background="#455A64" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Als EILT markieren" Click="OnMarkEiltClick" Background="#B71C1C" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="EILT entfernen" Click="OnUnmarkEiltClick" Background="#6D4C41" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion starten (jetzt)" Click="OnStartNowClick" Background="#2E7D32" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion beenden (jetzt)" Click="OnEndNowClick" Background="#8E24AA" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Für Auftrag buchen" Click="OnBookForOrderClick" Background="#00897B" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Reservierung aufheben" Click="OnReleaseReservationClick" Background="#8B1E1E" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Produktion abschließen" Click="OnCompleteProductionClick" Background="#6A1B9A" Foreground="White"/>
-                    <Button Style="{StaticResource SidebarActionButtonStyle}" Content="📄 PDF anhängen" Click="OnAttachPdfClick" Background="#E65100" Foreground="White"/>
                     <Button Style="{StaticResource SidebarActionButtonStyle}" Content="Material löschen" Click="OnDeleteMaterialClick" Background="#C62828" Foreground="White" Margin="0,0,0,10"/>
 
                     <TextBlock Text="Navigation / Ansicht" Foreground="#B0BEC5" FontWeight="Bold" FontSize="12" Margin="0,0,0,6"/>
