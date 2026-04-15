@@ -12,7 +12,8 @@ namespace MaterialManager_V01.Views
 {
     public partial class AuftragslisteWindow : Window, INotifyPropertyChanged
     {
-        private List<Auftrag> _alleAuftraege = new();
+        private List<Auftrag> _alleAuftraegeAktiv = new();
+        private List<Auftrag> _alleAuftraegeArchiv = new();
         public ObservableCollection<Auftrag> Auftraege { get; } = new();
         public string? SelectedAuftragsnummer { get; private set; }
 
@@ -27,16 +28,51 @@ namespace MaterialManager_V01.Views
 
         private void LoadAuftraege()
         {
-            _alleAuftraege = AuftragDataService.LoadAllAuftraege();
+            _alleAuftraegeAktiv = AuftragDataService.LoadAllAuftraege();
+
+            var archivEintraege = AuftragArchivService.GetArchivedOrdersForYear(System.DateTime.Now.Year);
+            _alleAuftraegeArchiv = archivEintraege
+                .GroupBy(x => x.Auftragsnummer, System.StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.OrderByDescending(x => x.ArchiviertAm).First())
+                .Select(x => new Auftrag
+                {
+                    Auftragsnummer = x.Auftragsnummer,
+                    Arbeitsplatz = "Archiv",
+                    Status = AuftragStatus.Abgeschlossen,
+                    ErstelltAm = x.ProduktionStartDatum ?? x.ArchiviertAm,
+                    GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
+                    ProduktionStartDatum = x.ProduktionStartDatum,
+                    ProduktionEndDatum = x.ProduktionEndDatum,
+                    MaterialPositionen = 0,
+                    GesamtStueckzahl = 0,
+                    GesamtGewichtKg = 0,
+                    AngelegtVon = string.Empty,
+                    GeaendertVon = string.Empty,
+                    PdfPfad = x.ErstePdfPfad
+                })
+                .OrderByDescending(x => x.GeaendertAm)
+                .ToList();
+
             ApplyFilter();
         }
 
         private void ApplyFilter()
         {
             var query = SearchBox?.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+            var source = ((SourceFilterBox?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Alle").Trim();
+
+            List<Auftrag> basis = source switch
+            {
+                "Aktiv" => _alleAuftraegeAktiv,
+                "Archiviert" => _alleAuftraegeArchiv,
+                _ => _alleAuftraegeAktiv
+                    .Concat(_alleAuftraegeArchiv.Where(a => !_alleAuftraegeAktiv.Any(b => string.Equals(b.Auftragsnummer, a.Auftragsnummer, System.StringComparison.OrdinalIgnoreCase))))
+                    .ToList()
+            };
+
             var filtered = string.IsNullOrWhiteSpace(query)
-                ? _alleAuftraege
-                : _alleAuftraege.Where(a =>
+                ? basis
+                : basis.Where(a =>
                     (a.Auftragsnummer ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     (a.Arbeitsplatz ?? string.Empty).ToLowerInvariant().Contains(query) ||
                     a.Status.ToString().ToLowerInvariant().Contains(query) ||
@@ -64,6 +100,14 @@ namespace MaterialManager_V01.Views
 
         private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
+            ApplyFilter();
+        }
+
+        private void OnSourceFilterChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
             ApplyFilter();
         }
 

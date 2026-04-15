@@ -144,9 +144,12 @@
                       Foreground="White"
                       BorderBrush="#333">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="180"/>
-                    <DataGridTextColumn Header="Archiviert am" Binding="{Binding ArchiviertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="170"/>
-                    <DataGridTextColumn Header="PDFs" Binding="{Binding PdfAnzahl}" Width="80"/>
+                    <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="160"/>
+                    <DataGridTextColumn Header="Start" Binding="{Binding ProduktionStartText}" Width="130"/>
+                    <DataGridTextColumn Header="Ende" Binding="{Binding ProduktionEndText}" Width="130"/>
+                    <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="95"/>
+                    <DataGridTextColumn Header="Archiviert am" Binding="{Binding ArchiviertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="160"/>
+                    <DataGridTextColumn Header="PDFs" Binding="{Binding PdfAnzahl}" Width="65"/>
                     <DataGridTextColumn Header="Ordner" Binding="{Binding OrdnerPfad}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>

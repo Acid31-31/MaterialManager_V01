@@ -127,6 +127,32 @@ namespace MaterialManager_V01.Services
             return targetPath;
         }
 
+        public static List<ArchivAuftragEintrag> GetArchivedOrdersForYear(int jahr)
+        {
+            var basisPfad = ResolveArchiveBasePath();
+            if (string.IsNullOrWhiteSpace(basisPfad))
+                return new List<ArchivAuftragEintrag>();
+
+            var yearFolder = Path.Combine(basisPfad, jahr.ToString());
+            if (!Directory.Exists(yearFolder))
+                return new List<ArchivAuftragEintrag>();
+
+            var result = new List<ArchivAuftragEintrag>();
+            foreach (var kwFolder in Directory.EnumerateDirectories(yearFolder, "KW_*", SearchOption.TopDirectoryOnly))
+            {
+                var kwText = Path.GetFileName(kwFolder);
+                var kwNumber = 0;
+                if (kwText?.StartsWith("KW_", StringComparison.OrdinalIgnoreCase) == true)
+                    int.TryParse(kwText.Substring(3), out kwNumber);
+
+                result.AddRange(GetArchivedOrdersForWeek(jahr, kwNumber));
+            }
+
+            return result
+                .OrderByDescending(x => x.ArchiviertAm)
+                .ToList();
+        }
+
         public static List<ArchivAuftragEintrag> GetArchivedOrdersForWeek(int jahr, int kalenderWoche)
         {
             var basisPfad = ResolveArchiveBasePath();
@@ -147,15 +173,27 @@ namespace MaterialManager_V01.Services
                     : new List<string>();
 
                 var orderNumber = Path.GetFileName(auftragFolder);
+                DateTime? produktionStart = null;
+                DateTime? produktionEnde = null;
                 try
                 {
                     if (File.Exists(auftragJson))
                     {
                         using var doc = JsonDocument.Parse(File.ReadAllText(auftragJson));
-                        if (doc.RootElement.TryGetProperty("Auftrag", out var orderElement)
-                            && orderElement.TryGetProperty("Auftragsnummer", out var numberElement))
+                        if (doc.RootElement.TryGetProperty("Auftrag", out var orderElement))
                         {
-                            orderNumber = numberElement.GetString() ?? orderNumber;
+                            if (orderElement.TryGetProperty("Auftragsnummer", out var numberElement))
+                                orderNumber = numberElement.GetString() ?? orderNumber;
+
+                            if (orderElement.TryGetProperty("ProduktionStartDatum", out var startElement)
+                                && startElement.ValueKind != JsonValueKind.Null
+                                && startElement.TryGetDateTime(out var startDt))
+                                produktionStart = startDt;
+
+                            if (orderElement.TryGetProperty("ProduktionEndDatum", out var endElement)
+                                && endElement.ValueKind != JsonValueKind.Null
+                                && endElement.TryGetDateTime(out var endDt))
+                                produktionEnde = endDt;
                         }
                     }
                 }
@@ -170,7 +208,9 @@ namespace MaterialManager_V01.Services
                     AuftragJsonPfad = auftragJson,
                     ErstePdfPfad = pdfFiles.FirstOrDefault() ?? string.Empty,
                     PdfAnzahl = pdfFiles.Count,
-                    ArchiviertAm = Directory.GetLastWriteTime(auftragFolder)
+                    ArchiviertAm = Directory.GetLastWriteTime(auftragFolder),
+                    ProduktionStartDatum = produktionStart,
+                    ProduktionEndDatum = produktionEnde
                 });
             }
 
@@ -368,5 +408,22 @@ namespace MaterialManager_V01.Services
         public string ErstePdfPfad { get; set; } = string.Empty;
         public int PdfAnzahl { get; set; }
         public DateTime ArchiviertAm { get; set; }
+        public DateTime? ProduktionStartDatum { get; set; }
+        public DateTime? ProduktionEndDatum { get; set; }
+        public string ProduktionStartText => ProduktionStartDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
+        public string ProduktionEndText => ProduktionEndDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
+        public string ProduktionsDauer
+        {
+            get
+            {
+                if (ProduktionStartDatum == null || ProduktionEndDatum == null)
+                    return "–";
+
+                var diff = ProduktionEndDatum.Value - ProduktionStartDatum.Value;
+                if (diff.TotalHours >= 1)
+                    return $"{(int)diff.TotalHours}h {diff.Minutes}min";
+                return $"{Math.Max(0, diff.Minutes)}min";
+            }
+        }
     }
 }

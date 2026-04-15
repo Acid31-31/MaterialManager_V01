@@ -82,6 +82,22 @@
                     Grid.Column="1"
                     Orientation="Horizontal"
                     Margin="12,0,0,10">
+            <TextBlock Text="Quelle:"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+            <ComboBox x:Name="SourceFilterBox"
+                      Width="130"
+                      Background="#222"
+                      Foreground="White"
+                      BorderBrush="#444"
+                      Padding="8,4"
+                      Margin="0,0,12,0"
+                      SelectionChanged="OnSourceFilterChanged">
+                <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
+                <ComboBoxItem>Aktiv</ComboBoxItem>
+                <ComboBoxItem>Archiviert</ComboBoxItem>
+            </ComboBox>
             <TextBlock Text="Suchen:"
                        Foreground="White"
                        VerticalAlignment="Center"
