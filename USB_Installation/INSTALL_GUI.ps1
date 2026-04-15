@@ -674,7 +674,14 @@ function Show-InstallScreen {
         
         $installProgress.Value = 60
         Start-Sleep -Milliseconds 400
-        
+
+        $statusLabel.Text = 'Setze Update-Berechtigungen...'
+        $form.Refresh()
+        Grant-UpdateWritePermission -TargetPath $Script:InstallPath
+
+        $installProgress.Value = 72
+        Start-Sleep -Milliseconds 200
+
         $statusLabel.Text = 'Erstelle Verknuepfung...'
         $form.Refresh()
         if ($Script:desktopCheckbox.Checked) {

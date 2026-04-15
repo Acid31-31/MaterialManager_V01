@@ -108,11 +108,33 @@ internal static class Program
 
     private static bool RequiresElevation(string targetDirectory)
     {
-        var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-        var programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+        if (string.IsNullOrWhiteSpace(targetDirectory))
+            return true;
 
-        return targetDirectory.StartsWith(programFiles, StringComparison.OrdinalIgnoreCase)
-            || (!string.IsNullOrWhiteSpace(programFilesX86) && targetDirectory.StartsWith(programFilesX86, StringComparison.OrdinalIgnoreCase));
+        return !CanWriteToDirectory(targetDirectory);
+    }
+
+    private static bool CanWriteToDirectory(string directory)
+    {
+        try
+        {
+            if (!Directory.Exists(directory))
+                return false;
+
+            var probeFile = Path.Combine(directory, $".mm_write_test_{Guid.NewGuid():N}.tmp");
+            using (File.Create(probeFile, 1, FileOptions.DeleteOnClose))
+            {
+            }
+
+            if (File.Exists(probeFile))
+                File.Delete(probeFile);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void RelaunchElevated(string[] originalArgs, string targetDirectory, int waitProcessId)
