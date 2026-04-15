@@ -1,7 +1,7 @@
-﻿<Window x:Class="MaterialManager_V01.Views.AuftragBuchungDialog"
+<Window x:Class="MaterialManager_V01.Views.AuftragBuchungDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="FÃ¼r Auftrag buchen"
+        Title="Für Auftrag buchen"
         Width="520"
         MinHeight="320"
         SizeToContent="Height"
@@ -23,7 +23,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Material fÃ¼r Auftrag buchen" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Material für Auftrag buchen" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
 
         <TextBlock Grid.Row="1" Text="Auftragsnummer" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,10"/>
         <TextBox x:Name="AuftragTextBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#222" Foreground="White" BorderBrush="#444" Padding="8,6" Margin="0,0,0,10"/>

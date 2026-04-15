@@ -1,7 +1,7 @@
-﻿<Window x:Class="MaterialManager_V01.Views.ArchivAuftraegeDialog"
+<Window x:Class="MaterialManager_V01.Views.ArchivAuftraegeDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Archiv-AuftrÃ¤ge"
+        Title="Archiv-Aufträge"
         Height="620"
         Width="960"
         WindowStartupLocation="CenterOwner"
@@ -164,7 +164,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                 <TextBlock x:Name="EmptyStateText"
-                           Text="FÃ¼r diese Kalenderwoche sind keine archivierten AuftrÃ¤ge vorhanden."
+                           Text="Für diese Kalenderwoche sind keine archivierten Aufträge vorhanden."
                            TextAlignment="Center"
                            TextWrapping="Wrap"
                            Foreground="#CCCCCC"
@@ -173,9 +173,9 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Ordner Ã¶ffnen" Click="OnOpenFolderClick" Padding="14,6" Margin="0,0,8,0"/>
-            <Button Content="PDF Ã¶ffnen" Click="OnOpenPdfClick" Padding="14,6" Margin="0,0,8,0"/>
-            <Button Content="SchlieÃŸen" Click="OnCloseClick" Padding="14,6" Background="#555"/>
+            <Button Content="Ordner öffnen" Click="OnOpenFolderClick" Padding="14,6" Margin="0,0,8,0"/>
+            <Button Content="PDF öffnen" Click="OnOpenPdfClick" Padding="14,6" Margin="0,0,8,0"/>
+            <Button Content="Schließen" Click="OnCloseClick" Padding="14,6" Background="#555"/>
         </StackPanel>
     </Grid>
 </Window>

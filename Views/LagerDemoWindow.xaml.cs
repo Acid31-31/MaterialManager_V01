@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -61,7 +61,7 @@ namespace MaterialManager_V01.Views
         {
             InitializeComponent();
             DataContext = this;
-            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} â€“ Lager";
+            HeaderText = $"Angemeldet als {OperatorIdentityService.CurrentOperatorName} – Lager";
             RefreshLicenseBanner();
             RefreshNetworkStatusBanner();
             FitToWorkArea();
@@ -275,7 +275,7 @@ namespace MaterialManager_V01.Views
 
             var normalized = filter.Replace(',', '.').Trim();
 
-            // Sonderfall: Eingabe "0" soll alle StÃ¤rken < 1 mm zeigen (z. B. 0.2, 0.3, 0.5, 0.8)
+            // Sonderfall: Eingabe "0" soll alle Stärken < 1 mm zeigen (z. B. 0.2, 0.3, 0.5, 0.8)
             if (string.Equals(normalized, "0", StringComparison.Ordinal))
                 return value > 0 && value < 1;
 
@@ -510,7 +510,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Undo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum ZurÃ¼cksetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -522,7 +522,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Redo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum VorwÃ¤rtssetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -579,7 +579,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Lager", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Lager", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -650,8 +650,8 @@ namespace MaterialManager_V01.Views
                 var confirmDialog = new BestaetigungsDialog(
                     "Material aus dem Lager entfernen",
                     items.Count == 1
-                        ? "Material nach Eintrag-LÃ¶schung wirklich aus dem Lager entfernen?"
-                        : $"{items.Count} Materialien nach Eintrag-LÃ¶schung wirklich aus dem Lager entfernen?",
+                        ? "Material nach Eintrag-Löschung wirklich aus dem Lager entfernen?"
+                        : $"{items.Count} Materialien nach Eintrag-Löschung wirklich aus dem Lager entfernen?",
                     confirmText: "Entfernen",
                     cancelText: "Abbrechen",
                     confirmColorHex: "#8B1E1E")
@@ -660,7 +660,7 @@ namespace MaterialManager_V01.Views
                 if (confirmDialog.ShowDialog() != true)
                     return;
 
-                PushUndoSnapshot(items.Count == 1 ? "Eintrag lÃ¶schen + Material lÃ¶schen" : "EintrÃ¤ge lÃ¶schen + Materialien lÃ¶schen");
+                PushUndoSnapshot(items.Count == 1 ? "Eintrag löschen + Material löschen" : "Einträge löschen + Materialien löschen");
                 foreach (var item in items)
                     _alleMaterialien.Remove(item);
 
@@ -670,7 +670,7 @@ namespace MaterialManager_V01.Views
             }
 
             var auftragNr = dlg.AuftragNr?.Trim() ?? string.Empty;
-            PushUndoSnapshot(items.Count == 1 ? "Reservierung Ã¤ndern" : "Reservierung Ã¤ndern (mehrere)");
+            PushUndoSnapshot(items.Count == 1 ? "Reservierung ändern" : "Reservierung ändern (mehrere)");
 
             foreach (var item in items)
             {
@@ -688,15 +688,15 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte reservierte Materialien auswÃ¤hlen oder markieren.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte reservierte Materialien auswählen oder markieren.", "Lager", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirmDialog = new BestaetigungsDialog(
                 "Reservierung global aufheben",
                 items.Count == 1
-                    ? $"Reservierung fÃ¼r '{items[0].MaterialArt} {items[0].Mass}' global aufheben?"
-                    : $"Reservierung fÃ¼r {items.Count} markierte Materialien global aufheben?",
+                    ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' global aufheben?"
+                    : $"Reservierung für {items.Count} markierte Materialien global aufheben?",
                 confirmText: "Aufheben",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#4A4A4A")
@@ -724,7 +724,7 @@ namespace MaterialManager_V01.Views
                 "MaterialItem",
                 string.Join(",", auftragsNummern),
                 oldValue: "Reserviert",
-                newValue: "VerfÃ¼gbar",
+                newValue: "Verfügbar",
                 reason: $"Reservierung im Lager global aufgehoben ({items.Count} Positionen)");
 
             if (releasedItem != null)
@@ -765,11 +765,11 @@ namespace MaterialManager_V01.Views
                 return;
 
             var confirmDialog = new BestaetigungsDialog(
-                "Material lÃ¶schen",
+                "Material löschen",
                 items.Count == 1
-                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich lÃ¶schen?"
-                    : $"{items.Count} markierte Materialien wirklich lÃ¶schen?",
-                confirmText: "LÃ¶schen",
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
+                confirmText: "Löschen",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#8B1E1E")
             { Owner = this };
@@ -777,7 +777,7 @@ namespace MaterialManager_V01.Views
             if (confirmDialog.ShowDialog() != true)
                 return;
 
-            PushUndoSnapshot(items.Count == 1 ? "Material lÃ¶schen" : "Materialien lÃ¶schen");
+            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
             foreach (var item in items)
             {
                 _alleMaterialien.Remove(item);
@@ -892,7 +892,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 

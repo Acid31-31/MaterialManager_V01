@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -63,7 +63,7 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private string _auftragOverviewText = "Keine AuftrÃ¤ge geladen";
+        private string _auftragOverviewText = "Keine Aufträge geladen";
         public string AuftragOverviewText
         {
             get => _auftragOverviewText;
@@ -482,7 +482,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Undo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum ZurÃ¼cksetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Zurücksetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -494,7 +494,7 @@ namespace MaterialManager_V01.Views
             var materialien = UndoService.Redo(_alleMaterialien);
             if (materialien == null)
             {
-                MessageBox.Show("Es gibt keine Aktion zum VorwÃ¤rtssetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Es gibt keine Aktion zum Vorwärtssetzen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -568,7 +568,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -610,7 +610,7 @@ namespace MaterialManager_V01.Views
             var auftragsnummer = GetSelectedAuftragsnummerForFreigabe();
             if (string.IsNullOrWhiteSpace(auftragsnummer))
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen oder ein gebuchtes Material markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen oder ein gebuchtes Material markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -620,7 +620,7 @@ namespace MaterialManager_V01.Views
             LoadAuftraegeGridForSelectedKw();
             ApplyFilter();
 
-            MessageBox.Show($"Auftrag {auftragsnummer} wurde fÃ¼r den Laser freigegeben.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Auftrag {auftragsnummer} wurde für den Laser freigegeben.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private string GetSelectedAuftragsnummerForFreigabe()
@@ -646,7 +646,7 @@ namespace MaterialManager_V01.Views
             foreach (var auftrag in gefilterteAuftraege)
                 AuftraegeView.Add(auftrag);
 
-            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/AuftrÃ¤ge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
+            AuftragsKwInfoText = $"{AuftraegeView.Count} Auftrag/Aufträge in KW {_ausgewaehlteKalenderWoche:D2} ({_aktuellesJahr})";
         }
 
         private void UpdateAuftragsKwText()
@@ -734,7 +734,7 @@ namespace MaterialManager_V01.Views
 
             if (string.IsNullOrWhiteSpace(auftrag.PdfPfadKantzeichnung))
             {
-                MessageBox.Show("FÃ¼r diesen Auftrag wurde keine Kant-PDF gefunden.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Für diesen Auftrag wurde keine Kant-PDF gefunden.", "PDF-Vorschau", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -770,7 +770,7 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grÃ¼n markiert.",
+            MessageBox.Show($"{gefunden.Count} passende Materialien gefunden.\n\nDie Materialien sind grün markiert.",
                 "Material-Suche Ergebnis", MessageBoxButton.OK, MessageBoxImage.Information);
 
             var auswahlDlg = new ResteAuswahlDialog(gefunden) { Owner = this };
@@ -816,7 +816,7 @@ namespace MaterialManager_V01.Views
 
                 if (verfuegbareMaterialien.Count == 0)
                 {
-                    MessageBox.Show("Es sind keine verfÃ¼gbaren Materialien fÃ¼r eine Reservierung vorhanden.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Es sind keine verfügbaren Materialien für eine Reservierung vorhanden.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -837,7 +837,7 @@ namespace MaterialManager_V01.Views
                 if (dlg.ShowDialog() != true)
                     return;
 
-                PushUndoSnapshot("FÃ¼r Auftrag buchen");
+                PushUndoSnapshot("Für Auftrag buchen");
                 BookMaterialForOrder(item, dlg.AuftragNr, dlg.Menge, dlg.PdfPfad);
                 auftragNrForLog = dlg.AuftragNr;
                 gebuchteMenge = dlg.Menge;
@@ -848,7 +848,7 @@ namespace MaterialManager_V01.Views
                 if (dlg.ShowDialog() != true || string.IsNullOrWhiteSpace(dlg.AuftragNr))
                     return;
 
-                PushUndoSnapshot("Mehrere Materialien fÃ¼r Auftrag buchen");
+                PushUndoSnapshot("Mehrere Materialien für Auftrag buchen");
                 foreach (var item in items.ToList())
                 {
                     BookMaterialForOrder(item, dlg.AuftragNr.Trim(), item.Stueckzahl, string.Empty);
@@ -862,8 +862,8 @@ namespace MaterialManager_V01.Views
                 "RESERVE",
                 "MaterialItem",
                 string.IsNullOrWhiteSpace(auftragNrForLog) ? "MULTI" : auftragNrForLog,
-                oldValue: "VerfÃ¼gbar",
-                newValue: $"Gebucht fÃ¼r Auftrag {auftragNrForLog}, StÃ¼ck: {gebuchteMenge}",
+                oldValue: "Verfügbar",
+                newValue: $"Gebucht für Auftrag {auftragNrForLog}, Stück: {gebuchteMenge}",
                 reason: $"Reservierung in Auftragssteuerung ({items.Count} Positionen)");
 
             if (!string.IsNullOrWhiteSpace(auftragNrForLog))
@@ -878,7 +878,7 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte gebuchte Materialien auswÃ¤hlen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -886,8 +886,8 @@ namespace MaterialManager_V01.Views
             var confirmDialog = new BestaetigungsDialog(
                 "Reservierung aufheben",
                 items.Count == 1
-                    ? $"Reservierung fÃ¼r '{items[0].MaterialArt} {items[0].Mass}' aufheben?"
-                    : $"Reservierung fÃ¼r {items.Count} markierte Materialien aufheben?",
+                    ? $"Reservierung für '{items[0].MaterialArt} {items[0].Mass}' aufheben?"
+                    : $"Reservierung für {items.Count} markierte Materialien aufheben?",
                 confirmText: "Aufheben",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#4A4A4A")
@@ -942,7 +942,7 @@ namespace MaterialManager_V01.Views
                 "MaterialItem",
                 string.Join(",", auftragsNummern),
                 oldValue: "Reserviert",
-                newValue: "VerfÃ¼gbar",
+                newValue: "Verfügbar",
                 reason: $"Reservierung aufgehoben ({items.Count} Positionen)");
 
             SaveAllMaterials();
@@ -954,17 +954,17 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials().Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr)).ToList();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte gebuchte Materialien auswÃ¤hlen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte gebuchte Materialien auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var auftragsNummern = items.Select(i => i.AuftragNr).Where(v => !string.IsNullOrWhiteSpace(v)).Distinct().ToList();
             var confirmDialog = new BestaetigungsDialog(
-                "Produktion abschlieÃŸen",
+                "Produktion abschließen",
                 items.Count == 1
-                    ? $"Produktion fÃ¼r '{items[0].MaterialArt} {items[0].Mass}' abschlieÃŸen und gebuchtes Material entfernen?"
-                    : $"Produktion fÃ¼r {items.Count} markierte Materialien abschlieÃŸen und gebuchtes Material entfernen?",
-                confirmText: "AbschlieÃŸen",
+                    ? $"Produktion für '{items[0].MaterialArt} {items[0].Mass}' abschließen und gebuchtes Material entfernen?"
+                    : $"Produktion für {items.Count} markierte Materialien abschließen und gebuchtes Material entfernen?",
+                confirmText: "Abschließen",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#8E24AA")
             { Owner = this };
@@ -972,7 +972,7 @@ namespace MaterialManager_V01.Views
             if (confirmDialog.ShowDialog() != true)
                 return;
 
-            PushUndoSnapshot(items.Count == 1 ? "Produktion abschlieÃŸen" : "Produktionen abschlieÃŸen");
+            PushUndoSnapshot(items.Count == 1 ? "Produktion abschließen" : "Produktionen abschließen");
             foreach (var item in items.ToList())
             {
                 BuchungsService.BucheAusgang(item, item.AuftragNr, OperatorIdentityService.CurrentOperatorName);
@@ -997,16 +997,16 @@ namespace MaterialManager_V01.Views
             var items = GetMarkedMaterials();
             if (items.Count == 0)
             {
-                MessageBox.Show("Bitte zuerst Material auswÃ¤hlen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst Material auswählen oder markieren.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var confirmDialog = new BestaetigungsDialog(
-                "Material lÃ¶schen",
+                "Material löschen",
                 items.Count == 1
-                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich lÃ¶schen?"
-                    : $"{items.Count} markierte Materialien wirklich lÃ¶schen?",
-                confirmText: "LÃ¶schen",
+                    ? $"Material '{items[0].MaterialArt} {items[0].Mass}' wirklich löschen?"
+                    : $"{items.Count} markierte Materialien wirklich löschen?",
+                confirmText: "Löschen",
                 cancelText: "Abbrechen",
                 confirmColorHex: "#8B1E1E")
             { Owner = this };
@@ -1014,7 +1014,7 @@ namespace MaterialManager_V01.Views
             if (confirmDialog.ShowDialog() != true)
                 return;
 
-            PushUndoSnapshot(items.Count == 1 ? "Material lÃ¶schen" : "Materialien lÃ¶schen");
+            PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
             foreach (var item in items.ToList())
                 _alleMaterialien.Remove(item);
 
@@ -1152,18 +1152,18 @@ namespace MaterialManager_V01.Views
             var item = GetPrimarySelectedMaterial();
             if (item == null)
             {
-                MessageBox.Show("Bitte zuerst ein Material auswÃ¤hlen.", "PDF anhÃ¤ngen", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst ein Material auswählen.", "PDF anhängen", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var title = GetPdfAttachTitle(item);
-            var aktuellerPfad = title == "PDF-Datei fÃ¼r angefangene Tafel auswÃ¤hlen" ? item.PdfPfadAngefangeneTafel : item.PdfPfad;
+            var aktuellerPfad = title == "PDF-Datei für angefangene Tafel auswählen" ? item.PdfPfadAngefangeneTafel : item.PdfPfad;
             var pdfPfad = WaehlePdfDatei(title, aktuellerPfad);
             if (string.IsNullOrWhiteSpace(pdfPfad))
                 return;
 
-            PushUndoSnapshot("PDF anhÃ¤ngen");
-            if (title == "PDF-Datei fÃ¼r angefangene Tafel auswÃ¤hlen")
+            PushUndoSnapshot("PDF anhängen");
+            if (title == "PDF-Datei für angefangene Tafel auswählen")
                 item.PdfPfadAngefangeneTafel = pdfPfad;
             else
                 item.PdfPfad = pdfPfad;
@@ -1183,7 +1183,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -1246,10 +1246,10 @@ namespace MaterialManager_V01.Views
             if (!string.IsNullOrWhiteSpace(editedItem.PdfPfadAngefangeneTafel))
                 return true;
 
-            var pdfPfad = WaehlePdfDatei("PDF-Datei fÃ¼r angefangene Tafel auswÃ¤hlen", originalItem.PdfPfad);
+            var pdfPfad = WaehlePdfDatei("PDF-Datei für angefangene Tafel auswählen", originalItem.PdfPfad);
             if (string.IsNullOrWhiteSpace(pdfPfad))
             {
-                MessageBox.Show("Bitte eine PDF-Datei fÃ¼r die angefangene Tafel auswÃ¤hlen.", "Angefangene Tafel", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte eine PDF-Datei für die angefangene Tafel auswählen.", "Angefangene Tafel", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
 
@@ -1260,8 +1260,8 @@ namespace MaterialManager_V01.Views
         private string GetPdfAttachTitle(MaterialItem item)
         {
             return !string.IsNullOrWhiteSpace(item.AuftragNr) && item.Kategorie == MaterialKategorie.Blech && !string.IsNullOrWhiteSpace(item.PdfPfad)
-                ? "PDF-Datei fÃ¼r angefangene Tafel auswÃ¤hlen"
-                : "PDF-Datei fÃ¼r Auftrag auswÃ¤hlen";
+                ? "PDF-Datei für angefangene Tafel auswählen"
+                : "PDF-Datei für Auftrag auswählen";
         }
 
         private void BookMaterialForOrder(MaterialItem item, string auftragNr, int menge, string pdfPfad = "")
@@ -1340,7 +1340,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1359,7 +1359,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1378,7 +1378,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1396,7 +1396,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1414,7 +1414,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1433,7 +1433,7 @@ namespace MaterialManager_V01.Views
             var selected = GetSelectedAuftrag();
             if (selected == null)
             {
-                MessageBox.Show("Bitte zuerst einen Auftrag auswÃ¤hlen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Auftrag auswählen.", "Auftragssteuerung", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -1518,7 +1518,7 @@ namespace MaterialManager_V01.Views
             var auftraege = AuftragDataService.LoadAllAuftraege();
 
             AuftragFilterItems.Clear();
-            AuftragFilterItems.Add(new AuftragFilterItem(string.Empty, "Alle AuftrÃ¤ge"));
+            AuftragFilterItems.Add(new AuftragFilterItem(string.Empty, "Alle Aufträge"));
 
             foreach (var auftrag in auftraege)
             {
@@ -1533,8 +1533,8 @@ namespace MaterialManager_V01.Views
             var offen = auftraege.Count(a => a.Status == AuftragStatus.Offen);
             var inBearbeitung = auftraege.Count(a => a.Status == AuftragStatus.InBearbeitung);
             AuftragOverviewText = auftraege.Count == 0
-                ? "Keine aktiven AuftrÃ¤ge"
-                : $"{auftraege.Count} AuftrÃ¤ge - {offen} offen, {inBearbeitung} in Bearbeitung";
+                ? "Keine aktiven Aufträge"
+                : $"{auftraege.Count} Aufträge - {offen} offen, {inBearbeitung} in Bearbeitung";
         }
 
         private string GetSelectedFilter()

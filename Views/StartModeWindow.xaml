@@ -1,4 +1,4 @@
-﻿<Window x:Class="MaterialManager_V01.Views.StartModeWindow"
+<Window x:Class="MaterialManager_V01.Views.StartModeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MaterialManager V01 - Start"
@@ -141,12 +141,12 @@
                         <MenuItem Header="Geo Suche" Click="OnGeoSucheClick"/>
                         <Separator/>
                         <MenuItem Header="Update-Prozesse bereinigen" Click="OnCleanupUpdateProcessesClick"/>
-                        <MenuItem Header="Netzwerkordner Ã¶ffnen" Click="OnOpenNetworkFolder"/>
+                        <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                         <Separator/>
                         <MenuItem Header="Beenden" Click="OnCloseClick"/>
                     </MenuItem>
                     <MenuItem Header="Bearbeiten">
-                        <MenuItem Header="Bediener auswÃ¤hlen" Click="OnSelectOperatorClick"/>
+                        <MenuItem Header="Bediener auswählen" Click="OnSelectOperatorClick"/>
                     </MenuItem>
                     <MenuItem Header="Ansicht">
                         <MenuItem Header="Startseite" IsEnabled="False"/>
@@ -181,7 +181,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="â€”" Click="OnMinimizeWindow"/>
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Content="—" Click="OnMinimizeWindow"/>
                     <Button Style="{StaticResource TitleBarButtonStyle}" Content="â–¢" Click="OnMaximizeRestoreWindow"/>
                     <Button Style="{StaticResource CloseTitleBarButtonStyle}" Content="âœ•" Click="OnCloseWindow"/>
                 </StackPanel>
@@ -213,7 +213,7 @@
                        HorizontalAlignment="Center"
                        Margin="0,0,0,12"/>
                 <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Bitte Bereich auswÃ¤hlen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 <Rectangle Width="320"
                            Height="1"
                            Fill="Transparent"

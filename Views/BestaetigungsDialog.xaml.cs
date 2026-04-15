@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -8,7 +8,7 @@ namespace MaterialManager_V01.Views
     {
         public bool Confirmed { get; private set; }
 
-        public BestaetigungsDialog(string title, string message, string confirmText = "BestÃ¤tigen", string cancelText = "Abbrechen", string confirmColorHex = "#4A4A4A")
+        public BestaetigungsDialog(string title, string message, string confirmText = "Bestätigen", string cancelText = "Abbrechen", string confirmColorHex = "#4A4A4A")
         {
             InitializeComponent();
             Title = title;

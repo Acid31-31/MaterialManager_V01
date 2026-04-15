@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -144,7 +144,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geÃ¶ffnet werden:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -157,7 +157,7 @@ namespace MaterialManager_V01.Views
 
                 if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
-                    MessageBox.Show($"Update-PrÃ¼fung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show($"Update-Prüfung fehlgeschlagen:\n{result.ErrorMessage}", "Update", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -172,7 +172,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler bei Update-PrÃ¼fung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler bei Update-Prüfung:\n{ex.Message}", "Update", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -190,7 +190,7 @@ namespace MaterialManager_V01.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "PDF-Datei aus gewÃ¼nschtem Ordner wÃ¤hlen",
+                Title = "PDF-Datei aus gewünschtem Ordner wählen",
                 Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
                 CheckFileExists = true
             };
@@ -212,13 +212,13 @@ namespace MaterialManager_V01.Views
             var kunde = GetSelectedCustomer();
             if (string.IsNullOrWhiteSpace(kunde))
             {
-                MessageBox.Show("Bitte zuerst einen Kunden eingeben oder auswÃ¤hlen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Kunden eingeben oder auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             var dlg = new OpenFileDialog
             {
-                Title = $"PDF-Datei fÃ¼r Kundenordner von '{kunde}' wÃ¤hlen",
+                Title = $"PDF-Datei für Kundenordner von '{kunde}' wählen",
                 Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
                 CheckFileExists = true
             };
@@ -272,7 +272,7 @@ namespace MaterialManager_V01.Views
 
             if (!int.TryParse(QuantityBox.Text?.Trim(), out var stueckzahl) || stueckzahl <= 0)
             {
-                MessageBox.Show("Bitte eine gÃ¼ltige StÃ¼ckzahl (> 0) eingeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Bitte eine gültige Stückzahl (> 0) eingeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -289,7 +289,7 @@ namespace MaterialManager_V01.Views
             if (string.IsNullOrWhiteSpace(pdfPath))
             {
                 var confirmWithoutPdf = MessageBox.Show(
-                    "FÃ¼r diese Zeichnungsnummer wurde keine PDF gefunden.\n\nTrotzdem speichern?",
+                    "Für diese Zeichnungsnummer wurde keine PDF gefunden.\n\nTrotzdem speichern?",
                     "Kunden Material",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
@@ -334,11 +334,11 @@ namespace MaterialManager_V01.Views
         {
             if (KundenMaterialGrid.SelectedItem is not KundenMaterialItem item)
             {
-                MessageBox.Show("Bitte zuerst einen Eintrag auswÃ¤hlen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst einen Eintrag auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            if (MessageBox.Show("AusgewÃ¤hlten Eintrag lÃ¶schen?", "Kunden Material", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            if (MessageBox.Show("Ausgewählten Eintrag löschen?", "Kunden Material", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 return;
 
             Items.Remove(item);
@@ -351,7 +351,7 @@ namespace MaterialManager_V01.Views
                 return;
 
             var action = MessageBox.Show(
-                $"Eintrag fÃ¼r '{item.Kunde}' / '{item.Zeichnungsnummer}' bearbeiten?\n\nJa = StÃ¼ckzahl Ã¤ndern\nNein = LÃ¶schen\nAbbrechen = nichts",
+                $"Eintrag für '{item.Kunde}' / '{item.Zeichnungsnummer}' bearbeiten?\n\nJa = Stückzahl ändern\nNein = Löschen\nAbbrechen = nichts",
                 "Kunden Material",
                 MessageBoxButton.YesNoCancel,
                 MessageBoxImage.Question);
@@ -370,7 +370,7 @@ namespace MaterialManager_V01.Views
 
             if (action == MessageBoxResult.No)
             {
-                if (MessageBox.Show("AusgewÃ¤hlten Eintrag wirklich lÃ¶schen?", "Kunden Material", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                if (MessageBox.Show("Ausgewählten Eintrag wirklich löschen?", "Kunden Material", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                     return;
 
                 Items.Remove(item);
@@ -415,7 +415,7 @@ namespace MaterialManager_V01.Views
             var panel = new StackPanel { Margin = new Thickness(16) };
             panel.Children.Add(new TextBlock
             {
-                Text = "Neue StÃ¼ckzahl eingeben:",
+                Text = "Neue Stückzahl eingeben:",
                 Foreground = System.Windows.Media.Brushes.White
             });
             panel.Children.Add(input);
@@ -423,7 +423,7 @@ namespace MaterialManager_V01.Views
 
             var dialog = new Window
             {
-                Title = "StÃ¼ckzahl Ã¤ndern",
+                Title = "Stückzahl ändern",
                 Owner = this,
                 Content = panel,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -438,7 +438,7 @@ namespace MaterialManager_V01.Views
             {
                 if (!int.TryParse(input.Text?.Trim(), out var parsed) || parsed <= 0)
                 {
-                    MessageBox.Show("Bitte eine gÃ¼ltige StÃ¼ckzahl (> 0) eingeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Bitte eine gültige Stückzahl (> 0) eingeben.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -617,7 +617,7 @@ namespace MaterialManager_V01.Views
                 PdfFolderBox.Text = settings.PdfFolder ?? string.Empty;
                 ImportExcelPathBox.Text = settings.ImportExcelPath ?? string.Empty;
                 ImportExcelInfoText.Text = string.IsNullOrWhiteSpace(ImportExcelPathBox.Text)
-                    ? "Keine Excel ausgewÃ¤hlt."
+                    ? "Keine Excel ausgewählt."
                     : Path.GetFileName(ImportExcelPathBox.Text);
 
                 _customerFolderMap.Clear();
@@ -732,7 +732,7 @@ namespace MaterialManager_V01.Views
         {
             var dlg = new OpenFileDialog
             {
-                Title = "Excel-Datei fÃ¼r Kunden-Material wÃ¤hlen",
+                Title = "Excel-Datei für Kunden-Material wählen",
                 Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
                 CheckFileExists = true
             };
@@ -764,7 +764,7 @@ namespace MaterialManager_V01.Views
             var path = ImportExcelPathBox.Text?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
             {
-                MessageBox.Show("Bitte zuerst unter Datei > Einstellungen eine gÃ¼ltige Excel-Datei auswÃ¤hlen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bitte zuerst unter Datei > Einstellungen eine gültige Excel-Datei auswählen.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -797,7 +797,7 @@ namespace MaterialManager_V01.Views
 
             var choosePdfButton = new Button
             {
-                Content = "PDF-Ordner wÃ¤hlen",
+                Content = "PDF-Ordner wählen",
                 Margin = new Thickness(0, 0, 0, 10),
                 Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#455A64"),
                 Foreground = System.Windows.Media.Brushes.White,
@@ -807,7 +807,7 @@ namespace MaterialManager_V01.Views
 
             var chooseExcelButton = new Button
             {
-                Content = "Excel-Datei wÃ¤hlen",
+                Content = "Excel-Datei wählen",
                 Margin = new Thickness(0, 0, 0, 12),
                 Background = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#455A64"),
                 Foreground = System.Windows.Media.Brushes.White,
@@ -846,14 +846,14 @@ namespace MaterialManager_V01.Views
             panel.Children.Add(new TextBlock { Text = "PDF-Root-Ordner", Foreground = System.Windows.Media.Brushes.White });
             panel.Children.Add(pdfBox);
             panel.Children.Add(choosePdfButton);
-            panel.Children.Add(new TextBlock { Text = "Excel-Datei fÃ¼r Kunden-Import", Foreground = System.Windows.Media.Brushes.White });
+            panel.Children.Add(new TextBlock { Text = "Excel-Datei für Kunden-Import", Foreground = System.Windows.Media.Brushes.White });
             panel.Children.Add(excelBox);
             panel.Children.Add(chooseExcelButton);
             panel.Children.Add(buttonRow);
 
             var settingsWindow = new Window
             {
-                Title = "Einstellungen â€“ Kunden Material",
+                Title = "Einstellungen – Kunden Material",
                 Owner = this,
                 Content = panel,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -866,7 +866,7 @@ namespace MaterialManager_V01.Views
             {
                 var dlg = new OpenFileDialog
                 {
-                    Title = "PDF-Datei im gewÃ¼nschten Root-Ordner wÃ¤hlen",
+                    Title = "PDF-Datei im gewünschten Root-Ordner wählen",
                     Filter = "PDF-Dateien (*.pdf)|*.pdf|Alle Dateien (*.*)|*.*",
                     CheckFileExists = true
                 };
@@ -885,7 +885,7 @@ namespace MaterialManager_V01.Views
             {
                 var dlg = new OpenFileDialog
                 {
-                    Title = "Excel-Datei wÃ¤hlen",
+                    Title = "Excel-Datei wählen",
                     Filter = "Excel-Dateien (*.xlsx)|*.xlsx|Alle Dateien (*.*)|*.*",
                     CheckFileExists = true
                 };
@@ -906,7 +906,7 @@ namespace MaterialManager_V01.Views
                 PdfFolderBox.Text = pdfBox.Text?.Trim() ?? string.Empty;
                 ImportExcelPathBox.Text = excelBox.Text?.Trim() ?? string.Empty;
                 ImportExcelInfoText.Text = string.IsNullOrWhiteSpace(ImportExcelPathBox.Text)
-                    ? "Keine Excel ausgewÃ¤hlt."
+                    ? "Keine Excel ausgewählt."
                     : Path.GetFileName(ImportExcelPathBox.Text);
 
                 SaveSettings();
@@ -932,7 +932,7 @@ namespace MaterialManager_V01.Views
                 var ws = wb.Worksheets.FirstOrDefault();
                 if (ws == null)
                 {
-                    MessageBox.Show("Die Excel-Datei enthÃ¤lt kein Blatt.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Die Excel-Datei enthält kein Blatt.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -940,14 +940,14 @@ namespace MaterialManager_V01.Views
                 var lastCol = ws.LastColumnUsed()?.ColumnNumber() ?? 0;
                 if (lastRow < 2 || lastCol < 2)
                 {
-                    MessageBox.Show("Die Excel-Datei enthÃ¤lt keine importierbaren Daten.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Die Excel-Datei enthält keine importierbaren Daten.", "Kunden Material", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 var headerRow = DetectHeaderRow(ws, lastRow, lastCol);
                 var kundeCol = FindColumnIndex(ws, headerRow, lastCol, "kunde", "customer");
                 var zeichnungCol = FindColumnIndex(ws, headerRow, lastCol, "zeichnung", "zeichnungsnr", "zeichnungs nr", "drawing");
-                var anzahlCol = FindColumnIndex(ws, headerRow, lastCol, "anzahl", "menge", "qty", "quantity", "stÃ¼ck");
+                var anzahlCol = FindColumnIndex(ws, headerRow, lastCol, "anzahl", "menge", "qty", "quantity", "stück");
 
                 if (kundeCol <= 0 || zeichnungCol <= 0)
                 {

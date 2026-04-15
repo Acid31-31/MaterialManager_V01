@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MaterialManager_V01.Models;
@@ -35,7 +35,7 @@ namespace MaterialManager_V01.Services
                 if (exakteFormTreffer.Any())
                     return ApplyTrefferArt(exakteFormTreffer, "Exakte Tafel");
 
-                return ApplyTrefferArt(GetLargerDimensionMatches(formKandidaten, laenge.Value, breite.Value), "GrÃ¶ÃŸere Tafel");
+                return ApplyTrefferArt(GetLargerDimensionMatches(formKandidaten, laenge.Value, breite.Value), "Größere Tafel");
             }
 
             if (!string.IsNullOrWhiteSpace(form)
@@ -52,14 +52,14 @@ namespace MaterialManager_V01.Services
 
             var groessereReste = GetLargerDimensionMatches(restKandidaten, laenge.Value, breite.Value);
             if (groessereReste.Any())
-                return ApplyTrefferArt(groessereReste, "GrÃ¶ÃŸerer Rest");
+                return ApplyTrefferArt(groessereReste, "Größerer Rest");
 
             var tafelKandidaten = kandidaten.Where(IsTafel).ToList();
             var exakteTafeln = GetExactDimensionMatches(tafelKandidaten, laenge.Value, breite.Value);
             if (exakteTafeln.Any())
                 return ApplyTrefferArt(exakteTafeln, "Exakte Tafel");
 
-            return ApplyTrefferArt(GetLargerDimensionMatches(tafelKandidaten, laenge.Value, breite.Value), "GrÃ¶ÃŸere Tafel");
+            return ApplyTrefferArt(GetLargerDimensionMatches(tafelKandidaten, laenge.Value, breite.Value), "Größere Tafel");
         }
 
         private static List<MaterialItem> ApplyTrefferArt(List<MaterialItem> materialien, string trefferArt)
