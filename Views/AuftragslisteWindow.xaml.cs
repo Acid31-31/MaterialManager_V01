@@ -19,7 +19,7 @@ namespace MaterialManager_V01.Views
         private List<Auftrag> _alleAuftraegeAktiv = new();
         private List<Auftrag> _alleAuftraegeArchiv = new();
         private int _selectedYear = DateTime.Now.Year;
-        private int _selectedKw = 0;
+        private int _selectedKw = ISOWeek.GetWeekOfYear(DateTime.Now);
         private bool _suppressFilterEvents;
         public ObservableCollection<Auftrag> Auftraege { get; } = new();
         public string? SelectedAuftragsnummer { get; private set; }
@@ -55,14 +55,19 @@ namespace MaterialManager_V01.Views
                 _selectedYear = y;
 
             KwFilterBox.Items.Clear();
-            KwFilterBox.Items.Add(new ComboBoxItem { Content = "Alle", Tag = 0 });
             for (var kw = 1; kw <= 53; kw++)
                 KwFilterBox.Items.Add(new ComboBoxItem { Content = $"KW {kw:D2}", Tag = kw });
+
+            if (_selectedKw < 1 || _selectedKw > 53)
+                _selectedKw = ISOWeek.GetWeekOfYear(DateTime.Now);
 
             KwFilterBox.SelectedItem = KwFilterBox.Items
                 .OfType<ComboBoxItem>()
                 .FirstOrDefault(i => (i.Tag as int?) == _selectedKw)
                 ?? KwFilterBox.Items.OfType<ComboBoxItem>().FirstOrDefault();
+
+            if (KwFilterBox.SelectedItem is ComboBoxItem selectedKwItem && selectedKwItem.Tag is int kwValue)
+                _selectedKw = kwValue;
 
             _suppressFilterEvents = false;
         }
@@ -195,6 +200,7 @@ namespace MaterialManager_V01.Views
 
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
+            _selectedKw = ISOWeek.GetWeekOfYear(DateTime.Now);
             InitializeTimeFilters();
             LoadAuftraege();
         }
