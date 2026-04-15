@@ -264,7 +264,43 @@ namespace MaterialManager_V01.Views
         {
             try
             {
-                _auftraegeCache = AuftragDataService.LoadAllAuftraege();
+                var aktiveAuftraege = AuftragDataService.LoadAllAuftraege();
+
+                try
+                {
+                    AuftragArchivService.BackfillArchiveMetadataForYear(_aktuellesJahr);
+                }
+                catch
+                {
+                }
+
+                var archivAuftraege = AuftragArchivService.GetArchivedOrdersForYear(_aktuellesJahr)
+                    .Where(x => !string.IsNullOrWhiteSpace(x.Auftragsnummer))
+                    .Select(x => new Auftrag
+                    {
+                        Auftragsnummer = x.Auftragsnummer,
+                        Arbeitsplatz = "Archiv",
+                        Status = AuftragStatus.Abgeschlossen,
+                        ErstelltAm = x.ProduktionStartDatum ?? x.ArchiviertAm,
+                        GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
+                        ProduktionStartDatum = x.ProduktionStartDatum,
+                        ProduktionEndDatum = x.ProduktionEndDatum,
+                        MaterialPositionen = x.MaterialPositionen,
+                        GesamtStueckzahl = x.GesamtStueckzahl,
+                        GesamtGewichtKg = x.GesamtGewichtKg,
+                        AngelegtVon = x.AngelegtVon,
+                        GeaendertVon = x.GeaendertVon,
+                        PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(x.Auftragsnummer, x.ErstePdfPfad)
+                    })
+                    .ToList();
+
+                _auftraegeCache = aktiveAuftraege
+                    .Concat(archivAuftraege)
+                    .GroupBy(a => a.Auftragsnummer ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                    .Select(g => g.OrderByDescending(GetRelevantAuftragDate).First())
+                    .Where(a => !string.IsNullOrWhiteSpace(a.Auftragsnummer))
+                    .ToList();
+
                 ApplyAuftragsKwFilter();
             }
             catch (Exception ex)
