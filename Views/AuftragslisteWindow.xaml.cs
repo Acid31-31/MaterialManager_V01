@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,7 +97,7 @@ namespace MaterialManager_V01.Views
                     GesamtGewichtKg = x.GesamtGewichtKg,
                     AngelegtVon = x.AngelegtVon,
                     GeaendertVon = x.GeaendertVon,
-                    PdfPfad = x.ErstePdfPfad
+                    PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(x.Auftragsnummer, x.ErstePdfPfad)
                 })
                 .OrderByDescending(x => x.GeaendertAm)
                 .ToList();
@@ -205,6 +207,38 @@ namespace MaterialManager_V01.Views
         private void OnGridMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             UseSelectedAuftrag();
+        }
+
+        private void OnOpenPdfClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is not Auftrag auftrag)
+                return;
+
+            var pdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, auftrag.PdfPfad);
+            if (string.IsNullOrWhiteSpace(pdfPfad))
+            {
+                MessageBox.Show("Für diesen Auftrag wurde keine PDF gefunden.", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!File.Exists(pdfPfad))
+            {
+                MessageBox.Show($"PDF-Datei nicht gefunden:\n{pdfPfad}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = pdfPfad,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnCloseClick(object sender, RoutedEventArgs e)

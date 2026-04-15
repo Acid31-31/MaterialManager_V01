@@ -219,6 +219,20 @@
                 <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
                 <DataGridTextColumn Header="Geändert" Binding="{Binding GeaendertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
                 <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="110"/>
+                <DataGridTemplateColumn Header="PDF" Width="260">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding PdfDateiname}"
+                                    Click="OnOpenPdfClick"
+                                    ToolTip="{Binding PdfPfad}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#4CAF50"
+                                    HorizontalContentAlignment="Left"
+                                    Padding="0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
