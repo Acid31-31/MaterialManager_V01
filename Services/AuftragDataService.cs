@@ -22,14 +22,58 @@ namespace MaterialManager_V01.Services
 
             ApplySharedAuftragsState(list);
 
+            var materialAnzeigeLookup = BuildMaterialAnzeigeLookup(db);
+
             foreach (var auftrag in list)
             {
+                var normalized = (auftrag.Auftragsnummer ?? string.Empty).Trim();
+                if (!string.IsNullOrWhiteSpace(normalized) && materialAnzeigeLookup.TryGetValue(normalized, out var anzeige))
+                    auftrag.MaterialArtStaerkeText = anzeige;
+
                 auftrag.Arbeitsplatz = AuftragArbeitsplatzService.GetArbeitsplatz(auftrag.Auftragsnummer);
                 auftrag.PdfPfad = AuftragArchivService.ResolveAccessiblePdfPath(auftrag.Auftragsnummer, auftrag.PdfPfad);
                 auftrag.PdfPfadKantzeichnung = string.Empty;
             }
 
             return list;
+        }
+
+        private static Dictionary<string, string> BuildMaterialAnzeigeLookup(MaterialManagerDbContext db)
+        {
+            var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            var materialByOrder = db.Materialien
+                .AsNoTracking()
+                .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr))
+                .GroupBy(m => m.AuftragNr!.Trim())
+                .ToList();
+
+            foreach (var group in materialByOrder)
+            {
+                var teile = group
+                    .Select(m =>
+                    {
+                        var art = (m.MaterialArt ?? string.Empty).Trim();
+                        if (string.IsNullOrWhiteSpace(art))
+                            art = "Material";
+
+                        return $"{art}-{m.Staerke:0.0} mm";
+                    })
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Take(3)
+                    .ToList();
+
+                if (teile.Count == 0)
+                    continue;
+
+                var text = string.Join(", ", teile);
+                if (group.Count() > teile.Count)
+                    text += ", ...";
+
+                result[group.Key] = text;
+            }
+
+            return result;
         }
 
         public static Dictionary<string, Auftrag> LoadSharedAuftraegeLookup()

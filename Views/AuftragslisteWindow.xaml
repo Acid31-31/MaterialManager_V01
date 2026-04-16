@@ -211,7 +211,7 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
-                <DataGridTextColumn Header="Positionen" Binding="{Binding MaterialPositionen}" Width="95"/>
+                <DataGridTextColumn Header="Material" Binding="{Binding MaterialAnzeige}" Width="220"/>
                 <DataGridTextColumn Header="Stückzahl" Binding="{Binding GesamtStueckzahl}" Width="95"/>
                 <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="110"/>
                 <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="170"/>

@@ -23,6 +23,14 @@ namespace MaterialManager_V01.Models
         public int SortIndex { get; set; }
 
         [NotMapped]
+        public string MaterialArtStaerkeText { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string MaterialAnzeige => string.IsNullOrWhiteSpace(MaterialArtStaerkeText)
+            ? MaterialPositionen.ToString()
+            : MaterialArtStaerkeText;
+
+        [NotMapped]
         public string PdfPfadKantzeichnung { get; set; } = string.Empty;
 
         [NotMapped]
