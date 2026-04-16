@@ -100,7 +100,15 @@ namespace MaterialManager_V01.Services
 
         private static void PersistToDatabase(IEnumerable<MaterialItem> materialien)
         {
-            var snapshot = materialien.Select(CloneMaterial).ToList();
+            var snapshot = materialien
+                .Select(CloneMaterial)
+                .Select((item, index) => new { item, index })
+                .GroupBy(x => x.item.Id > 0 ? $"ID:{x.item.Id}" : $"TMP:{x.index}", StringComparer.Ordinal)
+                .Select(g => g.Last().item)
+                .ToList();
+
+            foreach (var item in snapshot)
+                item.Id = 0;
 
             using var db = new MaterialManagerDbContext();
             db.Database.EnsureCreated();
