@@ -97,6 +97,7 @@ namespace MaterialManager_V01.Views
                     GeaendertAm = x.ProduktionEndDatum ?? x.ArchiviertAm,
                     ProduktionStartDatum = x.ProduktionStartDatum,
                     ProduktionEndDatum = x.ProduktionEndDatum,
+                    ProduktionsBegruendung = x.ProduktionsBegruendung,
                     MaterialPositionen = x.MaterialPositionen,
                     MaterialArtStaerkeText = x.MaterialArtStaerkeText,
                     GesamtStueckzahl = x.GesamtStueckzahl,

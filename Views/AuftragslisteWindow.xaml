@@ -219,6 +219,7 @@
                 <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
                 <DataGridTextColumn Header="Geändert" Binding="{Binding GeaendertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
                 <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="110"/>
+                <DataGridTextColumn Header="Kommentar" Binding="{Binding ProduktionsBegruendung}" Width="260"/>
                 <DataGridTemplateColumn Header="PDF" Width="260">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

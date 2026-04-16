@@ -77,6 +77,9 @@ namespace MaterialManager_V01.Models
 
         [NotMapped]
         public string ProduktionEndText => ProduktionEndDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
+
+        [NotMapped]
+        public string ProduktionsBegruendung { get; set; } = string.Empty;
     }
 
     public enum AuftragStatus
