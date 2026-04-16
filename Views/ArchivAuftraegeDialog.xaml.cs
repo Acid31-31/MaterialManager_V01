@@ -117,11 +117,7 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = entry.ErstePdfPfad,
-                UseShellExecute = true
-            });
+            PdfOpenService.TryOpenPdf(entry.ErstePdfPfad, this, "Archiv");
         }
 
         private void OnOpenBegruendungClick(object sender, RoutedEventArgs e)

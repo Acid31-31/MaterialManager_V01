@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
@@ -45,26 +46,8 @@ namespace MaterialManager_V01.Views
 
         private void OnOpenExternalClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (!File.Exists(_pdfPath))
-                {
-                    MessageBox.Show("PDF-Datei nicht gefunden.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = _pdfPath,
-                    UseShellExecute = true
-                });
-
-                StatusTextBlock.Text = "PDF wird in extern öffnet...";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            if (PdfOpenService.TryOpenPdf(_pdfPath, this, "PDF-Vorschau"))
+                StatusTextBlock.Text = "PDF wird extern geöffnet...";
         }
 
         private void OnCopyPathClick(object sender, RoutedEventArgs e)

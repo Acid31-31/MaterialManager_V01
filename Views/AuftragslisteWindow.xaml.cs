@@ -230,18 +230,7 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = pdfPfad,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            PdfOpenService.TryOpenPdf(pdfPfad, this, "Auftragsliste");
         }
 
         private void OnOpenPdfClick(object sender, RoutedEventArgs e)
@@ -262,18 +251,7 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = pdfPfad,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"PDF konnte nicht geöffnet werden:\n{ex.Message}", "Auftragsliste", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            PdfOpenService.TryOpenPdf(pdfPfad, this, "Auftragsliste");
         }
 
         private void OnCloseClick(object sender, RoutedEventArgs e)
