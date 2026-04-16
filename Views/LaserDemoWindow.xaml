@@ -490,10 +490,13 @@
                             <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="140"/>
                             <DataGridTextColumn Header="Hinweis" Binding="{Binding EiltText}" Width="70"/>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-                            <DataGridTextColumn Header="Material" Binding="{Binding MaterialAnzeige}" Width="80"/>
+                            <DataGridTextColumn Header="Material" Binding="{Binding MaterialAnzeige}" Width="180"/>
                             <DataGridTextColumn Header="Gewicht (kg)" Binding="{Binding GesamtGewichtKg, StringFormat={}{0:0.00}}" Width="100"/>
                             <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="100"/>
-                            <DataGridTextColumn Header="Erstellt" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy}" Width="110"/>
+                            <DataGridTextColumn Header="Angelegt von" Binding="{Binding AngelegtVon}" Width="140"/>
+                            <DataGridTextColumn Header="Geändert von" Binding="{Binding GeaendertVon}" Width="140"/>
+                            <DataGridTextColumn Header="Erstellt am" Binding="{Binding ErstelltAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                            <DataGridTextColumn Header="Geändert am" Binding="{Binding GeaendertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
                             <DataGridTemplateColumn Header="PDF" Width="220">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
