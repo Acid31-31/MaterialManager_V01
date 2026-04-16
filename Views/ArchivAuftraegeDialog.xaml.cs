@@ -124,6 +124,25 @@ namespace MaterialManager_V01.Views
             });
         }
 
+        private void OnOpenBegruendungClick(object sender, RoutedEventArgs e)
+        {
+            var entry = (sender as FrameworkElement)?.DataContext as ArchivAuftragEintrag
+                        ?? GetSelectedEntry();
+            if (entry == null)
+            {
+                MessageBox.Show("Bitte zuerst einen Archivauftrag auswählen.", "Archiv", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(entry.ProduktionsBegruendung))
+            {
+                MessageBox.Show("Für diesen Auftrag wurde keine Begründung hinterlegt.", "Begründung", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            MessageBox.Show(entry.ProduktionsBegruendung, $"Begründung – Auftrag {entry.Auftragsnummer}", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         private void OnCloseClick(object sender, RoutedEventArgs e)
         {
             Close();

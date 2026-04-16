@@ -83,13 +83,21 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
+            var begruendungDialog = new ProduktionsBegruendungDialog { Owner = this };
+            if (begruendungDialog.ShowDialog() != true)
+                return;
+
             _auftrag.ProduktionEndDatum = DateTime.Now;
             _auftrag.Status = AuftragStatus.Abgeschlossen;
             EndButton.IsEnabled = false;
             UpdateDisplay();
             SaveChanges();
 
-            var archivResult = AuftragArchivService.ArchiveCompletedOrder(_auftrag, _ausgewaehlteKalenderWoche, _aktuellesJahr);
+            var archivResult = AuftragArchivService.ArchiveCompletedOrder(
+                _auftrag,
+                _ausgewaehlteKalenderWoche,
+                _aktuellesJahr,
+                begruendungDialog.Kommentar);
             if (!archivResult.Success)
             {
                 MessageBox.Show(archivResult.Message, "Archivierung", MessageBoxButton.OK, MessageBoxImage.Warning);

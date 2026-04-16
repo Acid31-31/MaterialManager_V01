@@ -148,6 +148,15 @@
                     <DataGridTextColumn Header="Start" Binding="{Binding ProduktionStartText}" Width="130"/>
                     <DataGridTextColumn Header="Ende" Binding="{Binding ProduktionEndText}" Width="130"/>
                     <DataGridTextColumn Header="Produktion" Binding="{Binding ProduktionsDauer}" Width="95"/>
+                    <DataGridTemplateColumn Header="Begründung" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Ansehen"
+                                        Padding="8,4"
+                                        Click="OnOpenBegruendungClick"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Archiviert am" Binding="{Binding ArchiviertAm, StringFormat=dd.MM.yyyy HH:mm}" Width="160"/>
                     <DataGridTextColumn Header="PDFs" Binding="{Binding PdfAnzahl}" Width="65"/>
                     <DataGridTextColumn Header="Ordner" Binding="{Binding OrdnerPfad}" Width="*"/>
