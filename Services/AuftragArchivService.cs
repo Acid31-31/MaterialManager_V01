@@ -182,6 +182,44 @@ namespace MaterialManager_V01.Services
                 result.AddRange(GetArchivedOrdersForWeek(jahr, kwNumber));
             }
 
+            var existingKeys = new HashSet<string>(
+                result.Select(x => $"{x.Jahr}|{x.Kalenderwoche}|{(x.Auftragsnummer ?? string.Empty).Trim()}"),
+                StringComparer.OrdinalIgnoreCase);
+
+            var metaEntries = LoadArchiveMetadata()
+                .Where(m => m.Jahr == jahr && !string.IsNullOrWhiteSpace(m.Auftragsnummer))
+                .OrderByDescending(m => m.ArchiviertAm)
+                .ToList();
+
+            foreach (var meta in metaEntries)
+            {
+                var key = $"{meta.Jahr}|{meta.Kalenderwoche}|{meta.Auftragsnummer.Trim()}";
+                if (existingKeys.Contains(key))
+                    continue;
+
+                var kwFolder = GetKwFolderPath(meta.Jahr, meta.Kalenderwoche);
+                var orderFolder = Path.Combine(kwFolder, meta.Auftragsnummer.Trim());
+                result.Add(new ArchivAuftragEintrag
+                {
+                    Jahr = meta.Jahr,
+                    Kalenderwoche = meta.Kalenderwoche,
+                    Auftragsnummer = meta.Auftragsnummer.Trim(),
+                    OrdnerPfad = orderFolder,
+                    AuftragJsonPfad = Path.Combine(orderFolder, "auftrag.json"),
+                    ErstePdfPfad = string.Empty,
+                    PdfAnzahl = 0,
+                    ArchiviertAm = meta.ArchiviertAm,
+                    ProduktionStartDatum = meta.ProduktionStartDatum,
+                    ProduktionEndDatum = meta.ProduktionEndDatum,
+                    MaterialPositionen = meta.MaterialPositionen,
+                    GesamtStueckzahl = meta.GesamtStueckzahl,
+                    GesamtGewichtKg = meta.GesamtGewichtKg,
+                    MaterialArtStaerkeText = meta.MaterialArtStaerkeText ?? string.Empty,
+                    AngelegtVon = meta.AngelegtVon ?? string.Empty,
+                    GeaendertVon = meta.GeaendertVon ?? string.Empty
+                });
+            }
+
             return result
                 .OrderByDescending(x => x.ArchiviertAm)
                 .ToList();
