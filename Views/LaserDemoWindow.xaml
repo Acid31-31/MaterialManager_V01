@@ -405,25 +405,6 @@
                                 Foreground="White"
                                 Padding="16,12"
                                 Margin="0,0,8,0"/>
-                        <Button x:Name="EditRestButton" Content="Material bearbeiten"
-                                Click="OnEditRestClick"
-                                Background="#455A64"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"/>
-                        <Button x:Name="DeleteRestButton" Content="Material löschen"
-                                Click="OnDeleteReservedClick"
-                                Background="#8B1E1E"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,8,0"/>
-                        <Button x:Name="OpenRestPdfButton" Content="📄 PDF öffnen"
-                                Click="OnOpenPdfClick"
-                                Background="#E65100"
-                                Foreground="White"
-                                Padding="16,12"
-                                Margin="0,0,12,0"/>
-                        <TextBlock x:Name="MaterialActionHint" Text="Nur gebuchte Materialien mit Auftragsnummer – Änderung hebt die Reservierung auf" Foreground="#AAAAAA" VerticalAlignment="Center"/>
                     </StackPanel>
                 </DockPanel>
             </Border>
