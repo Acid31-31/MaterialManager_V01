@@ -34,6 +34,7 @@ namespace MaterialManager_V01.Services
                 var materialien = MaterialDataService.LoadAllMaterials()
                     .Where(m => string.Equals(m.AuftragNr, auftrag.Auftragsnummer, StringComparison.OrdinalIgnoreCase))
                     .ToList();
+                var materialArtStaerkeText = BuildMaterialArtStaerkeText(materialien);
 
                 var pdfQuellen = CollectPdfPaths(auftrag, materialien);
                 var kopiertePdf = 0;
@@ -53,6 +54,7 @@ namespace MaterialManager_V01.Services
                     MaterialPositionen = auftrag.MaterialPositionen > 0 ? auftrag.MaterialPositionen : materialien.Count,
                     GesamtStueckzahl = auftrag.GesamtStueckzahl > 0 ? auftrag.GesamtStueckzahl : materialien.Sum(m => m.Stueckzahl),
                     GesamtGewichtKg = auftrag.GesamtGewichtKg > 0 ? auftrag.GesamtGewichtKg : Math.Round(materialien.Sum(m => m.GewichtKg), 2),
+                    MaterialArtStaerkeText = materialArtStaerkeText,
                     AngelegtVon = auftrag.AngelegtVon ?? string.Empty,
                     GeaendertVon = auftrag.GeaendertVon ?? string.Empty,
                     ProduktionStartDatum = auftrag.ProduktionStartDatum,
@@ -207,6 +209,7 @@ namespace MaterialManager_V01.Services
                 var orderNumber = Path.GetFileName(auftragFolder);
                 DateTime? produktionStart = null;
                 DateTime? produktionEnde = null;
+                string materialArtStaerkeText = string.Empty;
                 try
                 {
                     if (File.Exists(auftragJson))
@@ -226,7 +229,14 @@ namespace MaterialManager_V01.Services
                                 && endElement.ValueKind != JsonValueKind.Null
                                 && endElement.TryGetDateTime(out var endDt))
                                 produktionEnde = endDt;
+
+                            materialArtStaerkeText = GetString(orderElement, "MaterialArtStaerkeText");
+                            if (string.IsNullOrWhiteSpace(materialArtStaerkeText))
+                                materialArtStaerkeText = GetString(orderElement, "MaterialAnzeige");
                         }
+
+                        if (string.IsNullOrWhiteSpace(materialArtStaerkeText) && doc.RootElement.TryGetProperty("Materialien", out var materialienElement))
+                            materialArtStaerkeText = BuildMaterialArtStaerkeTextFromJson(materialienElement);
                     }
                 }
                 catch
@@ -250,6 +260,7 @@ namespace MaterialManager_V01.Services
                     MaterialPositionen = meta?.MaterialPositionen ?? 0,
                     GesamtStueckzahl = meta?.GesamtStueckzahl ?? 0,
                     GesamtGewichtKg = meta?.GesamtGewichtKg ?? 0,
+                    MaterialArtStaerkeText = !string.IsNullOrWhiteSpace(meta?.MaterialArtStaerkeText) ? meta.MaterialArtStaerkeText : materialArtStaerkeText,
                     AngelegtVon = meta?.AngelegtVon ?? string.Empty,
                     GeaendertVon = meta?.GeaendertVon ?? string.Empty
                 });
@@ -288,6 +299,7 @@ namespace MaterialManager_V01.Services
                     MaterialPositionen = meta?.MaterialPositionen ?? 0,
                     GesamtStueckzahl = meta?.GesamtStueckzahl ?? 0,
                     GesamtGewichtKg = meta?.GesamtGewichtKg ?? 0,
+                    MaterialArtStaerkeText = meta?.MaterialArtStaerkeText ?? string.Empty,
                     AngelegtVon = meta?.AngelegtVon ?? string.Empty,
                     GeaendertVon = meta?.GeaendertVon ?? string.Empty
                 });
@@ -540,11 +552,18 @@ namespace MaterialManager_V01.Services
                             MaterialPositionen = GetInt(orderElement, "MaterialPositionen"),
                             GesamtStueckzahl = GetInt(orderElement, "GesamtStueckzahl"),
                             GesamtGewichtKg = GetDouble(orderElement, "GesamtGewichtKg"),
+                            MaterialArtStaerkeText = GetString(orderElement, "MaterialArtStaerkeText"),
                             AngelegtVon = GetString(orderElement, "AngelegtVon"),
                             GeaendertVon = GetString(orderElement, "GeaendertVon"),
                             ProduktionStartDatum = GetDateTime(orderElement, "ProduktionStartDatum"),
                             ProduktionEndDatum = GetDateTime(orderElement, "ProduktionEndDatum")
                         };
+
+                        if (string.IsNullOrWhiteSpace(meta.MaterialArtStaerkeText)
+                            && doc.RootElement.TryGetProperty("Materialien", out var materialienElement))
+                        {
+                            meta.MaterialArtStaerkeText = BuildMaterialArtStaerkeTextFromJson(materialienElement);
+                        }
 
                         changed += UpsertArchiveMetadataInList(metaList, meta);
                     }
@@ -558,6 +577,37 @@ namespace MaterialManager_V01.Services
                 SaveArchiveMetadata(metaList);
 
             return changed;
+        }
+
+        private static string BuildMaterialArtStaerkeTextFromJson(JsonElement materialienElement)
+        {
+            if (materialienElement.ValueKind != JsonValueKind.Array)
+                return string.Empty;
+
+            var teile = new List<string>();
+            foreach (var item in materialienElement.EnumerateArray())
+            {
+                var art = GetString(item, "MaterialArt").Trim();
+                if (string.IsNullOrWhiteSpace(art))
+                    continue;
+
+                var staerke = GetDouble(item, "Staerke");
+                var text = $"{art}-{staerke:0.0} mm";
+                if (!teile.Contains(text, StringComparer.OrdinalIgnoreCase))
+                    teile.Add(text);
+
+                if (teile.Count >= 3)
+                    break;
+            }
+
+            if (teile.Count == 0)
+                return string.Empty;
+
+            var result = string.Join(", ", teile);
+            if (materialienElement.GetArrayLength() > teile.Count)
+                result += ", ...";
+
+            return result;
         }
 
         private static int UpsertArchiveMetadataInList(List<ArchivAuftragMeta> list, ArchivAuftragMeta meta)
@@ -574,6 +624,7 @@ namespace MaterialManager_V01.Services
                     && existing.MaterialPositionen == meta.MaterialPositionen
                     && existing.GesamtStueckzahl == meta.GesamtStueckzahl
                     && Math.Abs(existing.GesamtGewichtKg - meta.GesamtGewichtKg) < 0.0001
+                    && string.Equals(existing.MaterialArtStaerkeText, meta.MaterialArtStaerkeText, StringComparison.Ordinal)
                     && string.Equals(existing.AngelegtVon, meta.AngelegtVon, StringComparison.Ordinal)
                     && string.Equals(existing.GeaendertVon, meta.GeaendertVon, StringComparison.Ordinal)
                     && existing.ProduktionStartDatum == meta.ProduktionStartDatum
@@ -657,6 +708,33 @@ namespace MaterialManager_V01.Services
                 .OrderByDescending(x => x.ArchiviertAm)
                 .FirstOrDefault(x => string.Equals(x.Auftragsnummer, auftragsnummer, StringComparison.OrdinalIgnoreCase));
         }
+
+        private static string BuildMaterialArtStaerkeText(IEnumerable<MaterialItem> materialien)
+        {
+            if (materialien == null)
+                return string.Empty;
+
+            var teile = materialien
+                .Select(m =>
+                {
+                    var art = (m.MaterialArt ?? string.Empty).Trim();
+                    if (string.IsNullOrWhiteSpace(art))
+                        art = "Material";
+                    return $"{art}-{m.Staerke:0.0} mm";
+                })
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Take(3)
+                .ToList();
+
+            if (teile.Count == 0)
+                return string.Empty;
+
+            var text = string.Join(", ", teile);
+            if (materialien.Count() > teile.Count)
+                text += ", ...";
+
+            return text;
+        }
     }
 
     public sealed class ArchivAuftragEintrag
@@ -674,6 +752,7 @@ namespace MaterialManager_V01.Services
         public int MaterialPositionen { get; set; }
         public int GesamtStueckzahl { get; set; }
         public double GesamtGewichtKg { get; set; }
+        public string MaterialArtStaerkeText { get; set; } = string.Empty;
         public string AngelegtVon { get; set; } = string.Empty;
         public string GeaendertVon { get; set; } = string.Empty;
         public string ProduktionStartText => ProduktionStartDatum?.ToString("dd.MM.yyyy HH:mm") ?? "–";
@@ -702,6 +781,7 @@ namespace MaterialManager_V01.Services
         public int MaterialPositionen { get; set; }
         public int GesamtStueckzahl { get; set; }
         public double GesamtGewichtKg { get; set; }
+        public string MaterialArtStaerkeText { get; set; } = string.Empty;
         public string AngelegtVon { get; set; } = string.Empty;
         public string GeaendertVon { get; set; } = string.Empty;
         public DateTime? ProduktionStartDatum { get; set; }

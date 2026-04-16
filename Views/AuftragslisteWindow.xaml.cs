@@ -98,6 +98,7 @@ namespace MaterialManager_V01.Views
                     ProduktionStartDatum = x.ProduktionStartDatum,
                     ProduktionEndDatum = x.ProduktionEndDatum,
                     MaterialPositionen = x.MaterialPositionen,
+                    MaterialArtStaerkeText = x.MaterialArtStaerkeText,
                     GesamtStueckzahl = x.GesamtStueckzahl,
                     GesamtGewichtKg = x.GesamtGewichtKg,
                     AngelegtVon = x.AngelegtVon,
