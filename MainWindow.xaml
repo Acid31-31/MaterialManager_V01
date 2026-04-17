@@ -540,16 +540,6 @@
                 </Border>
             </Popup>
         </DockPanel>
-
-        <Image Source="/Assets/logo.png"
-               Opacity="0.18"
-               Stretch="Uniform"
-               Width="820"
-               Height="820"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               IsHitTestVisible="False"
-               Panel.ZIndex="1"/>
     </Grid>
 </Window>
 
