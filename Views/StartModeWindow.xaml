@@ -217,7 +217,7 @@
                    VerticalAlignment="Stretch"/>
 
             <Rectangle Grid.RowSpan="4"
-                       Fill="#66000000"
+                       Fill="#2A000000"
                        IsHitTestVisible="False"/>
 
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
