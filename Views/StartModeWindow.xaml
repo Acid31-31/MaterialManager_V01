@@ -209,7 +209,7 @@
             </Grid.RowDefinitions>
 
             <Image x:Name="DarkBackgroundLogoImage"
-                   Source="/Assets/logo.png"
+                   Source="/Assets/Herko_Logo_Dunkel.png"
                    Grid.RowSpan="4"
                    Opacity="0.28"
                    Stretch="UniformToFill"
