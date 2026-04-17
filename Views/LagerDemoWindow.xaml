@@ -40,12 +40,11 @@
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="1"/>
 
-                            <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              TextElement.Foreground="{TemplateBinding Foreground}"
-                                              Margin="{TemplateBinding Padding}"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"/>
+                            <TextBlock Text="{TemplateBinding SelectionBoxItem}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Margin="{TemplateBinding Padding}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"/>
 
                             <ToggleButton Focusable="False"
                                           ClickMode="Press"
@@ -83,10 +82,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#B7C7BA"/>
+                                <Setter Property="Foreground" Value="#102018"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#0F5AA6"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#A5B8AA"/>
+                                <Setter Property="Foreground" Value="#102018"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
