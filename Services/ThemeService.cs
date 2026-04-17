@@ -141,6 +141,7 @@ namespace MaterialManager_V01.Services
                         if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
                         if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
                         if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
+                        ApplyComboBoxReadability(comboBox, palette);
                         break;
 
                     case Slider slider:
@@ -205,6 +206,40 @@ namespace MaterialManager_V01.Services
             style.Triggers.Add(selectedTrigger);
 
             return style;
+        }
+
+        private static void ApplyComboBoxReadability(ComboBox comboBox, ThemePalette palette)
+        {
+            if (CurrentTheme != AppTheme.Light)
+                return;
+
+            var textBrush = palette.Foreground;
+            var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+            var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
+
+            comboBox.Foreground = textBrush;
+            comboBox.Background = backgroundBrush;
+            comboBox.Resources[SystemColors.HighlightTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
+            comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
+
+            var itemStyle = new Style(typeof(ComboBoxItem));
+            itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
+
+            var selectedTrigger = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
+            itemStyle.Triggers.Add(selectedTrigger);
+
+            var highlightedTrigger = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
+            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            highlightedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
+            itemStyle.Triggers.Add(highlightedTrigger);
+
+            comboBox.ItemContainerStyle = itemStyle;
         }
 
         private static bool ShouldRecolorBackground(Brush? brush)
