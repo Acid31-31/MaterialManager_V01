@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace MaterialManager_V01.Services
@@ -83,27 +84,44 @@ namespace MaterialManager_V01.Services
                 switch (child)
                 {
                     case Border border:
-                        if (IsNeutral(border.Background)) border.Background = MapNeutralBackground(border.Background, palette);
+                        if (ShouldRecolorBackground(border.Background)) border.Background = MapNeutralBackground(border.Background, palette);
                         if (IsNeutral(border.BorderBrush)) border.BorderBrush = palette.Border;
                         break;
 
                     case Panel panel:
-                        if (IsNeutral(panel.Background)) panel.Background = MapNeutralBackground(panel.Background, palette);
+                        if (ShouldRecolorBackground(panel.Background)) panel.Background = MapNeutralBackground(panel.Background, palette);
                         break;
 
                     case Menu menu:
-                        if (IsNeutral(menu.Background)) menu.Background = palette.Surface;
+                        if (ShouldRecolorBackground(menu.Background)) menu.Background = palette.Surface;
                         if (IsNeutral(menu.Foreground, includeWhiteBlack: true)) menu.Foreground = palette.Foreground;
                         break;
 
                     case MenuItem menuItem:
-                        if (IsNeutral(menuItem.Background)) menuItem.Background = palette.Surface;
+                        if (ShouldRecolorBackground(menuItem.Background)) menuItem.Background = palette.Surface;
                         if (IsNeutral(menuItem.Foreground, includeWhiteBlack: true)) menuItem.Foreground = palette.Foreground;
                         if (IsNeutral(menuItem.BorderBrush)) menuItem.BorderBrush = palette.Border;
                         break;
 
                     case Separator separator:
-                        if (IsNeutral(separator.Background)) separator.Background = palette.Border;
+                        if (ShouldRecolorBackground(separator.Background)) separator.Background = palette.Border;
+                        break;
+
+                    case DataGridColumnHeader header:
+                        if (ShouldRecolorBackground(header.Background)) header.Background = palette.AltSurface;
+                        if (IsNeutral(header.Foreground, includeWhiteBlack: true)) header.Foreground = palette.Foreground;
+                        if (IsNeutral(header.BorderBrush)) header.BorderBrush = palette.Border;
+                        break;
+
+                    case DataGridCell cell:
+                        if (ShouldRecolorBackground(cell.Background)) cell.Background = palette.Surface;
+                        if (IsNeutral(cell.Foreground, includeWhiteBlack: true)) cell.Foreground = palette.Foreground;
+                        if (IsNeutral(cell.BorderBrush)) cell.BorderBrush = palette.Border;
+                        break;
+
+                    case DataGridRow row:
+                        if (ShouldRecolorBackground(row.Background)) row.Background = palette.Surface;
+                        if (IsNeutral(row.Foreground, includeWhiteBlack: true)) row.Foreground = palette.Foreground;
                         break;
 
                     case TextBlock textBlock:
@@ -114,32 +132,32 @@ namespace MaterialManager_V01.Services
                         break;
 
                     case TextBox textBox:
-                        if (IsNeutral(textBox.Background)) textBox.Background = MapNeutralBackground(textBox.Background, palette);
+                        if (ShouldRecolorBackground(textBox.Background)) textBox.Background = MapNeutralBackground(textBox.Background, palette);
                         if (IsNeutral(textBox.Foreground, includeWhiteBlack: true)) textBox.Foreground = palette.Foreground;
                         if (IsNeutral(textBox.BorderBrush)) textBox.BorderBrush = palette.Border;
                         break;
 
                     case ComboBox comboBox:
-                        if (IsNeutral(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
+                        if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
                         if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
                         if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
                         break;
 
                     case Slider slider:
-                        if (IsNeutral(slider.Background)) slider.Background = palette.AltSurface;
+                        if (ShouldRecolorBackground(slider.Background)) slider.Background = palette.AltSurface;
                         if (IsNeutral(slider.Foreground, includeWhiteBlack: true)) slider.Foreground = palette.Foreground;
                         break;
 
                     case DataGrid dataGrid:
-                        if (IsNeutral(dataGrid.Background)) dataGrid.Background = palette.Surface;
+                        if (ShouldRecolorBackground(dataGrid.Background)) dataGrid.Background = palette.Surface;
                         if (IsNeutral(dataGrid.Foreground, includeWhiteBlack: true)) dataGrid.Foreground = palette.Foreground;
-                        if (IsNeutral(dataGrid.RowBackground)) dataGrid.RowBackground = palette.Surface;
-                        if (IsNeutral(dataGrid.AlternatingRowBackground)) dataGrid.AlternatingRowBackground = palette.AltSurface;
+                        if (ShouldRecolorBackground(dataGrid.RowBackground)) dataGrid.RowBackground = palette.Surface;
+                        if (ShouldRecolorBackground(dataGrid.AlternatingRowBackground)) dataGrid.AlternatingRowBackground = palette.AltSurface;
                         if (IsNeutral(dataGrid.BorderBrush)) dataGrid.BorderBrush = palette.Border;
                         break;
 
                     case Button button:
-                        if (IsNeutral(button.Background)) button.Background = palette.Button;
+                        if (ShouldRecolorBackground(button.Background)) button.Background = palette.Button;
                         if (IsNeutral(button.Foreground, includeWhiteBlack: true)) button.Foreground = palette.Foreground;
                         if (IsNeutral(button.BorderBrush)) button.BorderBrush = palette.Border;
                         break;
@@ -147,6 +165,17 @@ namespace MaterialManager_V01.Services
 
                 ApplyToVisualTree(child, palette);
             }
+        }
+
+        private static bool ShouldRecolorBackground(Brush? brush)
+        {
+            if (brush is not SolidColorBrush solid)
+                return false;
+
+            if (solid.Color.A == 0)
+                return false;
+
+            return IsNeutral(solid);
         }
 
         private static ThemePalette GetPalette(AppTheme theme)
@@ -196,14 +225,14 @@ namespace MaterialManager_V01.Services
         private static bool IsNeutral(Brush? brush, bool includeWhiteBlack = false)
         {
             if (brush == null)
-                return true;
+                return false;
 
             if (brush is not SolidColorBrush solid)
                 return false;
 
             var c = solid.Color;
             if (c.A == 0)
-                return true;
+                return false;
 
             var diffRg = Math.Abs(c.R - c.G);
             var diffGb = Math.Abs(c.G - c.B);
