@@ -220,7 +220,7 @@
             <Image x:Name="LightBackgroundLogoImage"
                    Source="/Assets/Herko_Logo_hell.png"
                    Grid.RowSpan="4"
-                   Opacity="0.30"
+                   Opacity="0.82"
                    Stretch="UniformToFill"
                    IsHitTestVisible="False"
                    HorizontalAlignment="Stretch"

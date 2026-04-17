@@ -46,7 +46,7 @@ namespace MaterialManager_V01.Views
                     LightBackgroundLogoImage.Visibility = isLight ? Visibility.Visible : Visibility.Collapsed;
                 if (BackgroundOverlay != null)
                     BackgroundOverlay.Fill = isLight
-                        ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#16000000"))
+                        ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#08000000"))
                         : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A000000"));
             }
             finally
