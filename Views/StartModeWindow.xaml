@@ -208,30 +208,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Image x:Name="DarkBackgroundLogoImage"
-                   Source="/Assets/Herko_Logo_Dunkel.png"
-                   Grid.RowSpan="4"
-                   Opacity="0.28"
-                   Stretch="UniformToFill"
-                   IsHitTestVisible="False"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"/>
-
-            <Image x:Name="LightBackgroundLogoImage"
-                   Source="/Assets/Herko_Logo_hell.png"
-                   Grid.RowSpan="4"
-                   Opacity="0.82"
-                   Stretch="UniformToFill"
-                   IsHitTestVisible="False"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   Visibility="Collapsed"/>
-
-            <Rectangle x:Name="BackgroundOverlay"
-                       Grid.RowSpan="4"
-                       Fill="#2A000000"
-                       IsHitTestVisible="False"/>
-
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
                 <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>

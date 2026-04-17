@@ -39,15 +39,6 @@ namespace MaterialManager_V01.Views
                     ThemeSliderMain.Value = sliderValue;
                 if (ThemeModeTextBlockMain != null)
                     ThemeModeTextBlockMain.Text = modeText;
-
-                if (DarkBackgroundLogoImage != null)
-                    DarkBackgroundLogoImage.Visibility = isLight ? Visibility.Collapsed : Visibility.Visible;
-                if (LightBackgroundLogoImage != null)
-                    LightBackgroundLogoImage.Visibility = isLight ? Visibility.Visible : Visibility.Collapsed;
-                if (BackgroundOverlay != null)
-                    BackgroundOverlay.Fill = isLight
-                        ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#08000000"))
-                        : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A000000"));
             }
             finally
             {
