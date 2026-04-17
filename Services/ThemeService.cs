@@ -91,6 +91,21 @@ namespace MaterialManager_V01.Services
                         if (IsNeutral(panel.Background)) panel.Background = MapNeutralBackground(panel.Background, palette);
                         break;
 
+                    case Menu menu:
+                        if (IsNeutral(menu.Background)) menu.Background = palette.Surface;
+                        if (IsNeutral(menu.Foreground, includeWhiteBlack: true)) menu.Foreground = palette.Foreground;
+                        break;
+
+                    case MenuItem menuItem:
+                        if (IsNeutral(menuItem.Background)) menuItem.Background = palette.Surface;
+                        if (IsNeutral(menuItem.Foreground, includeWhiteBlack: true)) menuItem.Foreground = palette.Foreground;
+                        if (IsNeutral(menuItem.BorderBrush)) menuItem.BorderBrush = palette.Border;
+                        break;
+
+                    case Separator separator:
+                        if (IsNeutral(separator.Background)) separator.Background = palette.Border;
+                        break;
+
                     case TextBlock textBlock:
                         if (IsNeutral(textBlock.Foreground, includeWhiteBlack: true))
                             textBlock.Foreground = textBlock.Foreground is SolidColorBrush sb && IsMuted(sb.Color)
@@ -108,6 +123,11 @@ namespace MaterialManager_V01.Services
                         if (IsNeutral(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
                         if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
                         if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
+                        break;
+
+                    case Slider slider:
+                        if (IsNeutral(slider.Background)) slider.Background = palette.AltSurface;
+                        if (IsNeutral(slider.Foreground, includeWhiteBlack: true)) slider.Foreground = palette.Foreground;
                         break;
 
                     case DataGrid dataGrid:
@@ -134,13 +154,13 @@ namespace MaterialManager_V01.Services
             if (theme == AppTheme.Light)
             {
                 return new ThemePalette(
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDEFF3")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5F7FA")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C9D0DA")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2933")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7785")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E7ECF2"))
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEF2F6")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F8FAFC")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDF2F7")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C3CCD8")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2937")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5F6B7A")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3E9F2"))
                 );
             }
 
@@ -163,11 +183,11 @@ namespace MaterialManager_V01.Services
             var c = solid.Color;
             var luma = (c.R + c.G + c.B) / 3;
 
-            if (luma <= 24)
+            if (luma <= 26)
                 return palette.AltSurface;
-            if (luma <= 52)
+            if (luma <= 58)
                 return palette.Surface;
-            if (luma <= 90)
+            if (luma <= 96)
                 return palette.AltSurface;
 
             return palette.WindowBackground;

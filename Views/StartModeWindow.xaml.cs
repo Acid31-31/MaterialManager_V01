@@ -28,7 +28,7 @@ namespace MaterialManager_V01.Views
             {
                 var isLight = ThemeService.CurrentTheme == AppTheme.Light;
                 var sliderValue = isLight ? 1 : 0;
-                var modeText = isLight ? "Hell" : "Dunkel";
+                var modeText = isLight ? "Hell Pro" : "Dunkel";
 
                 if (ThemeSlider != null)
                     ThemeSlider.Value = sliderValue;
