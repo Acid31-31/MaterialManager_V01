@@ -28,9 +28,9 @@
             <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#222"/>
-            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -59,7 +59,7 @@
                                    AllowsTransparency="True"
                                    Focusable="False"
                                    PopupAnimation="Fade">
-                                <Border Background="#111111" BorderBrush="#444" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -71,8 +71,8 @@
             </Setter>
         </Style>
         <Style TargetType="ComboBoxItem">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
