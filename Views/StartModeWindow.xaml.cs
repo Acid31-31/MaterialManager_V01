@@ -40,10 +40,14 @@ namespace MaterialManager_V01.Views
                 if (ThemeModeTextBlockMain != null)
                     ThemeModeTextBlockMain.Text = modeText;
 
-                if (DarkModeLogoImage != null)
-                    DarkModeLogoImage.Visibility = isLight ? Visibility.Collapsed : Visibility.Visible;
-                if (LightModeLogoPanel != null)
-                    LightModeLogoPanel.Visibility = isLight ? Visibility.Visible : Visibility.Collapsed;
+                if (DarkBackgroundLogoImage != null)
+                    DarkBackgroundLogoImage.Visibility = isLight ? Visibility.Collapsed : Visibility.Visible;
+                if (LightBackgroundLogoImage != null)
+                    LightBackgroundLogoImage.Visibility = isLight ? Visibility.Visible : Visibility.Collapsed;
+                if (BackgroundOverlay != null)
+                    BackgroundOverlay.Fill = isLight
+                        ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#16000000"))
+                        : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A000000"));
             }
             finally
             {
@@ -164,7 +168,7 @@ namespace MaterialManager_V01.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Netzwerkordner konnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Netzwerkordner könnte nicht geöffnet werden:\n{ex.Message}", "Start", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

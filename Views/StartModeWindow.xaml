@@ -208,7 +208,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Image Source="/Assets/logo.png"
+            <Image x:Name="DarkBackgroundLogoImage"
+                   Source="/Assets/logo.png"
                    Grid.RowSpan="4"
                    Opacity="0.28"
                    Stretch="UniformToFill"
@@ -216,28 +217,22 @@
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"/>
 
-            <Rectangle Grid.RowSpan="4"
+            <Image x:Name="LightBackgroundLogoImage"
+                   Source="/Assets/Herko_Logo_hell.png"
+                   Grid.RowSpan="4"
+                   Opacity="0.30"
+                   Stretch="UniformToFill"
+                   IsHitTestVisible="False"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   Visibility="Collapsed"/>
+
+            <Rectangle x:Name="BackgroundOverlay"
+                       Grid.RowSpan="4"
                        Fill="#2A000000"
                        IsHitTestVisible="False"/>
 
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
-                <Image x:Name="DarkModeLogoImage"
-                       Source="/Assets/logo.png"
-                       Width="220"
-                       Height="70"
-                       Stretch="Uniform"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,12"/>
-
-                <Image x:Name="LightModeLogoPanel"
-                       Source="/Assets/Herko_Logo_hell.png"
-                       Width="220"
-                       Height="70"
-                       Stretch="Uniform"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,12"
-                       Visibility="Collapsed"/>
-
                 <TextBlock Text="MaterialManager V01" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <TextBlock Text="Bitte Bereich auswählen" Foreground="#AAAAAA" FontSize="14" HorizontalAlignment="Center" Margin="0,10,0,0"/>
                 <Rectangle Width="320"
