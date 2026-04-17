@@ -154,6 +154,9 @@ namespace MaterialManager_V01.Services
                         if (ShouldRecolorBackground(dataGrid.RowBackground)) dataGrid.RowBackground = palette.Surface;
                         if (ShouldRecolorBackground(dataGrid.AlternatingRowBackground)) dataGrid.AlternatingRowBackground = palette.AltSurface;
                         if (IsNeutral(dataGrid.BorderBrush)) dataGrid.BorderBrush = palette.Border;
+
+                        if (CurrentTheme == AppTheme.Light)
+                            ApplyReadableDataGridStyles(dataGrid, palette);
                         break;
 
                     case Button button:
@@ -165,6 +168,43 @@ namespace MaterialManager_V01.Services
 
                 ApplyToVisualTree(child, palette);
             }
+        }
+
+        private static void ApplyReadableDataGridStyles(DataGrid dataGrid, ThemePalette palette)
+        {
+            dataGrid.ColumnHeaderStyle = BuildHeaderStyle(dataGrid.ColumnHeaderStyle, palette);
+            dataGrid.CellStyle = BuildCellStyle(dataGrid.CellStyle, palette);
+            dataGrid.RowStyle = BuildRowStyle(dataGrid.RowStyle, palette);
+        }
+
+        private static Style BuildHeaderStyle(Style? baseStyle, ThemePalette palette)
+        {
+            var style = new Style(typeof(DataGridColumnHeader), baseStyle);
+            style.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
+            style.Setters.Add(new Setter(Control.BackgroundProperty, palette.AltSurface));
+            style.Setters.Add(new Setter(Control.BorderBrushProperty, palette.Border));
+            return style;
+        }
+
+        private static Style BuildCellStyle(Style? baseStyle, ThemePalette palette)
+        {
+            var style = new Style(typeof(DataGridCell), baseStyle);
+            style.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
+            style.Setters.Add(new Setter(Control.BackgroundProperty, palette.Surface));
+            style.Setters.Add(new Setter(Control.BorderBrushProperty, palette.Border));
+            return style;
+        }
+
+        private static Style BuildRowStyle(Style? baseStyle, ThemePalette palette)
+        {
+            var style = new Style(typeof(DataGridRow), baseStyle);
+            style.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
+
+            var selectedTrigger = new Trigger { Property = DataGridRow.IsSelectedProperty, Value = true };
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            style.Triggers.Add(selectedTrigger);
+
+            return style;
         }
 
         private static bool ShouldRecolorBackground(Brush? brush)
