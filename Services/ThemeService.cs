@@ -223,13 +223,13 @@ namespace MaterialManager_V01.Services
             if (theme == AppTheme.Light)
             {
                 return new ThemePalette(
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B7C0B5")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C2CAC0")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B4BCB2")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8E988E")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2A24")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4E5A52")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFB8AE"))
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AEB7AC")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B9C2B6")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AEB7AC")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7E887E")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F3127")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5AEA4"))
                 );
             }
 
