@@ -178,6 +178,18 @@
                                FontSize="9"
                                HorizontalAlignment="Right"
                                TextTrimming="CharacterEllipsis"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,2,0,0">
+                        <TextBlock Text="Design" Foreground="#9E9E9E" FontSize="9" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <Slider x:Name="ThemeSlider"
+                                Width="80"
+                                Height="16"
+                                Minimum="0"
+                                Maximum="1"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="OnThemeSliderChanged"/>
+                        <TextBlock x:Name="ThemeModeTextBlock" Foreground="#9E9E9E" FontSize="9" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">

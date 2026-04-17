@@ -35,12 +35,16 @@ namespace MaterialManager_V01
             }
 
             base.OnStartup(e);
+            ThemeService.Initialize();
 
             EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent,
                 new RoutedEventHandler((sender, _) =>
                 {
                     if (sender is Window window)
-                        ApplyDarkTitleBar(window);
+                    {
+                        ThemeService.ApplyThemeToWindow(window);
+                        ApplyImmersiveTitleBar(window);
+                    }
                 }));
 
             var logPath = Services.PathService.LogPath;
@@ -240,7 +244,7 @@ namespace MaterialManager_V01
             }
         }
 
-        private static void ApplyDarkTitleBar(Window window)
+        private static void ApplyImmersiveTitleBar(Window window)
         {
             try
             {
@@ -248,12 +252,10 @@ namespace MaterialManager_V01
                 if (hwnd == IntPtr.Zero)
                     return;
 
-                var useDark = 1;
+                var useDark = ThemeService.CurrentTheme == AppTheme.Dark ? 1 : 0;
                 var result = DwmSetWindowAttribute(hwnd, DwmaUseImmersiveDarkMode, ref useDark, sizeof(int));
                 if (result != 0)
-                {
                     DwmSetWindowAttribute(hwnd, DwmaUseImmersiveDarkModeLegacy, ref useDark, sizeof(int));
-                }
             }
             catch
             {

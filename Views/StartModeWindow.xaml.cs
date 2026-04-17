@@ -9,6 +9,8 @@ namespace MaterialManager_V01.Views
 {
     public partial class StartModeWindow : Window
     {
+        private bool _syncingThemeUi;
+
         public StartModeWindow()
         {
             InitializeComponent();
@@ -16,6 +18,22 @@ namespace MaterialManager_V01.Views
             RefreshLicenseBanner();
             RefreshNetworkStatusBanner();
             FitToWorkArea();
+            SyncThemeUi();
+        }
+
+        private void SyncThemeUi()
+        {
+            _syncingThemeUi = true;
+            try
+            {
+                var isLight = ThemeService.CurrentTheme == AppTheme.Light;
+                ThemeSlider.Value = isLight ? 1 : 0;
+                ThemeModeTextBlock.Text = isLight ? "Hell" : "Dunkel";
+            }
+            finally
+            {
+                _syncingThemeUi = false;
+            }
         }
 
         private void RefreshLicenseBanner()
@@ -296,6 +314,16 @@ namespace MaterialManager_V01.Views
             Application.Current.MainWindow = window;
             window.Show();
             Close();
+        }
+
+        private void OnThemeSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_syncingThemeUi || !IsLoaded)
+                return;
+
+            var theme = ThemeSlider.Value >= 0.5 ? AppTheme.Light : AppTheme.Dark;
+            ThemeService.SetTheme(theme);
+            SyncThemeUi();
         }
     }
 }
