@@ -419,19 +419,39 @@
 
             <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12">
                 <StackPanel>
-                    <TextBlock Text="Spaltenfilter (manuell):" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#1B1F1C"/>
+                        </Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Foreground" Value="#102018"/>
+                            <Setter Property="Background" Value="#D2D8CF"/>
+                            <Setter Property="BorderBrush" Value="#7F8A7F"/>
+                        </Style>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Foreground" Value="#102018"/>
+                            <Setter Property="Background" Value="#D2D8CF"/>
+                            <Setter Property="BorderBrush" Value="#7F8A7F"/>
+                        </Style>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Foreground" Value="#102018"/>
+                            <Setter Property="Background" Value="#D2D8CF"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="Spaltenfilter (manuell):" Foreground="#102018" FontWeight="SemiBold" Margin="0,0,0,8"/>
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                         <WrapPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Material" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><ComboBox x:Name="FilterMaterialBox" Width="140" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" SelectionChanged="OnColumnFilterSelectionChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Stärke" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><ComboBox x:Name="FilterStaerkeBox" Width="100" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" SelectionChanged="OnColumnFilterSelectionChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Maß" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><TextBox x:Name="FilterMassBox" Width="120" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" TextChanged="OnColumnFilterChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Länge (mm)" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><TextBox x:Name="FilterLaengeBox" Width="90" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" TextChanged="OnColumnFilterChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Lagerort" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><TextBox x:Name="FilterLagerortBox" Width="110" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" TextChanged="OnColumnFilterChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Restnummer" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><TextBox x:Name="FilterRestnummerBox" Width="120" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" TextChanged="OnColumnFilterChanged"/></StackPanel>
-                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Auftrag" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="11"/><TextBox x:Name="FilterAuftragBox" Width="120" Height="30" Padding="8,4" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" TextChanged="OnColumnFilterChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Material" Foreground="#1F3127" FontSize="11"/><ComboBox x:Name="FilterMaterialBox" Width="140" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" SelectionChanged="OnColumnFilterSelectionChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Stärke" Foreground="#1F3127" FontSize="11"/><ComboBox x:Name="FilterStaerkeBox" Width="100" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" SelectionChanged="OnColumnFilterSelectionChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Maß" Foreground="#1F3127" FontSize="11"/><TextBox x:Name="FilterMassBox" Width="120" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" TextChanged="OnColumnFilterChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Länge (mm)" Foreground="#1F3127" FontSize="11"/><TextBox x:Name="FilterLaengeBox" Width="90" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" TextChanged="OnColumnFilterChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Lagerort" Foreground="#1F3127" FontSize="11"/><TextBox x:Name="FilterLagerortBox" Width="110" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" TextChanged="OnColumnFilterChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Restnummer" Foreground="#1F3127" FontSize="11"/><TextBox x:Name="FilterRestnummerBox" Width="120" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" TextChanged="OnColumnFilterChanged"/></StackPanel>
+                            <StackPanel Margin="0,0,10,6"><TextBlock Text="Auftrag" Foreground="#1F3127" FontSize="11"/><TextBox x:Name="FilterAuftragBox" Width="120" Height="30" Padding="8,4" Background="#D2D8CF" Foreground="#102018" BorderBrush="#7F8A7F" TextChanged="OnColumnFilterChanged"/></StackPanel>
                         </WrapPanel>
                     </ScrollViewer>
-                    <TextBlock Text="{Binding SummaryText}" Foreground="{DynamicResource ThemeMutedForegroundBrush}" Margin="0,8,0,0"/>
+                    <TextBlock Text="{Binding SummaryText}" Foreground="#1F3127" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
 
