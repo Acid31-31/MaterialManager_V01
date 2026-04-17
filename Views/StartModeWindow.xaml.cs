@@ -27,13 +27,30 @@ namespace MaterialManager_V01.Views
             try
             {
                 var isLight = ThemeService.CurrentTheme == AppTheme.Light;
-                ThemeSlider.Value = isLight ? 1 : 0;
-                ThemeModeTextBlock.Text = isLight ? "Hell" : "Dunkel";
+                var sliderValue = isLight ? 1 : 0;
+                var modeText = isLight ? "Hell" : "Dunkel";
+
+                if (ThemeSlider != null)
+                    ThemeSlider.Value = sliderValue;
+                if (ThemeModeTextBlock != null)
+                    ThemeModeTextBlock.Text = modeText;
+
+                if (ThemeSliderMain != null)
+                    ThemeSliderMain.Value = sliderValue;
+                if (ThemeModeTextBlockMain != null)
+                    ThemeModeTextBlockMain.Text = modeText;
             }
             finally
             {
                 _syncingThemeUi = false;
             }
+        }
+
+        private void ApplyThemeFromSliderValue(double value)
+        {
+            var theme = value >= 0.5 ? AppTheme.Light : AppTheme.Dark;
+            ThemeService.SetTheme(theme);
+            SyncThemeUi();
         }
 
         private void RefreshLicenseBanner()
@@ -321,9 +338,15 @@ namespace MaterialManager_V01.Views
             if (_syncingThemeUi || !IsLoaded)
                 return;
 
-            var theme = ThemeSlider.Value >= 0.5 ? AppTheme.Light : AppTheme.Dark;
-            ThemeService.SetTheme(theme);
-            SyncThemeUi();
+            ApplyThemeFromSliderValue(ThemeSlider.Value);
+        }
+
+        private void OnThemeSliderChangedMain(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_syncingThemeUi || !IsLoaded)
+                return;
+
+            ApplyThemeFromSliderValue(ThemeSliderMain.Value);
         }
     }
 }
