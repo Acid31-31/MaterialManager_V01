@@ -209,13 +209,16 @@
             </Grid.RowDefinitions>
 
             <Image Source="/Assets/logo.png"
-                   Opacity="0.18"
-                   Stretch="Uniform"
-                   Width="820"
-                   Height="820"
+                   Grid.RowSpan="4"
+                   Opacity="0.28"
+                   Stretch="UniformToFill"
                    IsHitTestVisible="False"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"/>
+
+            <Rectangle Grid.RowSpan="4"
+                       Fill="#66000000"
+                       IsHitTestVisible="False"/>
 
             <StackPanel Grid.Row="1" Margin="0,0,0,48">
                 <Image Source="/Assets/logo.png"
