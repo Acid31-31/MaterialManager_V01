@@ -382,16 +382,30 @@ namespace MaterialManager_V01.Views
             return string.Equals(value, "Alle", StringComparison.OrdinalIgnoreCase) ? string.Empty : value;
         }
 
+        private static ComboBoxItem CreateFilterComboItem(string content)
+        {
+            return new ComboBoxItem
+            {
+                Content = content,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018")),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
+            };
+        }
+
         private static void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
         {
             if (comboBox == null)
                 return;
 
+            comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
+            comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+            comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
+
             comboBox.Items.Clear();
-            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
+            comboBox.Items.Add(CreateFilterComboItem("Alle"));
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(new ComboBoxItem { Content = value });
+                comboBox.Items.Add(CreateFilterComboItem(value));
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
