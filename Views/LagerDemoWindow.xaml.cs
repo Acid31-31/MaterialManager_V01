@@ -392,6 +392,25 @@ namespace MaterialManager_V01.Views
             };
         }
 
+        private static Style CreateFilterComboBoxItemStyle()
+        {
+            var style = new Style(typeof(ComboBoxItem));
+            style.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))));
+            style.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))));
+
+            var selected = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
+            selected.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))));
+            selected.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"))));
+            style.Triggers.Add(selected);
+
+            var highlighted = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
+            highlighted.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))));
+            highlighted.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B7C7BA"))));
+            style.Triggers.Add(highlighted);
+
+            return style;
+        }
+
         private static void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
         {
             if (comboBox == null)
@@ -400,6 +419,7 @@ namespace MaterialManager_V01.Views
             comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
             comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
             comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
+            comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
 
             comboBox.Items.Clear();
             comboBox.Items.Add(CreateFilterComboItem("Alle"));
