@@ -245,7 +245,7 @@
                         HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Design:" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <TextBlock Text="Dunkel" Foreground="#CFD8DC" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Dunkel" Foreground="#D2E2D8" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="ThemeSliderMain"
                                 Width="190"
                                 Height="26"
@@ -254,8 +254,8 @@
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="OnThemeSliderChangedMain"/>
-                        <TextBlock Text="Hell" Foreground="#CFD8DC" FontSize="12" VerticalAlignment="Center" Margin="8,0,0,0"/>
-                        <TextBlock x:Name="ThemeModeTextBlockMain" Foreground="#81C784" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                        <TextBlock Text="Hell" Foreground="#D2E2D8" FontSize="12" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        <TextBlock x:Name="ThemeModeTextBlockMain" Foreground="#9BE4B2" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
