@@ -416,10 +416,20 @@ namespace MaterialManager_V01.Views
             if (comboBox == null)
                 return;
 
-            comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
-            comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+            var darkTextBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
+            var lightBackBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+            var lightSelectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
+
+            comboBox.Foreground = darkTextBrush;
+            comboBox.Background = lightBackBrush;
             comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
             comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
+
+            comboBox.Resources[SystemColors.HighlightTextBrushKey] = darkTextBrush;
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = darkTextBrush;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = darkTextBrush;
+            comboBox.Resources[SystemColors.HighlightBrushKey] = lightSelectedBrush;
+            comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = lightSelectedBrush;
 
             comboBox.Items.Clear();
             comboBox.Items.Add("Alle");
