@@ -422,17 +422,19 @@ namespace MaterialManager_V01.Views
             comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
 
             comboBox.Items.Clear();
-            comboBox.Items.Add(CreateFilterComboItem("Alle"));
+            comboBox.Items.Add("Alle");
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(CreateFilterComboItem(value));
+                comboBox.Items.Add(value);
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
-                .OfType<ComboBoxItem>()
-                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
+                .OfType<object>()
+                .Select(i => i?.ToString() ?? string.Empty)
+                .FirstOrDefault(i => string.Equals(i, target, StringComparison.OrdinalIgnoreCase));
 
-            comboBox.SelectedIndex = comboBox.SelectedIndex >= 0 ? comboBox.SelectedIndex : 0;
+            if (comboBox.SelectedItem == null)
+                comboBox.SelectedIndex = 0;
         }
 
         private void RefreshManualFilterOptions()
