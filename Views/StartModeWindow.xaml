@@ -236,25 +236,25 @@
                            Margin="0,16,0,0"
                            HorizontalAlignment="Center"/>
 
-                <Border Background="#1A1A1A"
-                        BorderBrush="#333"
+                <Border Background="#1D2833"
+                        BorderBrush="#3B4B5C"
                         BorderThickness="1"
-                        CornerRadius="6"
-                        Padding="14,10"
+                        CornerRadius="8"
+                        Padding="16,11"
                         Margin="0,14,0,0"
                         HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Design:" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <TextBlock Text="Dunkel" Foreground="#AAAAAA" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Dunkel" Foreground="#CFD8DC" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="ThemeSliderMain"
-                                Width="160"
-                                Height="24"
+                                Width="190"
+                                Height="26"
                                 Minimum="0"
                                 Maximum="1"
                                 TickFrequency="1"
                                 IsSnapToTickEnabled="True"
                                 ValueChanged="OnThemeSliderChangedMain"/>
-                        <TextBlock Text="Hell" Foreground="#AAAAAA" FontSize="12" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        <TextBlock Text="Hell" Foreground="#CFD8DC" FontSize="12" VerticalAlignment="Center" Margin="8,0,0,0"/>
                         <TextBlock x:Name="ThemeModeTextBlockMain" Foreground="#81C784" FontSize="12" FontWeight="Bold" VerticalAlignment="Center" Margin="12,0,0,0"/>
                     </StackPanel>
                 </Border>

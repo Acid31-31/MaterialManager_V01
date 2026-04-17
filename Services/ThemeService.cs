@@ -83,12 +83,12 @@ namespace MaterialManager_V01.Services
                 switch (child)
                 {
                     case Border border:
-                        if (IsNeutral(border.Background)) border.Background = palette.Surface;
+                        if (IsNeutral(border.Background)) border.Background = MapNeutralBackground(border.Background, palette);
                         if (IsNeutral(border.BorderBrush)) border.BorderBrush = palette.Border;
                         break;
 
                     case Panel panel:
-                        if (IsNeutral(panel.Background)) panel.Background = palette.Surface;
+                        if (IsNeutral(panel.Background)) panel.Background = MapNeutralBackground(panel.Background, palette);
                         break;
 
                     case TextBlock textBlock:
@@ -99,13 +99,13 @@ namespace MaterialManager_V01.Services
                         break;
 
                     case TextBox textBox:
-                        if (IsNeutral(textBox.Background)) textBox.Background = palette.Surface;
+                        if (IsNeutral(textBox.Background)) textBox.Background = MapNeutralBackground(textBox.Background, palette);
                         if (IsNeutral(textBox.Foreground, includeWhiteBlack: true)) textBox.Foreground = palette.Foreground;
                         if (IsNeutral(textBox.BorderBrush)) textBox.BorderBrush = palette.Border;
                         break;
 
                     case ComboBox comboBox:
-                        if (IsNeutral(comboBox.Background)) comboBox.Background = palette.Surface;
+                        if (IsNeutral(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
                         if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
                         if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
                         break;
@@ -134,13 +134,13 @@ namespace MaterialManager_V01.Services
             if (theme == AppTheme.Light)
             {
                 return new ThemePalette(
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5F6F8")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDEFF3")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEF1F4")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C9CED6")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1A1A1A")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5F6368")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E8EBEF"))
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5F7FA")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C9D0DA")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2933")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7785")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E7ECF2"))
                 );
             }
 
@@ -153,6 +153,24 @@ namespace MaterialManager_V01.Services
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A2A2A"))
             );
+        }
+
+        private static SolidColorBrush MapNeutralBackground(Brush? source, ThemePalette palette)
+        {
+            if (CurrentTheme != AppTheme.Light || source is not SolidColorBrush solid)
+                return palette.Surface;
+
+            var c = solid.Color;
+            var luma = (c.R + c.G + c.B) / 3;
+
+            if (luma <= 24)
+                return palette.AltSurface;
+            if (luma <= 52)
+                return palette.Surface;
+            if (luma <= 90)
+                return palette.AltSurface;
+
+            return palette.WindowBackground;
         }
 
         private static bool IsNeutral(Brush? brush, bool includeWhiteBlack = false)
