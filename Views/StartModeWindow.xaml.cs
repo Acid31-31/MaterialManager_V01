@@ -39,6 +39,11 @@ namespace MaterialManager_V01.Views
                     ThemeSliderMain.Value = sliderValue;
                 if (ThemeModeTextBlockMain != null)
                     ThemeModeTextBlockMain.Text = modeText;
+
+                if (DarkModeLogoImage != null)
+                    DarkModeLogoImage.Visibility = isLight ? Visibility.Collapsed : Visibility.Visible;
+                if (LightModeLogoPanel != null)
+                    LightModeLogoPanel.Visibility = isLight ? Visibility.Visible : Visibility.Collapsed;
             }
             finally
             {
