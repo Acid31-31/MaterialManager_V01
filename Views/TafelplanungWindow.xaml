@@ -296,6 +296,8 @@
                             <MenuItem Header="Aktualisieren" Click="OnRefreshClick"/>
                             <MenuItem Header="Netzwerkordner öffnen" Click="OnOpenNetworkFolder"/>
                             <Separator/>
+                            <MenuItem Header="Materialien aus Excel importieren" Click="OnImportFromExcelClick"/>
+                            <Separator/>
                             <MenuItem Header="Hauptprogramm" Click="OnOpenMainProgramClick"/>
                             <MenuItem Header="Schließen" Click="OnCloseClick"/>
                         </MenuItem>
