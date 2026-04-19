@@ -83,6 +83,32 @@ namespace MaterialManager_V01.Services
             return ExcelService.Import(filePath)?.ToList() ?? new List<MaterialItem>();
         }
 
+        /// <summary>
+        /// Liest manuell aus der geteilten Excel-Datei, speichert in DB und schreibt
+        /// danach mit berechneten Gewichten zurück (einmaliger manueller Import-Trigger).
+        /// </summary>
+        public static (int count, string error) ImportFromExcelForced()
+        {
+            try
+            {
+                var savePath = NetzwerkService.GetSavePath();
+                if (string.IsNullOrWhiteSpace(savePath) || !File.Exists(savePath))
+                    return (0, "Excel-Datei nicht gefunden: " + savePath);
+
+                var items = LoadFromExcelFile(savePath);
+                if (items.Count == 0)
+                    return (0, "Keine Materialien in der Excel-Datei gefunden.");
+
+                PersistToDatabase(items);
+                TrySyncExcel(items); // schreibt mit berechneten GewichtKg zurück
+                return (items.Count, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return (0, ex.Message);
+            }
+        }
+
         public static Task<List<MaterialItem>> LoadAllMaterialsAsync()
         {
             return Task.Run(LoadAllMaterials);
