@@ -225,17 +225,19 @@ namespace MaterialManager_V01.Services
             comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
             comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
 
-            var itemStyle = new Style(typeof(ComboBoxItem));
+            // BasedOn preserves the custom ControlTemplate defined in Window.Resources
+            var baseStyle = comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
+            var itemStyle = new Style(typeof(ComboBoxItem), baseStyle);
             itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
 
             var selectedTrigger = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
             selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
             itemStyle.Triggers.Add(selectedTrigger);
 
             var highlightedTrigger = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
-            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
             highlightedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
             itemStyle.Triggers.Add(highlightedTrigger);
 
