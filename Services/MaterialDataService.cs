@@ -36,36 +36,35 @@ namespace MaterialManager_V01.Services
                     var isAppFormat = ExcelService.IsMaterialienFormatWithWeight(savePath);
                     if (!isAppFormat)
                     {
+                        // Erstmaliger Import einer fremden Excel (kein App-Format):
+                        // Einmalig einlesen und in App-Format umwandeln.
                         var convertedItems = LoadFromExcelFile(savePath);
                         if (convertedItems.Count > 0)
                         {
                             PersistToDatabase(convertedItems);
-                            TrySyncExcel(convertedItems); // schreibt als Materialien + GewichtKg zurück
+                            TrySyncExcel(convertedItems);
                             return convertedItems;
                         }
                     }
 
-                    var excelWriteUtc = GetFileWriteTimeUtcSafe(savePath);
-                    var dbWriteUtc = GetFileWriteTimeUtcSafe(PathService.DatabasePath);
+                    // DB ist führend - kein automatischer Re-Import aus Excel mehr.
+                    // Excel wird nur noch von der App beschrieben, nie automatisch zurückgelesen.
+                    if (dbItems.Count > 0)
+                        return dbItems;
 
-                    // Wenn Excel manuell gepflegt wurde und neuer ist, aus Excel neu einlesen.
-                    if (dbItems.Count == 0 || (excelWriteUtc.HasValue && dbWriteUtc.HasValue && excelWriteUtc.Value > dbWriteUtc.Value.AddSeconds(2)))
+                    // DB leer aber Excel vorhanden → einmalig einlesen (Erststart)
+                    var initialItems = LoadFromExcelFile(savePath);
+                    if (initialItems.Count > 0)
                     {
-                        var sharedItems = LoadFromExcelFile(savePath);
-                        if (sharedItems.Count > 0)
-                        {
-                            PersistToDatabase(sharedItems);
-                            return sharedItems;
-                        }
+                        PersistToDatabase(initialItems);
+                        return initialItems;
                     }
                 }
 
-                // DB ist führend, wenn keine neuere Excel-Änderung vorliegt.
+                // Keine Excel vorhanden: Excel aus DB erzeugen
                 if (dbItems.Count > 0)
                 {
-                    if (!File.Exists(savePath))
-                        TrySyncExcel(dbItems);
-
+                    TrySyncExcel(dbItems);
                     return dbItems;
                 }
             }

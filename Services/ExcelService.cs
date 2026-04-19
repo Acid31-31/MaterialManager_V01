@@ -254,8 +254,9 @@ namespace MaterialManager_V01
                 var pdfPfad      = lastCol >= 19 ? ws.Cell(r, 19).GetString() : "";
                 var pdfPfadAngefangeneTafel = lastCol >= 20 ? ws.Cell(r, 20).GetString() : "";
 
-                if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
-                    rest = Models.MaterialDefinitions.NeueRestnummer();
+                // Keine automatische Restnummer-Vergabe beim Import - Excel-Wert bleibt erhalten
+                // if (string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
+                //     rest = Models.MaterialDefinitions.NeueRestnummer();
 
                 if (string.IsNullOrWhiteSpace(matArt))
                     matArt = InferMaterialArt(leg);
@@ -475,7 +476,10 @@ namespace MaterialManager_V01
                     kat = Models.MaterialKategorie.Profil;
 
                 if (kat == Models.MaterialKategorie.Blech && string.Equals(form, "Rest", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(rest))
-                    rest = Models.MaterialDefinitions.NeueRestnummer();
+                {
+                    // Keine automatische Restnummer-Vergabe beim Import - Excel-Wert leer lassen
+                    // rest = Models.MaterialDefinitions.NeueRestnummer();
+                }
 
                 if (string.IsNullOrWhiteSpace(lager))
                 {
