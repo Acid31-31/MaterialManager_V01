@@ -211,7 +211,18 @@ namespace MaterialManager_V01.Services
         private static void ApplyComboBoxReadability(ComboBox comboBox, ThemePalette palette)
         {
             if (CurrentTheme != AppTheme.Light)
+            {
+                // Dunkelmodus: alle Lichtmodus-Overrides zurücksetzen damit DynamicResource greift
+                comboBox.ClearValue(ComboBox.ItemContainerStyleProperty);
+                comboBox.ClearValue(ComboBox.ForegroundProperty);
+                comboBox.ClearValue(ComboBox.BackgroundProperty);
+                comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
+                comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
+                comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
+                comboBox.Resources.Remove(SystemColors.HighlightBrushKey);
+                comboBox.Resources.Remove(SystemColors.InactiveSelectionHighlightBrushKey);
                 return;
+            }
 
             var textBrush = palette.Foreground;
             var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
