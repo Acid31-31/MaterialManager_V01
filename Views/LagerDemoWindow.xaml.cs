@@ -72,6 +72,7 @@ namespace MaterialManager_V01.Views
 
         private void OnWindowLoaded(object? sender, RoutedEventArgs e)
         {
+            ThemeService.ApplyThemeToWindow(this);
             InitializeAutoSync();
             LoadMaterials();
         }
