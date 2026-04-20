@@ -70,7 +70,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="ComboBoxItem">
+        <Style x:Key="DarkComboBoxItemStyle" TargetType="ComboBoxItem">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#111111"/>
             <Setter Property="Padding" Value="8,5"/>
@@ -92,6 +92,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DarkComboBoxItemStyle}"/>
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#121212"/>
             <Setter Property="Foreground" Value="White"/>
@@ -424,7 +425,9 @@
                         <WrapPanel>
                             <StackPanel Margin="0,0,10,6">
                                 <TextBlock Text="Material" Foreground="#B0BEC5" FontSize="11"/>
-                                <ComboBox x:Name="FilterMaterialBox" Width="140" Height="30" Padding="8,4" SelectionChanged="OnColumnFilterSelectionChanged">
+                                <ComboBox x:Name="FilterMaterialBox" Width="140" Height="30" Padding="8,4"
+                                          ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"
+                                          SelectionChanged="OnColumnFilterSelectionChanged">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding}" Foreground="White" Padding="0"/>
@@ -434,7 +437,9 @@
                             </StackPanel>
                             <StackPanel Margin="0,0,10,6">
                                 <TextBlock Text="Stärke" Foreground="#B0BEC5" FontSize="11"/>
-                                <ComboBox x:Name="FilterStaerkeBox" Width="100" Height="30" Padding="8,4" SelectionChanged="OnColumnFilterSelectionChanged">
+                                <ComboBox x:Name="FilterStaerkeBox" Width="100" Height="30" Padding="8,4"
+                                          ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"
+                                          SelectionChanged="OnColumnFilterSelectionChanged">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding}" Foreground="White" Padding="0"/>
