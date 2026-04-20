@@ -40,7 +40,7 @@ namespace MaterialManager_V01
             EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent,
                 new RoutedEventHandler((sender, _) =>
                 {
-                    if (sender is Window window)
+                    if (sender is Window window && window.GetType().FullName?.Contains("PopupRoot") != true)
                     {
                         ThemeService.ApplyThemeToWindow(window);
                         ApplyImmersiveTitleBar(window);
