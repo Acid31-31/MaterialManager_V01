@@ -412,15 +412,16 @@ namespace MaterialManager_V01.Views
                 return;
 
             comboBox.Items.Clear();
-            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
+            comboBox.Items.Add("Alle");
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(new ComboBoxItem { Content = value });
+                comboBox.Items.Add(value);
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
-                .OfType<ComboBoxItem>()
-                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
+                .OfType<string>()
+                .FirstOrDefault(i => string.Equals(i, target, StringComparison.OrdinalIgnoreCase))
+                ?? "Alle";
         }
 
         private void RefreshManualFilterOptions()
