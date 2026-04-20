@@ -349,24 +349,7 @@ namespace MaterialManager_V01.Services
 
         private static AppTheme LoadTheme()
         {
-            try
-            {
-                if (!File.Exists(ThemeSettingsFile))
-                    return AppTheme.Dark;
-
-                var json = File.ReadAllText(ThemeSettingsFile);
-                var settings = JsonSerializer.Deserialize<ThemeSettings>(json);
-                if (settings == null)
-                    return AppTheme.Dark;
-
-                return Enum.TryParse<AppTheme>(settings.Theme, true, out var parsed)
-                    ? parsed
-                    : AppTheme.Dark;
-            }
-            catch
-            {
-                return AppTheme.Dark;
-            }
+            return AppTheme.Dark;
         }
 
         private static void SaveTheme(AppTheme theme)
