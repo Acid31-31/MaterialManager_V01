@@ -138,9 +138,12 @@ namespace MaterialManager_V01.Services
                         break;
 
                     case ComboBox comboBox:
-                        if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
-                        if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
-                        if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
+                        if (CurrentTheme == AppTheme.Light)
+                        {
+                            if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
+                            if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
+                            if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
+                        }
                         ApplyComboBoxReadability(comboBox, palette);
                         break;
 
@@ -212,18 +215,12 @@ namespace MaterialManager_V01.Services
         {
             if (CurrentTheme != AppTheme.Light)
             {
-                // Dunkelmodus: explizit dunkle Werte setzen
-                comboBox.Background = palette.Surface;
-                comboBox.Foreground = palette.Foreground;
-                comboBox.BorderBrush = palette.Border;
-
-                // ItemContainerStyle mit dunklen Farben setzen (NICHT löschen - sonst greift System-Standard mit weißem Hintergrund)
-                var baseItemStyle = comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
-                var darkItemStyle = new Style(typeof(ComboBoxItem), baseItemStyle);
-                darkItemStyle.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
-                darkItemStyle.Setters.Add(new Setter(Control.BackgroundProperty, palette.Surface));
-                comboBox.ItemContainerStyle = darkItemStyle;
-
+                // Dunkelmodus: alle programmatischen Overrides zurücksetzen.
+                // Das XAML hat bereits korrekte DynamicResource-Bindungen – diese NICHT überschreiben.
+                comboBox.ClearValue(ComboBox.BackgroundProperty);
+                comboBox.ClearValue(ComboBox.ForegroundProperty);
+                comboBox.ClearValue(ComboBox.BorderBrushProperty);
+                comboBox.ClearValue(ComboBox.ItemContainerStyleProperty);
                 comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
