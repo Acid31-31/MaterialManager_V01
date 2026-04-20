@@ -384,12 +384,7 @@ namespace MaterialManager_V01.Views
 
         private static ComboBoxItem CreateFilterComboItem(string content)
         {
-            return new ComboBoxItem
-            {
-                Content = content,
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018")),
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
-            };
+            return new ComboBoxItem { Content = content };
         }
 
         private static Style CreateFilterComboBoxItemStyle()
@@ -416,35 +411,16 @@ namespace MaterialManager_V01.Views
             if (comboBox == null)
                 return;
 
-            var darkTextBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
-            var lightBackBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
-            var lightSelectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
-
-            comboBox.Foreground = darkTextBrush;
-            comboBox.Background = lightBackBrush;
-            comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
-            comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
-
-            comboBox.Resources[SystemColors.HighlightTextBrushKey] = darkTextBrush;
-            comboBox.Resources[SystemColors.ControlTextBrushKey] = darkTextBrush;
-            comboBox.Resources[SystemColors.WindowTextBrushKey] = darkTextBrush;
-            comboBox.Resources[SystemColors.HighlightBrushKey] = lightSelectedBrush;
-            comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = lightSelectedBrush;
-
             comboBox.Items.Clear();
-            comboBox.Items.Add("Alle");
+            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(value);
+                comboBox.Items.Add(new ComboBoxItem { Content = value });
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
-                .OfType<object>()
-                .Select(i => i?.ToString() ?? string.Empty)
-                .FirstOrDefault(i => string.Equals(i, target, StringComparison.OrdinalIgnoreCase));
-
-            if (comboBox.SelectedItem == null)
-                comboBox.SelectedIndex = 0;
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
         }
 
         private void RefreshManualFilterOptions()
