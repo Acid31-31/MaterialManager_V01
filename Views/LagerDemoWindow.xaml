@@ -29,8 +29,8 @@
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
-            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+            <Setter Property="Background" Value="#222"/>
+            <Setter Property="BorderBrush" Value="#444"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -40,11 +40,11 @@
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="1"/>
 
-                            <TextBlock Text="{TemplateBinding SelectionBoxItem}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       Margin="{TemplateBinding Padding}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"/>
+                            <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"/>
 
                             <ToggleButton Focusable="False"
                                           ClickMode="Press"
@@ -59,7 +59,7 @@
                                    AllowsTransparency="True"
                                    Focusable="False"
                                    PopupAnimation="Fade">
-                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -77,17 +77,20 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBoxItem">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                TextElement.Foreground="{TemplateBinding Foreground}">
                             <ContentPresenter TextElement.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#B7C7BA"/>
-                                <Setter Property="Foreground" Value="#102018"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Bd" Property="TextElement.Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#A5B8AA"/>
-                                <Setter Property="Foreground" Value="#102018"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#0F5AA6"/>
+                                <Setter TargetName="Bd" Property="TextElement.Foreground" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
