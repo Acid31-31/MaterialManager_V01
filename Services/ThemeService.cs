@@ -138,12 +138,9 @@ namespace MaterialManager_V01.Services
                         break;
 
                     case ComboBox comboBox:
-                        if (CurrentTheme == AppTheme.Light)
-                        {
-                            if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
-                            if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
-                            if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
-                        }
+                        if (ShouldRecolorBackground(comboBox.Background)) comboBox.Background = MapNeutralBackground(comboBox.Background, palette);
+                        if (IsNeutral(comboBox.Foreground, includeWhiteBlack: true)) comboBox.Foreground = palette.Foreground;
+                        if (IsNeutral(comboBox.BorderBrush)) comboBox.BorderBrush = palette.Border;
                         ApplyComboBoxReadability(comboBox, palette);
                         break;
 
@@ -214,20 +211,7 @@ namespace MaterialManager_V01.Services
         private static void ApplyComboBoxReadability(ComboBox comboBox, ThemePalette palette)
         {
             if (CurrentTheme != AppTheme.Light)
-            {
-                // Dunkelmodus: alle programmatischen Overrides zurücksetzen.
-                // Das XAML hat bereits korrekte DynamicResource-Bindungen – diese NICHT überschreiben.
-                comboBox.ClearValue(ComboBox.BackgroundProperty);
-                comboBox.ClearValue(ComboBox.ForegroundProperty);
-                comboBox.ClearValue(ComboBox.BorderBrushProperty);
-                comboBox.ClearValue(ComboBox.ItemContainerStyleProperty);
-                comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
-                comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
-                comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
-                comboBox.Resources.Remove(SystemColors.HighlightBrushKey);
-                comboBox.Resources.Remove(SystemColors.InactiveSelectionHighlightBrushKey);
                 return;
-            }
 
             var textBrush = palette.Foreground;
             var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
@@ -241,19 +225,17 @@ namespace MaterialManager_V01.Services
             comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
             comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
 
-            // BasedOn preserves the custom ControlTemplate defined in Window.Resources
-            var baseStyle = comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
-            var itemStyle = new Style(typeof(ComboBoxItem), baseStyle);
+            var itemStyle = new Style(typeof(ComboBoxItem));
             itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
 
             var selectedTrigger = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
             itemStyle.Triggers.Add(selectedTrigger);
 
             var highlightedTrigger = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
-            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             highlightedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBrush));
             itemStyle.Triggers.Add(highlightedTrigger);
 
@@ -349,7 +331,24 @@ namespace MaterialManager_V01.Services
 
         private static AppTheme LoadTheme()
         {
-            return AppTheme.Dark;
+            try
+            {
+                if (!File.Exists(ThemeSettingsFile))
+                    return AppTheme.Dark;
+
+                var json = File.ReadAllText(ThemeSettingsFile);
+                var settings = JsonSerializer.Deserialize<ThemeSettings>(json);
+                if (settings == null)
+                    return AppTheme.Dark;
+
+                return Enum.TryParse<AppTheme>(settings.Theme, true, out var parsed)
+                    ? parsed
+                    : AppTheme.Dark;
+            }
+            catch
+            {
+                return AppTheme.Dark;
+            }
         }
 
         private static void SaveTheme(AppTheme theme)

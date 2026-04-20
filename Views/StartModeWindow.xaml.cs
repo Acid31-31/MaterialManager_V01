@@ -21,9 +21,32 @@ namespace MaterialManager_V01.Views
             SyncThemeUi();
         }
 
-        private void SyncThemeUi() { }
+        private void SyncThemeUi()
+        {
+            _syncingThemeUi = true;
+            try
+            {
+                var isLight = ThemeService.CurrentTheme == AppTheme.Light;
+                var sliderValue = isLight ? 1 : 0;
+                var modeText = isLight ? "Hell Pro" : "Dunkel";
 
-        private void ApplyThemeFromSliderValue(double value) { }
+                if (ThemeSliderMain != null)
+                    ThemeSliderMain.Value = sliderValue;
+                if (ThemeModeTextBlockMain != null)
+                    ThemeModeTextBlockMain.Text = modeText;
+            }
+            finally
+            {
+                _syncingThemeUi = false;
+            }
+        }
+
+        private void ApplyThemeFromSliderValue(double value)
+        {
+            var theme = value >= 0.5 ? AppTheme.Light : AppTheme.Dark;
+            ThemeService.SetTheme(theme);
+            SyncThemeUi();
+        }
 
         private void RefreshLicenseBanner()
         {
@@ -306,6 +329,13 @@ namespace MaterialManager_V01.Views
         }
 
         private void OnThemeSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { }
-        private void OnThemeSliderChangedMain(object sender, RoutedPropertyChangedEventArgs<double> e) { }
+
+        private void OnThemeSliderChangedMain(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_syncingThemeUi || !IsLoaded)
+                return;
+
+            ApplyThemeFromSliderValue(ThemeSliderMain.Value);
+        }
     }
 }

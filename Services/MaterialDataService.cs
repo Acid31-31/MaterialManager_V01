@@ -36,35 +36,36 @@ namespace MaterialManager_V01.Services
                     var isAppFormat = ExcelService.IsMaterialienFormatWithWeight(savePath);
                     if (!isAppFormat)
                     {
-                        // Erstmaliger Import einer fremden Excel (kein App-Format):
-                        // Einmalig einlesen und in App-Format umwandeln.
                         var convertedItems = LoadFromExcelFile(savePath);
                         if (convertedItems.Count > 0)
                         {
                             PersistToDatabase(convertedItems);
-                            TrySyncExcel(convertedItems);
+                            TrySyncExcel(convertedItems); // schreibt als Materialien + GewichtKg zurück
                             return convertedItems;
                         }
                     }
 
-                    // DB ist führend - kein automatischer Re-Import aus Excel mehr.
-                    // Excel wird nur noch von der App beschrieben, nie automatisch zurückgelesen.
-                    if (dbItems.Count > 0)
-                        return dbItems;
+                    var excelWriteUtc = GetFileWriteTimeUtcSafe(savePath);
+                    var dbWriteUtc = GetFileWriteTimeUtcSafe(PathService.DatabasePath);
 
-                    // DB leer aber Excel vorhanden → einmalig einlesen (Erststart)
-                    var initialItems = LoadFromExcelFile(savePath);
-                    if (initialItems.Count > 0)
+                    // Wenn Excel manuell gepflegt wurde und neuer ist, aus Excel neu einlesen.
+                    if (dbItems.Count == 0 || (excelWriteUtc.HasValue && dbWriteUtc.HasValue && excelWriteUtc.Value > dbWriteUtc.Value.AddSeconds(2)))
                     {
-                        PersistToDatabase(initialItems);
-                        return initialItems;
+                        var sharedItems = LoadFromExcelFile(savePath);
+                        if (sharedItems.Count > 0)
+                        {
+                            PersistToDatabase(sharedItems);
+                            return sharedItems;
+                        }
                     }
                 }
 
-                // Keine Excel vorhanden: Excel aus DB erzeugen
+                // DB ist führend, wenn keine neuere Excel-Änderung vorliegt.
                 if (dbItems.Count > 0)
                 {
-                    TrySyncExcel(dbItems);
+                    if (!File.Exists(savePath))
+                        TrySyncExcel(dbItems);
+
                     return dbItems;
                 }
             }
@@ -81,32 +82,6 @@ namespace MaterialManager_V01.Services
                 return new List<MaterialItem>();
 
             return ExcelService.Import(filePath)?.ToList() ?? new List<MaterialItem>();
-        }
-
-        /// <summary>
-        /// Liest manuell aus der geteilten Excel-Datei, speichert in DB und schreibt
-        /// danach mit berechneten Gewichten zurück (einmaliger manueller Import-Trigger).
-        /// </summary>
-        public static (int count, string error) ImportFromExcelForced()
-        {
-            try
-            {
-                var savePath = NetzwerkService.GetSavePath();
-                if (string.IsNullOrWhiteSpace(savePath) || !File.Exists(savePath))
-                    return (0, "Excel-Datei nicht gefunden: " + savePath);
-
-                var items = LoadFromExcelFile(savePath);
-                if (items.Count == 0)
-                    return (0, "Keine Materialien in der Excel-Datei gefunden.");
-
-                PersistToDatabase(items);
-                TrySyncExcel(items); // schreibt mit berechneten GewichtKg zurück
-                return (items.Count, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                return (0, ex.Message);
-            }
         }
 
         public static Task<List<MaterialItem>> LoadAllMaterialsAsync()

@@ -126,7 +126,6 @@ namespace MaterialManager_V01.Views
 
         private void OnWindowLoaded(object? sender, RoutedEventArgs e)
         {
-            ThemeService.ApplyThemeToWindow(this);
             InitializeAutoSync();
             LoadMaterials();
         }
@@ -350,18 +349,17 @@ namespace MaterialManager_V01.Views
                 return;
 
             comboBox.Items.Clear();
-            comboBox.Items.Add("Alle");
+            comboBox.Items.Add(new ComboBoxItem { Content = "Alle" });
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(value);
+                comboBox.Items.Add(new ComboBoxItem { Content = value });
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
-                .OfType<string>()
-                .FirstOrDefault(i => string.Equals(i, target, StringComparison.OrdinalIgnoreCase));
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => string.Equals(i.Content?.ToString(), target, StringComparison.OrdinalIgnoreCase));
 
-            if (comboBox.SelectedIndex < 0)
-                comboBox.SelectedIndex = 0;
+            comboBox.SelectedIndex = comboBox.SelectedIndex >= 0 ? comboBox.SelectedIndex : 0;
         }
 
         private void RefreshManualFilterOptions()
@@ -560,31 +558,6 @@ namespace MaterialManager_V01.Views
         private void OnRefreshClick(object sender, RoutedEventArgs e)
         {
             LoadMaterials();
-        }
-
-        private void OnImportFromExcelClick(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show(
-                "Alle Materialien aus der Excel-Datei neu einlesen?\n\n" +
-                "Vorhandene Daten in der App werden durch den Excel-Inhalt ersetzt.\n" +
-                "Gewichte werden danach automatisch berechnet und in Excel zurückgeschrieben.",
-                "Materialien aus Excel importieren",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes)
-                return;
-
-            var (count, error) = MaterialDataService.ImportFromExcelForced();
-
-            if (!string.IsNullOrWhiteSpace(error))
-            {
-                MessageBox.Show($"Fehler beim Import:\n{error}", "Import fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            LoadMaterials();
-            MessageBox.Show($"{count} Material(ien) erfolgreich importiert.\nGewichte wurden berechnet und in Excel gespeichert.", "Import erfolgreich", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnOpenNetworkFolder(object sender, RoutedEventArgs e)
