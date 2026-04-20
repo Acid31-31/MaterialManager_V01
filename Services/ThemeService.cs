@@ -212,12 +212,18 @@ namespace MaterialManager_V01.Services
         {
             if (CurrentTheme != AppTheme.Light)
             {
-                // Dunkelmodus: explizit dunkle Werte setzen (NICHT ClearValue!)
-                // ClearValue würde Style-Setter mit hellen Farben aktiv machen.
-                comboBox.ClearValue(ComboBox.ItemContainerStyleProperty);
+                // Dunkelmodus: explizit dunkle Werte setzen
                 comboBox.Background = palette.Surface;
                 comboBox.Foreground = palette.Foreground;
                 comboBox.BorderBrush = palette.Border;
+
+                // ItemContainerStyle mit dunklen Farben setzen (NICHT löschen - sonst greift System-Standard mit weißem Hintergrund)
+                var baseItemStyle = comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
+                var darkItemStyle = new Style(typeof(ComboBoxItem), baseItemStyle);
+                darkItemStyle.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
+                darkItemStyle.Setters.Add(new Setter(Control.BackgroundProperty, palette.Surface));
+                comboBox.ItemContainerStyle = darkItemStyle;
+
                 comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);

@@ -59,7 +59,7 @@
                                    AllowsTransparency="True"
                                    Focusable="False"
                                    PopupAnimation="Fade">
-                                <Border Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
