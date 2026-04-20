@@ -411,28 +411,11 @@ namespace MaterialManager_V01.Views
             if (comboBox == null)
                 return;
 
-            // Style direkt hier setzen - unabhängig vom ThemeService-Timing
-            var isDark = ThemeService.CurrentTheme == AppTheme.Dark;
-            var darkItemStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
-
-            if (isDark)
-            {
-                comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
-                comboBox.Foreground = Brushes.White;
-                comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#444444"));
-                comboBox.ItemContainerStyle = darkItemStyle;
-            }
-            else
-            {
-                comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
-                comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
-                comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
-
-                var lightStyle = new Style(typeof(ComboBoxItem), darkItemStyle);
-                lightStyle.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))));
-                lightStyle.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))));
-                comboBox.ItemContainerStyle = lightStyle;
-            }
+            // Filterbereich ist immer dunkel (hardcodiert #0E0E0E) - ComboBoxen immer dunkel
+            comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
+            comboBox.Foreground = Brushes.White;
+            comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#444444"));
+            comboBox.ItemContainerStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
 
             comboBox.Items.Clear();
             comboBox.Items.Add("Alle");
