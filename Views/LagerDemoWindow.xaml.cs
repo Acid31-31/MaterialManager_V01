@@ -406,10 +406,33 @@ namespace MaterialManager_V01.Views
             return style;
         }
 
-        private static void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
+        private void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
         {
             if (comboBox == null)
                 return;
+
+            // Style direkt hier setzen - unabhängig vom ThemeService-Timing
+            var isDark = ThemeService.CurrentTheme == AppTheme.Dark;
+            var darkItemStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
+
+            if (isDark)
+            {
+                comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
+                comboBox.Foreground = Brushes.White;
+                comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#444444"));
+                comboBox.ItemContainerStyle = darkItemStyle;
+            }
+            else
+            {
+                comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+                comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
+                comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8A7F"));
+
+                var lightStyle = new Style(typeof(ComboBoxItem), darkItemStyle);
+                lightStyle.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))));
+                lightStyle.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))));
+                comboBox.ItemContainerStyle = lightStyle;
+            }
 
             comboBox.Items.Clear();
             comboBox.Items.Add("Alle");
