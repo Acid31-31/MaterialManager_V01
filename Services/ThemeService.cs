@@ -210,13 +210,21 @@ namespace MaterialManager_V01.Services
 
         private static void ApplyComboBoxReadability(ComboBox comboBox, ThemePalette palette)
         {
+            // Basis-Style aus dem Fenster holen (DarkComboBoxItemStyle oder impliziter ComboBoxItem-Style)
+            var baseItemStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style
+                ?? comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
+
             if (CurrentTheme != AppTheme.Light)
             {
-                // Dunkelmodus: alle programmatischen Overrides aus Hellmodus entfernen
+                // Dunkelmodus: dunklen Style explizit setzen und alle Hellmodus-Overrides entfernen
+                if (baseItemStyle != null)
+                    comboBox.ItemContainerStyle = baseItemStyle;
+                else
+                    comboBox.ClearValue(ItemsControl.ItemContainerStyleProperty);
+
                 comboBox.ClearValue(Control.BackgroundProperty);
                 comboBox.ClearValue(Control.ForegroundProperty);
                 comboBox.ClearValue(Control.BorderBrushProperty);
-                comboBox.ClearValue(ItemsControl.ItemContainerStyleProperty);
                 comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
@@ -225,6 +233,7 @@ namespace MaterialManager_V01.Services
                 return;
             }
 
+            // Hellmodus
             var textBrush = palette.Foreground;
             var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
             var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
@@ -237,7 +246,8 @@ namespace MaterialManager_V01.Services
             comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
             comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
 
-            var itemStyle = new Style(typeof(ComboBoxItem));
+            // BasedOn dem dunklen Style damit das ControlTemplate erhalten bleibt
+            var itemStyle = new Style(typeof(ComboBoxItem), baseItemStyle);
             itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
 
