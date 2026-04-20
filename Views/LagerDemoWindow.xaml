@@ -425,17 +425,17 @@
                 <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#1B1F1C"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ThemeMutedForegroundBrush}"/>
                         </Style>
                         <Style TargetType="TextBox">
-                            <Setter Property="Foreground" Value="#102018"/>
-                            <Setter Property="Background" Value="#D2D8CF"/>
-                            <Setter Property="BorderBrush" Value="#7F8A7F"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+                            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
                         </Style>
                         <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-                            <Setter Property="Foreground" Value="#102018"/>
-                            <Setter Property="Background" Value="#D2D8CF"/>
-                            <Setter Property="BorderBrush" Value="#7F8A7F"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+                            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
                         </Style>
                         <Style x:Key="FilterComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                             <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>

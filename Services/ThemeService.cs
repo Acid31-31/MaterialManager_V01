@@ -212,10 +212,12 @@ namespace MaterialManager_V01.Services
         {
             if (CurrentTheme != AppTheme.Light)
             {
-                // Dunkelmodus: alle Lichtmodus-Overrides zurücksetzen damit DynamicResource greift
+                // Dunkelmodus: explizit dunkle Werte setzen (NICHT ClearValue!)
+                // ClearValue würde Style-Setter mit hellen Farben aktiv machen.
                 comboBox.ClearValue(ComboBox.ItemContainerStyleProperty);
-                comboBox.ClearValue(ComboBox.ForegroundProperty);
-                comboBox.ClearValue(ComboBox.BackgroundProperty);
+                comboBox.Background = palette.Surface;
+                comboBox.Foreground = palette.Foreground;
+                comboBox.BorderBrush = palette.Border;
                 comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
