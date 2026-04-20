@@ -411,11 +411,18 @@ namespace MaterialManager_V01.Views
             if (comboBox == null)
                 return;
 
-            // Filterbereich ist immer dunkel (hardcodiert #0E0E0E) - ComboBoxen immer dunkel
-            comboBox.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
-            comboBox.Foreground = Brushes.White;
-            comboBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#444444"));
-            comboBox.ItemContainerStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
+            var isLight = ThemeService.CurrentTheme == AppTheme.Light;
+
+            if (isLight)
+            {
+                comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
+                comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
+            }
+            else
+            {
+                comboBox.Foreground = Brushes.White;
+                comboBox.ItemContainerStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
+            }
 
             comboBox.Items.Clear();
             comboBox.Items.Add("Alle");
