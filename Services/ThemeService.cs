@@ -37,9 +37,6 @@ namespace MaterialManager_V01.Services
 
         public static void SetTheme(AppTheme theme)
         {
-            if (CurrentTheme == theme)
-                return;
-
             CurrentTheme = theme;
             ApplyAppResources(theme);
             SaveTheme(theme);

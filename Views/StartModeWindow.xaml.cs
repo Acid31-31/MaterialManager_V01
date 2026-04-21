@@ -351,7 +351,16 @@ namespace MaterialManager_V01.Views
             if (_syncingThemeUi || _applyingTheme || !IsLoaded)
                 return;
 
-            ApplyThemeFromSliderValue(ThemeSliderMain.Value);
+            var snappedValue = e.NewValue >= 0.5 ? 1.0 : 0.0;
+
+            if (Math.Abs(ThemeSliderMain.Value - snappedValue) > 0.001)
+            {
+                _syncingThemeUi = true;
+                ThemeSliderMain.Value = snappedValue;
+                _syncingThemeUi = false;
+            }
+
+            ApplyThemeFromSliderValue(snappedValue);
         }
     }
 }
