@@ -359,32 +359,46 @@ namespace MaterialManager_V01.Services
             }
 
             return new ThemePalette(
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0B0B0B")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1A1A1A")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#151515")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#333333")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2A2A2A"))
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10151A")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#171D24")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1D2630")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2D3A46")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F2F5F8")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A9B4BF")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#24313D"))
             );
         }
 
         private static SolidColorBrush MapNeutralBackground(Brush? source, ThemePalette palette)
         {
-            if (CurrentTheme != AppTheme.Light || source is not SolidColorBrush solid)
+            if (source is not SolidColorBrush solid)
                 return palette.Surface;
 
             var c = solid.Color;
             var luma = (c.R + c.G + c.B) / 3;
 
-            if (luma <= 26)
-                return palette.AltSurface;
-            if (luma <= 58)
-                return palette.Surface;
-            if (luma <= 96)
-                return palette.AltSurface;
+            if (CurrentTheme == AppTheme.Light)
+            {
+                if (luma <= 26)
+                    return palette.AltSurface;
+                if (luma <= 58)
+                    return palette.Surface;
+                if (luma <= 96)
+                    return palette.AltSurface;
 
-            return palette.WindowBackground;
+                return palette.WindowBackground;
+            }
+
+            if (luma <= 18)
+                return palette.WindowBackground;
+            if (luma <= 36)
+                return palette.Surface;
+            if (luma <= 62)
+                return palette.AltSurface;
+            if (luma <= 96)
+                return palette.Surface;
+
+            return palette.AltSurface;
         }
 
         private static bool IsNeutral(Brush? brush, bool includeWhiteBlack = false)
