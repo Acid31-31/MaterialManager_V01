@@ -10,10 +10,10 @@
         WindowState="Normal"
         ResizeMode="CanMinimize"
         WindowStyle="None"
-        BorderBrush="#2A2A2A"
+        BorderBrush="{DynamicResource ThemeBorderBrush}"
         BorderThickness="1"
         Icon="/Assets/app-icon.png"
-        Background="#0B0B0B">
+        Background="{DynamicResource ThemeWindowBackgroundBrush}">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             ResizeBorderThickness="0"
@@ -96,11 +96,11 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="Menu">
-            <Setter Property="Background" Value="#111111"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
         </Style>
         <Style TargetType="MenuItem">
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="6,2"/>
             <Setter Property="Template">
@@ -117,11 +117,11 @@
 
                                 <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="4,0,6,0" VerticalAlignment="Center"/>
                                 <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="20,0,6,0" VerticalAlignment="Center" Foreground="#888"/>
+                                <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="20,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource ThemeMutedForegroundBrush}"/>
                                 <Path Grid.Column="3" x:Name="ArrowPath" Margin="4,0,0,0" VerticalAlignment="Center" Fill="White" Data="M 0 0 L 4 4 L 0 8 Z" Visibility="Collapsed"/>
 
                                 <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsSubmenuOpen}" Placement="Right" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade" VerticalOffset="-3">
-                                    <Border Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" Padding="2">
+                                    <Border Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Padding="2">
                                         <ScrollViewer CanContentScroll="True" MaxHeight="400">
                                             <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
                                         </ScrollViewer>
@@ -152,7 +152,7 @@
             </Setter>
         </Style>
         <Style TargetType="Separator">
-            <Setter Property="Background" Value="#333"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="Height" Value="1"/>
             <Setter Property="Margin" Value="4,2"/>
         </Style>
@@ -161,9 +161,9 @@
             <Setter Property="FontSize" Value="13"/>
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#222"/>
-            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -191,8 +191,8 @@
                                           Focusable="False"
                                           ClickMode="Press"
                                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                          Background="#1A1A1A"
-                                          BorderBrush="#444"
+                                          Background="{DynamicResource ThemeAltSurfaceBrush}"
+                                          BorderBrush="{DynamicResource ThemeBorderBrush}"
                                           BorderThickness="1,0,0,0">
                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </ToggleButton>
@@ -203,7 +203,7 @@
                                    AllowsTransparency="True"
                                    Focusable="False"
                                    PopupAnimation="Fade">
-                                <Border Background="#111111" BorderBrush="#444" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -215,8 +215,8 @@
             </Setter>
         </Style>
         <Style TargetType="ComboBoxItem">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -226,10 +226,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#0F5AA6"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -237,18 +237,18 @@
             </Setter>
         </Style>
         <Style TargetType="DataGrid">
-            <Setter Property="Background" Value="#121212"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="RowBackground" Value="#1A1A1A"/>
-            <Setter Property="AlternatingRowBackground" Value="#151515"/>
+            <Setter Property="RowBackground" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
         </Style>
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#1E1E1E"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Padding" Value="8,6"/>
@@ -281,7 +281,7 @@
 
     <Grid>
         <DockPanel>
-            <Border DockPanel.Dock="Top" Background="#111111" Height="32" BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0,0,0,2">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeSurfaceBrush}" Height="32" BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0,0,0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -338,7 +338,7 @@
                 </Grid>
             </Border>
 
-            <Border DockPanel.Dock="Top" Background="#111111" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeSurfaceBrush}" Padding="10" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -348,8 +348,8 @@
 
                     <Image Grid.Column="0" Source="/Assets/app-icon.png" Width="16" Height="16" Margin="6,0,10,0" VerticalAlignment="Center"/>
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding WorkspaceTitle}" Foreground="White" FontSize="22" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding HeaderText}" Foreground="#AAAAAA" Margin="0,6,0,0"/>
+                        <TextBlock Text="{Binding WorkspaceTitle}" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding HeaderText}" Foreground="{DynamicResource ThemeMutedForegroundBrush}" Margin="0,6,0,0"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
@@ -397,7 +397,7 @@
                 </Grid>
             </Border>
 
-            <Border DockPanel.Dock="Top" Background="#1F1F1F" Padding="12">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12">
                 <DockPanel LastChildFill="True">
                     <StackPanel Orientation="Horizontal" x:Name="MaterialActionPanel">
                         <Button Content="Aktualisieren"
@@ -410,7 +410,7 @@
                 </DockPanel>
             </Border>
 
-            <Border DockPanel.Dock="Top" Background="#0B0B0B" Padding="12" BorderBrush="#333" BorderThickness="0,1,0,0">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeWindowBackgroundBrush}" Padding="12" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,1,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -422,7 +422,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Auftragsverfolgung (5 Wochen bis zur ausgewählten KW)" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Auftragsverfolgung (5 Wochen bis zur ausgewählten KW)" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                         <Button Content="{Binding NachproduktionButtonText}"
                                 Click="OnToggleNachproduktionClick"
@@ -442,7 +442,7 @@
                                 Margin="0,0,0,8"/>
                     </StackPanel>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="#AAAAAA" FontSize="12" Margin="0,0,0,8"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding AuftragsKwInfoText}" Foreground="{DynamicResource ThemeMutedForegroundBrush}" FontSize="12" Margin="0,0,0,8"/>
 
                     <DataGrid x:Name="AuftraegeGrid"
                               Grid.Row="2"
@@ -498,7 +498,7 @@
                 </Grid>
             </Border>
 
-            <Border x:Name="MaterialFilterBorder" DockPanel.Dock="Top" Background="#0E0E0E" Padding="12">
+            <Border x:Name="MaterialFilterBorder" DockPanel.Dock="Top" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -507,20 +507,20 @@
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Suchen Material:" Foreground="White" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock Text="Suchen Material:" Foreground="{DynamicResource ThemeForegroundBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                     <TextBox Grid.Column="1"
                              x:Name="SearchBox"
-                             Background="#222"
-                             Foreground="White"
-                             BorderBrush="#444"
+                             Background="{DynamicResource ThemeSurfaceBrush}"
+                             Foreground="{DynamicResource ThemeForegroundBrush}"
+                             BorderBrush="{DynamicResource ThemeBorderBrush}"
                              Padding="8,5"
                              TextChanged="OnSearchTextChanged"/>
-                    <TextBlock Grid.Column="2" Text="Filter:" Foreground="White" VerticalAlignment="Center" Margin="16,0,12,0"/>
+                    <TextBlock Grid.Column="2" Text="Filter:" Foreground="{DynamicResource ThemeForegroundBrush}" VerticalAlignment="Center" Margin="16,0,12,0"/>
                     <ComboBox Grid.Column="3"
                               x:Name="FormFilterBox"
-                              Background="#222"
-                              Foreground="White"
-                              BorderBrush="#444"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"
                               SelectionChanged="OnFilterChanged">
                         <ComboBoxItem IsSelected="True">Alle</ComboBoxItem>
                         <ComboBoxItem>Blech</ComboBoxItem>
@@ -533,7 +533,7 @@
                     </ComboBox>
                     <TextBlock Grid.Column="4"
                                Text="{Binding SummaryText}"
-                               Foreground="#AAAAAA"
+                               Foreground="{DynamicResource ThemeMutedForegroundBrush}"
                                VerticalAlignment="Center"
                                Margin="16,0,0,0"/>
                 </Grid>
