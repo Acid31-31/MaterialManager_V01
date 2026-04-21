@@ -73,6 +73,9 @@ namespace MaterialManager_V01.Services
             resources["ThemeBorderBrush"] = palette.Border;
             resources["ThemeForegroundBrush"] = palette.Foreground;
             resources["ThemeMutedForegroundBrush"] = palette.MutedForeground;
+            resources["ThemeAccentBrush"] = theme == AppTheme.Light
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3E7F45"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"));
         }
 
         private static void ApplyToVisualTree(DependencyObject root, ThemePalette palette)
