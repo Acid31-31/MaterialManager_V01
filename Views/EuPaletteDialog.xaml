@@ -187,7 +187,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#1F1F1F" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border Grid.Row="0" Background="#1F1F1F" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown" BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0,0,0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

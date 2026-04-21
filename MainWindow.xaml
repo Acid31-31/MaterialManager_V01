@@ -242,7 +242,7 @@
     
     <Grid>
         <DockPanel>
-            <Border DockPanel.Dock="Top" Background="#111111" Height="46" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border DockPanel.Dock="Top" Background="#111111" Height="46" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown" BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0,0,0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
