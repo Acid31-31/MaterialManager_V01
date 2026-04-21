@@ -6,7 +6,44 @@
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+        </Style>
+
+        <Style x:Key="SearchLabelTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
             <Setter Property="Margin" Value="0,8,0,4" />
+        </Style>
+
+        <Style x:Key="SearchComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Border"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+                                <Setter Property="Opacity" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style TargetType="TextBox">
@@ -67,34 +104,6 @@
             </Setter>
         </Style>
 
-        <Style TargetType="ComboBoxItem">
-            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-            <Setter Property="Padding" Value="8,4" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBoxItem">
-                        <Border
-                            Name="Border"
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}">
-                            <ContentPresenter TextElement.Foreground="{TemplateBinding Foreground}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}" />
-                                <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}" />
-                                <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <Style TargetType="Button">
             <Setter Property="Background" Value="#1976D2" />
             <Setter Property="Foreground" Value="White" />
@@ -122,8 +131,8 @@
 
         <TextBlock Grid.Row="0" Text="Erweiterte Material-Suche" FontSize="18" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <TextBlock Grid.Row="1" Text="Form / Typ:"/>
-        <ComboBox Grid.Row="1" x:Name="FormBox" Margin="0,32,0,0" SelectedIndex="0">
+        <TextBlock Grid.Row="1" Text="Form / Typ:" Style="{StaticResource SearchLabelTextStyle}"/>
+        <ComboBox Grid.Row="1" x:Name="FormBox" Margin="0,32,0,0" SelectedIndex="0" ItemContainerStyle="{StaticResource SearchComboBoxItemStyle}">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>Rest</ComboBoxItem>
             <ComboBoxItem>GF</ComboBoxItem>
@@ -134,21 +143,28 @@
             <ComboBoxItem>Rechteckrohr</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="2" Text="Material:"/>
-        <ComboBox Grid.Row="2" x:Name="MaterialBox" Margin="0,32,0,0" SelectedIndex="0" SelectionChanged="MaterialBox_SelectionChanged">
+        <TextBlock Grid.Row="2" Text="Material:" Style="{StaticResource SearchLabelTextStyle}"/>
+        <ComboBox Grid.Row="2" x:Name="MaterialBox" Margin="0,32,0,0" SelectedIndex="0" SelectionChanged="MaterialBox_SelectionChanged" ItemContainerStyle="{StaticResource SearchComboBoxItemStyle}">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>Stahl</ComboBoxItem>
             <ComboBoxItem>Edelstahl</ComboBoxItem>
             <ComboBoxItem>Aluminium</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="3" Text="Legierung:"/>
-        <ComboBox Grid.Row="3" x:Name="LegierungBox" Margin="0,32,0,0" 
+        <TextBlock Grid.Row="3" Text="Legierung:" Style="{StaticResource SearchLabelTextStyle}"/>
+        <ComboBox Grid.Row="3" x:Name="LegierungBox" Margin="0,32,0,0"
                   ItemsSource="{Binding Legierungen}"
-                  SelectedIndex="0"/>
+                  ItemContainerStyle="{StaticResource SearchComboBoxItemStyle}"
+                  SelectedIndex="0">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Foreground="{DynamicResource ThemeForegroundBrush}" Margin="0"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-        <TextBlock Grid.Row="4" Text="Stärke (mm):"/>
-        <ComboBox Grid.Row="4" x:Name="StaerkeBox" Margin="0,32,0,0" SelectedIndex="0">
+        <TextBlock Grid.Row="4" Text="Stärke (mm):" Style="{StaticResource SearchLabelTextStyle}"/>
+        <ComboBox Grid.Row="4" x:Name="StaerkeBox" Margin="0,32,0,0" SelectedIndex="0" ItemContainerStyle="{StaticResource SearchComboBoxItemStyle}">
             <ComboBoxItem>Alle</ComboBoxItem>
             <ComboBoxItem>0,3</ComboBoxItem>
             <ComboBoxItem>0,5</ComboBoxItem>
@@ -168,12 +184,12 @@
             <ComboBoxItem>25,0</ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="5" Text="Maße (optional, z.B. 1000x550):"/>
+        <TextBlock Grid.Row="5" Text="Maße (optional, z.B. 1000x550):" Style="{StaticResource SearchLabelTextStyle}"/>
         <TextBox Grid.Row="5" x:Name="MassBox" Margin="0,32,0,0" 
                  ToolTip="Format: LängexBreite (in mm)&#x0a;Zuerst werden exakte Maßtreffer gesucht.&#x0a;Wenn kein exakter Rest vorhanden ist, werden größere Reste angezeigt.&#x0a;Wenn keine Reste passen, werden passende Tafeln angezeigt."/>
 
-        <TextBlock Grid.Row="6" Text="Toleranz (%):" Visibility="Collapsed"/>
-        <ComboBox Grid.Row="6" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1" Visibility="Collapsed">
+        <TextBlock Grid.Row="6" Text="Toleranz (%):" Style="{StaticResource SearchLabelTextStyle}" Visibility="Collapsed"/>
+        <ComboBox Grid.Row="6" x:Name="ToleranzBox" Margin="0,32,0,0" SelectedIndex="1" Visibility="Collapsed" ItemContainerStyle="{StaticResource SearchComboBoxItemStyle}">
             <ComboBoxItem>5%</ComboBoxItem>
             <ComboBoxItem>10%</ComboBoxItem>
             <ComboBoxItem>15%</ComboBoxItem>
