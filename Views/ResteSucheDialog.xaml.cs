@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
@@ -53,7 +55,18 @@ namespace MaterialManager_V01.Views
 
         private void OnDialogLoaded(object sender, RoutedEventArgs e)
         {
-            ApplyAllComboTextVisibility();
+            ApplyComboTextTheme();
+            HookComboDropDowns();
+        }
+
+        private void HookComboDropDowns()
+        {
+            FormBox.DropDownOpened -= OnComboDropDownOpened;
+            MaterialBox.DropDownOpened -= OnComboDropDownOpened;
+            LegierungBox.DropDownOpened -= OnComboDropDownOpened;
+            StaerkeBox.DropDownOpened -= OnComboDropDownOpened;
+            ToleranzBox.DropDownOpened -= OnComboDropDownOpened;
+
             FormBox.DropDownOpened += OnComboDropDownOpened;
             MaterialBox.DropDownOpened += OnComboDropDownOpened;
             LegierungBox.DropDownOpened += OnComboDropDownOpened;
@@ -63,52 +76,62 @@ namespace MaterialManager_V01.Views
 
         private void OnComboDropDownOpened(object? sender, EventArgs e)
         {
-            if (sender is ComboBox combo)
-                ApplyComboTextVisibility(combo);
+            if (sender is ComboBox comboBox)
+                ApplySingleComboTextTheme(comboBox);
         }
 
-        private void ApplyAllComboTextVisibility()
+        private void ApplyComboTextTheme()
         {
-            ApplyComboTextVisibility(FormBox);
-            ApplyComboTextVisibility(MaterialBox);
-            ApplyComboTextVisibility(LegierungBox);
-            ApplyComboTextVisibility(StaerkeBox);
-            ApplyComboTextVisibility(ToleranzBox);
+            ApplySingleComboTextTheme(FormBox);
+            ApplySingleComboTextTheme(MaterialBox);
+            ApplySingleComboTextTheme(LegierungBox);
+            ApplySingleComboTextTheme(StaerkeBox);
+            ApplySingleComboTextTheme(ToleranzBox);
         }
 
-        private static Brush GetReadableTextBrush(Brush? background)
+        private static Brush GetThemeTextBrush()
         {
-            if (background is SolidColorBrush solid)
-            {
-                var c = solid.Color;
-                var luma = (c.R * 299 + c.G * 587 + c.B * 114) / 1000;
-                return luma >= 140 ? Brushes.Black : Brushes.White;
-            }
-
-            return Brushes.Black;
+            return ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
         }
 
-        private static void ApplyComboTextVisibility(ComboBox? combo)
+        private static void ApplySingleComboTextTheme(ComboBox comboBox)
         {
-            if (combo == null)
+            var textBrush = GetThemeTextBrush();
+
+            comboBox.Foreground = textBrush;
+            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
+
+            if (comboBox == null)
                 return;
 
-            var textBrush = GetReadableTextBrush(combo.Background);
-            combo.Foreground = textBrush;
-            combo.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-            combo.Resources[SystemColors.ControlTextBrushKey] = textBrush;
-            combo.Resources[SystemColors.WindowTextBrushKey] = textBrush;
-            combo.Resources[SystemColors.GrayTextBrushKey] = textBrush;
-
-            foreach (var raw in combo.Items)
+            if (comboBox.Name == "LegierungBox")
             {
-                if (raw is ComboBoxItem item)
+                var factory = new FrameworkElementFactory(typeof(TextBlock));
+                factory.SetBinding(TextBlock.TextProperty, new Binding("."));
+                factory.SetValue(TextBlock.ForegroundProperty, textBrush);
+                factory.SetValue(FrameworkElement.MarginProperty, new Thickness(0));
+                comboBox.ItemTemplate = new DataTemplate { VisualTree = factory };
+            }
+
+            foreach (var item in comboBox.Items)
+            {
+                if (item is ComboBoxItem cbi)
                 {
-                    item.Foreground = textBrush;
-                    item.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                    var text = cbi.Content switch
+                    {
+                        TextBlock tb => tb.Text,
+                        _ => cbi.Content?.ToString() ?? string.Empty
+                    };
+
+                    cbi.Content = new TextBlock { Text = text, Foreground = textBrush, Margin = new Thickness(0) };
+                    cbi.Foreground = textBrush;
+                    cbi.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                 }
 
-                if (combo.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem container)
                 {
                     container.Foreground = textBrush;
                     container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
@@ -151,7 +174,7 @@ namespace MaterialManager_V01.Views
             if (LegierungBox != null)
             {
                 LegierungBox.SelectedIndex = 0;
-                Dispatcher.BeginInvoke(new Action(() => ApplyComboTextVisibility(LegierungBox)), DispatcherPriority.Loaded);
+                Dispatcher.BeginInvoke(new Action(() => ApplySingleComboTextTheme(LegierungBox)), DispatcherPriority.Loaded);
             }
         }
 
