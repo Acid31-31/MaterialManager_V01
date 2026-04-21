@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
@@ -45,6 +48,77 @@ namespace MaterialManager_V01.Views
                 "Alle", "S235", "S355", "S460", "HB400", "HB500",
                 "1.4301", "1.4571", "EN AW-5754", "EN AW-5083"
             };
+
+            Loaded += OnDialogLoaded;
+        }
+
+        private void OnDialogLoaded(object sender, RoutedEventArgs e)
+        {
+            ApplyComboTextTheme();
+        }
+
+        private void ApplyComboTextTheme()
+        {
+            var textBrush = ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
+
+            ApplyComboTextTheme(FormBox, textBrush);
+            ApplyComboTextTheme(MaterialBox, textBrush);
+            ApplyComboTextTheme(StaerkeBox, textBrush);
+            ApplyComboTextTheme(ToleranzBox, textBrush);
+            ApplyComboTextTheme(LegierungBox, textBrush, applyStringItemTemplate: true);
+        }
+
+        private static void ApplyComboTextTheme(ComboBox comboBox, Brush textBrush, bool applyStringItemTemplate = false)
+        {
+            comboBox.Foreground = textBrush;
+            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
+
+            if (applyStringItemTemplate)
+            {
+                var factory = new FrameworkElementFactory(typeof(TextBlock));
+                factory.SetBinding(TextBlock.TextProperty, new Binding("."));
+                factory.SetValue(TextBlock.ForegroundProperty, textBrush);
+                factory.SetValue(FrameworkElement.MarginProperty, new Thickness(0));
+                comboBox.ItemTemplate = new DataTemplate { VisualTree = factory };
+            }
+
+            comboBox.DropDownOpened -= OnComboDropDownOpened;
+            comboBox.DropDownOpened += OnComboDropDownOpened;
+
+            foreach (var raw in comboBox.Items)
+            {
+                if (raw is ComboBoxItem item)
+                {
+                    item.Foreground = textBrush;
+                    item.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                }
+
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
+                {
+                    container.Foreground = textBrush;
+                    container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                }
+            }
+        }
+
+        private static void OnComboDropDownOpened(object? sender, EventArgs e)
+        {
+            if (sender is not ComboBox comboBox)
+                return;
+
+            var textBrush = ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
+
+            foreach (var raw in comboBox.Items)
+            {
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
+                {
+                    container.Foreground = textBrush;
+                    container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                }
+            }
         }
 
         private static string GetComboItemText(ComboBoxItem item)
@@ -87,6 +161,7 @@ namespace MaterialManager_V01.Views
             if (LegierungBox != null)
             {
                 LegierungBox.SelectedIndex = 0;
+                ApplyComboTextTheme(LegierungBox, ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White, applyStringItemTemplate: true);
             }
         }
 
