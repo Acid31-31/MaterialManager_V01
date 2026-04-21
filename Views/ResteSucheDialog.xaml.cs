@@ -54,69 +54,66 @@ namespace MaterialManager_V01.Views
 
         private void OnDialogLoaded(object sender, RoutedEventArgs e)
         {
-            ApplyComboTextTheme();
+            ApplyComboForegroundByTheme();
+            HookComboEvents();
         }
 
-        private void ApplyComboTextTheme()
+        private void HookComboEvents()
+        {
+            FormBox.DropDownOpened -= OnComboDropDownOpened;
+            MaterialBox.DropDownOpened -= OnComboDropDownOpened;
+            LegierungBox.DropDownOpened -= OnComboDropDownOpened;
+            StaerkeBox.DropDownOpened -= OnComboDropDownOpened;
+            ToleranzBox.DropDownOpened -= OnComboDropDownOpened;
+
+            FormBox.DropDownOpened += OnComboDropDownOpened;
+            MaterialBox.DropDownOpened += OnComboDropDownOpened;
+            LegierungBox.DropDownOpened += OnComboDropDownOpened;
+            StaerkeBox.DropDownOpened += OnComboDropDownOpened;
+            ToleranzBox.DropDownOpened += OnComboDropDownOpened;
+        }
+
+        private void OnComboDropDownOpened(object? sender, EventArgs e)
+        {
+            if (sender is ComboBox comboBox)
+                ApplySingleComboForeground(comboBox);
+        }
+
+        private void ApplyComboForegroundByTheme()
+        {
+            ApplySingleComboForeground(FormBox);
+            ApplySingleComboForeground(MaterialBox);
+            ApplySingleComboForeground(LegierungBox);
+            ApplySingleComboForeground(StaerkeBox);
+            ApplySingleComboForeground(ToleranzBox);
+        }
+
+        private static void ApplySingleComboForeground(ComboBox comboBox)
         {
             var textBrush = ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
 
-            ApplyComboTextTheme(FormBox, textBrush);
-            ApplyComboTextTheme(MaterialBox, textBrush);
-            ApplyComboTextTheme(StaerkeBox, textBrush);
-            ApplyComboTextTheme(ToleranzBox, textBrush);
-            ApplyComboTextTheme(LegierungBox, textBrush, applyStringItemTemplate: true);
-        }
-
-        private static void ApplyComboTextTheme(ComboBox comboBox, Brush textBrush, bool applyStringItemTemplate = false)
-        {
             comboBox.Foreground = textBrush;
             comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
             comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
 
-            if (applyStringItemTemplate)
+            foreach (var item in comboBox.Items)
             {
-                var factory = new FrameworkElementFactory(typeof(TextBlock));
-                factory.SetBinding(TextBlock.TextProperty, new Binding("."));
-                factory.SetValue(TextBlock.ForegroundProperty, textBrush);
-                factory.SetValue(FrameworkElement.MarginProperty, new Thickness(0));
-                comboBox.ItemTemplate = new DataTemplate { VisualTree = factory };
-            }
-
-            comboBox.DropDownOpened -= OnComboDropDownOpened;
-            comboBox.DropDownOpened += OnComboDropDownOpened;
-
-            foreach (var raw in comboBox.Items)
-            {
-                if (raw is ComboBoxItem item)
+                if (item is ComboBoxItem cbi)
                 {
-                    item.Foreground = textBrush;
-                    item.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                    cbi.Foreground = textBrush;
+                    cbi.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                    cbi.Opacity = 1.0;
+                    cbi.IsEnabled = true;
                 }
 
-                if (comboBox.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem container)
                 {
                     container.Foreground = textBrush;
                     container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-                }
-            }
-        }
-
-        private static void OnComboDropDownOpened(object? sender, EventArgs e)
-        {
-            if (sender is not ComboBox comboBox)
-                return;
-
-            var textBrush = ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
-
-            foreach (var raw in comboBox.Items)
-            {
-                if (comboBox.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
-                {
-                    container.Foreground = textBrush;
-                    container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+                    container.Opacity = 1.0;
+                    container.IsEnabled = true;
                 }
             }
         }
@@ -161,7 +158,7 @@ namespace MaterialManager_V01.Views
             if (LegierungBox != null)
             {
                 LegierungBox.SelectedIndex = 0;
-                ApplyComboTextTheme(LegierungBox, ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White, applyStringItemTemplate: true);
+                ApplySingleComboForeground(LegierungBox);
             }
         }
 
