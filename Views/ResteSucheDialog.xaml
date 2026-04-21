@@ -23,62 +23,43 @@
             <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
             <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="8,4" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="22"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.ColumnSpan="2"
-                                    Background="{TemplateBinding Background}"
+                            <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="1"/>
 
-                            <ContentPresenter Grid.Column="0"
-                                              IsHitTestVisible="False"
-                                              Content="{TemplateBinding SelectionBoxItem}"
+                            <ContentPresenter Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              Margin="8,0,6,0"
+                                              Margin="{TemplateBinding Padding}"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"
                                               TextElement.Foreground="{TemplateBinding Foreground}"/>
 
-                            <ToggleButton Grid.Column="1"
-                                          Name="ToggleButton"
-                                          Focusable="False"
-                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            <ToggleButton Focusable="False"
                                           ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                           Background="Transparent"
-                                          BorderBrush="Transparent"
-                                          BorderThickness="0"/>
+                                          BorderThickness="0"
+                                          Opacity="0.01"/>
 
-                            <TextBox x:Name="PART_EditableTextBox"
-                                     Visibility="Hidden"
-                                     IsReadOnly="{TemplateBinding IsReadOnly}"/>
-
-                            <Popup Name="Popup"
-                                   Placement="Bottom"
+                            <Popup x:Name="PART_Popup"
                                    IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   Placement="Bottom"
                                    AllowsTransparency="True"
                                    Focusable="False"
-                                   PopupAnimation="Slide">
-                                <Grid Name="DropDown"
-                                      SnapsToDevicePixels="True"
-                                      MinWidth="{TemplateBinding ActualWidth}"
-                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder"
-                                            Background="{DynamicResource ThemeSurfaceBrush}"
-                                            BorderThickness="1"
-                                            BorderBrush="{DynamicResource ThemeBorderBrush}">
-                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
-                                        </ScrollViewer>
-                                    </Border>
-                                </Grid>
+                                   PopupAnimation="Fade">
+                                <Border Background="{DynamicResource ThemeSurfaceBrush}"
+                                        BorderBrush="{DynamicResource ThemeBorderBrush}"
+                                        BorderThickness="1"
+                                        MinWidth="{TemplateBinding ActualWidth}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
                             </Popup>
                         </Grid>
                     </ControlTemplate>
