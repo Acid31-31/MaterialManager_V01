@@ -128,8 +128,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Height="2" Background="{DynamicResource ThemeAccentBrush}" VerticalAlignment="Top" Margin="0,0,0,10"/>
-
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Kalenderwoche:" VerticalAlignment="Center" Margin="0,0,8,0"/>
             <ComboBox x:Name="KwComboBox" Width="180" SelectionChanged="OnKwChanged"/>

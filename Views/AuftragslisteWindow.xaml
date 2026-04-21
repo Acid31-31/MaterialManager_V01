@@ -124,8 +124,6 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.ColumnSpan="2" Height="2" Background="{DynamicResource ThemeAccentBrush}" VerticalAlignment="Top" Margin="0,0,0,10"/>
-
         <TextBlock Text="Auftragsliste"
                    Foreground="White"
                    FontSize="24"
