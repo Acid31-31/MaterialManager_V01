@@ -10,6 +10,7 @@ namespace MaterialManager_V01.Views
     public partial class StartModeWindow : Window
     {
         private bool _syncingThemeUi;
+        private bool _applyingTheme;
 
         public StartModeWindow()
         {
@@ -44,8 +45,23 @@ namespace MaterialManager_V01.Views
         private void ApplyThemeFromSliderValue(double value)
         {
             var theme = value >= 0.5 ? AppTheme.Light : AppTheme.Dark;
-            ThemeService.SetTheme(theme);
-            SyncThemeUi();
+
+            if (ThemeService.CurrentTheme == theme)
+            {
+                SyncThemeUi();
+                return;
+            }
+
+            _applyingTheme = true;
+            try
+            {
+                ThemeService.SetTheme(theme);
+                SyncThemeUi();
+            }
+            finally
+            {
+                _applyingTheme = false;
+            }
         }
 
         private void RefreshLicenseBanner()
@@ -332,7 +348,7 @@ namespace MaterialManager_V01.Views
 
         private void OnThemeSliderChangedMain(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_syncingThemeUi || !IsLoaded)
+            if (_syncingThemeUi || _applyingTheme || !IsLoaded)
                 return;
 
             ApplyThemeFromSliderValue(ThemeSliderMain.Value);
