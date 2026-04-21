@@ -78,22 +78,30 @@ namespace MaterialManager_V01.Views
                 ApplyComboReadability(comboBox);
         }
 
+        private static string GetComboItemText(ComboBoxItem item)
+        {
+            return item.Content switch
+            {
+                TextBlock tb => tb.Text,
+                string s => s,
+                _ => item.Content?.ToString() ?? string.Empty
+            };
+        }
+
         private static void ApplyComboReadability(ComboBox? comboBox)
         {
             if (comboBox == null)
                 return;
 
-            var isLight = ThemeService.CurrentTheme == AppTheme.Light;
-            var textBrush = isLight
+            var bg = comboBox.Background as SolidColorBrush;
+            var backgroundBrush = bg ?? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+            var luma = (backgroundBrush.Color.R * 299 + backgroundBrush.Color.G * 587 + backgroundBrush.Color.B * 114) / 1000;
+            var textBrush = luma >= 140
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))
                 : Brushes.White;
-            var backgroundBrush = isLight
-                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
-                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
 
             comboBox.Foreground = textBrush;
             comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-            comboBox.Background = backgroundBrush;
             comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
@@ -105,6 +113,19 @@ namespace MaterialManager_V01.Views
                     directItem.Foreground = textBrush;
                     directItem.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                     directItem.Background = backgroundBrush;
+
+                    if (directItem.Content is TextBlock tb)
+                    {
+                        tb.Foreground = textBrush;
+                    }
+                    else
+                    {
+                        directItem.Content = new TextBlock
+                        {
+                            Text = GetComboItemText(directItem),
+                            Foreground = textBrush
+                        };
+                    }
                 }
 
                 if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem container)
@@ -112,6 +133,8 @@ namespace MaterialManager_V01.Views
                     container.Foreground = textBrush;
                     container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                     container.Background = backgroundBrush;
+                    if (container.Content is TextBlock ctb)
+                        ctb.Foreground = textBrush;
                 }
             }
         }
@@ -120,7 +143,7 @@ namespace MaterialManager_V01.Views
         {
             if (MaterialBox.SelectedItem is System.Windows.Controls.ComboBoxItem item)
             {
-                var material = item.Content.ToString() ?? "Alle";
+                var material = GetComboItemText(item);
                 UpdateLegierungen(material);
             }
         }
@@ -160,9 +183,9 @@ namespace MaterialManager_V01.Views
             // Material
             if (MaterialBox.SelectedItem is System.Windows.Controls.ComboBoxItem matItem)
             {
-                var matText = matItem.Content.ToString();
+                var matText = GetComboItemText(matItem);
                 if (matText != "Alle")
-                    Material = matText ?? "";
+                    Material = matText;
             }
 
             // Legierung
@@ -174,7 +197,7 @@ namespace MaterialManager_V01.Views
             // Stärke
             if (StaerkeBox.SelectedItem is System.Windows.Controls.ComboBoxItem staItem)
             {
-                var staText = staItem.Content.ToString();
+                var staText = GetComboItemText(staItem);
                 if (staText != "Alle" && !string.IsNullOrWhiteSpace(staText))
                 {
                     if (double.TryParse(staText.Replace(',', '.'), 
@@ -204,7 +227,7 @@ namespace MaterialManager_V01.Views
             // Form
             if (FormBox.SelectedItem is System.Windows.Controls.ComboBoxItem formItem)
             {
-                Form = formItem.Content.ToString() ?? "Alle";
+                Form = GetComboItemText(formItem);
             }
 
             // Toleranz
