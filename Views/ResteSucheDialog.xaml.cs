@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
-using MaterialManager_V01.Services;
+using System.Windows.Threading;
 
 namespace MaterialManager_V01.Views
 {
@@ -54,18 +53,7 @@ namespace MaterialManager_V01.Views
 
         private void OnDialogLoaded(object sender, RoutedEventArgs e)
         {
-            ApplyComboForegroundByTheme();
-            HookComboEvents();
-        }
-
-        private void HookComboEvents()
-        {
-            FormBox.DropDownOpened -= OnComboDropDownOpened;
-            MaterialBox.DropDownOpened -= OnComboDropDownOpened;
-            LegierungBox.DropDownOpened -= OnComboDropDownOpened;
-            StaerkeBox.DropDownOpened -= OnComboDropDownOpened;
-            ToleranzBox.DropDownOpened -= OnComboDropDownOpened;
-
+            ApplyAllComboTextVisibility();
             FormBox.DropDownOpened += OnComboDropDownOpened;
             MaterialBox.DropDownOpened += OnComboDropDownOpened;
             LegierungBox.DropDownOpened += OnComboDropDownOpened;
@@ -75,59 +63,64 @@ namespace MaterialManager_V01.Views
 
         private void OnComboDropDownOpened(object? sender, EventArgs e)
         {
-            if (sender is ComboBox comboBox)
-                ApplySingleComboForeground(comboBox);
+            if (sender is ComboBox combo)
+                ApplyComboTextVisibility(combo);
         }
 
-        private void ApplyComboForegroundByTheme()
+        private void ApplyAllComboTextVisibility()
         {
-            ApplySingleComboForeground(FormBox);
-            ApplySingleComboForeground(MaterialBox);
-            ApplySingleComboForeground(LegierungBox);
-            ApplySingleComboForeground(StaerkeBox);
-            ApplySingleComboForeground(ToleranzBox);
+            ApplyComboTextVisibility(FormBox);
+            ApplyComboTextVisibility(MaterialBox);
+            ApplyComboTextVisibility(LegierungBox);
+            ApplyComboTextVisibility(StaerkeBox);
+            ApplyComboTextVisibility(ToleranzBox);
         }
 
-        private static void ApplySingleComboForeground(ComboBox comboBox)
+        private static Brush GetReadableTextBrush(Brush? background)
         {
-            var textBrush = ThemeService.CurrentTheme == AppTheme.Light ? Brushes.Black : Brushes.White;
-
-            comboBox.Foreground = textBrush;
-            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
-            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
-            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
-
-            foreach (var item in comboBox.Items)
+            if (background is SolidColorBrush solid)
             {
-                if (item is ComboBoxItem cbi)
+                var c = solid.Color;
+                var luma = (c.R * 299 + c.G * 587 + c.B * 114) / 1000;
+                return luma >= 140 ? Brushes.Black : Brushes.White;
+            }
+
+            return Brushes.Black;
+        }
+
+        private static void ApplyComboTextVisibility(ComboBox? combo)
+        {
+            if (combo == null)
+                return;
+
+            var textBrush = GetReadableTextBrush(combo.Background);
+            combo.Foreground = textBrush;
+            combo.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+            combo.Resources[SystemColors.ControlTextBrushKey] = textBrush;
+            combo.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            combo.Resources[SystemColors.GrayTextBrushKey] = textBrush;
+
+            foreach (var raw in combo.Items)
+            {
+                if (raw is ComboBoxItem item)
                 {
-                    cbi.Foreground = textBrush;
-                    cbi.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-                    cbi.Opacity = 1.0;
-                    cbi.IsEnabled = true;
+                    item.Foreground = textBrush;
+                    item.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                 }
 
-                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem container)
+                if (combo.ItemContainerGenerator.ContainerFromItem(raw) is ComboBoxItem container)
                 {
                     container.Foreground = textBrush;
                     container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-                    container.Opacity = 1.0;
-                    container.IsEnabled = true;
                 }
             }
-        }
-
-        private static string GetComboItemText(ComboBoxItem item)
-        {
-            return item.Content?.ToString() ?? string.Empty;
         }
 
         private void MaterialBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (MaterialBox.SelectedItem is System.Windows.Controls.ComboBoxItem item)
             {
-                var material = GetComboItemText(item);
+                var material = item.Content.ToString() ?? "Alle";
                 UpdateLegierungen(material);
             }
         }
@@ -158,7 +151,7 @@ namespace MaterialManager_V01.Views
             if (LegierungBox != null)
             {
                 LegierungBox.SelectedIndex = 0;
-                ApplySingleComboForeground(LegierungBox);
+                Dispatcher.BeginInvoke(new Action(() => ApplyComboTextVisibility(LegierungBox)), DispatcherPriority.Loaded);
             }
         }
 
@@ -167,9 +160,9 @@ namespace MaterialManager_V01.Views
             // Material
             if (MaterialBox.SelectedItem is System.Windows.Controls.ComboBoxItem matItem)
             {
-                var matText = GetComboItemText(matItem);
+                var matText = matItem.Content.ToString();
                 if (matText != "Alle")
-                    Material = matText;
+                    Material = matText ?? "";
             }
 
             // Legierung
@@ -181,12 +174,12 @@ namespace MaterialManager_V01.Views
             // Stärke
             if (StaerkeBox.SelectedItem is System.Windows.Controls.ComboBoxItem staItem)
             {
-                var staText = GetComboItemText(staItem);
+                var staText = staItem.Content.ToString();
                 if (staText != "Alle" && !string.IsNullOrWhiteSpace(staText))
                 {
-                    if (double.TryParse(staText.Replace(',', '.'), 
-                        System.Globalization.NumberStyles.Any, 
-                        System.Globalization.CultureInfo.InvariantCulture, 
+                    if (double.TryParse(staText.Replace(',', '.'),
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
                         out var sta))
                     {
                         Staerke = sta;
@@ -211,7 +204,7 @@ namespace MaterialManager_V01.Views
             // Form
             if (FormBox.SelectedItem is System.Windows.Controls.ComboBoxItem formItem)
             {
-                Form = GetComboItemText(formItem);
+                Form = formItem.Content.ToString() ?? "Alle";
             }
 
             // Toleranz
