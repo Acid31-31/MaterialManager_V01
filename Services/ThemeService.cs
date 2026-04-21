@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Linq;
 
 namespace MaterialManager_V01.Services
 {
@@ -165,6 +166,17 @@ namespace MaterialManager_V01.Services
                         if (IsNeutral(button.Foreground, includeWhiteBlack: true)) button.Foreground = palette.Foreground;
                         if (IsNeutral(button.BorderBrush)) button.BorderBrush = palette.Border;
                         break;
+
+                    case Control control:
+                        if (ShouldRecolorBackground(control.Background)) control.Background = MapNeutralBackground(control.Background, palette);
+                        if (IsNeutral(control.Foreground, includeWhiteBlack: true)) control.Foreground = palette.Foreground;
+                        if (IsNeutral(control.BorderBrush)) control.BorderBrush = palette.Border;
+                        break;
+
+                    case System.Windows.Documents.TextElement textElement:
+                        if (IsNeutral(textElement.Foreground, includeWhiteBlack: true))
+                            textElement.Foreground = palette.Foreground;
+                        break;
                 }
 
                 ApplyToVisualTree(child, palette);
@@ -214,6 +226,9 @@ namespace MaterialManager_V01.Services
             var baseItemStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style
                 ?? comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
 
+            comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
+            comboBox.DropDownOpened += OnComboBoxDropDownOpened;
+
             if (CurrentTheme != AppTheme.Light)
             {
                 // Dunkelmodus: dunklen Style explizit setzen und alle Hellmodus-Overrides entfernen
@@ -223,13 +238,17 @@ namespace MaterialManager_V01.Services
                     comboBox.ClearValue(ItemsControl.ItemContainerStyleProperty);
 
                 comboBox.ClearValue(Control.BackgroundProperty);
-                comboBox.ClearValue(Control.ForegroundProperty);
+                comboBox.Foreground = palette.Foreground;
+                comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, palette.Foreground);
                 comboBox.ClearValue(Control.BorderBrushProperty);
                 comboBox.Resources.Remove(SystemColors.HighlightTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.ControlTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.WindowTextBrushKey);
+                comboBox.Resources.Remove(SystemColors.GrayTextBrushKey);
                 comboBox.Resources.Remove(SystemColors.HighlightBrushKey);
                 comboBox.Resources.Remove(SystemColors.InactiveSelectionHighlightBrushKey);
+                ApplyDirectComboBoxItemsTheme(comboBox, palette.Foreground, null);
+                ApplyGeneratedComboBoxItemContainersTheme(comboBox, palette.Foreground, null);
                 return;
             }
 
@@ -239,10 +258,12 @@ namespace MaterialManager_V01.Services
             var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
 
             comboBox.Foreground = textBrush;
+            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
             comboBox.Background = backgroundBrush;
             comboBox.Resources[SystemColors.HighlightTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
             comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
 
@@ -262,6 +283,53 @@ namespace MaterialManager_V01.Services
             itemStyle.Triggers.Add(highlightedTrigger);
 
             comboBox.ItemContainerStyle = itemStyle;
+            ApplyDirectComboBoxItemsTheme(comboBox, textBrush, backgroundBrush);
+            ApplyGeneratedComboBoxItemContainersTheme(comboBox, textBrush, backgroundBrush);
+        }
+
+        private static void OnComboBoxDropDownOpened(object? sender, EventArgs e)
+        {
+            if (sender is not ComboBox comboBox)
+                return;
+
+            var palette = GetPalette(CurrentTheme);
+            var textBrush = palette.Foreground;
+            var backgroundBrush = CurrentTheme == AppTheme.Light
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
+                : null;
+
+            ApplyDirectComboBoxItemsTheme(comboBox, textBrush, backgroundBrush);
+            ApplyGeneratedComboBoxItemContainersTheme(comboBox, textBrush, backgroundBrush);
+        }
+
+        private static void ApplyDirectComboBoxItemsTheme(ComboBox comboBox, Brush textBrush, Brush? backgroundBrush)
+        {
+            foreach (var rawItem in comboBox.Items)
+            {
+                if (rawItem is not ComboBoxItem comboBoxItem)
+                    continue;
+
+                comboBoxItem.Foreground = textBrush;
+                comboBoxItem.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+
+                if (backgroundBrush != null)
+                    comboBoxItem.Background = backgroundBrush;
+            }
+        }
+
+        private static void ApplyGeneratedComboBoxItemContainersTheme(ComboBox comboBox, Brush textBrush, Brush? backgroundBrush)
+        {
+            foreach (var item in comboBox.Items)
+            {
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is not ComboBoxItem container)
+                    continue;
+
+                container.Foreground = textBrush;
+                container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+
+                if (backgroundBrush != null)
+                    container.Background = backgroundBrush;
+            }
         }
 
         private static bool ShouldRecolorBackground(Brush? brush)

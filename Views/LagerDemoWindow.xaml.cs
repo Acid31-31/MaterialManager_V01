@@ -369,11 +369,21 @@ namespace MaterialManager_V01.Views
             return string.Equals((source ?? string.Empty).Trim(), filter, StringComparison.OrdinalIgnoreCase);
         }
 
+        private static string GetComboBoxItemContentText(ComboBoxItem item)
+        {
+            return item.Content switch
+            {
+                string text => text,
+                TextBlock textBlock => textBlock.Text,
+                _ => item.Content?.ToString() ?? string.Empty
+            };
+        }
+
         private static string GetComboFilterValue(ComboBox? comboBox)
         {
             var value = comboBox?.SelectedItem switch
             {
-                ComboBoxItem item => item.Content?.ToString(),
+                ComboBoxItem item => GetComboBoxItemContentText(item),
                 string text => text,
                 _ => comboBox?.Text
             };
@@ -385,6 +395,16 @@ namespace MaterialManager_V01.Views
         private static ComboBoxItem CreateFilterComboItem(string content)
         {
             return new ComboBoxItem { Content = content };
+        }
+
+        private static ComboBoxItem CreateFilterComboItem(string content, Brush foreground, Brush background)
+        {
+            return new ComboBoxItem
+            {
+                Content = new TextBlock { Text = content, Foreground = foreground },
+                Foreground = foreground,
+                Background = background
+            };
         }
 
         private static Style CreateFilterComboBoxItemStyle()
@@ -406,35 +426,94 @@ namespace MaterialManager_V01.Views
             return style;
         }
 
+        private static Brush GetReadableTextBrush(Brush? background)
+        {
+            if (background is SolidColorBrush solid)
+            {
+                var c = solid.Color;
+                var luma = (c.R * 299 + c.G * 587 + c.B * 114) / 1000;
+                return luma >= 140
+                    ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))
+                    : Brushes.White;
+            }
+
+            return Brushes.White;
+        }
+
+        private static void ApplyComboItemTextColors(ComboBox comboBox, Brush textBrush, Brush backgroundBrush)
+        {
+            foreach (var item in comboBox.Items)
+            {
+                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is not ComboBoxItem container)
+                    continue;
+
+                container.Background = backgroundBrush;
+                var readable = GetReadableTextBrush(container.Background);
+                container.Foreground = readable;
+                container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, readable);
+
+                if (container.Content is TextBlock tb)
+                    tb.Foreground = readable;
+            }
+
+            var comboReadable = GetReadableTextBrush(comboBox.Background);
+            comboBox.Foreground = comboReadable;
+            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, comboReadable);
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = comboReadable;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = comboReadable;
+            comboBox.Resources[SystemColors.GrayTextBrushKey] = comboReadable;
+        }
+
+        private void OnFilterComboDropDownOpened(object? sender, EventArgs e)
+        {
+            if (sender is not ComboBox comboBox)
+                return;
+
+            var backgroundBrush = comboBox.Background is SolidColorBrush b
+                ? b
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
+
+            ApplyComboItemTextColors(comboBox, GetReadableTextBrush(backgroundBrush), backgroundBrush);
+        }
+
         private void PopulateFilterComboBox(ComboBox? comboBox, IEnumerable<string> values, string selectedValue)
         {
             if (comboBox == null)
                 return;
 
             var isLight = ThemeService.CurrentTheme == AppTheme.Light;
+            var comboBackground = isLight
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#222222"));
+            var itemBackground = isLight
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#111111"));
+            var textBrush = GetReadableTextBrush(comboBackground);
 
-            if (isLight)
-            {
-                comboBox.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"));
-                comboBox.ItemContainerStyle = CreateFilterComboBoxItemStyle();
-            }
-            else
-            {
-                comboBox.Foreground = Brushes.White;
-                comboBox.ItemContainerStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style;
-            }
+            comboBox.Background = comboBackground;
+            comboBox.Foreground = textBrush;
+            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
+            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
+            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
+
+            comboBox.DropDownOpened -= OnFilterComboDropDownOpened;
+            comboBox.DropDownOpened += OnFilterComboDropDownOpened;
 
             comboBox.Items.Clear();
-            comboBox.Items.Add("Alle");
+            comboBox.Items.Add(CreateFilterComboItem("Alle", textBrush, itemBackground));
 
             foreach (var value in values.Where(v => !string.IsNullOrWhiteSpace(v)).Distinct(StringComparer.OrdinalIgnoreCase))
-                comboBox.Items.Add(value);
+                comboBox.Items.Add(CreateFilterComboItem(value, textBrush, itemBackground));
 
             var target = string.IsNullOrWhiteSpace(selectedValue) ? "Alle" : selectedValue;
             comboBox.SelectedItem = comboBox.Items
-                .OfType<string>()
-                .FirstOrDefault(i => string.Equals(i, target, StringComparison.OrdinalIgnoreCase))
-                ?? "Alle";
+                .OfType<ComboBoxItem>()
+                .FirstOrDefault(i => string.Equals(GetComboBoxItemContentText(i), target, StringComparison.OrdinalIgnoreCase))
+                ?? comboBox.Items.OfType<ComboBoxItem>().FirstOrDefault();
+
+            comboBox.Dispatcher.BeginInvoke(new Action(() =>
+                ApplyComboItemTextColors(comboBox, textBrush, itemBackground)), DispatcherPriority.Loaded);
         }
 
         private void RefreshManualFilterOptions()

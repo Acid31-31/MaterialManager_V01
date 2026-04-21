@@ -52,7 +52,8 @@
                                 ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                 Margin="4,2,4,2"
                                 VerticalAlignment="Center"
-                                HorizontalAlignment="Left">
+                                HorizontalAlignment="Left"
+                                TextElement.Foreground="{TemplateBinding Foreground}">
                             </ContentPresenter>
                             <TextBox
                                 x:Name="PART_EditableTextBox"
@@ -124,7 +125,7 @@
                             Name="Border"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}">
-                            <ContentPresenter />
+                            <ContentPresenter TextElement.Foreground="{TemplateBinding Foreground}" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
