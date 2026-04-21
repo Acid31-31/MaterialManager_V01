@@ -44,7 +44,7 @@
         </Style>
     </Window.Resources>
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Height="36" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown" BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0,0,0,2">
+        <Border DockPanel.Dock="Top" Background="#111111" Height="36" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
