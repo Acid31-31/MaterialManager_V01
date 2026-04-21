@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
 {
@@ -47,104 +45,11 @@ namespace MaterialManager_V01.Views
                 "Alle", "S235", "S355", "S460", "HB400", "HB500",
                 "1.4301", "1.4571", "EN AW-5754", "EN AW-5083"
             };
-
-            Loaded += (_, _) => ApplyDialogComboReadability();
-        }
-
-        private void ApplyDialogComboReadability()
-        {
-            ApplyComboReadability(FormBox);
-            ApplyComboReadability(MaterialBox);
-            ApplyComboReadability(LegierungBox);
-            ApplyComboReadability(StaerkeBox);
-            ApplyComboReadability(ToleranzBox);
-
-            FormBox.DropDownOpened -= OnComboDropDownOpened;
-            MaterialBox.DropDownOpened -= OnComboDropDownOpened;
-            LegierungBox.DropDownOpened -= OnComboDropDownOpened;
-            StaerkeBox.DropDownOpened -= OnComboDropDownOpened;
-            ToleranzBox.DropDownOpened -= OnComboDropDownOpened;
-
-            FormBox.DropDownOpened += OnComboDropDownOpened;
-            MaterialBox.DropDownOpened += OnComboDropDownOpened;
-            LegierungBox.DropDownOpened += OnComboDropDownOpened;
-            StaerkeBox.DropDownOpened += OnComboDropDownOpened;
-            ToleranzBox.DropDownOpened += OnComboDropDownOpened;
-        }
-
-        private void OnComboDropDownOpened(object? sender, EventArgs e)
-        {
-            if (sender is ComboBox comboBox)
-                ApplyComboReadability(comboBox);
         }
 
         private static string GetComboItemText(ComboBoxItem item)
         {
-            return item.Content switch
-            {
-                TextBlock tb => tb.Text,
-                string s => s,
-                _ => item.Content?.ToString() ?? string.Empty
-            };
-        }
-
-        private static void ApplyComboReadability(ComboBox? comboBox)
-        {
-            if (comboBox == null)
-                return;
-
-            var bg = comboBox.Background as SolidColorBrush;
-            var backgroundBrush = bg ?? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
-            var luma = (backgroundBrush.Color.R * 299 + backgroundBrush.Color.G * 587 + backgroundBrush.Color.B * 114) / 1000;
-            var textBrush = luma >= 140
-                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018"))
-                : Brushes.White;
-
-            var selectedBackground = luma >= 140
-                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B7C7BA"))
-                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E3C48"));
-
-            comboBox.Foreground = textBrush;
-            comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-            comboBox.Resources[SystemColors.ControlTextBrushKey] = textBrush;
-            comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
-            comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
-
-            var forcedItemStyle = new Style(typeof(ComboBoxItem));
-            forcedItemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
-            forcedItemStyle.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
-            forcedItemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
-
-            var selectedTrigger = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
-            selectedTrigger.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
-            selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBackground));
-            forcedItemStyle.Triggers.Add(selectedTrigger);
-
-            var highlightedTrigger = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
-            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
-            highlightedTrigger.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
-            highlightedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBackground));
-            forcedItemStyle.Triggers.Add(highlightedTrigger);
-
-            comboBox.ItemContainerStyle = forcedItemStyle;
-
-            foreach (var item in comboBox.Items)
-            {
-                if (item is ComboBoxItem directItem)
-                {
-                    directItem.Foreground = textBrush;
-                    directItem.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-                    directItem.Background = backgroundBrush;
-                }
-
-                if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem container)
-                {
-                    container.Foreground = textBrush;
-                    container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
-                    container.Background = backgroundBrush;
-                }
-            }
+            return item.Content?.ToString() ?? string.Empty;
         }
 
         private void MaterialBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -182,7 +87,6 @@ namespace MaterialManager_V01.Views
             if (LegierungBox != null)
             {
                 LegierungBox.SelectedIndex = 0;
-                ApplyComboReadability(LegierungBox);
             }
         }
 
