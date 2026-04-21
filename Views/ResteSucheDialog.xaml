@@ -46,6 +46,8 @@
             </Setter>
         </Style>
 
+        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource SearchComboBoxItemStyle}" />
+
         <Style TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
