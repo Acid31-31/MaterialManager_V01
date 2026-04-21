@@ -74,7 +74,7 @@ namespace MaterialManager_V01.Services
             resources["ThemeForegroundBrush"] = palette.Foreground;
             resources["ThemeMutedForegroundBrush"] = palette.MutedForeground;
             resources["ThemeAccentBrush"] = theme == AppTheme.Light
-                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3E7F45"))
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"));
         }
 
@@ -225,7 +225,6 @@ namespace MaterialManager_V01.Services
 
         private static void ApplyComboBoxReadability(ComboBox comboBox, ThemePalette palette)
         {
-            // Basis-Style aus dem Fenster holen (DarkComboBoxItemStyle oder impliziter ComboBoxItem-Style)
             var baseItemStyle = comboBox.TryFindResource("DarkComboBoxItemStyle") as Style
                 ?? comboBox.TryFindResource(typeof(ComboBoxItem)) as Style;
 
@@ -234,7 +233,6 @@ namespace MaterialManager_V01.Services
 
             if (CurrentTheme != AppTheme.Light)
             {
-                // Dunkelmodus: dunklen Style explizit setzen und alle Hellmodus-Overrides entfernen
                 if (baseItemStyle != null)
                     comboBox.ItemContainerStyle = baseItemStyle;
                 else
@@ -255,10 +253,9 @@ namespace MaterialManager_V01.Services
                 return;
             }
 
-            // Hellmodus
             var textBrush = palette.Foreground;
-            var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"));
-            var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5B8AA"));
+            var backgroundBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            var selectedBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E3EDF8"));
 
             comboBox.Foreground = textBrush;
             comboBox.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
@@ -270,7 +267,6 @@ namespace MaterialManager_V01.Services
             comboBox.Resources[SystemColors.HighlightBrushKey] = selectedBrush;
             comboBox.Resources[SystemColors.InactiveSelectionHighlightBrushKey] = selectedBrush;
 
-            // BasedOn dem dunklen Style damit das ControlTemplate erhalten bleibt
             var itemStyle = new Style(typeof(ComboBoxItem), baseItemStyle);
             itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
             itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
@@ -298,7 +294,7 @@ namespace MaterialManager_V01.Services
             var palette = GetPalette(CurrentTheme);
             var textBrush = palette.Foreground;
             var backgroundBrush = CurrentTheme == AppTheme.Light
-                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D2D8CF"))
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"))
                 : null;
 
             ApplyDirectComboBoxItemsTheme(comboBox, textBrush, backgroundBrush);
@@ -351,13 +347,13 @@ namespace MaterialManager_V01.Services
             if (theme == AppTheme.Light)
             {
                 return new ThemePalette(
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AEB7AC")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B9C2B6")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AEB7AC")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7E887E")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F3F6FA")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDF2F8")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5AEA4"))
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0"))
                 );
             }
 
