@@ -217,7 +217,7 @@ namespace MaterialManager_V01.Services
             style.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
 
             var selectedTrigger = new Trigger { Property = DataGridRow.IsSelectedProperty, Value = true };
-            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, palette.Foreground));
             style.Triggers.Add(selectedTrigger);
 
             return style;
@@ -355,8 +355,8 @@ namespace MaterialManager_V01.Services
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B9C2B6")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AEB7AC")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7E887E")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#102018")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F3127")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A5AEA4"))
                 );
             }
@@ -366,8 +366,8 @@ namespace MaterialManager_V01.Services
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#171D24")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1D2630")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2D3A46")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F2F5F8")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A9B4BF")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#24313D"))
             );
         }
