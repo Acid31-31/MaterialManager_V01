@@ -106,6 +106,36 @@ namespace MaterialManager_V01.Views
             comboBox.Resources[SystemColors.WindowTextBrushKey] = textBrush;
             comboBox.Resources[SystemColors.GrayTextBrushKey] = textBrush;
 
+            var selectedBackground = luma >= 140
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B7C7BA"))
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E3C48"));
+
+            var forcedItemStyle = new Style(typeof(ComboBoxItem));
+            forcedItemStyle.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            forcedItemStyle.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
+            forcedItemStyle.Setters.Add(new Setter(Control.BackgroundProperty, backgroundBrush));
+            forcedItemStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 1.0));
+
+            var selectedTrigger = new Trigger { Property = ComboBoxItem.IsSelectedProperty, Value = true };
+            selectedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            selectedTrigger.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
+            selectedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBackground));
+            forcedItemStyle.Triggers.Add(selectedTrigger);
+
+            var highlightedTrigger = new Trigger { Property = ComboBoxItem.IsHighlightedProperty, Value = true };
+            highlightedTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            highlightedTrigger.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
+            highlightedTrigger.Setters.Add(new Setter(Control.BackgroundProperty, selectedBackground));
+            forcedItemStyle.Triggers.Add(highlightedTrigger);
+
+            var disabledTrigger = new Trigger { Property = UIElement.IsEnabledProperty, Value = false };
+            disabledTrigger.Setters.Add(new Setter(Control.ForegroundProperty, textBrush));
+            disabledTrigger.Setters.Add(new Setter(System.Windows.Documents.TextElement.ForegroundProperty, textBrush));
+            disabledTrigger.Setters.Add(new Setter(UIElement.OpacityProperty, 1.0));
+            forcedItemStyle.Triggers.Add(disabledTrigger);
+
+            comboBox.ItemContainerStyle = forcedItemStyle;
+
             foreach (var item in comboBox.Items)
             {
                 if (item is ComboBoxItem directItem)
@@ -113,17 +143,20 @@ namespace MaterialManager_V01.Views
                     directItem.Foreground = textBrush;
                     directItem.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                     directItem.Background = backgroundBrush;
+                    directItem.Opacity = 1.0;
 
                     if (directItem.Content is TextBlock tb)
                     {
                         tb.Foreground = textBrush;
+                        tb.Opacity = 1.0;
                     }
                     else
                     {
                         directItem.Content = new TextBlock
                         {
                             Text = GetComboItemText(directItem),
-                            Foreground = textBrush
+                            Foreground = textBrush,
+                            Opacity = 1.0
                         };
                     }
                 }
@@ -133,8 +166,13 @@ namespace MaterialManager_V01.Views
                     container.Foreground = textBrush;
                     container.SetValue(System.Windows.Documents.TextElement.ForegroundProperty, textBrush);
                     container.Background = backgroundBrush;
+                    container.Opacity = 1.0;
+                    container.IsEnabled = true;
                     if (container.Content is TextBlock ctb)
+                    {
                         ctb.Foreground = textBrush;
+                        ctb.Opacity = 1.0;
+                    }
                 }
             }
         }
