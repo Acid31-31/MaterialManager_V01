@@ -142,40 +142,55 @@ namespace MaterialManager_V01.Views
             _autoRefreshTimer.Tick -= OnAutoRefreshTimerTick;
         }
 
+        private bool _isSyncChecking;
+
         private void InitializeAutoSync()
         {
-            _lastObservedMaterialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
-            _lastObservedAuftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
+            _lastObservedMaterialWriteUtc = DateTime.MinValue;
+            _lastObservedAuftraegeWriteUtc = DateTime.MinValue;
             _autoRefreshTimer.Tick -= OnAutoRefreshTimerTick;
             _autoRefreshTimer.Tick += OnAutoRefreshTimerTick;
             _autoRefreshTimer.Start();
         }
 
-        private void OnAutoRefreshTimerTick(object? sender, EventArgs e)
+        private async void OnAutoRefreshTimerTick(object? sender, EventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSyncChecking)
                 return;
 
             if (Mouse.LeftButton == MouseButtonState.Pressed)
                 return;
 
-            var materialWriteUtc = GetObservedWriteTimeUtc(NetzwerkService.GetSavePath());
-            var auftraegeWriteUtc = GetObservedWriteTimeUtc(GetSharedAuftraegePath());
-            var hasChanged = materialWriteUtc > _lastObservedMaterialWriteUtc || auftraegeWriteUtc > _lastObservedAuftraegeWriteUtc;
+            _isSyncChecking = true;
+            try
+            {
+                var materialPath = NetzwerkService.GetSavePath();
+                var auftraegePath = GetSharedAuftraegePath();
 
-            _lastObservedMaterialWriteUtc = materialWriteUtc;
-            _lastObservedAuftraegeWriteUtc = auftraegeWriteUtc;
+                var (materialWrite, auftraegeWrite) = await Task.Run(() =>
+                    (GetObservedWriteTimeUtc(materialPath), GetObservedWriteTimeUtc(auftraegePath)));
 
-            if (!hasChanged)
-                return;
+                var hasChanged = materialWrite > _lastObservedMaterialWriteUtc
+                              || auftraegeWrite > _lastObservedAuftraegeWriteUtc;
 
-            var now = DateTime.UtcNow;
-            if ((now - _lastAutoReloadUtc).TotalMilliseconds < 800)
-                return;
+                _lastObservedMaterialWriteUtc = materialWrite;
+                _lastObservedAuftraegeWriteUtc = auftraegeWrite;
 
-            _lastAutoReloadUtc = now;
-            LoadMaterials();
-            ShowAutoSyncStatus();
+                if (!hasChanged)
+                    return;
+
+                var now = DateTime.UtcNow;
+                if ((now - _lastAutoReloadUtc).TotalMilliseconds < 2000)
+                    return;
+
+                _lastAutoReloadUtc = now;
+                LoadMaterials();
+                ShowAutoSyncStatus();
+            }
+            finally
+            {
+                _isSyncChecking = false;
+            }
         }
 
         private static DateTime GetObservedWriteTimeUtc(string? path)
@@ -278,13 +293,7 @@ namespace MaterialManager_V01.Views
             {
                 if (_nachproduktionModus)
                 {
-                    try
-                    {
-                        AuftragArchivService.BackfillArchiveMetadataForYear(_aktuellesJahr);
-                    }
-                    catch
-                    {
-                    }
+                    try { AuftragArchivService.BackfillArchiveMetadataForYear(_aktuellesJahr); } catch { }
 
                     _auftraegeCache = AuftragArchivService.GetArchivedOrdersForYear(_aktuellesJahr)
                         .Where(x => !string.IsNullOrWhiteSpace(x.Auftragsnummer))
@@ -309,9 +318,36 @@ namespace MaterialManager_V01.Views
                 }
                 else
                 {
-                    _auftraegeCache = AuftragDataService.LoadAllAuftraege()
+                    // Aufträge aus DB laden
+                    var dbAuftraege = AuftragDataService.LoadAllAuftraege()
                         .Where(a => a.Status != AuftragStatus.Abgeschlossen)
-                        .ToList();
+                        .ToDictionary(a => a.Auftragsnummer.Trim(), StringComparer.OrdinalIgnoreCase);
+
+                    // Materialien mit AuftragNr, die noch NICHT in der DB-Auftragsliste sind,
+                    // direkt aus _alleMaterialien ableiten (Background-Save evtl. noch nicht fertig)
+                    foreach (var gruppe in _alleMaterialien
+                        .Where(m => !string.IsNullOrWhiteSpace(m.AuftragNr) && MatchesArbeitsbereich(m.AuftragNr))
+                        .GroupBy(m => m.AuftragNr!.Trim(), StringComparer.OrdinalIgnoreCase))
+                    {
+                        if (dbAuftraege.ContainsKey(gruppe.Key))
+                            continue;
+
+                        var items = gruppe.ToList();
+                        dbAuftraege[gruppe.Key] = new Auftrag
+                        {
+                            Auftragsnummer = gruppe.Key,
+                            Status = AuftragStatus.Offen,
+                            Arbeitsplatz = AuftragArbeitsplatzService.Laser,
+                            ErstelltAm = items.Min(m => m.Datum ?? DateTime.Now),
+                            GeaendertAm = items.Max(m => m.AenderungsDatum ?? m.Datum ?? DateTime.Now),
+                            AngelegtVon = items.FirstOrDefault()?.AngelegtVon ?? string.Empty,
+                            MaterialPositionen = items.Count,
+                            GesamtStueckzahl = items.Sum(m => m.Stueckzahl),
+                            GesamtGewichtKg = Math.Round(items.Sum(m => m.GewichtKg), 2)
+                        };
+                    }
+
+                    _auftraegeCache = dbAuftraege.Values.ToList();
                 }
 
                 ApplyAuftragsKwFilter();
