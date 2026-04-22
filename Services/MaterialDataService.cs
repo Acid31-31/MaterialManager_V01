@@ -95,7 +95,7 @@ namespace MaterialManager_V01.Services
             PersistToDatabase(snapshot);
 
             if (syncExcel)
-                TrySyncExcel(snapshot);
+                Task.Run(() => TrySyncExcel(snapshot));
         }
 
         private static void PersistToDatabase(IEnumerable<MaterialItem> materialien)
