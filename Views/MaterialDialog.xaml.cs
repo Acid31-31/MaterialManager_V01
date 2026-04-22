@@ -409,7 +409,12 @@ namespace MaterialManager_V01.Views
         public MaterialDialog()
         {
             InitializeComponent();
-            Loaded += (_, _) => ApplyResponsiveLayout();
+            Loaded += (_, _) =>
+            {
+                ApplyResponsiveLayout();
+                // Theme explizit nach dem Laden anwenden
+                Services.ThemeService.ApplyThemeToWindow(this);
+            };
             DataContext = this;
             Legierungen = new List<string>();
             Oberflaechen = new List<string>();
@@ -426,6 +431,15 @@ namespace MaterialManager_V01.Views
             MaxHeight = Math.Max(MinimumDialogHeight, workArea.Height - 40);
             Width  = Math.Min(MaxWidth,  Math.Max(MinimumDialogWidth,  DefaultDialogWidth));
             Height = Math.Min(MaxHeight, Math.Max(MinimumDialogHeight, DefaultDialogHeight));
+        }
+
+        private void StaerkeBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is System.Windows.Controls.ComboBox cb && !cb.IsDropDownOpen)
+            {
+                cb.IsDropDownOpen = true;
+                e.Handled = false;
+            }
         }
 
         public MaterialDialog(IEnumerable<MaterialItem> inventory) : this()

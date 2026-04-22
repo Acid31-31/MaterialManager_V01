@@ -30,9 +30,8 @@
                             <Border Grid.ColumnSpan="2"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"/>
+                                    BorderThickness="1"/>
 
-                            <!-- Klickfläche für das gesamte Feld (nicht editierbar) -->
                             <ToggleButton
                                 Name="MainToggleArea"
                                 Grid.Column="0"
@@ -42,30 +41,32 @@
                                 Background="Transparent"
                                 BorderThickness="0"/>
 
-                            <ContentPresenter
+                            <!-- Zeigt den gewählten Text mit expliziter Farbe -->
+                            <TextBlock
                                 Name="ContentSite"
                                 Grid.Column="0"
                                 IsHitTestVisible="False"
-                                Content="{TemplateBinding SelectionBoxItem}"
-                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                Margin="4,2,4,2"
+                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectionBoxItem}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Margin="4,2,28,2"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Left"
-                                TextElement.Foreground="{TemplateBinding Foreground}">
-                            </ContentPresenter>
+                                TextTrimming="CharacterEllipsis"/>
+
                             <TextBox
                                 x:Name="PART_EditableTextBox"
                                 Grid.Column="0"
                                 Visibility="Hidden"
                                 IsReadOnly="{TemplateBinding IsReadOnly}"
-                                Background="{TemplateBinding Background}"
+                                Background="Transparent"
                                 Foreground="{TemplateBinding Foreground}"
+                                CaretBrush="{TemplateBinding Foreground}"
                                 BorderThickness="0"
                                 Padding="4,2"
-                                Margin="1,1,0,1"
+                                Margin="1,1,28,1"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Stretch"/>
+
                             <ToggleButton
                                 Name="ToggleButton"
                                 Grid.Column="1"
@@ -77,6 +78,7 @@
                                 BorderThickness="1,0,0,0">
                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="{DynamicResource ThemeForegroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </ToggleButton>
+
                             <Popup
                                 Name="Popup"
                                 Placement="Bottom"
@@ -105,7 +107,7 @@
                             <Trigger Property="IsEditable" Value="True">
                                 <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                                 <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
-                                <Setter TargetName="MainToggleArea" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="MainToggleArea" Property="IsChecked" Value="{x:Null}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -262,6 +264,7 @@
                               Foreground="{DynamicResource ThemeForegroundBrush}"
                               Background="{DynamicResource ThemeSurfaceBrush}"
                               BorderBrush="{DynamicResource ThemeBorderBrush}"
+                              PreviewMouseLeftButtonDown="StaerkeBox_PreviewMouseLeftButtonDown"
                               Margin="0,5">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
