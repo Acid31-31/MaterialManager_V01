@@ -71,6 +71,9 @@ namespace MaterialManager_V01
                 Services.DatabaseBootstrapService.Initialize();
                 File.AppendAllText(logPath, $"Datenbank initialisiert: {Services.PathService.DatabasePath}\n");
 
+                // Online-Check: Lizenz prüfen + Ping senden (im Hintergrund, blockiert nicht)
+                _ = RunServerCheckAsync();
+
                 if (!Services.LicenseService.IsLicenseValid())
                 {
                     File.AppendAllText(logPath, "Lizenz ungültig\n");
@@ -316,6 +319,26 @@ namespace MaterialManager_V01
             {
                 File.AppendAllText(logPath, $"Fehler in EnsureNetworkStartupReady: {ex.Message}\n");
                 return true;
+            }
+        }
+
+        private static async System.Threading.Tasks.Task RunServerCheckAsync()
+        {
+            try
+            {
+                var fehler = await Services.LicenseServerCheckService.CheckAndPingAsync();
+                if (!string.IsNullOrWhiteSpace(fehler))
+                {
+                    Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show(fehler, "Lizenz gesperrt", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Current.Shutdown();
+                    });
+                }
+            }
+            catch
+            {
+                // Netzwerkfehler → App läuft weiter
             }
         }
     }

@@ -170,6 +170,20 @@ namespace MaterialManager_V01.Services
             return info?.IsFullLicense == true;
         }
 
+        /// <summary>Gibt den gespeicherten Lizenzschlüssel zurück (leer bei Testversion).</summary>
+        public static string GetCurrentLicenseKey()
+        {
+            try
+            {
+                var info = LoadLicenseInfo();
+                return info?.LicenseKey?.Trim() ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         public static string GetLicenseModeText()
         {
             var info = LoadLicenseInfo();
