@@ -127,7 +127,13 @@
                             Name="Border"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}">
-                            <ContentPresenter TextElement.Foreground="Black" />
+                            <Border.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Style>
+                            </Border.Resources>
+                            <TextBlock Text="{Binding}" Foreground="Black"
+                                       TextTrimming="CharacterEllipsis"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
