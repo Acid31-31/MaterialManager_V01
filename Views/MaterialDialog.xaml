@@ -198,7 +198,7 @@
 
             <!-- ── Kategorie ───────────────────────────────────────────────── -->
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Kategorie:" VerticalAlignment="Center" Margin="0,5"
-                       FontWeight="Bold" Foreground="#FFD700"/>
+                       FontWeight="Bold" Foreground="{DynamicResource ThemeAccentBrush}"/>
             <ComboBox Grid.Row="0" Grid.Column="1"
                       ItemsSource="{Binding Kategorien}"
                       SelectedItem="{Binding SelectedKategorie, Mode=TwoWay}"
@@ -259,10 +259,14 @@
                               IsEditable="True"
                               IsTextSearchEnabled="True"
                               StaysOpenOnEdit="True"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"
                               Margin="0,5">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource StaerkeFormat}}"/>
+                                <TextBlock Text="{Binding Converter={StaticResource StaerkeFormat}}"
+                                           Foreground="{DynamicResource ThemeForegroundBrush}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -313,41 +317,48 @@
                     <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding RohrDurchmesser}"
                               Text="{Binding SelectedDurchmesser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"
-                              Visibility="{Binding RohrRundVisible}"/>
+                              IsEditable="True" Margin="0,5" Visibility="{Binding RohrRundVisible}"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Höhe außen (mm):" VerticalAlignment="Center" Margin="0,5"
                                Visibility="{Binding RohrEckigVisible}"/>
                     <ComboBox Grid.Row="2" Grid.Column="1"
                               ItemsSource="{Binding RohrKantenmasse}"
                               Text="{Binding SelectedRohrHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"
-                              Visibility="{Binding RohrEckigVisible}"/>
+                              IsEditable="True" Margin="0,5" Visibility="{Binding RohrEckigVisible}"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Breite außen (mm):" VerticalAlignment="Center" Margin="0,5"
                                Visibility="{Binding RohrBreiteVisible}"/>
                     <ComboBox Grid.Row="3" Grid.Column="1"
                               ItemsSource="{Binding RohrKantenmasse}"
                               Text="{Binding SelectedRohrBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"
-                              Visibility="{Binding RohrBreiteVisible}"/>
+                              IsEditable="True" Margin="0,5" Visibility="{Binding RohrBreiteVisible}"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="4" Grid.Column="1"
                               ItemsSource="{Binding RohrWandstaerken}"
                               Text="{Binding SelectedRohrWand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="Länge (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="5" Grid.Column="1"
                               ItemsSource="{Binding StandardLaengen}"
                               Text="{Binding SelectedLaenge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
                     <TextBox Grid.Row="6" Grid.Column="1"
@@ -376,22 +387,28 @@
                     <ComboBox Grid.Row="0" Grid.Column="1"
                               ItemsSource="{Binding ProfilTypen}"
                               Text="{Binding SelectedProfilTyp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Höhe h (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="1" Grid.Column="1"
                               ItemsSource="{Binding ProfilHoehen}"
                               Text="{Binding SelectedProfilHoehe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Breite b (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <ComboBox Grid.Row="2" Grid.Column="1"
                               ItemsSource="{Binding ProfilBreiten}"
                               Text="{Binding SelectedProfilBreite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Wandstärke (mm):" VerticalAlignment="Center" Margin="0,5"/>
                     <TextBox Grid.Row="3" Grid.Column="1"
@@ -402,8 +419,10 @@
                     <ComboBox Grid.Row="4" Grid.Column="1"
                               ItemsSource="{Binding StandardLaengen}"
                               Text="{Binding SelectedProfilLaenge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True"
-                              Margin="0,5"/>
+                              IsEditable="True" Margin="0,5"
+                              Foreground="{DynamicResource ThemeForegroundBrush}"
+                              Background="{DynamicResource ThemeSurfaceBrush}"
+                              BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="Stückzahl:" VerticalAlignment="Center" Margin="0,5"/>
                     <TextBox Grid.Row="5" Grid.Column="1"
@@ -423,15 +442,19 @@
             <ComboBox Grid.Row="9" Grid.Column="1"
                       ItemsSource="{Binding AvailableLagerorte}"
                       SelectedItem="{Binding SelectedLagerort, Mode=TwoWay}"
-                      IsEditable="True"
-                      Margin="0,5"/>
+                      IsEditable="True" Margin="0,5"
+                      Foreground="{DynamicResource ThemeForegroundBrush}"
+                      Background="{DynamicResource ThemeSurfaceBrush}"
+                      BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
             <!-- ── Datum ───────────────────────────────────────────────────── -->
             <TextBlock Grid.Row="10" Grid.Column="0" Text="{Binding DatumLabel}" VerticalAlignment="Center" Margin="0,5"/>
             <DatePicker Grid.Row="10" Grid.Column="1"
                         SelectedDate="{Binding SelectedDatum, Mode=TwoWay}"
                         Margin="0,5"
-                        Background="#222" Foreground="White" BorderBrush="#444"/>
+                        Background="{DynamicResource ThemeSurfaceBrush}"
+                        Foreground="{DynamicResource ThemeForegroundBrush}"
+                        BorderBrush="{DynamicResource ThemeBorderBrush}"/>
 
             <!-- ── Lieferant / Lieferschein ────────────────────────────────── -->
             <TextBlock Grid.Row="11" Grid.Column="0" Text="Lieferant:" VerticalAlignment="Center" Margin="0,5"
@@ -448,9 +471,11 @@
             <TextBlock Grid.Row="12" Grid.Column="0" Text="Preis (€/kg):" VerticalAlignment="Center" Margin="0,5"/>
             <StackPanel Grid.Row="12" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
                 <TextBox Text="{Binding PreisProKg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"
-                         Background="#222" Foreground="White" BorderBrush="#444" Padding="4"/>
-                <TextBlock Text="€/kg" Foreground="#888" VerticalAlignment="Center" Margin="4,0,8,0"/>
-                <TextBlock Text="{Binding GeschaetzterWert}" Foreground="#FFD700" FontWeight="Bold" VerticalAlignment="Center"/>
+                         Background="{DynamicResource ThemeSurfaceBrush}"
+                         Foreground="{DynamicResource ThemeForegroundBrush}"
+                         BorderBrush="{DynamicResource ThemeBorderBrush}" Padding="4"/>
+                <TextBlock Text="€/kg" Foreground="{DynamicResource ThemeMutedForegroundBrush}" VerticalAlignment="Center" Margin="4,0,8,0"/>
+                <TextBlock Text="{Binding GeschaetzterWert}" Foreground="{DynamicResource ThemeAccentBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
             </StackPanel>
 
             <!-- ── Regal-Auslastung (nur Bleche relevant) ─────────────────── -->
@@ -467,10 +492,10 @@
                     <TextBlock Text="{Binding TotalInventoryWeight, StringFormat={}{0:N2} kg}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding LengthInfoVisible}" Margin="0,3,0,0">
-                    <TextBlock Text="Länge im Lager: " Foreground="#AAAAAA"/>
-                    <TextBlock Text="{Binding CurrentLoadLengthM, StringFormat={}{0:N2} m}" Foreground="#FFD700"/>
-                    <TextBlock Text="   Gesamt-Länge: " Foreground="#AAAAAA" Margin="10,0,0,0"/>
-                    <TextBlock Text="{Binding TotalInventoryLengthM, StringFormat={}{0:N2} m}" Foreground="#FFD700"/>
+                    <TextBlock Text="Länge im Lager: " Foreground="{DynamicResource ThemeMutedForegroundBrush}"/>
+                    <TextBlock Text="{Binding CurrentLoadLengthM, StringFormat={}{0:N2} m}" Foreground="{DynamicResource ThemeAccentBrush}"/>
+                    <TextBlock Text="   Gesamt-Länge: " Foreground="{DynamicResource ThemeMutedForegroundBrush}" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding TotalInventoryLengthM, StringFormat={}{0:N2} m}" Foreground="{DynamicResource ThemeAccentBrush}"/>
                 </StackPanel>
             </StackPanel>
 
