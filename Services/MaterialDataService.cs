@@ -14,6 +14,8 @@ namespace MaterialManager_V01.Services
         public static DateTime? LastExcelSyncUtc { get; private set; }
         public static string? LastExcelSyncPath { get; private set; }
 
+        private static readonly System.Threading.SemaphoreSlim _saveLock = new(1, 1);
+
         public static List<MaterialItem> LoadAllMaterials()
         {
             using var db = new MaterialManagerDbContext();
@@ -91,15 +93,29 @@ namespace MaterialManager_V01.Services
 
         public static void SaveAllMaterials(IEnumerable<MaterialItem> materialien, bool syncExcel = true)
         {
-            var snapshot = materialien?.Select(CloneMaterial).ToList() ?? new List<MaterialItem>();
-            PersistToDatabase(snapshot);
+            _ = SaveAllMaterialsAsync(materialien, syncExcel);
+        }
 
-            if (syncExcel)
-                Task.Run(() =>
+        public static async Task SaveAllMaterialsAsync(IEnumerable<MaterialItem> materialien, bool syncExcel = true)
+        {
+            var snapshot = materialien?.Select(CloneMaterial).ToList() ?? new List<MaterialItem>();
+            await _saveLock.WaitAsync();
+            try
+            {
+                await Task.Run(() =>
                 {
-                    TrySyncExcel(snapshot);
-                    AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
+                    PersistToDatabase(snapshot);
+                    if (syncExcel)
+                    {
+                        TrySyncExcel(snapshot);
+                        AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
+                    }
                 });
+            }
+            finally
+            {
+                _saveLock.Release();
+            }
         }
 
         private static void PersistToDatabase(IEnumerable<MaterialItem> materialien)

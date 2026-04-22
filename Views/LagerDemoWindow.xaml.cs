@@ -605,7 +605,8 @@ namespace MaterialManager_V01.Views
 
         private void SaveAllMaterials()
         {
-            MaterialDataService.SaveAllMaterials(_alleMaterialien);
+            // Feuert im Hintergrund, blockiert UI nicht
+            _ = MaterialDataService.SaveAllMaterialsAsync(_alleMaterialien);
         }
 
         private void PushUndoSnapshot(string beschreibung)
@@ -616,8 +617,21 @@ namespace MaterialManager_V01.Views
         private void RestoreMaterials(List<MaterialItem> materialien)
         {
             _alleMaterialien = materialien;
+            RefreshManualFilterOptions();
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
+        }
+
+        private static void ExecuteActionSafely(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler: {ex.Message}", "Aktion Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ExecuteUndo()
@@ -706,8 +720,9 @@ namespace MaterialManager_V01.Views
 
             PushUndoSnapshot("Material neu");
             _alleMaterialien.Add(dlg.Material);
+            RefreshManualFilterOptions();
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
         }
 
         private MaterialItem? GetPrimarySelectedMaterial()
@@ -745,8 +760,9 @@ namespace MaterialManager_V01.Views
             PushUndoSnapshot("Material bearbeiten");
             dlg.Material.IsSelected = item.IsSelected;
             _alleMaterialien[index] = dlg.Material;
+            RefreshManualFilterOptions();
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
         }
 
         private void OnReserveMaterialClick(object sender, RoutedEventArgs e)
@@ -779,8 +795,9 @@ namespace MaterialManager_V01.Views
                 foreach (var item in items)
                     _alleMaterialien.Remove(item);
 
+                RefreshManualFilterOptions();
+                ApplyFilter();
                 SaveAllMaterials();
-                LoadMaterials();
                 return;
             }
 
@@ -794,8 +811,9 @@ namespace MaterialManager_V01.Views
                 item.AenderungsDatum = DateTime.Now;
             }
 
+            // UI sofort aktualisieren – kein Warten auf Speichervorgang
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
         }
 
         private void OnReleaseReservationClick(object sender, RoutedEventArgs e)
@@ -869,8 +887,9 @@ namespace MaterialManager_V01.Views
                 }
             }
 
+            RefreshManualFilterOptions();
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
         }
 
         private void OnDeleteMaterialClick(object sender, RoutedEventArgs e)
@@ -894,12 +913,11 @@ namespace MaterialManager_V01.Views
 
             PushUndoSnapshot(items.Count == 1 ? "Material löschen" : "Materialien löschen");
             foreach (var item in items)
-            {
                 _alleMaterialien.Remove(item);
-            }
 
+            RefreshManualFilterOptions();
+            ApplyFilter();
             SaveAllMaterials();
-            LoadMaterials();
         }
 
         private void OnGridMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
