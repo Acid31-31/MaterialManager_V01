@@ -95,7 +95,11 @@ namespace MaterialManager_V01.Services
             PersistToDatabase(snapshot);
 
             if (syncExcel)
-                Task.Run(() => TrySyncExcel(snapshot));
+                Task.Run(() =>
+                {
+                    TrySyncExcel(snapshot);
+                    AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
+                });
         }
 
         private static void PersistToDatabase(IEnumerable<MaterialItem> materialien)
@@ -124,8 +128,7 @@ namespace MaterialManager_V01.Services
             SyncAuftraege(db, snapshot);
             db.SaveChanges();
             transaction.Commit();
-
-            AuftragDataService.TrySyncSharedAuftraegeFromDatabase();
+            // Netzwerk-Sync wurde in SaveAllMaterials in Task.Run verschoben
         }
 
         private static void SyncAuftraege(MaterialManagerDbContext db, IEnumerable<MaterialItem> materialien)

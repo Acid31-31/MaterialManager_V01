@@ -182,13 +182,13 @@ namespace MaterialManager_V01.Views
             }
         }
 
-        private void LoadMaterials()
+        private async void LoadMaterials()
         {
             var selectionSnapshot = CaptureMaterialSelection();
 
             try
             {
-                _alleMaterialien = MaterialDataService.LoadAllMaterials();
+                _alleMaterialien = await MaterialDataService.LoadAllMaterialsAsync();
                 RefreshManualFilterOptions();
                 ApplyFilter();
                 RestoreMaterialSelection(selectionSnapshot);
