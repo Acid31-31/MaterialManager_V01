@@ -817,19 +817,48 @@ namespace MaterialManager_V01.Views
                 return;
             }
 
-            var auftragNr = dlg.AuftragNr?.Trim() ?? string.Empty;
+            var baseNr = dlg.AuftragNr?.Trim() ?? string.Empty;
             PushUndoSnapshot(items.Count == 1 ? "Reservierung ändern" : "Reservierung ändern (mehrere)");
 
+            // Jedes Material bekommt eine eigene eindeutige AuftragNr (Basis-N)
+            var alreadyAssigned = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var item in items)
             {
-                item.AuftragNr = auftragNr;
+                var uniqueNr = string.IsNullOrWhiteSpace(baseNr)
+                    ? string.Empty
+                    : GenerateUniqueAuftragNr(baseNr, alreadyAssigned);
+
+                if (!string.IsNullOrWhiteSpace(uniqueNr))
+                    alreadyAssigned.Add(uniqueNr);
+
+                item.AuftragNr = uniqueNr;
                 item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
                 item.AenderungsDatum = DateTime.Now;
             }
 
-            // UI sofort aktualisieren – kein Warten auf Speichervorgang
             ApplyFilter();
             SaveAllMaterials();
+        }
+
+        /// <summary>
+        /// Gibt eine eindeutige AuftragNr zurück: "Nachproduktion-1", "Nachproduktion-2" usw.
+        /// Bereits in alreadyAssigned oder in _alleMaterialien vorhandene Nummern werden übersprungen.
+        /// </summary>
+        private string GenerateUniqueAuftragNr(string baseNr, HashSet<string> alreadyAssigned)
+        {
+            var allUsed = _alleMaterialien
+                .Select(m => m.AuftragNr?.Trim() ?? string.Empty)
+                .Where(nr => !string.IsNullOrWhiteSpace(nr))
+                .Concat(alreadyAssigned)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            for (int i = 1; i <= 9999; i++)
+            {
+                var candidate = $"{baseNr}-{i}";
+                if (!allUsed.Contains(candidate))
+                    return candidate;
+            }
+            return baseNr;
         }
 
         private void OnReleaseReservationClick(object sender, RoutedEventArgs e)
