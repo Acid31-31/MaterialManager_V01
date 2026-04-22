@@ -1,5 +1,7 @@
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ namespace MaterialManager_V01.Services
 {
     /// <summary>
     /// Prüft die Lizenz gegen ein GitHub Gist und sendet beim Start eine
-    /// Push-Benachrichtigung via ntfy.sh – nur sichtbar für den Entwickler.
+    /// E-Mail-Benachrichtigung – nur sichtbar für den Entwickler.
     /// </summary>
     public static class LicenseServerCheckService
     {
@@ -19,38 +21,48 @@ namespace MaterialManager_V01.Services
         /// <summary>
         /// Raw-URL deines GitHub Gist, z.B.:
         /// https://gist.githubusercontent.com/Acid31-31/GIST_ID/raw/licenses.json
-        /// Leer lassen → Online-Prüfung deaktiviert (App läuft immer).
+        /// Leer lassen → Online-Lizenzprüfung deaktiviert (App läuft immer).
         /// </summary>
         private const string GistRawUrl = "";
 
+        // --- E-Mail Einstellungen (Gmail) ---
         /// <summary>
-        /// Dein geheimer ntfy.sh Topic-Name (nur du kennst ihn).
-        /// Leer lassen → keine Push-Benachrichtigung.
+        /// Absender Gmail-Adresse (z.B. eine neue Wegwerf-Adresse nur für diesen Zweck).
+        /// Leer lassen → keine E-Mail.
         /// </summary>
-        private const string NtfyTopic = "";
+        private const string GmailAbsender = "";      // z.B. "mm.monitor2025@gmail.com"
+
+        /// <summary>
+        /// Gmail App-Passwort (NICHT dein normales Passwort!).
+        /// Erstellen unter: Google-Konto → Sicherheit → App-Passwörter
+        /// Format: "xxxx xxxx xxxx xxxx"
+        /// </summary>
+        private const string GmailAppPasswort = "";   // z.B. "abcd efgh ijkl mnop"
+
+        /// <summary>
+        /// Deine private E-Mail-Adresse, an die die Benachrichtigung gesendet wird.
+        /// </summary>
+        private const string EmpfaengerEmail = "";    // z.B. "deine@email.com"
 
         // ─────────────────────────────────────────────────────────────────
 
-        private static readonly HttpClient _http = new()
-        {
-            Timeout = TimeSpan.FromSeconds(8)
-        };
+        private static readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(8) };
 
         /// <summary>
-        /// Beim App-Start aufrufen: Ping senden + ggf. Lizenz sperren prüfen.
-        /// Gibt null zurück wenn alles OK, sonst eine Fehlermeldung.
+        /// Beim App-Start aufrufen: E-Mail senden + Gist-Lizenzprüfung.
+        /// Gibt null zurück wenn alles OK, sonst Fehlermeldung zum Anzeigen.
         /// </summary>
         public static async Task<string?> CheckAndPingAsync()
         {
             var licenseKey = LicenseService.GetCurrentLicenseKey();
-            var pcName     = Environment.MachineName;
-            var winUser    = Environment.UserName;
-            var zeitpunkt  = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+            var pcName    = Environment.MachineName;
+            var winUser   = Environment.UserName;
+            var zeitpunkt = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
 
-            // 1) Push-Benachrichtigung senden (fire & forget, Fehler ignorieren)
-            _ = SendNtfyPingAsync(licenseKey, pcName, winUser, zeitpunkt);
+            // 1) E-Mail senden (im Hintergrund, Fehler werden ignoriert)
+            _ = SendStartupMailAsync(licenseKey, pcName, winUser, zeitpunkt);
 
-            // 2) Gist-Lizenzprüfung (optional)
+            // 2) Gist-Lizenzprüfung (optional, nur wenn URL gesetzt)
             if (string.IsNullOrWhiteSpace(GistRawUrl))
                 return null;
 
@@ -61,8 +73,7 @@ namespace MaterialManager_V01.Services
             }
             catch
             {
-                // Kein Internet oder Gist nicht erreichbar → App läuft weiter
-                return null;
+                return null; // Kein Internet → App läuft weiter
             }
         }
 
@@ -76,22 +87,19 @@ namespace MaterialManager_V01.Services
                 if (!root.TryGetProperty("licenses", out var licenses))
                     return null;
 
-                // Kein Lizenzschlüssel aktiviert → Testversion → OK
                 if (string.IsNullOrWhiteSpace(licenseKey))
-                    return null;
+                    return null; // Testversion → immer OK
 
                 if (!licenses.TryGetProperty(licenseKey, out var entry))
-                    return null; // Schlüssel nicht in Gist → OK (unbekannt)
+                    return null; // Schlüssel unbekannt → OK
 
                 if (entry.TryGetProperty("valid", out var valid) && !valid.GetBoolean())
                 {
-                    var grund = entry.TryGetProperty("gesperrt_grund", out var g)
-                        ? g.GetString() ?? "Lizenz gesperrt."
+                    return entry.TryGetProperty("gesperrt_grund", out var g)
+                        ? g.GetString() ?? "Diese Lizenz wurde gesperrt."
                         : "Diese Lizenz wurde gesperrt. Bitte den Hersteller kontaktieren.";
-                    return grund;
                 }
 
-                // Ablaufdatum prüfen
                 if (entry.TryGetProperty("ablauf", out var ablauf)
                     && DateTime.TryParse(ablauf.GetString(), out var expires)
                     && DateTime.Now > expires)
@@ -99,38 +107,51 @@ namespace MaterialManager_V01.Services
                     return $"Lizenz abgelaufen am {expires:dd.MM.yyyy}. Bitte erneuern.";
                 }
 
-                return null; // alles OK
-            }
-            catch
-            {
                 return null;
             }
+            catch { return null; }
         }
 
-        private static async Task SendNtfyPingAsync(string licenseKey, string pcName, string winUser, string zeitpunkt)
+        private static async Task SendStartupMailAsync(string licenseKey, string pcName, string winUser, string zeitpunkt)
         {
-            if (string.IsNullOrWhiteSpace(NtfyTopic))
+            if (string.IsNullOrWhiteSpace(GmailAbsender)
+                || string.IsNullOrWhiteSpace(GmailAppPasswort)
+                || string.IsNullOrWhiteSpace(EmpfaengerEmail))
                 return;
 
             try
             {
-                var lizenzInfo = string.IsNullOrWhiteSpace(licenseKey) ? "Testversion" : licenseKey;
-                var message =
-                    $"MaterialManager V01 gestartet\n" +
-                    $"PC: {pcName}\n" +
-                    $"Windows-User: {winUser}\n" +
-                    $"Lizenz: {lizenzInfo}\n" +
-                    $"Zeit: {zeitpunkt}";
+                var lizenzInfo = string.IsNullOrWhiteSpace(licenseKey) ? "Testversion (kein Schlüssel)" : licenseKey;
 
-                var content = new StringContent(message, Encoding.UTF8, "text/plain");
-                content.Headers.Add("Title", "MM-V01 Start");
-                content.Headers.Add("Priority", "default");
+                var betreff = $"MaterialManager V01 gestartet – {pcName} – {zeitpunkt}";
 
-                await _http.PostAsync($"https://ntfy.sh/{NtfyTopic}", content);
+                var text = new StringBuilder();
+                text.AppendLine("MaterialManager V01 wurde gestartet.");
+                text.AppendLine();
+                text.AppendLine($"PC-Name:       {pcName}");
+                text.AppendLine($"Windows-User:  {winUser}");
+                text.AppendLine($"Lizenzschlüssel: {lizenzInfo}");
+                text.AppendLine($"Zeitpunkt:     {zeitpunkt}");
+                text.AppendLine();
+                text.AppendLine("─────────────────────────────────────");
+                text.AppendLine("Diese Mail wurde automatisch von MaterialManager V01 gesendet.");
+
+                using var client = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(GmailAbsender, GmailAppPasswort.Replace(" ", ""))
+                };
+
+                var mail = new MailMessage(GmailAbsender, EmpfaengerEmail, betreff, text.ToString())
+                {
+                    IsBodyHtml = false
+                };
+
+                await client.SendMailAsync(mail);
             }
             catch
             {
-                // Fehler ignorieren – UI darf nicht blockiert werden
+                // E-Mail-Fehler ignorieren – App läuft weiter
             }
         }
     }
