@@ -409,12 +409,7 @@ namespace MaterialManager_V01.Views
         public MaterialDialog()
         {
             InitializeComponent();
-            Loaded += (_, _) =>
-            {
-                ApplyResponsiveLayout();
-                // Theme explizit nach dem Laden anwenden
-                Services.ThemeService.ApplyThemeToWindow(this);
-            };
+            Loaded += (_, _) => ApplyResponsiveLayout();
             DataContext = this;
             Legierungen = new List<string>();
             Oberflaechen = new List<string>();
