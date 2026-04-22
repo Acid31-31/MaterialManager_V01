@@ -315,5 +315,7 @@ namespace MaterialManager_V01.Services
                 IsSelected = source.IsSelected
             };
         }
+
+        public static MaterialItem CloneMaterialPublic(MaterialItem source) => CloneMaterial(source);
     }
 }

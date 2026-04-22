@@ -788,7 +788,9 @@ namespace MaterialManager_V01.Views
                 return;
 
             var existingAuftrag = items.Count == 1 ? items[0].AuftragNr : string.Empty;
-            var dlg = new ResteReservierungDialog(existingAuftrag) { Owner = this };
+            // Stückzahl nur bei Einzelauswahl übergeben
+            var maxStueck = items.Count == 1 ? items[0].Stueckzahl : 0;
+            var dlg = new ResteReservierungDialog(existingAuftrag, maxStueck) { Owner = this };
             if (dlg.ShowDialog() != true)
                 return;
 
@@ -820,8 +822,7 @@ namespace MaterialManager_V01.Views
             var baseNr = dlg.AuftragNr?.Trim() ?? string.Empty;
             PushUndoSnapshot(items.Count == 1 ? "Reservierung ändern" : "Reservierung ändern (mehrere)");
 
-            // Jedes Material bekommt eine eigene eindeutige AuftragNr (Basis-N)
-            var alreadyAssigned = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var alreadyAssigned = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var item in items)
             {
                 var uniqueNr = string.IsNullOrWhiteSpace(baseNr)
@@ -831,11 +832,34 @@ namespace MaterialManager_V01.Views
                 if (!string.IsNullOrWhiteSpace(uniqueNr))
                     alreadyAssigned.Add(uniqueNr);
 
-                item.AuftragNr = uniqueNr;
-                item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
-                item.AenderungsDatum = DateTime.Now;
+                // Teilreservierung: Material aufteilen wenn weniger Stück benötigt werden
+                if (dlg.GewuenschteStueckzahl > 0 && dlg.GewuenschteStueckzahl < item.Stueckzahl)
+                {
+                    var rest = item.Stueckzahl - dlg.GewuenschteStueckzahl;
+
+                    // Reservierten Anteil
+                    item.Stueckzahl = dlg.GewuenschteStueckzahl;
+                    item.AuftragNr = uniqueNr;
+                    item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                    item.AenderungsDatum = DateTime.Now;
+
+                    // Rest-Anteil als neues Material im Lager belassen
+                    var restItem = Services.MaterialDataService.CloneMaterialPublic(item);
+                    restItem.Id = 0;
+                    restItem.Stueckzahl = rest;
+                    restItem.AuftragNr = string.Empty;
+                    restItem.IsSelected = false;
+                    _alleMaterialien.Add(restItem);
+                }
+                else
+                {
+                    item.AuftragNr = uniqueNr;
+                    item.GeaendertVon = OperatorIdentityService.CurrentOperatorName;
+                    item.AenderungsDatum = DateTime.Now;
+                }
             }
 
+            RefreshManualFilterOptions();
             ApplyFilter();
             SaveAllMaterials();
         }
