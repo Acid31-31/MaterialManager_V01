@@ -12,6 +12,7 @@
 - Verbindliche UI-Regel: Bei allen neu erstellten UI-Elementen immer ein dunkles Design verwenden (Fenster, Dialoge, Dropdowns, ContextMenus, Popups); keine hellen Standard-Hintergründe oder helle Titelleisten verwenden. Bei neuen/angepassten UI-Elementen soll ausnahmslos ein dunkles Design verwendet werden; helle Hintergründe oder helle Auswahlfelder sind nicht akzeptabel. **Herko-Grün soll im UI dezent als Akzent eingesetzt werden; keine großflächigen grünen Flächen oder zu dominante grüne Gestaltung.**
 - **Wenn im Startfenster das Hell-Logo verwendet wird, soll die Datei `Assets/Herko_Logo_hell` genutzt werden (nicht ein konstruiertes Ersatzlogo).**
 - Bei heller Einstellung müssen Texte in der UI dunkel und gut lesbar sein; weiße Schrift auf hellem Hintergrund ist zu vermeiden. Im Hellmodus müssen insbesondere im Lager-Filterbereich alle Texte und Eingabewerte dunkel und klar lesbar sein; keine weiße Schrift auf hellem Hintergrund. **Im Lager-Spaltenfilter muss der Auswahltext in Comboboxen im Hellmodus immer dunkel lesbar sein; weiße Schrift ist nicht akzeptabel.** **Im Hellmodus müssen insbesondere ComboBox-Auswahltexte im Lager-/Filterbereich dunkel und klar lesbar sein; weiße Schrift auf hellem Hintergrund ist nicht akzeptabel.**
+- **Im Hellmodus muss Text überall schwarz sein; im Dunkelmodus muss Text überall weiß sein.**
 - Keine neuen Verzeichnisse oder zusätzlichen Git-Branches ohne ausdrückliche Zustimmung anlegen.
 - Das bestehende `USB_Installation`-Layout beibehalten. Vorhandene Installationsdateien, Erklärungen und sonstige Inhalte nicht durch Publish ersetzen oder entfernen, außer mit ausdrücklicher Zustimmung.
 - Der `UpdateInstaller` soll den Installationspfad automatisch erkennen, damit Updates auf mehreren Rechnern und in unterschiedlichen Installationsordnern ohne manuelle Pfadangabe funktionieren.
@@ -31,6 +32,7 @@
 - Wenn der Benutzer eine bestehende App 'einbauen' sagt, soll sie als fester Bestandteil in MaterialManager integriert werden (internes Modul), nicht nur als Starter-Button zur externen EXE.
 - Der Markenname 'MaterialManager V01' darf nicht geändert werden; nur die Bezeichnung der Test-/Statusanzeige soll angepasst werden.
 - Update-Beschreibungen/Changelogs müssen vollständig auf Deutsch sein; englische Commit-Texte dürfen im UI nicht erscheinen.
+- Bei UI-Änderungen zuerst einen konkreten Vorschlag zeigen und erst nach Freigabe umsetzen; im Dunkelmodus sollen klare, aber dezente Akzente statt flächig schwarzer Optik verwendet werden.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.
