@@ -340,6 +340,11 @@ internal static class Program
 
             CopyFileWithRetry(file, destinationFile, retryCount: 40, retryDelayMs: 500);
         }
+
+        var bundledLicense = Path.Combine(sourceDir, "license.dat");
+        var targetLicense = Path.Combine(destinationDir, "license.dat");
+        if (File.Exists(bundledLicense))
+            CopyFileWithRetry(bundledLicense, targetLicense, retryCount: 10, retryDelayMs: 250);
     }
 
     private static void CopyFileWithRetry(string sourceFile, string destinationFile, int retryCount, int retryDelayMs)

@@ -89,6 +89,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="license.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\app.ico" />
     <Resource Include="Assets\app-icon.png" />
     <Resource Include="Assets\logo.png" />
