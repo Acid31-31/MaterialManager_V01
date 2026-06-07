@@ -19,7 +19,7 @@ set /p CUSTOMER_NAME="Kundenname eingeben: "
 REM Verwende PowerShell fÃ¼r LizenzschlÃ¼ssel-Generierung
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
 "Add-Type -AssemblyName System.Security; ^
-$masterSecret = 'MM_1.0.x_MASTER_SECRET_2025_PRODUCTION'; ^
+$masterSecret = 'MM_V01_MASTER_SECRET_2025_PRODUCTION'; ^
 $hardwareId = '%HARDWARE_ID%'; ^
 $customer = '%CUSTOMER_NAME%'; ^
 $expiryDate = (Get-Date).AddYears(1).ToString('yyyyMMdd'); ^

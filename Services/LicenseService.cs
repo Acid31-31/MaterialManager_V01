@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace MaterialManager_V01.Services
 {
-    public static class LicenseService
+    public static partial class LicenseService
     {
         private static readonly string LicenseFile = PathService.LicensePath;
         private static readonly string LegacyLicenseFile = Path.Combine(
