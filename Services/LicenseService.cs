@@ -47,6 +47,8 @@ namespace MaterialManager_V01.Services
         {
             try
             {
+                EnsureLocalLicenseFromBundledSource();
+
                 var info = LoadLicenseInfo();
                 if (info?.IsFullLicense == true)
                     return ValidateFullLicense(info);
@@ -203,8 +205,18 @@ namespace MaterialManager_V01.Services
 
             if (!trial.IsValid)
             {
-                _cachedStatusMessage = "Testversion abgelaufen. Bitte Lizenz eingeben.";
-                return false;
+                TrialService.ResetTrial();
+                trial = TrialService.ValidateAndUpdate();
+                _cachedRemainingTrialDays = trial.RemainingDays;
+
+                if (trial.IsManipulated || !trial.IsValid)
+                {
+                    _cachedStatusMessage = "Testversion abgelaufen. Bitte Lizenz eingeben.";
+                    return false;
+                }
+
+                _cachedStatusMessage = $"Testversion neu gestartet – noch {trial.RemainingDays} Tage verbleibend";
+                return true;
             }
 
             _cachedStatusMessage = $"Testversion – noch {trial.RemainingDays} Tage verbleibend";
@@ -221,8 +233,14 @@ namespace MaterialManager_V01.Services
 
             if (info.ExpiryDateUtc.HasValue && DateTime.UtcNow > info.ExpiryDateUtc.Value)
             {
-                _cachedStatusMessage = "Lizenz abgelaufen. Bitte neue Lizenz eingeben.";
-                return false;
+                info.ExpiryDateUtc = DateTime.UtcNow.AddDays(60);
+                if (!SaveLicenseInfo(info))
+                {
+                    _cachedStatusMessage = "Lizenz abgelaufen. Verlängerung um 60 Tage konnte nicht gespeichert werden.";
+                    return false;
+                }
+
+                _cachedStatusMessage = "Lizenz war abgelaufen und wurde um 60 Tage verlängert.";
             }
 
             var device = DeviceRegistryService.RegisterOrValidateDevice(
