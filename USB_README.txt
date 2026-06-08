@@ -18,6 +18,11 @@
 
 ## 📝 Lizenzierung
 
+### Automatische Lizenzverteilung
+- Wenn auf dem USB-Stick eine `license.dat` beiliegt, wird sie bei der Installation automatisch mitkopiert
+- Die Lizenz wird beim ersten Start in den lokalen Benutzerpfad übernommen
+- Dadurch entfällt die manuelle Eingabe auf jedem PC, sofern die Lizenz bereits vorhanden ist
+
 ### Demo-Version (30 Tage)
 - Automatisch aktiviert nach Installation
 - Funktioniert sofort ohne Lizenzschlüssel

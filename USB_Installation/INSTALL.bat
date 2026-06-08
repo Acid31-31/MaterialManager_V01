@@ -6,6 +6,7 @@ setlocal
 set "SCRIPT_DIR=%~dp0"
 set "GUI_SCRIPT=%SCRIPT_DIR%INSTALL_GUI.ps1"
 set "INSTALLER_EXE=%SCRIPT_DIR%Installer.exe"
+set "UNINSTALL_SCRIPT=%SCRIPT_DIR%UNINSTALL.bat"
 
 if not exist "%GUI_SCRIPT%" (
     echo FEHLER: INSTALL_GUI.ps1 wurde nicht gefunden.
@@ -37,6 +38,11 @@ echo.
 
 REM Cleanup: Alte Temp-Dateien loeschen
 del "%TEMP%\*.ps1" /F /Q >nul 2>&1
+
+REM Sicherstellen, dass die Deinstallation mit ausgeliefert wird
+if exist "%UNINSTALL_SCRIPT%" (
+    copy /Y "%UNINSTALL_SCRIPT%" "%SCRIPT_DIR%MaterialManager\UNINSTALL_GUI.ps1" >nul 2>&1
+)
 
 REM Admin-Check
 net session >nul 2>&1

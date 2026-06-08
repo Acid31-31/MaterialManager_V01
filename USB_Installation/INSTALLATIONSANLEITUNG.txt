@@ -12,6 +12,7 @@ STATUS: AKTUELL
 
 1. Ordner `USB_Installation` vollständig auf USB-Stick kopieren.
 2. Prüfen, dass `MaterialManager\MaterialManager_V01.exe` vorhanden ist.
+3. Die GUI-Installation heißt `INSTALL.bat` und zeigt das Herko-Logo im Installer-Kopf.
 
 
 ================================================================================
@@ -47,8 +48,17 @@ OPTION B - FESTE INSTALLATION (empfohlen)
 
 OPTION C - GUI-INSTALLER
 ------------------------
-1. `INSTALL.bat` ausführen
+1. `Installation.lnk` oder `INSTALL.bat` ausführen
 2. Anweisungen im Installer folgen
+3. Das Herko-Logo erscheint im GUI-Installer und als Icon
+4. Die Deinstallation wird danach automatisch mit in den Installationsordner kopiert
+
+OPTION D - DEINSTALLATION PER UI
+--------------------------------
+1. `Deinstallation.lnk` ausführen
+2. Die grafische Deinstallation öffnet sich
+3. Benutzerdaten können dort optional entfernt werden
+4. Es ist keine Shell-Eingabe nötig
 
 
 ================================================================================

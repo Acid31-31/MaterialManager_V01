@@ -128,7 +128,13 @@ function Create-Package {
     Copy-Item -Path "$ProjectPath\USB_INSTALL.bat" -Destination $outputPath -Force
     Copy-Item -Path "$ProjectPath\GENERATE_LICENSE.bat" -Destination $outputPath -Force
     Copy-Item -Path "$ProjectPath\USB_README.txt" -Destination $outputPath -Force
-    
+
+    # Kopiere zentrale Lizenzdatei, falls vorhanden
+    $bundledLicenseSource = Join-Path $ProjectPath "license.dat"
+    if (Test-Path $bundledLicenseSource) {
+        Copy-Item -Path $bundledLicenseSource -Destination (Join-Path $outputPath "license.dat") -Force
+    }
+
     # Erstelle LICENSE-Datei
     $licenseContent = @"
 LIZENZBESTIMMUNGEN - MaterialManager 1.0.x

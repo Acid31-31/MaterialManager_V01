@@ -50,6 +50,7 @@ if not exist "%INSTALL_PATH%" (
 echo [3/5] Kopiere Dateien...
 xcopy "%USB_SOURCE%MaterialManager_1.0.x.exe" "%INSTALL_PATH%\" /Y /Q
 xcopy "%USB_SOURCE%*.dll" "%INSTALL_PATH%\" /Y /Q /S
+if exist "%USB_SOURCE%license.dat" copy /Y "%USB_SOURCE%license.dat" "%INSTALL_PATH%\license.dat" >nul
 
 if %errorlevel% neq 0 (
     echo FEHLER beim Kopieren der Dateien!

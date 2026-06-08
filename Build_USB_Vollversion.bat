@@ -67,21 +67,24 @@ mkdir "USB_Package"
 mkdir "USB_Package\App"
 
 echo [INFO] Kopiere Programmdateien...
-xcopy /E /I /Y /Q "bin\Release\net8.0-windows\win-x64\publish\*" "USB_Package\App\"
+ xcopy /E /I /Y /Q "bin\Release\net8.0-windows\win-x64\publish\*" "USB_Package\App\"
 
-echo [✓] Programmdateien kopiert
-echo.
+ echo [✓] Programmdateien kopiert
+ echo.
 
-REM Installer und Dokumentation kopieren
-echo [INFO] Kopiere Installer und Dokumentation...
+ REM Installer und Dokumentation kopieren
+ echo [INFO] Kopiere Installer und Dokumentation...
 
-copy /Y "USB_Installer\INSTALL_VOLLVERSION.bat" "USB_Package\"
-copy /Y "USB_Installer\README_VOLLVERSION.txt" "USB_Package\"
-copy /Y "LICENSE.txt" "USB_Package\"
-copy /Y "COPYRIGHT.txt" "USB_Package\"
+ copy /Y "USB_Installer\INSTALL_VOLLVERSION.bat" "USB_Package\"
+ copy /Y "USB_Installer\README_VOLLVERSION.txt" "USB_Package\"
+ copy /Y "LICENSE.txt" "USB_Package\"
+ copy /Y "COPYRIGHT.txt" "USB_Package\"
 
-echo [✓] Installer und Dokumentation kopiert
-echo.
+ REM Zentrale Lizenzdatei mitgeben, falls vorhanden
+ if exist "license.dat" copy /Y "license.dat" "USB_Package\"
+
+ echo [✓] Installer und Dokumentation kopiert
+ echo.
 
 REM Lizenz-Generator erstellen (NUR FÜR DICH!)
 echo [INFO] Erstelle Lizenz-Generator...
