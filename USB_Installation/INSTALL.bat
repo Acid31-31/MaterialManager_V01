@@ -40,8 +40,11 @@ REM Cleanup: Alte Temp-Dateien loeschen
 del "%TEMP%\*.ps1" /F /Q >nul 2>&1
 
 REM Sicherstellen, dass die Deinstallation mit ausgeliefert wird
+if exist "%SCRIPT_DIR%UNINSTALL_GUI.ps1" (
+    copy /Y "%SCRIPT_DIR%UNINSTALL_GUI.ps1" "%SCRIPT_DIR%MaterialManager\UNINSTALL_GUI.ps1" >nul 2>&1
+)
 if exist "%UNINSTALL_SCRIPT%" (
-    copy /Y "%UNINSTALL_SCRIPT%" "%SCRIPT_DIR%MaterialManager\UNINSTALL_GUI.ps1" >nul 2>&1
+    copy /Y "%UNINSTALL_SCRIPT%" "%SCRIPT_DIR%MaterialManager\UNINSTALL.bat" >nul 2>&1
 )
 
 REM Admin-Check

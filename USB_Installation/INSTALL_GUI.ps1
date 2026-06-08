@@ -745,12 +745,6 @@ function Show-InstallScreen {
             Copy-Item -Path $uninstallGuiSource -Destination $uninstallGuiTarget -Force
         }
 
-        $deinstallShortcutSource = Join-Path $Script:SourcePath 'Deinstallation.lnk'
-        $deinstallShortcutTarget = Join-Path $Script:InstallPath 'Deinstallation.lnk'
-        if (Test-Path $deinstallShortcutSource) {
-            Copy-Item -Path $deinstallShortcutSource -Destination $deinstallShortcutTarget -Force
-        }
-
         $deinstallIconSource = Join-Path $Script:SourcePath 'Deinstallation.ico'
         $deinstallIconTarget = Join-Path $Script:InstallPath 'Deinstallation.ico'
         if (Test-Path $deinstallIconSource) {
@@ -763,7 +757,7 @@ function Show-InstallScreen {
             Copy-Item -Path $uninstallBatSource -Destination $uninstallBatTarget -Force
         }
 
-        # Startmenü-Eintrag für UI-Deinstallation
+        # Startmenü-Eintrag für UI-Deinstallation (direkt auf UNINSTALL.bat)
         try {
             $startMenuPrograms = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('StartMenu'), 'Programs')
             if (-not (Test-Path $startMenuPrograms)) {
@@ -772,9 +766,12 @@ function Show-InstallScreen {
 
             $shell = New-Object -ComObject WScript.Shell
             $deinstallMenuShortcut = $shell.CreateShortcut((Join-Path $startMenuPrograms 'MaterialManager V01 Deinstallation.lnk'))
-            $deinstallMenuShortcut.TargetPath = (Join-Path $Script:InstallPath 'Deinstallation.lnk')
+            $deinstallMenuShortcut.TargetPath = (Join-Path $Script:InstallPath 'UNINSTALL.bat')
             $deinstallMenuShortcut.WorkingDirectory = $Script:InstallPath
             $deinstallMenuShortcut.Description = 'MaterialManager V01 Deinstallation'
+            if (Test-Path $deinstallIconTarget) {
+                $deinstallMenuShortcut.IconLocation = "$deinstallIconTarget,0"
+            }
             $deinstallMenuShortcut.Save()
             [System.Runtime.Interopservices.Marshal]::ReleaseComObject($shell) | Out-Null
         } catch {
