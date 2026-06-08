@@ -5,8 +5,14 @@ REM Verwendet immer INSTALL_GUI.ps1 (maßgeblicher Installationsstand)
 setlocal
 set "SCRIPT_DIR=%~dp0"
 set "GUI_SCRIPT=%SCRIPT_DIR%INSTALL_GUI.ps1"
+if not exist "%GUI_SCRIPT%" set "GUI_SCRIPT=%SCRIPT_DIR%MaterialManager\USB_Installation\INSTALL_GUI.ps1"
 set "INSTALLER_EXE=%SCRIPT_DIR%Installer.exe"
 set "UNINSTALL_SCRIPT=%SCRIPT_DIR%UNINSTALL.bat"
+
+REM USB-Ansicht auf 2 Starter reduzieren (Install/Uninstall)
+for %%F in ("CLEANUP_UND_NEUSTART.bat" "Deinstallation.ico" "Deinstallation.lnk" "FORCE_NEUSTART.bat" "Herko_Logo_Dunkel.png" "Herko_Logo_hell.png" "Installation.ico" "Installation.lnk" "INSTALLATIONSANLEITUNG.txt" "INSTALL_ANLEITUNG_MEHRERE_PCs.txt" "INSTALL_CERTIFICATE.bat" "INSTALL_GUI.ps1" "INSTALL_GUI_BACKUP.ps1" "INSTALL_GUI_FULL_BACKUP_20260306_194735.ps1" "Install_LocalPC.bat" "INSTALL_MultiPC_OneClick.bat" "IT_CHECKLISTE_ROLLOUT_5_10_20_PCs.txt" "MaterialManager.bat" "MaterialManager_CodeSigning_PUBLIC.cer" "README.txt" "RELEASE_NOTES_v1.0.7.txt" "SCHNELLSTART_MultiPC.txt" "START_MaterialManager.bat" "VERSION.txt" "VERSION_HISTORY.txt" "UNINSTALL_GUI.ps1") do (
+    if exist "%SCRIPT_DIR%%%~F" attrib +h "%SCRIPT_DIR%%%~F" >nul 2>&1
+)
 
 if not exist "%GUI_SCRIPT%" (
     echo FEHLER: INSTALL_GUI.ps1 wurde nicht gefunden.
