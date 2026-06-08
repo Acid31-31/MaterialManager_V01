@@ -71,6 +71,29 @@ function Convert-ToDouble {
     return $Default
 }
 
+function Grant-UpdateWritePermission {
+    param([string]$TargetPath)
+
+    try {
+        if ([string]::IsNullOrWhiteSpace($TargetPath) -or -not (Test-Path $TargetPath)) {
+            return
+        }
+
+        $acl = Get-Acl -Path $TargetPath
+        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+            'Users',
+            'Modify',
+            'ContainerInherit,ObjectInherit',
+            'None',
+            'Allow'
+        )
+        $acl.SetAccessRule($rule)
+        Set-Acl -Path $TargetPath -AclObject $acl
+    }
+    catch {
+    }
+}
+
 $Script:PackageVersion = Get-PackageVersion
 
 function Get-InstallerPricing {
@@ -243,22 +266,36 @@ $form.MaximizeBox = $false
 $form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
 
 # ============================================
-# HEADER - FESTE WERTE (kein $formWidth mehr!)
+# HEADER - HERKO-LOGO
 # ============================================
+$logoPath = Join-Path $Script:SourcePath 'Herko_Logo_hell.png'
+if (-not (Test-Path $logoPath)) {
+    $logoPath = Join-Path $Script:SourcePath 'Herko_Logo_Dunkel.png'
+}
+
+if (Test-Path $logoPath) {
+    $logoBox = New-Object System.Windows.Forms.PictureBox
+    $logoBox.Image = [System.Drawing.Image]::FromFile($logoPath)
+    $logoBox.SizeMode = 'Zoom'
+    $logoBox.Location = New-Object System.Drawing.Point(40, 20)
+    $logoBox.Size = New-Object System.Drawing.Size(140, 70)
+    $form.Controls.Add($logoBox)
+}
+
 $titleLabel = New-Object System.Windows.Forms.Label
-$titleLabel.Text = 'MaterialManager V01'
-$titleLabel.Font = New-Object System.Drawing.Font('Segoe UI', 24, [System.Drawing.FontStyle]::Bold)
+$titleLabel.Text = 'MaterialManager V01 - Installation'
+$titleLabel.Font = New-Object System.Drawing.Font('Segoe UI', 22, [System.Drawing.FontStyle]::Bold)
 $titleLabel.ForeColor = [System.Drawing.Color]::FromArgb(76, 175, 80)
-$titleLabel.Location = New-Object System.Drawing.Point(40, 20)
-$titleLabel.Size = New-Object System.Drawing.Size(920, 50)  # ✅ 1000-80=920
+$titleLabel.Location = New-Object System.Drawing.Point(200, 18)
+$titleLabel.Size = New-Object System.Drawing.Size(760, 40)
 $form.Controls.Add($titleLabel)
 
 $subtitleLabel = New-Object System.Windows.Forms.Label
-$subtitleLabel.Text = 'Professionelle Material- und Bestandsverwaltung'
+$subtitleLabel.Text = 'Professionelle Material- und Bestandsverwaltung von Herko'
 $subtitleLabel.Font = New-Object System.Drawing.Font('Segoe UI', 12)
 $subtitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
-$subtitleLabel.Location = New-Object System.Drawing.Point(42, 75)
-$subtitleLabel.Size = New-Object System.Drawing.Size(920, 30)  # ✅ 1000-80=920
+$subtitleLabel.Location = New-Object System.Drawing.Point(202, 58)
+$subtitleLabel.Size = New-Object System.Drawing.Size(760, 30)
 $form.Controls.Add($subtitleLabel)
 
 # ============================================
@@ -706,6 +743,41 @@ function Show-InstallScreen {
         $uninstallGuiTarget = Join-Path $Script:InstallPath 'UNINSTALL_GUI.ps1'
         if (Test-Path $uninstallGuiSource) {
             Copy-Item -Path $uninstallGuiSource -Destination $uninstallGuiTarget -Force
+        }
+
+        $deinstallShortcutSource = Join-Path $Script:SourcePath 'Deinstallation.lnk'
+        $deinstallShortcutTarget = Join-Path $Script:InstallPath 'Deinstallation.lnk'
+        if (Test-Path $deinstallShortcutSource) {
+            Copy-Item -Path $deinstallShortcutSource -Destination $deinstallShortcutTarget -Force
+        }
+
+        $deinstallIconSource = Join-Path $Script:SourcePath 'Deinstallation.ico'
+        $deinstallIconTarget = Join-Path $Script:InstallPath 'Deinstallation.ico'
+        if (Test-Path $deinstallIconSource) {
+            Copy-Item -Path $deinstallIconSource -Destination $deinstallIconTarget -Force
+        }
+
+        $uninstallBatSource = Join-Path $Script:SourcePath 'UNINSTALL.bat'
+        $uninstallBatTarget = Join-Path $Script:InstallPath 'UNINSTALL.bat'
+        if (Test-Path $uninstallBatSource) {
+            Copy-Item -Path $uninstallBatSource -Destination $uninstallBatTarget -Force
+        }
+
+        # Startmenü-Eintrag für UI-Deinstallation
+        try {
+            $startMenuPrograms = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('StartMenu'), 'Programs')
+            if (-not (Test-Path $startMenuPrograms)) {
+                New-Item -ItemType Directory -Path $startMenuPrograms -Force | Out-Null
+            }
+
+            $shell = New-Object -ComObject WScript.Shell
+            $deinstallMenuShortcut = $shell.CreateShortcut((Join-Path $startMenuPrograms 'MaterialManager V01 Deinstallation.lnk'))
+            $deinstallMenuShortcut.TargetPath = (Join-Path $Script:InstallPath 'Deinstallation.lnk')
+            $deinstallMenuShortcut.WorkingDirectory = $Script:InstallPath
+            $deinstallMenuShortcut.Description = 'MaterialManager V01 Deinstallation'
+            $deinstallMenuShortcut.Save()
+            [System.Runtime.Interopservices.Marshal]::ReleaseComObject($shell) | Out-Null
+        } catch {
         }
 
         # DEINSTALLER-LAUNCHER

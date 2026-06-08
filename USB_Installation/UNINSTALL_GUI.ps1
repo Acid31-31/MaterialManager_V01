@@ -12,6 +12,13 @@ $Script:CurrentStep = 1
 $Script:TotalSteps = 4
 $Script:InstallPath = "C:\Program Files\MaterialManager_V01"
 $Script:UserDataPath = "$env:LOCALAPPDATA\MaterialManager_V01"
+$Script:RegistryInstallLocations = @(
+    "C:\Program Files\MaterialManager_V01",
+    "C:\Program Files\MaterialManager",
+    "C:\Program Files (x86)\MaterialManager_V01",
+    "C:\Program Files (x86)\MaterialManager"
+)
+$Script:DeinstallShortcutNames = @('Deinstallation.lnk','UNINSTALL.lnk')
 $Script:DesignWidth = 1000
 $Script:DesignHeight = 750
 $workingArea = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
@@ -70,17 +77,31 @@ function Apply-ResponsiveLayout {
     }
 }
 
+
 # ============================================
 # ADMIN-CHECK
 # ============================================
-$isAdmin = [System.Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains 'S-1-5-32-544'
-if (-not $isAdmin) {
-    [System.Windows.Forms.MessageBox]::Show(
-        'Dieses Programm muss mit Administrator-Rechten ausgeführt werden!',
-        'Admin-Fehler',
-        'OK',
-        'Error'
-    )
+function Ensure-Administrator {
+    $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object System.Security.Principal.WindowsPrincipal($identity)
+    return $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+if (-not (Ensure-Administrator)) {
+    try {
+        Start-Process powershell.exe -Verb RunAs -ArgumentList @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-File', "`"$PSCommandPath`""
+        )
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show(
+            'Administrator-Rechte wurden abgelehnt oder konnten nicht angefordert werden.',
+            'Admin-Fehler',
+            'OK',
+            'Error'
+        )
+    }
     exit 1
 }
 
@@ -253,7 +274,7 @@ function Show-OptionsScreen {
     $contentPanel.Controls.Add($Script:checkboxProgram)
     
     $programInfo = New-Object System.Windows.Forms.Label
-    $programInfo.Text = '   Entfernt alle Dateien aus: C:\Program Files\MaterialManager_V01'
+    $programInfo.Text = '   Entfernt alle Installationen aus: Program Files\MaterialManager_V01 und Program Files\MaterialManager'
     $programInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
     $programInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
     $programInfo.Location = New-Object System.Drawing.Point(50, 150)
@@ -280,16 +301,16 @@ function Show-OptionsScreen {
     
     # CHECKBOX 3: BENUTZERDATEN
     $Script:checkboxUserData = New-Object System.Windows.Forms.CheckBox
-    $Script:checkboxUserData.Text = 'Benutzerdaten auch entfernen'
-    $Script:checkboxUserData.Checked = $false
+    $Script:checkboxUserData.Text = 'Benutzerdaten auch entfernen (empfohlen fuer saubere Neuinstallation)'
+    $Script:checkboxUserData.Checked = $true
     $Script:checkboxUserData.ForeColor = [System.Drawing.Color]::FromArgb(255, 193, 7)
     $Script:checkboxUserData.Font = New-Object System.Drawing.Font('Segoe UI', 12, [System.Drawing.FontStyle]::Bold)
     $Script:checkboxUserData.Location = New-Object System.Drawing.Point(50, 280)
     $Script:checkboxUserData.Size = New-Object System.Drawing.Size(900, 30)
     $contentPanel.Controls.Add($Script:checkboxUserData)
-    
+
     $userDataInfo = New-Object System.Windows.Forms.Label
-    $userDataInfo.Text = "   WARNUNG: Dies kann nicht rueckgaengig gemacht werden!`n   Entfernt: Konfigurationen, Lizenzdaten, Cache`n   Pfad: $env:LOCALAPPDATA\MaterialManager_V01"
+    $userDataInfo.Text = "   Entfernt fuer Neuinstallation: Lizenzdaten, Trial-Daten, Konfigurationen und Cache`n   Pfade: $env:LOCALAPPDATA\MaterialManager_V01 und ProgramData\MaterialManager_V01"
     $userDataInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
     $userDataInfo.ForeColor = [System.Drawing.Color]::FromArgb(255, 152, 0)
     $userDataInfo.Location = New-Object System.Drawing.Point(50, 310)
@@ -349,55 +370,154 @@ function Show-UninstallScreen {
         taskkill /F /IM MaterialManager_V01.exe 2>$null | Out-Null
         Start-Sleep -Milliseconds 500
         Add-Log "  ✓ Prozesse gestoppt"
-        
+
         # 2. DESKTOP-VERKNÜPFUNG
         Add-Log "[2/5] Entferne Desktop-Verknuepfung..."
         $uninstallProgress.Value = 30
         if ($Script:checkboxDesktop.Checked) {
-            $desktopLink = "$env:USERPROFILE\Desktop\MaterialManager V01.lnk"
-            if (Test-Path $desktopLink) {
-                Remove-Item -Path $desktopLink -Force -ErrorAction SilentlyContinue
-                Add-Log "  ✓ Desktop-Verknuepfung entfernt"
-            } else {
-                Add-Log "  ⓘ Desktop-Verknuepfung nicht gefunden"
+            $desktopCandidates = @(
+                "$env:USERPROFILE\Desktop\MaterialManager V01.lnk",
+                "$env:USERPROFILE\Desktop\MaterialManager.lnk",
+                "$env:USERPROFILE\Desktop\Deinstallation.lnk"
+            )
+            foreach ($desktopLink in $desktopCandidates) {
+                if (Test-Path $desktopLink) {
+                    Remove-Item -Path $desktopLink -Force -ErrorAction SilentlyContinue
+                    Add-Log "  ✓ Desktop-Verknuepfung entfernt: $desktopLink"
+                }
             }
         }
-        
+
         # 3. REGISTRY
         Add-Log "[3/5] Entferne Registry-Eintraege..."
         $uninstallProgress.Value = 50
         try {
-            $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01"
-            if (Test-Path $regPath) {
-                Remove-Item -Path $regPath -Force -ErrorAction SilentlyContinue
-                Add-Log "  ✓ Registry-Eintraege entfernt"
-            } else {
-                Add-Log "  ⓘ Registry-Eintraege nicht gefunden"
+            $regPaths = @(
+                "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01",
+                "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01",
+                "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_Setup",
+                "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01"
+            )
+            foreach ($regPath in $regPaths) {
+                if (Test-Path $regPath) {
+                    Remove-Item -Path $regPath -Force -ErrorAction SilentlyContinue
+                    Add-Log "  ✓ Registry-Eintrag entfernt: $regPath"
+                }
             }
         } catch {
             Add-Log "  ⚠ Fehler beim Loeschen der Registry: $_"
         }
-        
+
         # 4. PROGRAMMDATEIEN
         Add-Log "[4/5] Entferne Programmdateien..."
         $uninstallProgress.Value = 70
-        if (Test-Path $Script:InstallPath) {
-            Remove-Item -Path $Script:InstallPath -Recurse -Force -ErrorAction SilentlyContinue
-            Add-Log "  ✓ Programmdateien entfernt"
-        } else {
+        $installCandidates = @()
+        if (-not [string]::IsNullOrWhiteSpace($Script:InstallPath)) { $installCandidates += $Script:InstallPath }
+        $installCandidates += $Script:RegistryInstallLocations
+        $installCandidates += (Join-Path $env:ProgramFiles 'MaterialManager_V01')
+        $installCandidates += (Join-Path $env:ProgramFiles 'MaterialManager')
+        $installCandidates += (Join-Path ${env:ProgramFiles(x86)} 'MaterialManager_V01')
+        $installCandidates += (Join-Path ${env:ProgramFiles(x86)} 'MaterialManager')
+
+        $installRegPaths = @(
+            'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01',
+            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01',
+            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_Setup',
+            'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01'
+        )
+        foreach ($installRegPath in $installRegPaths) {
+            try {
+                if (Test-Path $installRegPath) {
+                    $installLocation = (Get-ItemProperty -Path $installRegPath -ErrorAction SilentlyContinue).InstallLocation
+                    if (-not [string]::IsNullOrWhiteSpace($installLocation)) {
+                        $installCandidates += $installLocation
+                    }
+                }
+            } catch { }
+        }
+
+        $installCandidates = $installCandidates | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+        $scriptDir = Split-Path -Parent $PSCommandPath
+        foreach ($shortcutName in $Script:DeinstallShortcutNames) {
+            $shortcutPath = Join-Path $scriptDir $shortcutName
+            if (Test-Path $shortcutPath) {
+                try { Remove-Item -Path $shortcutPath -Force -ErrorAction SilentlyContinue } catch { }
+            }
+            $installedShortcutPath = Join-Path (Resolve-Path $Script:InstallPath -ErrorAction SilentlyContinue) $shortcutName
+            if (Test-Path $installedShortcutPath) {
+                try { Remove-Item -Path $installedShortcutPath -Force -ErrorAction SilentlyContinue } catch { }
+            }
+        }
+
+        $removedAny = $false
+        foreach ($candidate in $installCandidates) {
+            if (Test-Path $candidate) {
+                try {
+                    Get-ChildItem -Path $candidate -Force -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+                        try { $_.Attributes = 'Normal' } catch { }
+                    }
+                    Remove-Item -Path $candidate -Recurse -Force -ErrorAction Stop
+                    Add-Log "  ✓ Programmdateien entfernt: $candidate"
+                    $removedAny = $true
+                } catch {
+                    Add-Log "  ⚠ Konnte Installationsordner nicht entfernen: $candidate"
+                }
+            }
+        }
+        if (-not $removedAny) {
             Add-Log "  ⓘ Installationsverzeichnis nicht gefunden"
         }
-        
+
         # 5. BENUTZERDATEN (optional)
         Add-Log "[5/5] Abschliessend..."
         $uninstallProgress.Value = 85
         if ($Script:checkboxUserData.Checked) {
-            Add-Log "  → Entferne Benutzerdaten..."
-            if (Test-Path $Script:UserDataPath) {
-                Remove-Item -Path $Script:UserDataPath -Recurse -Force -ErrorAction SilentlyContinue
-                Add-Log "  ✓ Benutzerdaten entfernt"
-            } else {
-                Add-Log "  ⓘ Benutzerdaten nicht gefunden"
+            Add-Log "  → Entferne Benutzerdaten und Lizenz-/Trial-Reste..."
+
+            $userDataCandidates = @(
+                $Script:UserDataPath,
+                (Join-Path $env:LOCALAPPDATA 'MaterialManager_V01'),
+                (Join-Path $env:ProgramData 'MaterialManager_V01')
+            ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+            foreach ($userDataCandidate in $userDataCandidates) {
+                if (Test-Path $userDataCandidate) {
+                    try {
+                        Get-ChildItem -Path $userDataCandidate -Force -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+                            try { $_.Attributes = 'Normal' } catch { }
+                        }
+                        Remove-Item -Path $userDataCandidate -Recurse -Force -ErrorAction SilentlyContinue
+                        Add-Log "  ✓ Benutzerdaten entfernt: $userDataCandidate"
+                    } catch {
+                        Add-Log "  ⚠ Benutzerdaten konnten nicht vollständig entfernt werden: $userDataCandidate"
+                    }
+                }
+            }
+
+            try {
+                $trialRegPaths = @(
+                    'HKCU:\Software\MaterialManager_V01\Trial',
+                    'HKLM:\Software\MaterialManager_V01\Trial'
+                )
+                foreach ($trialRegPath in $trialRegPaths) {
+                    if (Test-Path $trialRegPath) {
+                        Remove-Item -Path $trialRegPath -Recurse -Force -ErrorAction SilentlyContinue
+                        Add-Log "  ✓ Trial-Registry entfernt: $trialRegPath"
+                    }
+                }
+            } catch {
+                Add-Log "  ⚠ Trial-Registry konnte nicht vollständig entfernt werden"
+            }
+        }
+
+        $installCandidates | ForEach-Object {
+            if (Test-Path $_) {
+                try {
+                    Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue
+                    Add-Log "  ✓ Zusätzlicher Installationspfad entfernt: $_"
+                } catch {
+                    Add-Log "  ⚠ Zusätzlicher Installationspfad konnte nicht entfernt werden: $_"
+                }
             }
         }
         
