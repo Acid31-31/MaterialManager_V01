@@ -546,7 +546,23 @@ function Show-UninstallScreen {
             foreach ($deferredPath in ($deferredDeletionCandidates | Select-Object -Unique)) {
                 try {
                     Add-Log "  → Starte verzögerte Entfernung nach Fenster-Schließung: $deferredPath"
-                    Start-Process -FilePath 'cmd.exe' -WindowStyle Hidden -ArgumentList "/c timeout /t 2 /nobreak >nul & rd /s /q `"$deferredPath`""
+                    $cleanupBat = Join-Path $env:TEMP "MMV01_FinalCleanup_$(Get-Date -Format 'yyyyMMdd_HHmmss_fff').bat"
+                    $cleanupContent = @(
+                        '@echo off',
+                        'setlocal',
+                        "set \"TARGET=$deferredPath\"",
+                        'timeout /t 3 /nobreak >nul',
+                        ':retry',
+                        'rd /s /q "%TARGET%" >nul 2>&1',
+                        'if exist "%TARGET%" (',
+                        '  timeout /t 2 /nobreak >nul',
+                        '  goto retry',
+                        ')',
+                        'endlocal',
+                        'del "%~f0" >nul 2>&1'
+                    )
+                    Set-Content -Path $cleanupBat -Value $cleanupContent -Encoding ASCII -Force
+                    Start-Process -FilePath 'cmd.exe' -WindowStyle Hidden -ArgumentList "/c start \"\" /min \"$cleanupBat\""
                 } catch {
                     Add-Log "  ⚠ Verzögerte Entfernung konnte nicht gestartet werden: $deferredPath"
                 }
@@ -557,7 +573,8 @@ function Show-UninstallScreen {
         Start-Sleep -Milliseconds 500
         Add-Log ""
         Add-Log "✓ Deinstallation erfolgreich abgeschlossen!"
-        
+        Add-Log "  Hinweis: Falls Dateien noch gesperrt sind, entfernt der Hintergrund-Task den Ordner in wenigen Sekunden automatisch."
+
         Show-CompletionScreen
     } catch {
         Add-Log ""
