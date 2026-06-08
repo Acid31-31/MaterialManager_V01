@@ -329,7 +329,7 @@ function Show-UninstallScreen {
     Update-Progress 3
     $nextButton.Enabled = $false
     $backButton.Enabled = $false
-    
+
     $statusLabel = New-Object System.Windows.Forms.Label
     $statusLabel.Text = 'Deinstallation laeuft...'
     $statusLabel.Font = New-Object System.Drawing.Font('Segoe UI', 18, [System.Drawing.FontStyle]::Bold)
@@ -337,13 +337,13 @@ function Show-UninstallScreen {
     $statusLabel.Location = New-Object System.Drawing.Point(40, 60)
     $statusLabel.Size = New-Object System.Drawing.Size(920, 45)
     $contentPanel.Controls.Add($statusLabel)
-    
+
     $uninstallProgress = New-Object System.Windows.Forms.ProgressBar
     $uninstallProgress.Location = New-Object System.Drawing.Point(40, 140)
     $uninstallProgress.Size = New-Object System.Drawing.Size(920, 35)
     $uninstallProgress.Style = 'Continuous'
     $contentPanel.Controls.Add($uninstallProgress)
-    
+
     $logBox = New-Object System.Windows.Forms.TextBox
     $logBox.Multiline = $true
     $logBox.ScrollBars = 'Vertical'
@@ -355,230 +355,99 @@ function Show-UninstallScreen {
     $logBox.Font = New-Object System.Drawing.Font('Consolas', 9)
     $contentPanel.Controls.Add($logBox)
     Apply-ResponsiveLayout
-    
-    function Add-Log {
+
+    $addLog = {
         param([string]$message)
-        $logBox.AppendText("$message`r`n")
+        $logBox.AppendText($message + [Environment]::NewLine)
+        $logBox.SelectionStart = $logBox.TextLength
         $logBox.ScrollToCaret()
         $form.Refresh()
     }
-    
+
     try {
-        # 1. PROZESS STOPPEN
-        Add-Log "[1/5] Stoppe MaterialManager Prozesse..."
+        & $addLog '[1/5] Stoppe MaterialManager Prozesse...'
         $uninstallProgress.Value = 10
         taskkill /F /IM MaterialManager_V01.exe 2>$null | Out-Null
-        Start-Sleep -Milliseconds 500
-        Add-Log "  ✓ Prozesse gestoppt"
+        Start-Sleep -Milliseconds 400
 
-        # 2. DESKTOP-VERKNÜPFUNG
-        Add-Log "[2/5] Entferne Desktop-Verknuepfung..."
+        & $addLog '[2/5] Entferne Desktop-Verknuepfungen...'
         $uninstallProgress.Value = 30
         if ($Script:checkboxDesktop.Checked) {
-            $desktopCandidates = @(
+            foreach ($desktopLink in @(
                 "$env:USERPROFILE\Desktop\MaterialManager V01.lnk",
                 "$env:USERPROFILE\Desktop\MaterialManager.lnk",
                 "$env:USERPROFILE\Desktop\Deinstallation.lnk"
-            )
-            foreach ($desktopLink in $desktopCandidates) {
+            )) {
                 if (Test-Path $desktopLink) {
                     Remove-Item -Path $desktopLink -Force -ErrorAction SilentlyContinue
-                    Add-Log "  ✓ Desktop-Verknuepfung entfernt: $desktopLink"
+                    & $addLog "  OK: $desktopLink"
                 }
             }
         }
 
-        # 3. REGISTRY
-        Add-Log "[3/5] Entferne Registry-Eintraege..."
+        & $addLog '[3/5] Entferne Registry-Eintraege...'
         $uninstallProgress.Value = 50
-        try {
-            $regPaths = @(
-                "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01",
-                "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01",
-                "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_Setup",
-                "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01"
-            )
-            foreach ($regPath in $regPaths) {
-                if (Test-Path $regPath) {
-                    Remove-Item -Path $regPath -Force -ErrorAction SilentlyContinue
-                    Add-Log "  ✓ Registry-Eintrag entfernt: $regPath"
-                }
-            }
-        } catch {
-            Add-Log "  ⚠ Fehler beim Loeschen der Registry: $_"
-        }
-
-        # 4. PROGRAMMDATEIEN
-        Add-Log "[4/5] Entferne Programmdateien..."
-        $uninstallProgress.Value = 70
-        $installCandidates = @()
-        if (-not [string]::IsNullOrWhiteSpace($Script:InstallPath)) { $installCandidates += $Script:InstallPath }
-        $installCandidates += $Script:RegistryInstallLocations
-        $installCandidates += (Join-Path $env:ProgramFiles 'MaterialManager_V01')
-        $installCandidates += (Join-Path $env:ProgramFiles 'MaterialManager')
-        $installCandidates += (Join-Path ${env:ProgramFiles(x86)} 'MaterialManager_V01')
-        $installCandidates += (Join-Path ${env:ProgramFiles(x86)} 'MaterialManager')
-
-        $installRegPaths = @(
+        foreach ($regPath in @(
             'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01',
             'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01',
             'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_Setup',
             'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01'
-        )
-        foreach ($installRegPath in $installRegPaths) {
-            try {
-                if (Test-Path $installRegPath) {
-                    $installLocation = (Get-ItemProperty -Path $installRegPath -ErrorAction SilentlyContinue).InstallLocation
-                    if (-not [string]::IsNullOrWhiteSpace($installLocation)) {
-                        $installCandidates += $installLocation
-                    }
-                }
-            } catch { }
-        }
-
-        $installCandidates = $installCandidates | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
-        $scriptDir = Split-Path -Parent $PSCommandPath
-        foreach ($shortcutName in $Script:DeinstallShortcutNames) {
-            $shortcutPath = Join-Path $scriptDir $shortcutName
-            if (Test-Path $shortcutPath) {
-                try { Remove-Item -Path $shortcutPath -Force -ErrorAction SilentlyContinue } catch { }
-            }
-            $installedShortcutPath = Join-Path (Resolve-Path $Script:InstallPath -ErrorAction SilentlyContinue) $shortcutName
-            if (Test-Path $installedShortcutPath) {
-                try { Remove-Item -Path $installedShortcutPath -Force -ErrorAction SilentlyContinue } catch { }
+        )) {
+            if (Test-Path $regPath) {
+                Remove-Item -Path $regPath -Recurse -Force -ErrorAction SilentlyContinue
+                & $addLog "  OK: $regPath"
             }
         }
 
-        $removedAny = $false
-        $deferredDeletionCandidates = @()
-        $scriptFolder = Split-Path -Parent $PSCommandPath
+        & $addLog '[4/5] Entferne Programmdateien...'
+        $uninstallProgress.Value = 70
+        $installCandidates = @(
+            $Script:InstallPath,
+            'C:\Program Files\MaterialManager_V01',
+            'C:\Program Files\MaterialManager',
+            'C:\Program Files (x86)\MaterialManager_V01',
+            'C:\Program Files (x86)\MaterialManager'
+        ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
 
         foreach ($candidate in $installCandidates) {
             if (Test-Path $candidate) {
                 try {
-                    $resolvedCandidate = [System.IO.Path]::GetFullPath($candidate)
-                    $resolvedScriptFolder = [System.IO.Path]::GetFullPath($scriptFolder)
-
-                    if ($resolvedCandidate.TrimEnd('\') -ieq $resolvedScriptFolder.TrimEnd('\')) {
-                        Add-Log "  ⓘ Installationsordner wird nach Beenden der Deinstallation entfernt: $candidate"
-                        $deferredDeletionCandidates += $candidate
-                        continue
-                    }
-
-                    Get-ChildItem -Path $candidate -Force -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
-                        try { $_.Attributes = 'Normal' } catch { }
-                    }
                     Remove-Item -Path $candidate -Recurse -Force -ErrorAction Stop
-                    Add-Log "  ✓ Programmdateien entfernt: $candidate"
-                    $removedAny = $true
+                    & $addLog "  OK: $candidate"
                 } catch {
-                    Add-Log "  ⚠ Konnte Installationsordner nicht entfernen: $candidate"
+                    & $addLog "  HINWEIS: Konnte nicht sofort loeschen: $candidate"
                 }
             }
         }
-        if (-not $removedAny -and $deferredDeletionCandidates.Count -eq 0) {
-            Add-Log "  ⓘ Installationsverzeichnis nicht gefunden"
-        }
 
-        # 5. BENUTZERDATEN (optional)
-        Add-Log "[5/5] Abschliessend..."
+        & $addLog '[5/5] Entferne Benutzerdaten...'
         $uninstallProgress.Value = 85
         if ($Script:checkboxUserData.Checked) {
-            Add-Log "  → Entferne Benutzerdaten und Lizenz-/Trial-Reste..."
-
-            $userDataCandidates = @(
+            foreach ($dataPath in @(
                 $Script:UserDataPath,
                 (Join-Path $env:LOCALAPPDATA 'MaterialManager_V01'),
                 (Join-Path $env:ProgramData 'MaterialManager_V01')
-            ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
-
-            foreach ($userDataCandidate in $userDataCandidates) {
-                if (Test-Path $userDataCandidate) {
-                    try {
-                        Get-ChildItem -Path $userDataCandidate -Force -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
-                            try { $_.Attributes = 'Normal' } catch { }
-                        }
-                        Remove-Item -Path $userDataCandidate -Recurse -Force -ErrorAction SilentlyContinue
-                        Add-Log "  ✓ Benutzerdaten entfernt: $userDataCandidate"
-                    } catch {
-                        Add-Log "  ⚠ Benutzerdaten konnten nicht vollständig entfernt werden: $userDataCandidate"
-                    }
+            ) | Select-Object -Unique) {
+                if (Test-Path $dataPath) {
+                    Remove-Item -Path $dataPath -Recurse -Force -ErrorAction SilentlyContinue
+                    & $addLog "  OK: $dataPath"
                 }
             }
-
-            try {
-                $trialRegPaths = @(
-                    'HKCU:\Software\MaterialManager_V01\Trial',
-                    'HKLM:\Software\MaterialManager_V01\Trial'
-                )
-                foreach ($trialRegPath in $trialRegPaths) {
-                    if (Test-Path $trialRegPath) {
-                        Remove-Item -Path $trialRegPath -Recurse -Force -ErrorAction SilentlyContinue
-                        Add-Log "  ✓ Trial-Registry entfernt: $trialRegPath"
-                    }
-                }
-            } catch {
-                Add-Log "  ⚠ Trial-Registry konnte nicht vollständig entfernt werden"
-            }
-        }
-
-        $installCandidates | ForEach-Object {
-            if (Test-Path $_) {
-                try {
-                    $resolvedPath = [System.IO.Path]::GetFullPath($_)
-                    $resolvedScriptFolder = [System.IO.Path]::GetFullPath((Split-Path -Parent $PSCommandPath))
-
-                    if ($resolvedPath.TrimEnd('\\') -ieq $resolvedScriptFolder.TrimEnd('\\')) {
-                        if ($deferredDeletionCandidates -notcontains $_) {
-                            $deferredDeletionCandidates += $_
-                        }
-                    } else {
-                        Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue
-                        Add-Log "  ✓ Zusätzlicher Installationspfad entfernt: $_"
-                    }
-                } catch {
-                    Add-Log "  ⚠ Zusätzlicher Installationspfad konnte nicht entfernt werden: $_"
-                }
-            }
-        }
-
-        if ($deferredDeletionCandidates.Count -gt 0) {
-            foreach ($deferredPath in ($deferredDeletionCandidates | Select-Object -Unique)) {
-                try {
-                    Add-Log "  → Starte verzögerte Entfernung nach Fenster-Schließung: $deferredPath"
-                    $cleanupBat = Join-Path $env:TEMP "MMV01_FinalCleanup_$(Get-Date -Format 'yyyyMMdd_HHmmss_fff').bat"
-                    $cleanupContent = @(
-                        '@echo off',
-                        'setlocal',
-                        "set \"TARGET=$deferredPath\"",
-                        'timeout /t 3 /nobreak >nul',
-                        ':retry',
-                        'rd /s /q "%TARGET%" >nul 2>&1',
-                        'if exist "%TARGET%" (',
-                        '  timeout /t 2 /nobreak >nul',
-                        '  goto retry',
-                        ')',
-                        'endlocal',
-                        'del "%~f0" >nul 2>&1'
-                    )
-                    Set-Content -Path $cleanupBat -Value $cleanupContent -Encoding ASCII -Force
-                    Start-Process -FilePath 'cmd.exe' -WindowStyle Hidden -ArgumentList "/c start \"\" /min \"$cleanupBat\""
-                } catch {
-                    Add-Log "  ⚠ Verzögerte Entfernung konnte nicht gestartet werden: $deferredPath"
+            foreach ($trialRegPath in @('HKCU:\Software\MaterialManager_V01\Trial','HKLM:\Software\MaterialManager_V01\Trial')) {
+                if (Test-Path $trialRegPath) {
+                    Remove-Item -Path $trialRegPath -Recurse -Force -ErrorAction SilentlyContinue
+                    & $addLog "  OK: $trialRegPath"
                 }
             }
         }
 
         $uninstallProgress.Value = 100
-        Start-Sleep -Milliseconds 500
-        Add-Log ""
-        Add-Log "✓ Deinstallation erfolgreich abgeschlossen!"
-        Add-Log "  Hinweis: Falls Dateien noch gesperrt sind, entfernt der Hintergrund-Task den Ordner in wenigen Sekunden automatisch."
-
+        & $addLog ''
+        & $addLog 'Deinstallation abgeschlossen.'
         Show-CompletionScreen
     } catch {
-        Add-Log ""
-        Add-Log "✗ FEHLER: $_"
+        & $addLog ''
+        & $addLog ("FEHLER: " + $_.Exception.Message)
         $nextButton.Enabled = $true
         $backButton.Enabled = $true
     }
@@ -590,7 +459,7 @@ function Show-UninstallScreen {
 function Show-CompletionScreen {
     Clear-Content
     Update-Progress 4
-    
+
     $doneLabel = New-Object System.Windows.Forms.Label
     $doneLabel.Text = 'Deinstallation erfolgreich abgeschlossen!'
     $doneLabel.Font = New-Object System.Drawing.Font('Segoe UI', 20, [System.Drawing.FontStyle]::Bold)
@@ -598,27 +467,15 @@ function Show-CompletionScreen {
     $doneLabel.Location = New-Object System.Drawing.Point(40, 80)
     $doneLabel.Size = New-Object System.Drawing.Size(920, 55)
     $contentPanel.Controls.Add($doneLabel)
-    
-    $infoLabel = New-Object System.Windows.Forms.Label
-    $infoLabel.Text = @"
-MaterialManager V01 wurde erfolgreich deinstalliert.
 
-Folgende Komponenten wurden entfernt:
-  ✓ Programmdateien
-  ✓ Desktop-Verknuepfung
-  ✓ Registry-Eintraege"@
-    if ($Script:checkboxUserData.Checked) {
-        $infoLabel.Text += "`n  ✓ Benutzerdaten und Konfigurationen"
-    } else {
-        $infoLabel.Text += "`n  ⓘ Benutzerdaten erhalten (manuell loeschbar)"
-    }
-    
+    $infoLabel = New-Object System.Windows.Forms.Label
+    $infoLabel.Text = 'Die ausgewaehlten Komponenten wurden entfernt.'
     $infoLabel.Font = New-Object System.Drawing.Font('Segoe UI', 13)
     $infoLabel.ForeColor = [System.Drawing.Color]::FromArgb(180, 180, 180)
     $infoLabel.Location = New-Object System.Drawing.Point(40, 160)
-    $infoLabel.Size = New-Object System.Drawing.Size(920, 200)
+    $infoLabel.Size = New-Object System.Drawing.Size(920, 80)
     $contentPanel.Controls.Add($infoLabel)
-    
+
     $nextButton.Text = 'Fertig'
     $nextButton.Enabled = $true
     Apply-ResponsiveLayout
