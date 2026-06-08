@@ -780,44 +780,6 @@ function Show-InstallScreen {
         } catch {
         }
 
-        # DEINSTALLER-LAUNCHER
-        $uninstallScript = @"
-@echo off
-echo.
-echo MaterialManager V01 - DEINSTALLATION
-echo.
-
-net session >nul 2>&1
-if %errorLevel% NEQ 0 (
-    echo Administrator-Rechte werden angefordert...
-    powershell -NoProfile -Command "Start-Process cmd -ArgumentList '/c ""%~f0""' -Verb RunAs"
-    exit /b 0
-)
-
-if exist "%~dp0UNINSTALL_GUI.ps1" (
-    powershell -ExecutionPolicy Bypass -File "%~dp0UNINSTALL_GUI.ps1"
-    exit /b %errorlevel%
-)
-
-echo WARNUNG: UNINSTALL_GUI.ps1 nicht gefunden, verwende Fallback.
-
-taskkill /F /IM MaterialManager_V01.exe >nul 2>&1
-del "%USERPROFILE%\Desktop\MaterialManager V01.lnk" >nul 2>&1
-reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MaterialManager_V01" /f >nul 2>&1
-
-choice /C JN /M "Benutzerdaten auch loeschen"
-if errorlevel 1 rd /S /Q "%LOCALAPPDATA%\MaterialManager_V01" >nul 2>&1
-
-cd /d "%TEMP%"
-rd /S /Q "$($Script:InstallPath)" >nul 2>&1
-
-echo.
-echo Deinstallation abgeschlossen!
-pause
-exit
-"@
-        [System.IO.File]::WriteAllText("$Script:InstallPath\UNINSTALL.bat", $uninstallScript)
-        
         $installProgress.Value = 100
         Start-Sleep -Milliseconds 500
         

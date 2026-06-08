@@ -450,9 +450,21 @@ function Show-UninstallScreen {
         }
 
         $removedAny = $false
+        $deferredDeletionCandidates = @()
+        $scriptFolder = Split-Path -Parent $PSCommandPath
+
         foreach ($candidate in $installCandidates) {
             if (Test-Path $candidate) {
                 try {
+                    $resolvedCandidate = [System.IO.Path]::GetFullPath($candidate)
+                    $resolvedScriptFolder = [System.IO.Path]::GetFullPath($scriptFolder)
+
+                    if ($resolvedCandidate.TrimEnd('\') -ieq $resolvedScriptFolder.TrimEnd('\')) {
+                        Add-Log "  ⓘ Installationsordner wird nach Beenden der Deinstallation entfernt: $candidate"
+                        $deferredDeletionCandidates += $candidate
+                        continue
+                    }
+
                     Get-ChildItem -Path $candidate -Force -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
                         try { $_.Attributes = 'Normal' } catch { }
                     }
@@ -464,7 +476,7 @@ function Show-UninstallScreen {
                 }
             }
         }
-        if (-not $removedAny) {
+        if (-not $removedAny -and $deferredDeletionCandidates.Count -eq 0) {
             Add-Log "  ⓘ Installationsverzeichnis nicht gefunden"
         }
 
@@ -513,14 +525,34 @@ function Show-UninstallScreen {
         $installCandidates | ForEach-Object {
             if (Test-Path $_) {
                 try {
-                    Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue
-                    Add-Log "  ✓ Zusätzlicher Installationspfad entfernt: $_"
+                    $resolvedPath = [System.IO.Path]::GetFullPath($_)
+                    $resolvedScriptFolder = [System.IO.Path]::GetFullPath((Split-Path -Parent $PSCommandPath))
+
+                    if ($resolvedPath.TrimEnd('\\') -ieq $resolvedScriptFolder.TrimEnd('\\')) {
+                        if ($deferredDeletionCandidates -notcontains $_) {
+                            $deferredDeletionCandidates += $_
+                        }
+                    } else {
+                        Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue
+                        Add-Log "  ✓ Zusätzlicher Installationspfad entfernt: $_"
+                    }
                 } catch {
                     Add-Log "  ⚠ Zusätzlicher Installationspfad konnte nicht entfernt werden: $_"
                 }
             }
         }
-        
+
+        if ($deferredDeletionCandidates.Count -gt 0) {
+            foreach ($deferredPath in ($deferredDeletionCandidates | Select-Object -Unique)) {
+                try {
+                    Add-Log "  → Starte verzögerte Entfernung nach Fenster-Schließung: $deferredPath"
+                    Start-Process -FilePath 'cmd.exe' -WindowStyle Hidden -ArgumentList "/c timeout /t 2 /nobreak >nul & rd /s /q `"$deferredPath`""
+                } catch {
+                    Add-Log "  ⚠ Verzögerte Entfernung konnte nicht gestartet werden: $deferredPath"
+                }
+            }
+        }
+
         $uninstallProgress.Value = 100
         Start-Sleep -Milliseconds 500
         Add-Log ""
