@@ -41,287 +41,626 @@ Ort/Datum: ___________________________
 Unterschrift: _________________________
 Name: Alexander Hoelzer
 
-6) Tagesprotokoll der Entwicklungsaktivitäten (vollständig in Deutsch)
+6) Tagesprotokoll der Entwicklungsaktivitäten (detailliert)
 Hinweis: Zeitfenster je Tag entspricht erstem bis letztem dokumentierten Commit an diesem Datum.
 
 Datum: 2026-03-14 (10 Einträge)
 Zeitfenster: 09:30 bis 18:37 Uhr
-- 3 x Fehlerkorrektur im Bereich Update.
-- 2 x Build-Aktualisierung im Bereich USB-Installation.
-- 2 x Automatisierung im Bereich allgemeiner Bereich.
-- 1 x Wartung im Bereich allgemeiner Bereich.
-- 1 x Sicherheitsanpassung im Bereich Update.
-- 1 x Neue Funktion im Bereich Benutzeroberfläche.
+- Wartungsaufgabe im allgemeinen Bereich: hybrid Backup-Strategie (inkrementell + tägliches Vollbackup).
+- Automatisierung im allgemeinen Bereich: automatische GitHub Releases bei Änderungen auf main.
+- Neue Funktion im Benutzeroberfläche: App beim Start maximiert öffnen.
+- Fehlerkorrektur im Update-Bereich: ZIP-Entpacken ohne Dateisperre.
+- Fehlerkorrektur im Update-Bereich: Installer-Start prüfen, nur bei laufendem Prozess App schließen.
+- Automatisierung im allgemeinen Bereich: optionale Code-Signierung für Auto-Releases.
+- Sicherheitsanpassung im Update-Bereich: nur vertrauenswürdige Signatur installieren + signierte Releases erzwingen.
+- Build-Aktualisierung im USB-Installation: USB_Installation\MaterialManager aktualisiert.
+- Build-Aktualisierung im USB-Installation: USB_Installation vollständig aktualisiert.
+- Fehlerkorrektur im Update-Bereich: Option 2 - Signaturwarnung mit Fortfahren + optionale Signierung.
 
 Datum: 2026-03-17 (9 Einträge)
 Zeitfenster: 19:28 bis 22:01 Uhr
-- 5 x Fehlerkorrektur im Bereich Update.
-- 2 x Fehlerkorrektur im Bereich USB-Installation.
-- 1 x Build-Aktualisierung im Bereich USB-Installation.
-- 1 x Wiederherstellung im Bereich USB-Installation.
+- Fehlerkorrektur im Update-Bereich: Zertifikat-Freigabeliste für lokales Signaturzertifikat.
+- Wiederherstellung im USB-Installation: USB_Installation vollständig aus Backup wiederhergestellt.
+- Fehlerkorrektur im USB-Installation: Installations- und Starter-Pfade repariert.
+- Fehlerkorrektur im USB-Installation: GUI-Installer nicht mehr versteckt starten.
+- Build-Aktualisierung im USB-Installation: App-Inhalt im bestehenden USB-Installer aktualisiert.
+- Fehlerkorrektur im Update-Bereich: echter Update-Installer statt Vollinstallation.
+- Fehlerkorrektur im Update-Bereich: UpdateInstaller findet Zielpfad auch ohne Argumente.
+- Fehlerkorrektur im Update-Bereich: UpdateInstaller fordert bei Program Files automatisch Admin-Rechte an.
+- Fehlerkorrektur im Update-Bereich: korrektes Anführungszeichen-Behandlung für Admin-Neustart des UpdateInstaller.
 
 Datum: 2026-03-18 (2 Einträge)
 Zeitfenster: 17:39 bis 20:14 Uhr
-- 2 x Fehlerkorrektur im Bereich Update.
+- Fehlerkorrektur im Update-Bereich: Installationspfad aus laufender App automatisch erkennen.
+- Fehlerkorrektur im Update-Bereich: Zielpfad-Argument robust übergeben und bereinigen.
 
 Datum: 2026-03-19 (7 Einträge)
 Zeitfenster: 16:43 bis 21:36 Uhr
-- 2 x Dokumentation im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich Benutzeroberfläche.
-- 1 x Fehlerkorrektur im Bereich Build-Prozess.
-- 1 x Neue Funktion im Bereich Installer.
-- 1 x Wartung im Bereich Versionierung.
+- Fehlerkorrektur im Build-Prozess: Installer_Source-Artefakte ausschließen und Brush eindeutig typisieren.
+- Neue Funktion im Installer: Online-Version im GUI-Installer anzeigen.
+- Wartungsaufgabe im Versionierung: App- und Installer-Paket auf 1.0.23 anheben.
+- Dokumentation im allgemeinen Bereich: Workspace- und IDE-Kontext dauerhaft berücksichtigen.
+- Dokumentation im allgemeinen Bereich: Regeln zusammenfassen und bereinigen.
+- Fehlerkorrektur im Benutzeroberfläche: Fenster und Installer an kleinere Monitore anpassen.
+- Fehlerkorrektur im Benutzeroberfläche: Fenster an kleinere Auflösungen anpassen.
 
 Datum: 2026-03-20 (13 Einträge)
 Zeitfenster: 14:02 bis 19:50 Uhr
-- 9 x Fehlerkorrektur im Bereich Benutzeroberfläche.
-- 2 x Neue Funktion im Bereich Benutzeroberfläche.
-- 1 x Neue Funktion im Bereich Demo-Funktionen.
-- 1 x Fehlerkorrektur im Bereich Zeichenkodierung.
+- Fehlerkorrektur im Benutzeroberfläche: Text für niedrige Bestände korrigieren.
+- Fehlerkorrektur im Zeichenkodierung: Zeichenfehler in Migrationsskript bereinigen.
+- Fehlerkorrektur im Benutzeroberfläche: Textfehler bei Online-Benutzern korrigieren.
+- Fehlerkorrektur im Benutzeroberfläche: Textfehler bei niedrigen Beständen korrigieren.
+- Neue Funktion im Benutzeroberfläche: Menü in dunkle Kopfzeile verschieben.
+- Neue Funktion im Benutzeroberfläche: Menü in echte obere Titelleiste verschieben.
+- Fehlerkorrektur im Benutzeroberfläche: App-Logo in Titelleiste sichtbar machen.
+- Fehlerkorrektur im Benutzeroberfläche: App-Icon als WPF-Ressource einbinden.
+- Fehlerkorrektur im Benutzeroberfläche: Titelleisten-Logo als PNG aus App-Icon laden.
+- Fehlerkorrektur im Benutzeroberfläche: Titelleisten-Logo per Pack-URI laden.
+- Fehlerkorrektur im Benutzeroberfläche: Bildschirmfüllende Anpassung für PCs und Tablets korrigieren.
+- Fehlerkorrektur im Benutzeroberfläche: Dashboard-Karten ohne Seitwärts-Scroll umbrechen.
+- Neue Funktion im Demo-Funktionen: Laser-Start und reduzierte Restmaterial-Demo hinzufügen.
 
 Datum: 2026-03-21 (12 Einträge)
 Zeitfenster: 06:42 bis 13:00 Uhr
-- 3 x Fehlerkorrektur im Bereich Benutzeroberfläche.
-- 3 x Neue Funktion im Bereich Benutzeroberfläche.
-- 2 x Fehlerkorrektur im Bereich Demo-Funktionen.
-- 2 x Neue Funktion im Bereich Demo-Funktionen.
-- 1 x Fehlerkorrektur im Bereich Suche.
-- 1 x Neue Funktion im Bereich Anmeldung.
+- Neue Funktion im Demo-Funktionen: eigene Lager-Sicht zur Startauswahl hinzufügen.
+- Fehlerkorrektur im Benutzeroberfläche: Demo-Fenster vollständig dunkel gestalten.
+- Fehlerkorrektur im Benutzeroberfläche: ComboBox-Dropdowns in Demo-Fenstern vollständig abdunkeln.
+- Neue Funktion im Demo-Funktionen: Laser-Bediener auswählbar und löschbar machen.
+- Fehlerkorrektur im Demo-Funktionen: Laser-Bediener dauerhaft speichern und korrekt anzeigen.
+- Fehlerkorrektur im Demo-Funktionen: Laser-Benutzerauswahl auf direkte User-Objekte umstellen.
+- Neue Funktion im Anmeldung: einfaches Namens-Login für Modi und Materialhistorie.
+- Neue Funktion im Benutzeroberfläche: Lager-Sicht schärfen und Demo-Texte entfernen.
+- Fehlerkorrektur im Benutzeroberfläche: Benutzer-Spalten in Lager und Laser sichtbar platzieren.
+- Neue Funktion im Benutzeroberfläche: Materialien in Lager und Laser markierbar machen.
+- Neue Funktion im Benutzeroberfläche: eigene Sicht fuer Tafelplanung ergaenzen.
+- Fehlerkorrektur im Suche: passende groessere Restmaterialien finden.
 
 Datum: 2026-03-22 (20 Einträge)
 Zeitfenster: 08:13 bis 17:54 Uhr
-- 4 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 3 x Fehlerkorrektur im Bereich Ablauf.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich Update.
-- 2 x Fehlerkorrektur im Bereich Dialoge.
-- 1 x Neue Funktion im Bereich Erweiterungsstufe 2.
-- 1 x Neue Funktion im Bereich allgemeiner Bereich.
-- 1 x Neue Funktion im Bereich Anmeldung.
-- 1 x Neue Funktion im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich Benutzeroberfläche.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Neue Funktion im Anmeldung: gespeicherte Namen im Anmeldefenster loeschbar machen.
+- Neue Funktion im allgemeinen Bereich: material fuer auftraege buchen und abschliessen.
+- Neue Funktion im allgemeinen Bereich: Laser-Reservierungslogik, Tafelplanung-Buchung, Rollenansichten und Namenslogin vollstaendig.
+- Fehlerkorrektur im allgemeinen Bereich: Version auf 1.2.0, Workflow-Fehler behoben (Code-Signing entfernt, Pfade korrigiert).
+- Fehlerkorrektur im Ablauf: softprops-Action durch gh CLI ersetzen (kein 'Too many retries').
+- Fehlerkorrektur im Ablauf: Leerzeichen im Tag-Namen durch .Trim() auf Version beheben.
+- Fehlerkorrektur im Update-Bereich: Signaturwarnung entfernen (kein Code-Signing-Zertifikat fuer internes Tool).
+- Fehlerkorrektur im Benutzeroberfläche: TafelplanungWindow ComboBox-Dropdown dunkel machen (ControlTemplate ergaenzt).
+- Fehlerkorrektur im allgemeinen Bereich: CheckBox-Auswahl im DataGrid (IsReadOnly auf TextColumns verschoben).
+- Fehlerkorrektur im allgemeinen Bereich: CheckBox Single-Click im DataGrid (PreviewMouseLeftButtonDown).
+- Fehlerkorrektur im allgemeinen Bereich: UI-Freeze durch async LoadMaterials und GC-Cleanup entfernt.
+- Technische Änderung im allgemeinen Bereich: USB_Installation auf v1.2.0 publiziert (UI-Freeze Bugfix).
+- Fehlerkorrektur im Ablauf: Version aus csproj korrekt lesen (SelectSingleNode statt PropertyGroup-Array).
+- Fehlerkorrektur im Update-Bereich: Versions-Mismatch beheben - EXE bekommt 4-stellige Version (1.2.0.83).
+- Neue Funktion im allgemeinen Bereich: Rohre und Profile - separate Kategorien, Multi-Sheet Excel, erweiterter Dialog.
+- Fehlerkorrektur im Dialoge: Rohr/Profil Felder - Text-Binding statt SelectedItem, string-Properties zum Eingeben und Auswählen.
+- Fehlerkorrektur im Dialoge: ComboBox-Template Trigger für IsEditable - Texteingabe und Auswahl jetzt möglich.
+- Technische Änderung im allgemeinen Bereich: Tablet-Modus: StartModeWindow maximiert, Touch-optimierte Buttons und DataGrid-Zeilenhöhe.
+- Technische Änderung im allgemeinen Bereich: PDF-Funktion: Tafelbelegung kann PDF anhängen, Laser kann PDF öffnen.
+- Technische Änderung im allgemeinen Bereich: USB-Installer aktualisiert: Tablet-Modus + PDF-Funktion (Version 1.2.0).
 
 Datum: 2026-03-23 (5 Einträge)
 Zeitfenster: 17:09 bis 18:20 Uhr
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Rohr/Profil UI-Fix, Auswahlfelder und Regalauslastung inkl. Längen erweitert.
+- Technische Änderung im allgemeinen Bereich: Filter erweitert: Kategorie+Form in Lager und Tafelplanung.
+- Technische Änderung im allgemeinen Bereich: robuste Auswahl in Lager/Tafelplanung und neuer Filter in Laser.
+- Technische Änderung im allgemeinen Bereich: Filter-ComboBox auf dunkles Theme vereinheitlicht.
+- Technische Änderung im allgemeinen Bereich: ComboBox-Fix: dunkles und klickbares Filter-Dropdown in allen Bereichen.
 
 Datum: 2026-03-24 (3 Einträge)
 Zeitfenster: 18:41 bis 20:04 Uhr
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: adaptive Höhe, damit Buttons bei kleiner Ansicht sichtbar bleiben.
+- Technische Änderung im allgemeinen Bereich: Backups aufräumen, Build-Artefakte löschen und Build starten.
+- Technische Änderung im allgemeinen Bereich: Filterfunktion repariert (Kategorie/Form + Suche).
 
 Datum: 2026-03-25 (12 Einträge)
 Zeitfenster: 17:05 bis 21:05 Uhr
-- 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Button 'Niedrige Bestände' hinzugefügt.
+- Technische Änderung im allgemeinen Bereich: Button 'Niedrige Bestände' ergänzt.
+- Technische Änderung im allgemeinen Bereich: Programm- und Netzwerkanleitung inkl. Mehr-PC-Setup ergänzt.
+- Technische Änderung im allgemeinen Bereich: Hilfe-Dialog: Druckfunktion ergänzt und Projektverknüpfung stabilisiert.
+- Technische Änderung im allgemeinen Bereich: Button 'Als PDF' ergänzt und PDF-Ausgabe implementiert.
+- Technische Änderung im allgemeinen Bereich: Reservierte Reste: PDF-Spalte anzeigen.
+- Technische Änderung im allgemeinen Bereich: Reservierte Reste: Doppelklick öffnet hinterlegte PDF.
+- Technische Änderung im allgemeinen Bereich: Reservierte Materialien global grün markieren (Main/Lager/Tafel/Laser/Reservierte).
+- Fehlerkorrektur im allgemeinen Bereich: Reservierte Markierung stabil über AuftragNr in allen Bereichen.
+- Technische Änderung im allgemeinen Bereich: Reservierte Reste: PDF per einfachem Klick öffnen.
+- Technische Änderung im allgemeinen Bereich: Reservierte Reste: PDF per einfachem Klick via Button zuverlässig öffnen.
+- Technische Änderung im allgemeinen Bereich: Version bump auf 1.2.1 für neues In-App-Update.
 
 Datum: 2026-03-26 (10 Einträge)
 Zeitfenster: 17:11 bis 21:35 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Button 'Reste suchen' wie im Hauptprogramm ergänzt.
+- Technische Änderung im allgemeinen Bereich: Reste-Suche Toleranz korrigiert und obere Menüleiste in Lager/Tafel/Laser ergänzt.
+- Fehlerkorrektur im allgemeinen Bereich: Untermenüs in oberer Leiste dunkel/lesbar in Lager, Tafelplanung und Laser.
+- Technische Änderung im allgemeinen Bereich: obere Menüleiste wie Hauptprogramm ergänzt.
+- Technische Änderung im allgemeinen Bereich: Fenster auf WorkArea begrenzt damit Windows-Taskleiste sichtbar bleibt.
+- Technische Änderung im allgemeinen Bereich: weißen Rand entfernt und Schriftgrößen an Hauptprogramm angepasst.
+- Technische Änderung im allgemeinen Bereich: weißen OS-Rahmen entfernt (ResizeMode CanMinimize).
+- Technische Änderung im allgemeinen Bereich: weißen Rand durch WindowChrome entfernt, dunkler Rahmen vereinheitlicht.
+- Fehlerkorrektur im allgemeinen Bereich: OnEditRestClick in TafelplanungWindow hinzugefügt (Doppelklick-Bearbeitung).
+- Technische Änderung im allgemeinen Bereich: Backup-Regel: max. 3 Ordner, korrekte Ausschlüsse dokumentiert.
 
 Datum: 2026-03-28 (13 Einträge)
 Zeitfenster: 10:24 bis 22:23 Uhr
-- 12 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Produktionsverfolgung für Laser: Auftragsansicht mit Start/End-Buttons zur Zeitmessung.
+- Technische Änderung im allgemeinen Bereich: Datenbank-Migration: ProduktionStartDatum und ProduktionEndDatum Spalten hinzufügen.
+- Technische Änderung im allgemeinen Bereich: UI-Fix: ProduktionVerfolgungDialog Fenstergrößen angepasst - Buttons jetzt sichtbar.
+- Technische Änderung im allgemeinen Bereich: PDF-Vorschau überall: PdfPreviewDialog für Doppelklick auf PDFs in Lager und Laser.
+- Technische Änderung im allgemeinen Bereich: FINAL CLEANUP: D:\ vollständig aufgeräumt - ~100GB freigegeben, nur noch Projekt + Windows Backups.
+- Technische Änderung im allgemeinen Bereich: MAJOR CLEANUP: Projektordner komplett aufgeräumt - alte Dateien, Logs, Backups gelöscht.
+- Technische Änderung im allgemeinen Bereich: 37 alte Dateien vom 03.03.2026 + Docs/ gelöscht - nur noch aktuelle Dateien.
+- Technische Änderung im allgemeinen Bereich: Lizenzsystem, Pricing-Modell und USB-Ordner aktualisiert.
+- Technische Änderung im allgemeinen Bereich: Preismodell marktgerecht kalibriert (C10 unter 30k).
+- Technische Änderung im allgemeinen Bereich: Multi-PC Startprüfung und One-Click Netzwerk-Installer ergänzt.
+- Technische Änderung im allgemeinen Bereich: Signier-Workflow für Release-EXEs ergänzt.
+- Technische Änderung im allgemeinen Bereich: Netzwerk-Setup beim Start nicht mehr erzwingen.
+- Technische Änderung im allgemeinen Bereich: Copilot-Anweisungen aktualisiert.
 
 Datum: 2026-03-29 (31 Einträge)
 Zeitfenster: 10:08 bis 16:45 Uhr
-- 29 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: PDF-Vorschau im Hauptprogramm wie Tafelplanung + Netzwerkdialog UI angepasst.
+- Technische Änderung im allgemeinen Bereich: Niedrige-Bestände-Farbe als Brush fixiert (kein schwarzer Text).
+- Technische Änderung im allgemeinen Bereich: Binding-Tippfehler für Niedrige-Bestände-Farbe korrigiert.
+- Technische Änderung im allgemeinen Bereich: Niedrige-Bestände-Dialog auf dunkle Titelleiste umgestellt.
+- Technische Änderung im allgemeinen Bereich: Dialoge auf durchgehend dunkle Titelleiste umgestellt.
+- Technische Änderung im allgemeinen Bereich: Update-Changelog mit echten Änderungen + globale dunkle Titelleisten.
+- Technische Änderung im allgemeinen Bereich: Update-Changelog: Compare-Tags mit Versionspunkten korrekt parsen.
+- Technische Änderung im allgemeinen Bereich: Update-Dialog: echte Änderungslisten mit robustem Commit-Fallback.
+- Technische Änderung im allgemeinen Bereich: Changelog-Anzeige: keine nackten Linktexte mehr, immer beschreibend.
+- Technische Änderung im allgemeinen Bereich: Update-Dialog lädt Changelog immer aktiv nach und normalisiert Anzeige.
+- Technische Änderung im allgemeinen Bereich: Installer-Preise auf dynamisches Pricing-Modell umgestellt.
+- Technische Änderung im allgemeinen Bereich: Installer-Stand immer aktuell anzeigen und VERSION.txt automatisch aktualisieren.
+- Technische Änderung im allgemeinen Bereich: Installer-Preisberechnung gefixt (kulturunabhängiges Parsing) und USB-Preismodell synchronisiert.
+- Technische Änderung im allgemeinen Bereich: Release-Workflow: echte Änderungslisten in GitHub Release Notes.
+- Technische Änderung im allgemeinen Bereich: Auto-Release: Checkout mit voller Historie/Tags für korrekte Änderungslisten.
+- Technische Änderung im allgemeinen Bereich: Schnellzugriff-Kacheln: Textabschneidung bei DPI behoben.
+- Technische Änderung im allgemeinen Bereich: Testversionsanzeige mit Resttagen und Ablaufdatum in Hauptleiste.
+- Technische Änderung im allgemeinen Bereich: Herko-Logo im Startprogramm eingebunden.
+- Technische Änderung im allgemeinen Bereich: Absturzschutz für Hauptprogramm-Start und Update-Prüfung.
+- Technische Änderung im allgemeinen Bereich: Update-Pruefung: GitHub-403 Fallback ueber Releases-Seite.
+- Technische Änderung im allgemeinen Bereich: Herko-Logo als Hintergrund in Haupt- und Unterprogrammen.
+- Technische Änderung im allgemeinen Bereich: Herko-Logo: Pack-URIs fuer stabile Hintergrundanzeige in allen Fenstern.
+- Technische Änderung im allgemeinen Bereich: XAML-Startfehler durch Background-ImageBrush behoben.
+- Technische Änderung im allgemeinen Bereich: Start-/Unterprogramm-Fehler beheben: logo.png als Resource + stabile ICO-Icons.
+- Technische Änderung im allgemeinen Bereich: XAML-Startfehler beheben: Icon-URIs auf stabile app-icon Pfade zurückgesetzt.
+- Technische Änderung im allgemeinen Bereich: Logo-Hintergrund stabilisiert: Overlay statt ImageBrush in Haupt- und Unterprogrammen.
+- Technische Änderung im allgemeinen Bereich: Herko-Logo in Start- und Unterprogrammen zentriert und deutlich sichtbar.
+- Technische Änderung im allgemeinen Bereich: Neuer Arbeitsplatz Kunden Material mit Zeichnungsnummer/Stueckzahl und Persistenz.
+- Technische Änderung im allgemeinen Bereich: Kunden Material optisch an Unterprogramme angepasst inkl. Herko-Logo-Hintergrund.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: PDF-Ordnerwahl und PDF-Suche per Zeichnungsnummer mit Vorschau.
+- Technische Änderung im allgemeinen Bereich: Instruktionen und USB-Versionsdatei aktualisiert.
 
 Datum: 2026-03-30 (13 Einträge)
 Zeitfenster: 16:55 bis 20:52 Uhr
-- 6 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Schließen-Button ergänzt, Rückkehr zur Startseite.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Menü vollständig dunkel + Start in voller Arbeitsfläche.
+- Technische Änderung im allgemeinen Bereich: Kachel 'Kunden Lager' hinzugefügt.
+- Technische Änderung im allgemeinen Bereich: Datei-Lock-Fehler beim Update durch Retry und Prozessbeendigung abgefangen.
+- Technische Änderung im allgemeinen Bereich: Zielordner vor Update automatisch bereinigen (keine Altdateien).
+- Technische Änderung im allgemeinen Bereich: gesperrte Dateien beim Neustart automatisch ersetzen.
+- Technische Änderung im allgemeinen Bereich: UNINSTALL_GUI.ps1 in Installationsordner mitkopieren und per UNINSTALL.bat starten.
+- Technische Änderung im allgemeinen Bereich: Install_LocalPC: Installationspfad auf MaterialManager_V01 vereinheitlicht und Legacy-Ordner entfernt.
+- Technische Änderung im allgemeinen Bereich: Install/Update auf D-Laufwerk vereinheitlicht.
+- Technische Änderung im allgemeinen Bereich: Install/Update-Pfade wieder install-PC-basiert statt D-Hardcoding.
+- Technische Änderung im allgemeinen Bereich: Installer/Update-Pfade auf Stand f597440 zurückgesetzt.
+- Technische Änderung im allgemeinen Bereich: DNS/Netzwerkfehler beim Download robust behandeln.
+- Technische Änderung im allgemeinen Bereich: Netzwerkdaten absichern: Shared-Load, DB-Spiegel und automatische Excel-Backups.
 
 Datum: 2026-03-31 (9 Einträge)
 Zeitfenster: 17:06 bis 20:11 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Automatisierung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: sichtbaren Netzwerkstatus in Titelleiste ergänzt.
+- Automatisierung im allgemeinen Bereich: Release-Artefakte verpflichtend signieren.
+- Technische Änderung im allgemeinen Bereich: doppelten Lizenz-TextBlock in der Titelleiste entfernt.
+- Automatisierung im allgemeinen Bereich: Trigger signierten Auto-Release Lauf.
+- Automatisierung im allgemeinen Bereich: Trigger Release nach neuem Code-Signing Zertifikat.
+- Technische Änderung im allgemeinen Bereich: Update-Dialog: doppelte Popups per prozessübergreifendem Mutex verhindern.
+- Technische Änderung im allgemeinen Bereich: Netzwerkstatus oben rechts wieder eingeblendet.
+- Technische Änderung im allgemeinen Bereich: obere Leiste für zweizeiligen Status erhöht.
+- Technische Änderung im allgemeinen Bereich: Auto-Sync: Excel-Änderungen vollständig und sofort übernehmen.
 
 Datum: 2026-04-01 (14 Einträge)
 Zeitfenster: 17:48 bis 22:31 Uhr
-- 8 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Netzwerkpfad validieren: Datei-Eingaben automatisch auf Ordner korrigieren.
+- Technische Änderung im allgemeinen Bereich: Datei-Menüs: Netzwerkordner öffnen in allen Hauptfenstern ergänzt.
+- Technische Änderung im allgemeinen Bereich: fehlende Event-Handler und Status/Update-Methoden wiederhergestellt.
+- Technische Änderung im allgemeinen Bereich: Statuszeile oben rechts entklemmt und lokalen Datenpfad korrekt anzeigen.
+- Technische Änderung im allgemeinen Bereich: lokalen vs. Server-Betrieb klar ausweisen.
+- Technische Änderung im allgemeinen Bereich: Netzwerk-Einstellungen: Fenstergröße verdoppelt und Schrift/Pfadfelder lesbarer gemacht.
+- Technische Änderung im allgemeinen Bereich: Archiv-Workflow: Archivpfad robust, KW-Archivliste und Tafelplanung-Zugriff ergänzt.
+- Technische Änderung im allgemeinen Bereich: leere KW sichtbar anzeigen statt leer zu wirken.
+- Technische Änderung im allgemeinen Bereich: fehlende Auswahl-Hilfsmethode wiederhergestellt.
+- Technische Änderung im allgemeinen Bereich: KW-Button: Archivfenster direkt öffnen für sichtbare KW-Auswahl.
+- Technische Änderung im allgemeinen Bereich: KW-Auswahl: Archivfenster nach KW-Klick öffnen und fehlenden Filtertyp wiederherstellen.
+- Technische Änderung im allgemeinen Bereich: alle Standard-Controls konsequent auf Dark-Theme umgestellt.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: kundenbezogene PDF-Suche mit Freigabe-Struktur und Kundenordnern ergänzt.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Warnhinweis bei fehlender PDF oder PDF außerhalb Freigabe.
 
 Datum: 2026-04-02 (14 Einträge)
 Zeitfenster: 06:53 bis 11:45 Uhr
-- 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Materialänderungen sofort synchron speichern statt asynchron.
+- Technische Änderung im allgemeinen Bereich: Materialladen stabilisiert: DB priorisieren, damit gelöschte Einträge nicht aus Excel zurückkehren.
+- Technische Änderung im allgemeinen Bereich: Auftragsstatus stabilisiert: Sync erhält Start/Ende/Status, Produktionsdialog speichert per Auftragsnummer.
+- Technische Änderung im allgemeinen Bereich: Auftragsnummer normalisieren für zuverlässigen Statuswechsel und Archivtreffer.
+- Technische Änderung im allgemeinen Bereich: Auftrag ohne PDF bearbeitbar machen (PDF nachtragen, Auftrag löschen).
+- Technische Änderung im allgemeinen Bereich: fehlende PDF mit Ja/Nein-Aktion abfangen und Dialoggröße für Aktionen vergrößern.
+- Technische Änderung im allgemeinen Bereich: Sync-Loop behoben: AutoSync nur bei echten externen Änderungen, lokale Saves korrekt markieren.
+- Technische Änderung im allgemeinen Bereich: sichtbaren Excel-Sync-Status mit aktivem Speicherpfad ergänzen.
+- Technische Änderung im allgemeinen Bereich: Update-Fix: App-Start nach Update robuster und Update-Popup direkt nach --updated unterdrücken.
+- Technische Änderung im allgemeinen Bereich: ComboBox im Feld vollflächig klickbar machen (nicht nur Pfeil).
+- Technische Änderung im allgemeinen Bereich: Update-Popup-Fix: keine Desktop-Meldungen ohne sichtbares Fenster, Update-Timer beim Schließen sauber stoppen.
+- Technische Änderung im allgemeinen Bereich: Update-Popup-Schutz: automatische Update-Checks deaktiviert, nur manuelle Prüfung.
+- Technische Änderung im allgemeinen Bereich: Single-Instance-Schutz: doppelte App-/Updater-Instanzen verhindern.
+- Technische Änderung im allgemeinen Bereich: Menüpunkt zum Bereinigen hängender Update-Prozesse ergänzt.
 
 Datum: 2026-04-03 (23 Einträge)
 Zeitfenster: 08:31 bis 23:47 Uhr
-- 19 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Excel-Sync transparenter: Sync-Fehlerstatus erfassen und im Hauptfenster anzeigen.
+- Technische Änderung im allgemeinen Bereich: Excel-Import: Dezimalwerte mit Komma korrekt parsen (0,5 bleibt 0,5 statt 5,0).
+- Technische Änderung im allgemeinen Bereich: Testversionsanzeige in der oberen Leiste zentriert und größer dargestellt.
+- Technische Änderung im allgemeinen Bereich: Gewichtsberechnung robust: Materialart/Maß tolerant parsen (x/X/├ù, Komma/Punkt).
+- Technische Änderung im allgemeinen Bereich: Gewicht für manuelle Excel-Zeilen korrigiert: Dichte-Fallback über Legierung + Maß-Parsing aus Freitext.
+- Technische Änderung im allgemeinen Bereich: Excel vereinheitlicht: Export auf ein Blatt 'Materialien', Import unterstützt ein Blatt + Altformat.
+- Technische Änderung im allgemeinen Bereich: Firmen-Excel-Import erweitert: Herko-Blattformat + robuste Material-/Maß-/Stückzahl-Erkennung.
+- Technische Änderung im allgemeinen Bereich: Excel-Änderungen übernehmen: beim Start neuere Firmendatei vor DB priorisieren.
+- Technische Änderung im allgemeinen Bereich: Herko-Import eingeschränkt: nur Zeilen mit gültigen Maßen/Stärken übernehmen.
+- Technische Änderung im allgemeinen Bereich: Excel-Export: Spalte 'GewichtKg' in materialbestand.xlsx ergänzen.
+- Technische Änderung im allgemeinen Bereich: Excel-Konvertierung beim Laden: Firmenformat automatisch in App-Format mit Gewicht umschreiben.
+- Technische Änderung im allgemeinen Bereich: EU-Palette-Anzeige synchronisiert: robuste Lagerort-Erkennung in Kachel und Dialog.
+- Technische Änderung im allgemeinen Bereich: Tafelplanung-Suche verbessert: robuste Maßerkennung und toleranter Material-/Legierungsabgleich.
+- Technische Änderung im allgemeinen Bereich: Auftrags-KW-Filter korrigiert: reservierte Aufträge über GeaendertAm sofort in Laser/Tafelplanung anzeigen.
+- Technische Änderung im allgemeinen Bereich: Auftragsübersicht repariert: fehlende Aufträge bei Bedarf aus reservierten Materialien rekonstruieren.
+- Technische Änderung im allgemeinen Bereich: KW-Auswahl öffnet separates Archiv-Auftragsfenster.
+- Technische Änderung im allgemeinen Bereich: Kundenmaterial UI-Texte repariert: Encoding-Fehler/Zeichenfehler entfernt.
+- Technische Änderung im allgemeinen Bereich: Kundenmaterial Dark-Theme ergänzt: ComboBox/Dropdown vollständig dunkel.
+- Technische Änderung im allgemeinen Bereich: Automatische Update-Prüfung wieder aktiviert (Startup + periodisch).
+- Technische Änderung im allgemeinen Bereich: Preismodell auf industrietaugliches Niveau angehoben (unter 30k Firmenlizenz).
+- Technische Änderung im allgemeinen Bereich: professionelle Preisdarstellung und klare Jahreslizenz-Texte.
+- Technische Änderung im allgemeinen Bereich: Lizenzdialog Angebotsmodus ergänzt: Leistungs- und Supporthinweise je Lizenzstufe.
+- Technische Änderung im allgemeinen Bereich: SLA-Reaktionszeiten je Lizenzstufe konkretisiert.
 
 Datum: 2026-04-04 (25 Einträge)
 Zeitfenster: 11:13 bis 19:01 Uhr
-- 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: dunkles Design vereinheitlicht und Herko-Grün als Hauptakzent gesetzt.
+- Technische Änderung im allgemeinen Bereich: neues Kantbank-Arbeitsfeld ergänzt; Kantbank-Ansicht analog Laser hinzugefügt.
+- Technische Änderung im allgemeinen Bereich: Herko-Grün als sichtbarer Hauptakzent im Dark-Theme.
+- Technische Änderung im allgemeinen Bereich: Herko-Grün mit schmalen gestrichelten Linienakzenten ergänzt.
+- Technische Änderung im allgemeinen Bereich: Startseite visuell beruhigt: Herko-Grün nur dezent als Akzent statt großflächig.
+- Technische Änderung im allgemeinen Bereich: UI-Umbenennung: Tafelplanung als Auftragssteuerung in allen sichtbaren Texten.
+- Technische Änderung im allgemeinen Bereich: Tafelplanung-Kachel in Auftragssteuerung umbenannt.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Kachel ergänzt und Direktöffnung implementiert.
+- Technische Änderung im allgemeinen Bereich: Arbeitsplatz-Trennung eingeführt: Aufträge für Laser/Kantbank filterbar und Kantbank-Freigabe in Auftragssteuerung.
+- Technische Änderung im allgemeinen Bereich: Freigabe für Laser ergänzt und Bereich-Spalte in Auftragslisten eingebaut.
+- Technische Änderung im allgemeinen Bereich: Button und Funktion für Freigabe an beide Bereiche ergänzt.
+- Technische Änderung im allgemeinen Bereich: Bereich-Spalte farblich hervorgehoben in Auftragssteuerung und Auftragsliste.
+- Technische Änderung im allgemeinen Bereich: normales Fenster aktiviert und vollständige Lagerlistenansicht ausgeblendet.
+- Technische Änderung im allgemeinen Bereich: alle Aktionsbuttons links vertikal untereinander angeordnet.
+- Technische Änderung im allgemeinen Bereich: linke Buttonliste in klare Gruppen mit Überschriften strukturiert.
+- Technische Änderung im allgemeinen Bereich: linke Aktionsliste kompakter gestaltet (kleinere Buttons/Abstände).
+- Technische Änderung im allgemeinen Bereich: Freigabe 'Beides' entfernt und Layout auf zentrale Auftragsliste mit linker Seitenleiste umgestellt.
+- Technische Änderung im allgemeinen Bereich: Zurück/Vorwärts oben neben Menü platziert und aus linker Leiste entfernt.
+- Technische Änderung im allgemeinen Bereich: Undo/Redo einheitlich: Pfeil-Buttons oben neben Menü in Hauptprogramm, Lager und Laser.
+- Technische Änderung im allgemeinen Bereich: UI-Konsistenz: Undo/Redo-Pfeile in Haupt- und Unterprogrammen pixelgenau vereinheitlicht.
+- Technische Änderung im allgemeinen Bereich: Fenstersteuerung vereinheitlicht: Pressed-Feedback für Titlebar-Buttons in Haupt- und Unterprogrammen.
+- Technische Änderung im allgemeinen Bereich: zweite PDF (Kantzeichnung) automatisch per Zeichnungsnummer aus Kundenordner ermitteln und anzeigen.
+- Technische Änderung im allgemeinen Bereich: Kant-PDF-Erkennung verbessert: zuerst kundenmaterial.json, danach robuste Token-Suche in Kundenordnern.
+- Technische Änderung im allgemeinen Bereich: Laser/Kantbank-Auftragsliste: Kant-PDF-Status (Gefunden/Fehlt) farblich ergänzt.
+- Technische Änderung im allgemeinen Bereich: Kant-PDF und Kant-Status ergänzt inkl. Direktöffnung.
 
 Datum: 2026-04-05 (19 Einträge)
 Zeitfenster: 09:29 bis 19:42 Uhr
-- 18 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Suche vereinfacht: Kantzeichnung nur noch in konfigurierten Kundenordnern suchen.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Layout fokussiert: Materialbereich ausblenden, Aufträge zentral, Excel-Auftragsdatei-Button ergänzen.
+- Technische Änderung im allgemeinen Bereich: eigene Server-Excel auswählbar, zentral anzeigen und nach Kunde/Datum filtern + speichern.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel: korrektes Blatt/Header erkennen, Kunde/Datum-Filter stabilisieren und ausgewählte Excel öffnen.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel-Import korrigiert: Blatt/Header robust erkennen, Merged Cells lesen, Datum/Kunde-Filter stabil und ausgewählte Excel öffnen.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel-Erkennung verbessert: Header/Blatt tiefer analysieren und Datumszellen robust lesen.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel: Fallback-Header aus erster Datenzeile übernehmen (Spalte1-Fix) für Zeichnungsnummer/Status/Datum.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel: manuelle Blattauswahl + Erkennungsinfo ergänzt, um fehlende Zeichnungsspalten sicher zu laden.
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel: irrelevante Zeilen filtern und Merged-Cell-Übernahme begrenzen (nur relevante Spaltenwerte).
+- Technische Änderung im allgemeinen Bereich: Kantbank-Excel: relevante Spalten nach Header-Promotion erzwingen und Zeichnungs-/Anzahl-Heuristik für leere Zielspalten.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Excel-Import aufgebaut (Kunde/Zeichnungsnummer/Anzahl einlesen und Einträge automatisch übernehmen).
+- Technische Änderung im allgemeinen Bereich: Kunden Material: feste Excel-Dateiauswahl mit Pfadspeicherung und Import über ausgewählte Datei.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Kundenauswahl filtert jetzt die Eintragsliste zuverlässig.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: editierbare Kunden-Combo zeigt Auswahltext wieder korrekt an.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Doppelklick öffnet jetzt Stückzahl-Änderung oder Löschen statt nur PDF-Vorschau.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Kunden-Combo Textausrichtung im editierbaren Feld korrigiert (Text nicht mehr verdeckt).
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Pfadfelder aus Hauptansicht entfernt und in Datei>Einstellungen als Dialog verschoben.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: Datei>Einstellungen mit direkten Auswahlpunkten für PDF-Root und Excel-Datei ergänzt.
+- Technische Änderung im allgemeinen Bereich: Kunden Material: PDF- und Excel-Auswahl direkt unter Datei sichtbar gemacht.
 
 Datum: 2026-04-06 (12 Einträge)
 Zeitfenster: 11:39 bis 15:40 Uhr
-- 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Geo Suche als Menüpunkt und Kachel ergänzt, externe EXE auswählbar und startbar.
+- Technische Änderung im allgemeinen Bereich: Geo Suche: bestehende Arbeitsvorbereitung-App direkt über bekannte Pfade integrieren und automatisch starten.
+- Technische Änderung im allgemeinen Bereich: Geo Suche fest integriert: vollständiges Modul (Views/ViewModels/Services/Dialogs) in MaterialManager eingebunden.
+- Technische Änderung im allgemeinen Bereich: Geo Suche: Mehrfachauswahl für Ordner aktiviert und Suche über alle ausgewählten Pfade umgesetzt.
+- Technische Änderung im allgemeinen Bereich: Geo Suche: Alle auswählen/abwählen in Ordnerdialog ergänzt.
+- Technische Änderung im allgemeinen Bereich: Geo Speicherung: autonome Zielordnerlogik nach Materialhauptordner und Stärke (z.B. V2a/1mm, V2a/25mm).
+- Technische Änderung im allgemeinen Bereich: Geo Suche einheitlich wie andere Programme starten (Bedienerauswahl, MainWindow-Wechsel, Startfenster schließen).
+- Technische Änderung im allgemeinen Bereich: Geo Suche: Vollbild-Start und direkte Buttons zu Startprogramm/Hauptprogramm ergänzt.
+- Technische Änderung im allgemeinen Bereich: Geo Suche UI: Startprogramm/Hauptprogramm dauerhaft sichtbar in eigener Kopfzeilen-Reihe.
+- Technische Änderung im allgemeinen Bereich: Geo Suche: feste Navigationsleiste im Inhalt ergänzt (Startprogramm/Hauptprogramm immer sichtbar).
+- Technische Änderung im allgemeinen Bereich: Unterprogramme vereinheitlicht: Hauptprogramm-Button in Lager/Laser/Kantbank/Auftragssteuerung/KundenMaterial ergänzt.
+- Technische Änderung im allgemeinen Bereich: doppelte Titelleiste entfernt (WindowStyle None) für einheitliche Unterprogramm-Ansicht.
 
 Datum: 2026-04-07 (5 Einträge)
 Zeitfenster: 16:51 bis 18:31 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Navigationsbuttons mit App-Logo ergänzt und Geo-Titelleiste mit dezentem Herko-Akzent angepasst.
+- Technische Änderung im allgemeinen Bereich: Schnellbuttons und Menüeinträge für Startprogramm und Lager ergänzt (ohne erneute Anmeldung).
+- Technische Änderung im allgemeinen Bereich: Schnellwechsel zu Laser ergänzt (Menü + sichtbarer Button), ohne erneute Anmeldung.
+- Technische Änderung im allgemeinen Bereich: sichtbaren Laser-Button im Kopfbereich ergänzt.
+- Technische Änderung im allgemeinen Bereich: Spalten für Anlagedatum und Änderungsdatum ergänzt.
 
 Datum: 2026-04-08 (7 Einträge)
 Zeitfenster: 17:06 bis 20:00 Uhr
-- 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Material neu: Rohrformen erweitert (Rund/Vierkant/Rechteck) inkl. Dialogfelder und Gewichtsberechnung.
+- Technische Änderung im allgemeinen Bereich: MaterialDialog Rohr: Standardmaße für Vierkant/Rechteck als Dropdown ergänzt.
+- Technische Änderung im allgemeinen Bereich: Reservierung auf alle verfügbaren Lager-Materialien erweitert (inkl. Rohr/Profil).
+- Technische Änderung im allgemeinen Bereich: Auftragssteuerung UI: Reste-Suche sichtbar in Material-Suche umbenannt.
+- Technische Änderung im allgemeinen Bereich: Material-Suche um Rohrtypen erweitert und Trefferliste um Kategorie ergänzt.
+- Technische Änderung im allgemeinen Bereich: Material-Suchdialog: Form/Typ vor Material angeordnet.
+- Technische Änderung im allgemeinen Bereich: doppelte Start/Hauptprogramm-Buttons entfernt (nur Kopfzeile bleibt).
 
 Datum: 2026-04-09 (11 Einträge)
 Zeitfenster: 17:05 bis 20:37 Uhr
-- 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Material bearbeiten: Restnummer und Lagerort manuell editierbar, Lagerort-Auswahl ergänzt.
+- Technische Änderung im allgemeinen Bereich: Restnummer und Lagerort als manuell bearbeitbare Felder sichtbar gemacht.
+- Technische Änderung im allgemeinen Bereich: Lagerort als eigene sichtbare Zeile; Laser respektiert manuellen Lagerort.
+- Technische Änderung im allgemeinen Bereich: Priorisierung (hoch/runter), EILT-Markierung und Start/Ende-Zeiten ergänzt.
+- Technische Änderung im allgemeinen Bereich: Drag & Drop-Sortierung in Auftragsliste ergänzt.
+- Technische Änderung im allgemeinen Bereich: Laser-Auftragsliste: EILT-Hinweis und rote Markierung ergänzt.
+- Technische Änderung im allgemeinen Bereich: Update USB package docs and add PDF drag-and-drop in booking dialog.
+- Technische Änderung im allgemeinen Bereich: Update copilot instructions and sync latest software package.
+- Technische Änderung im allgemeinen Bereich: Ignore certificate and temporary WPF project artifacts.
+- Technische Änderung im allgemeinen Bereich: Add certificate deployment workflow for signed multi-PC updates.
+- Technische Änderung im allgemeinen Bereich: Update USB version note for certificate deployment.
 
 Datum: 2026-04-10 (12 Einträge)
 Zeitfenster: 17:18 bis 23:50 Uhr
-- 12 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Add folder browse actions in network settings dialog.
+- Technische Änderung im allgemeinen Bereich: Add open-in-explorer actions for network and archive paths.
+- Technische Änderung im allgemeinen Bereich: Replace generic warehouse search with per-column manual filters.
+- Technische Änderung im allgemeinen Bereich: Rename trial label to Pilotbetrieb and persist branding rule.
+- Technische Änderung im allgemeinen Bereich: Keep update changelog output fully German in UI.
+- Technische Änderung im allgemeinen Bereich: Reduce warehouse column filters to required fields only.
+- Technische Änderung im allgemeinen Bereich: Use exact numeric matching for material thickness filter.
+- Technische Änderung im allgemeinen Bereich: Improve Maß filter with segment-based matching.
+- Technische Änderung im allgemeinen Bereich: Add reservation workflow in warehouse with optional entry deletion.
+- Technische Änderung im allgemeinen Bereich: Add global startup and periodic update checks for all app modules.
+- Technische Änderung im allgemeinen Bereich: Show pilot/license status banner in all subprogram title bars.
+- Technische Änderung im allgemeinen Bereich: Show pilot/license banner in Start window and Geo subprogram.
 
 Datum: 2026-04-11 (18 Einträge)
 Zeitfenster: 00:06 bis 12:49 Uhr
-- 18 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Allow robust 0.3/0,3 thickness selection in material dialog.
+- Technische Änderung im allgemeinen Bereich: Adjust thickness filter for input 0 and add 0.2 mm standard thickness.
+- Technische Änderung im allgemeinen Bereich: Validate thickness input range and prevent 0 mm in material dialog.
+- Technische Änderung im allgemeinen Bereich: Improve Maß filter fallback sorting for query dimensions.
+- Technische Änderung im allgemeinen Bereich: Harden network startup health check with retry to avoid false offline warning.
+- Technische Änderung im allgemeinen Bereich: Add startup network checking notice and delayed retry before warning.
+- Technische Änderung im allgemeinen Bereich: Fix online users list across PCs with shared heartbeat presence.
+- Technische Änderung im allgemeinen Bereich: Make online status compact and keep full user list in popup.
+- Technische Änderung im allgemeinen Bereich: Store online presence folder beside order archive root.
+- Technische Änderung im allgemeinen Bereich: Add nachproduktion and delete checkbox options in reserve dialog.
+- Technische Änderung im allgemeinen Bereich: Filter English changelog lines from update dialog output.
+- Technische Änderung im allgemeinen Bereich: Refine German fallback wording for update changelog.
+- Technische Änderung im allgemeinen Bereich: Fix duplicate network status controls and restore title bars in subwindows.
+- Technische Änderung im allgemeinen Bereich: Add unified server and excel status banners across subprogram windows.
+- Technische Änderung im allgemeinen Bereich: Temporarily disable Kantbank module and remove related UI entries.
+- Technische Änderung im allgemeinen Bereich: Temporarily remove remaining Kantbank module files and hooks.
+- Technische Änderung im allgemeinen Bereich: Remove remaining Kantbank controls and logic from Laser window.
+- Technische Änderung im allgemeinen Bereich: Filter 'remove/delete/refactor' english commit lines in update changelog.
 
 Datum: 2026-04-12 (8 Einträge)
 Zeitfenster: 07:42 bis 11:54 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Add button in Lager header to open Auftragssteuerung.
+- Technische Änderung im allgemeinen Bereich: PDF-Zwang entfernt + Navigation Buttons zu Laser/Lager hinzugefügt.
+- Technische Änderung im allgemeinen Bereich: Navigation-Buttons zum Laser-Fenster hinzugefügt (Lager + Auftragssteuerung).
+- Fehlerkorrektur im allgemeinen Bereich: Startprogramm + Lager Buttons aus Laser-Menü entfernt + Aktualisieren nach links verschoben.
+- Technische Änderung im allgemeinen Bereich: Materialbestand mit manuellen Spaltenfiltern wieder eingeblendet.
+- Technische Änderung im allgemeinen Bereich: Copilot-Anweisungen aktualisiert.
+- Technische Änderung im allgemeinen Bereich: Lager und Auftragssteuerung: Material- und Stärke-Filter als Auswahl.
+- Technische Änderung im allgemeinen Bereich: Auswahlfelder ohne Pfeil in Lager und Auftragssteuerung.
 
 Datum: 2026-04-13 (12 Einträge)
 Zeitfenster: 16:56 bis 20:19 Uhr
-- 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: globale Reservierung aufheben mit Auswahl Bearbeiten oder Löschen.
+- Technische Änderung im allgemeinen Bereich: Auftragsstatus zwischen PCs synchronisieren.
+- Technische Änderung im allgemeinen Bereich: Ansichten bei gemeinsamen Änderungen automatisch aktualisieren.
+- Technische Änderung im allgemeinen Bereich: Statusmeldung für automatische Aktualisierung anzeigen.
+- Technische Änderung im allgemeinen Bereich: Auto-Sync: Watcher gegen Abstürze absichern.
+- Technische Änderung im allgemeinen Bereich: automatische Aktualisierung ohne manuellen Refresh.
+- Technische Änderung im allgemeinen Bereich: Auto-Sync: Concurrency-Fehler beim Laden der Aufträge beheben.
+- Technische Änderung im allgemeinen Bereich: automatischen Refresh per Timer stabilisieren.
+- Technische Änderung im allgemeinen Bereich: Reservierung nach Materialbearbeitung korrekt entfernen.
+- Technische Änderung im allgemeinen Bereich: Materialfluss nach Auftragsende korrigieren.
+- Technische Änderung im allgemeinen Bereich: Auftragsende-Auswahl als Dialogfenster umsetzen.
+- Technische Änderung im allgemeinen Bereich: Auftragsende-Dialog vergrößern und Aktionen sichtbar machen.
 
 Datum: 2026-04-14 (12 Einträge)
 Zeitfenster: 17:00 bis 20:17 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Auto-Refresh ohne Layout-Sprung und Auswahlverlust.
+- Technische Änderung im allgemeinen Bereich: Auto-Refresh in allen Ansichten ohne Springen stabilisieren.
+- Technische Änderung im allgemeinen Bereich: kumulative Vollupdates für alle PCs klar unterstützen.
+- Technische Änderung im allgemeinen Bereich: Reservierung-Aufheben im Lager als dunklen Dialog umsetzen.
+- Technische Änderung im allgemeinen Bereich: Uhrzeit für Änderungsdatum korrekt speichern.
+- Technische Änderung im allgemeinen Bereich: Legacy-00Uhr Änderungszeit beim Bearbeiten reparieren.
+- Technische Änderung im allgemeinen Bereich: separate Datum- und Uhrzeitspalten für erstellt und geändert.
+- Technische Änderung im allgemeinen Bereich: Trigger Auto Release für aktuelles Update.
+- Technische Änderung im allgemeinen Bereich: BestaetigungsDialog für Release-Build einchecken.
+- Technische Änderung im allgemeinen Bereich: Auftrags-PDFs per Archivpfad und LST-bereinigter Suche vereinheitlichen.
+- Fehlerkorrektur im allgemeinen Bereich: EF-Konflikt beim Speichern von Materialbuchungen vermeiden.
+- Fehlerkorrektur im allgemeinen Bereich: fehlende Assets fuer Build wiederherstellen.
 
 Datum: 2026-04-15 (16 Einträge)
 Zeitfenster: 17:20 bis 21:12 Uhr
-- 6 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Archivierte Auftraege inkl. Produktionsdauer anzeigen.
+- Technische Änderung im allgemeinen Bereich: Standard auf Archiviert und Quelle-Dropdown dunkel.
+- Technische Änderung im allgemeinen Bereich: Auftragsliste verbreitert und Archiv-Metadaten fuer Auftragdetails ergänzt.
+- Technische Änderung im allgemeinen Bereich: alte Auftrags-Metadaten automatisch nachfuellen.
+- Technische Änderung im allgemeinen Bereich: Jahr- und KW-Auswahl für archivierte Aufträge.
+- Technische Änderung im allgemeinen Bereich: ComboBox ohne Pfeil-Icon, Auswahl per Klick aufs Feld.
+- Technische Änderung im allgemeinen Bereich: PDF-Spalte und Öffnen aus Archiv ergänzen.
+- Technische Änderung im allgemeinen Bereich: aktuelle KW als Standard statt Alle.
+- Technische Änderung im allgemeinen Bereich: Doppelklick öffnet PDF statt Auftrag übernehmen.
+- Fehlerkorrektur im allgemeinen Bereich: Herko-Hintergrundlogo auf vorherigen Stand zurücksetzen.
+- Fehlerkorrektur im allgemeinen Bereich: Hintergrundlogo in Auftragssteuerung wieder sichtbar.
+- Technische Änderung im allgemeinen Bereich: unnötige Sidebar-Buttons entfernt.
+- Technische Änderung im allgemeinen Bereich: Auftragsverfolgung als 5-Wochen-Fenster pro KW.
+- Technische Änderung im allgemeinen Bereich: 5-Wochen-Liste berücksichtigt auch archivierte Aufträge.
+- Technische Änderung im allgemeinen Bereich: Nachproduktion stabilisiert und fehlende Handler repariert.
+- Technische Änderung im allgemeinen Bereich: einheitliches Elevation-Verhalten und Update-Rechte bei Installation.
 
 Datum: 2026-04-16 (10 Einträge)
 Zeitfenster: 16:48 bis 20:29 Uhr
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: ResteAuswahlDialog breiter für vollständige Spaltenanzeige.
+- Technische Änderung im allgemeinen Bereich: Aufträge: globale Materialanzeige als Materialart-Stärke statt Positionszahl.
+- Technische Änderung im allgemeinen Bereich: Materialart-Stärke global auch für archivierte Aufträge anzeigen.
+- Technische Änderung im allgemeinen Bereich: Auftragsverfolgung um Ersteller/Änderer und Zeitstempel erweitert.
+- Technische Änderung im allgemeinen Bereich: Metadaten-Aufträge ohne PDF im Jahresarchiv anzeigen.
+- Technische Änderung im allgemeinen Bereich: Begründungsdialog bei Abschluss + Archivansicht mit klickbarer Begründung.
+- Fehlerkorrektur im allgemeinen Bereich: EF-Trackingkonflikt bei Materialien mit doppelter ID vermeiden.
+- Technische Änderung im allgemeinen Bereich: Planer-Auftragsliste: Produktionskommentar anzeigen.
+- Technische Änderung im allgemeinen Bereich: Überschrift-Encoding korrigiert und Aktionsbuttons reduziert.
+- Technische Änderung im allgemeinen Bereich: robuster Öffner mit Mehrfachstart-Schutz und Edge-Fallback.
 
 Datum: 2026-04-17 (30 Einträge)
 Zeitfenster: 16:26 bis 21:29 Uhr
-- 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: globaler Theme-Umschalter (Dunkel/Hell) mit Persistenz.
+- Technische Änderung im allgemeinen Bereich: sichtbaren Theme-Slider im Hauptbereich ergänzt.
+- Technische Änderung im allgemeinen Bereich: helles Design optisch verbessert und Slider deutlicher gemacht.
+- Technische Änderung im allgemeinen Bereich: Hell Pro Farbprofil und bessere Sichtbarkeit für Menü/Slider.
+- Technische Änderung im allgemeinen Bereich: Hell Pro mit dezentem Herko-Akzent finalisiert.
+- Technische Änderung im allgemeinen Bereich: Kachel-Icon-Hintergründe fix und Kontrast in hellen DataGrids verbessert.
+- Technische Änderung im allgemeinen Bereich: Kachel-Icons ohne Emoji-Kasten und Hell-Modus-DataGrid-Kontrast gefixt.
+- Technische Änderung im allgemeinen Bereich: Herko-Logo als vollflächigen Hintergrund mit dunklem Overlay.
+- Technische Änderung im allgemeinen Bereich: Hintergrundlogo-Overlay aufgehellt.
+- Technische Änderung im allgemeinen Bereich: separates Hell-Logo im Light-Theme ergänzt.
+- Technische Änderung im allgemeinen Bereich: Hellmodus-Logo auf Assets/Herko_Logo_hell.png umgestellt.
+- Technische Änderung im allgemeinen Bereich: Herko_Logo_hell als vollflächiges Hell-Hintergrundlogo, Frontlogo entfernt.
+- Technische Änderung im allgemeinen Bereich: Hintergrundlogos auf Herko_Logo_hell und Herko_Logo_Dunkel benannt.
+- Fehlerkorrektur im allgemeinen Bereich: Herko Hell/Dunkel Logos als WPF-Ressourcen eingebunden.
+- Technische Änderung im allgemeinen Bereich: Hell-Hintergrundlogo deutlich sichtbar gemacht.
+- Technische Änderung im allgemeinen Bereich: vorläufig logo-freies Layout ohne Hintergrundlogos.
+- Technische Änderung im allgemeinen Bereich: Hell-Hintergrund auf Herko_Logo_hell-Farbton abgestimmt.
+- Technische Änderung im allgemeinen Bereich: Hintergrundlogos in allen Unterprogrammen entfernt.
+- Technische Änderung im allgemeinen Bereich: Filterbereich-Kontrast für Hell/Dunkel über Theme-Ressourcen korrigiert.
+- Technische Änderung im allgemeinen Bereich: Lesbarkeit im Hell-Modus deutlich erhöht.
+- Technische Änderung im allgemeinen Bereich: ComboBox-Textkontrast in Hell auf Themefarben umgestellt.
+- Technische Änderung im allgemeinen Bereich: Filtertext in Hell explizit dunkel gesetzt.
+- Technische Änderung im allgemeinen Bereich: Combo-Auswahltext in Hell explizit dunkel erzwungen.
+- Technische Änderung im allgemeinen Bereich: Filter-Combobox-Einträge mit explizit dunkler Schrift erzeugen.
+- Technische Änderung im allgemeinen Bereich: Combo-Filtertext in Hell final dunkel fixiert.
+- Technische Änderung im allgemeinen Bereich: Filter-Combo Einträge inkl. Auswahl/Highlight dauerhaft dunkel.
+- Technische Änderung im allgemeinen Bereich: Filter-Combos auf String-Items umgestellt für dunkle Dropdown-Schrift.
+- Technische Änderung im allgemeinen Bereich: Dropdown-Einträge im Filter explizit mit dunkler Textfarbe.
+- Technische Änderung im allgemeinen Bereich: System-Highlightfarben für Filter-Combos auf dunklen Text fixiert.
+- Technische Änderung im allgemeinen Bereich: globaler ComboBox-Hellmodus-Fix für dunkle Dropdown-Schrift.
 
 Datum: 2026-04-19 (6 Einträge)
 Zeitfenster: 10:54 bis 19:50 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Spaltenfilter-Text im Hellmodus dunkel - ItemTemplate mit ThemeForegroundBrush, ThemeService BasedOn-Fix, ComboBoxItem-Template TextElement.Foreground-Binding.
+- Technische Änderung im allgemeinen Bereich: Projektdateien aktualisiert: copilot-instructions.md und Herko_Logo_hell.png hinzugefuegt.
+- Technische Änderung im allgemeinen Bereich: Import-Fix: Keine auto-Restnummer beim Excel-Import, DB ist fuehrend - kein automatischer Re-Import aus Excel.
+- Technische Änderung im allgemeinen Bereich: Manueller Excel-Import-Button - Materialien aus Excel importieren mit Gewichtsberechnung.
+- Technische Änderung im allgemeinen Bereich: Materialien aus Excel importieren - Menüeintrag in Datei-Menü hinzugefügt.
+- Technische Änderung im allgemeinen Bereich: USB-Installation aktualisiert: Excel-Import-Button, Restnummer-Fix, DB-fuehrend.
 
 Datum: 2026-04-20 (19 Einträge)
 Zeitfenster: 08:44 bis 12:17 Uhr
-- 8 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Dunkelmodus-Fix - ComboBox Hellmodus-Overrides beim Themewechsel zuruecksetzen, Akzente und Filtertext wieder sichtbar.
+- Technische Änderung im allgemeinen Bereich: Filterbereich DarkMode-Fix - hardcodierte Hellmodus-Farben durch DynamicResource ersetzt.
+- Technische Änderung im allgemeinen Bereich: DarkMode-Fix: ComboBox explizit dunkle Werte setzen statt ClearValue, StackPanel.Resources DynamicResource.
+- Technische Änderung im allgemeinen Bereich: Popup-Template auf TemplateBinding, ItemContainerStyle setzen statt loeschen.
+- Technische Änderung im allgemeinen Bereich: Filterbereich durch funktionierende Kopie aus Auftragssteuerung ersetzt - dunkles Dropdown jetzt korrekt.
+- Technische Änderung im allgemeinen Bereich: ComboBox im Dunkelmodus nicht anfassen - DynamicResource-Bindungen aus XAML greifen korrekt.
+- Technische Änderung im allgemeinen Bereich: ComboBox+ComboBoxItem Styles aus Auftragssteuerung kopiert - dunkles Dropdown, DynamicResource ThemeSurfaceBrush.
+- Fehlerkorrektur im allgemeinen Bereich: ThemeService.ApplyThemeToWindow beim Laden in Lager+Laser - war die eigentliche Ursache fuer helle ComboBox.
+- Technische Änderung im allgemeinen Bereich: Theme-Umschalter entfernt; ThemeService: Dark als fester Standard.
+- Technische Änderung im allgemeinen Bereich: Nur kleinen ThemeSlider aus Titelleiste entfernt - grosser ThemeSliderMain bleibt.
+- Technische Änderung im allgemeinen Bereich: Filterbereich und ComboBox-Styles identisch zu TafelplanungWindow - hardcodiert dunkel.
+- Technische Änderung im allgemeinen Bereich: Dunkelmodus setzt alle Hellmodus-ComboBox-Overrides zurueck - ItemContainerStyle, Background, etc..
+- Technische Änderung im allgemeinen Bereich: Dunkel=DarkComboBoxItemStyle explizit setzen; Hell=BasedOn dunkel damit ControlTemplate erhalten bleibt.
+- Technische Änderung im allgemeinen Bereich: App.xaml.cs: PopupRoot von ApplyThemeToWindow ausschliessen - war Ursache fuer helle ComboBox-Items.
+- Technische Änderung im allgemeinen Bereich: PopulateFilterComboBox wie TafelplanungWindow - ComboBoxItem-Objekte, keine manuellen Farben mehr.
+- Technische Änderung im allgemeinen Bereich: PopulateFilterComboBox mit Strings - ItemContainerStyle von ThemeService greift in beiden Modi korrekt.
+- Technische Änderung im allgemeinen Bereich: PopulateFilterComboBox setzt Style direkt je nach Theme - kein Timing-Problem mehr.
+- Technische Änderung im allgemeinen Bereich: Filter-ComboBoxen immer dunkel - passt zum hardcodierten dunklen Filterbereich.
+- Technische Änderung im allgemeinen Bereich: Lager Filter: im Hellmodus nur Textfarbe dunkel setzen.
 
 Datum: 2026-04-21 (25 Einträge)
 Zeitfenster: 08:33 bis 13:25 Uhr
-- 23 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Lesbarkeit im Hellmodus für ComboBox-Filter verbessert.
+- Technische Änderung im allgemeinen Bereich: Dunkelmodus global mit dezenten Akzentabstufungen.
+- Technische Änderung im allgemeinen Bereich: Dezente Akzentlinie in den Haupt-Arbeitsbereichen.
+- Technische Änderung im allgemeinen Bereich: Dezente Akzentlinie in Dialog-Arbeitsbereichen ergänzt.
+- Technische Änderung im allgemeinen Bereich: Akzentlinie in weiteren Dialogen und Fenstern ergänzt.
+- Technische Änderung im allgemeinen Bereich: ResteSuche Hellmodus-Textkontrast in ComboBox korrigiert.
+- Technische Änderung im allgemeinen Bereich: ResteSuche ComboBox-Text im Hellmodus explizit erzwingen.
+- Technische Änderung im allgemeinen Bereich: ResteSuche Auswahltext in ComboBox explizit sichtbar setzen.
+- Technische Änderung im allgemeinen Bereich: Layout-Verschiebung durch Akzentzeilen in Dialogen korrigiert.
+- Technische Änderung im allgemeinen Bereich: Auftragssteuerung Materialsuche Item-Text kontraststark erzwingen.
+- Technische Änderung im allgemeinen Bereich: Materialsuche ComboBox-Layout und Textausrichtung korrigiert.
+- Technische Änderung im allgemeinen Bereich: Materialsuche Auswahl wieder aktiv und stabilisiert.
+- Technische Änderung im allgemeinen Bereich: Materialsuche ComboBox-Auswahlverhalten repariert.
+- Technische Änderung im allgemeinen Bereich: Materialsuche Dropdown-Text im Hellmodus klar lesbar erzwingen.
+- Technische Änderung im allgemeinen Bereich: Globale Textfarbenregel Hell=Schwarz, Dunkel=Weiß umgesetzt.
+- Technische Änderung im allgemeinen Bereich: Materialsuche alle ComboBox-Einträge auf Theme-Textfarbe erzwingen.
+- Technische Änderung im allgemeinen Bereich: Materialsuche alle Combo-Itemtexte pro Theme hart setzen.
+- Technische Änderung im allgemeinen Bereich: Materialsuche Combo-Textfarben pro Theme hart nachfärben.
+- Technische Änderung im allgemeinen Bereich: Materialsuche Combobox-Textfarbe nach Hintergrundkontrast erzwingen.
+- Technische Änderung im allgemeinen Bereich: Materialsuche Dropdown-Text für alle Comboboxen pro Theme erzwingen.
+- Technische Änderung im allgemeinen Bereich: Laser-Ansicht Akzente und abgestufte Dark-Flächen wiederhergestellt.
+- Technische Änderung im allgemeinen Bereich: Globales Dark-Accent-Design in allen Hauptfenstern wiederhergestellt.
+- Technische Änderung im allgemeinen Bereich: Hellmodus global softwareartiger und Akzent-Design zentral wiederhergestellt.
+- Fehlerkorrektur im allgemeinen Bereich: Theme-Slider springt nach Umschalten nicht mehr auf Dunkel zurück.
+- Fehlerkorrektur im allgemeinen Bereich: Theme-Umschaltung stabilisiert, kein Rückfall auf Dunkel.
 
 Datum: 2026-04-22 (14 Einträge)
 Zeitfenster: 08:32 bis 12:31 Uhr
-- 12 x Fehlerkorrektur im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Fehlerkorrektur im allgemeinen Bereich: MaterialDialog im Hellmodus lesbar - alle Farben auf DynamicResource umgestellt.
+- Fehlerkorrektur im allgemeinen Bereich: MaterialDialog alle Felder in Hell+Dunkel korrekt sichtbar.
+- Fehlerkorrektur im allgemeinen Bereich: MaterialDialog Text sichtbar + Staerke-Dropdown öffnet beim Klick.
+- Fehlerkorrektur im allgemeinen Bereich: MaterialDialog Text immer schwarz auf hellem Hintergrund, klar lesbar.
+- Fehlerkorrektur im allgemeinen Bereich: Dropdown-Einträge im MaterialDialog jetzt schwarz auf weiß lesbar.
+- Fehlerkorrektur im allgemeinen Bereich: Reservierung sofort möglich - Excel-Netzwerksync läuft im Hintergrund.
+- Fehlerkorrektur im allgemeinen Bereich: Reservierung sofort verfügbar - alle Netzwerkops im Hintergrund.
+- Fehlerkorrektur im allgemeinen Bereich: Reservierung und alle Aktionen sofort ohne Wartezeit - UI nie blockiert.
+- Fehlerkorrektur im allgemeinen Bereich: Timer-Sync Netzwerkzugriff im Hintergrund - UI nie mehr blockiert.
+- Fehlerkorrektur im allgemeinen Bereich: LaserDemoWindow Timer async + alle Auftraege sofort sichtbar.
+- Fehlerkorrektur im allgemeinen Bereich: Jede Reservierung bekommt eindeutige Nr - Nachproduktion-1, Nachproduktion-2 etc..
+- Fehlerkorrektur im allgemeinen Bereich: Checkbox sichtbar + Stueckzahl bei Reservierung mit automatischer Materialteilung.
+- Technische Änderung im allgemeinen Bereich: GitHub Gist Lizenzprüfung + ntfy.sh Startup-Ping.
+- Technische Änderung im allgemeinen Bereich: E-Mail Startup-Benachrichtigung via Gmail SMTP.
 
 Datum: 2026-04-23 (1 Einträge)
 Zeitfenster: 19:30 bis 19:30 Uhr
-- 1 x Rücknahme im Bereich allgemeiner Bereich.
+- Rücknahme im allgemeinen Bereich: E-Mail/Gist Tracking entfernt - jeder PC bekommt eigene Lizenznummer.
 
 Datum: 2026-06-07 (3 Einträge)
 Zeitfenster: 08:49 bis 09:01 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Fix license fallback handling.
+- Technische Änderung im allgemeinen Bereich: Add bundled license distribution.
+- Technische Änderung im allgemeinen Bereich: Include bundled license in updates.
 
 Datum: 2026-06-08 (10 Einträge)
 Zeitfenster: 18:26 bis 19:33 Uhr
-- 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- Technische Änderung im allgemeinen Bereich: Fix uninstall cleanup for reinstall and license/trial residue.
+- Technische Änderung im allgemeinen Bereich: Aktualisiere USB_Installation auf aktuellen Stand.
+- Technische Änderung im allgemeinen Bereich: Fix uninstall reliability across PCs and avoid self-delete lock.
+- Technische Änderung im allgemeinen Bereich: Harden uninstall with retrying background cleanup task.
+- Technische Änderung im allgemeinen Bereich: Fix broken uninstall launchers and enforce single GUI uninstall flow.
+- Technische Änderung im allgemeinen Bereich: Reduce USB root to 2 visible starters and harden GUI script fallback.
+- Technische Änderung im allgemeinen Bereich: Fix USB uninstall launcher path detection and Anführungszeichen-Behandlung.
+- Technische Änderung im allgemeinen Bereich: Run USB uninstall purely via detached GUI launcher.
+- Technische Änderung im allgemeinen Bereich: Keep uninstall GUI alive by launching script directly.
+- Technische Änderung im allgemeinen Bereich: Rebuild uninstall GUI flow to fix immediate close and syntax issues.
 
-Datum: 2026-06-13 (5 Einträge)
-Zeitfenster: 08:32 bis 09:02 Uhr
-- 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
+Datum: 2026-06-13 (6 Einträge)
+Zeitfenster: 08:32 bis 09:04 Uhr
+- Technische Änderung im allgemeinen Bereich: Aktualisiere USB-Ordner und Arbeitszeitberichte.
+- Technische Änderung im allgemeinen Bereich: Bericht bereinigt: eine Datei überschrieben, Zusatzdateien entfernt.
+- Technische Änderung im allgemeinen Bereich: Deutsch und lesbar korrigiert.
+- Technische Änderung im allgemeinen Bereich: Arbeitszeitbericht vollständig deutsch formuliert.
+- Technische Änderung im allgemeinen Bereich: Tagesprotokoll vollständig deutsch zusammengefasst.
+- Technische Änderung im allgemeinen Bereich: Tageszeitfenster von-bis ergänzt.
