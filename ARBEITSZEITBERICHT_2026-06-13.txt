@@ -1,4 +1,4 @@
-ARBEITSZEITNACHWEIS – MATERIALMANAGER V01
+﻿ARBEITSZEITNACHWEIS - MATERIALMANAGER V01
 
 Projekt: MaterialManager V01
 Bearbeiter: Alexander Hoelzer
@@ -10,15 +10,15 @@ Stichtag: 13.06.2026
 - Kalendertage im Zeitraum: 102 Tage
 - Wochen im Zeitraum: 14,57 Wochen
 
-2) Nachweisbare Entwicklungsaktivität
+2) Nachweisbare Entwicklungsaktivitaet
 - Commits im Zeitraum: 495
-- Änderungen am Codebestand:
-  - Hinzugefügt: 91.156 Zeilen
+- Aenderungen am Codebestand:
+  - Hinzugefuegt: 91.156 Zeilen
   - Entfernt: 23.230 Zeilen
   - Netto: +67.926 Zeilen
 
 3) Berechneter Arbeitsaufwand
-Auf Basis der dokumentierten Entwicklungsaktivität ergibt sich folgende Aufwandsspanne:
+Auf Basis der dokumentierten Entwicklungsaktivitaet ergibt sich folgende Aufwandsspanne:
 - Mindestwert: 123,75 Stunden
 - Realistischer Mittelwert: 247,50 Stunden
 - Oberwert: 371,25 Stunden
@@ -30,7 +30,7 @@ Empfohlener offizieller Gesamtwert bis heute: 247,5 Stunden
 - Laufende Weiterentwicklung von Installations- und USB-Deployment-Prozessen
 - Implementierung und Stabilisierung einer GUI-basierten Deinstallation
 - Verbesserung der Lizenz-/Trial-Logik inkl. Fallback- und Verteilungsmechanismen
-- Update-Mechanik und Zielpfaderkennung für Mehr-PC-Umgebungen
+- Update-Mechanik und Zielpfaderkennung fuer Mehr-PC-Umgebungen
 - Kontinuierliche Fehleranalyse, Hotfixes, Build-/Publish-Zyklen und Versionspflege
 
 5) Zusammenfassung
@@ -41,338 +41,342 @@ Ort/Datum: ___________________________
 Unterschrift: _________________________
 Name: Alexander Hoelzer
 
-6) Tagesprotokoll der Entwicklungsaktivit�ten (aus Commits)
-Hinweis: Aufgef�hrt sind Tage mit dokumentierten Commits im Zeitraum.
+6) Tagesprotokoll der Entwicklungsaktivitaeten (aus Commits)
+Hinweis: Aufgefuehrt sind Tage mit dokumentierten Commits im Zeitraum.
+
 
 Datum: 2026-03-14 (10 Eintraege)
-- fix(update): Option 2 - Signaturwarnung mit Fortfahren + optionale Signierung
-- build(usb): USB_Installation vollst+�ndig aktualisiert
-- build(usb): USB_Installation\MaterialManager aktualisiert
-- security(update): nur vertrauensw++rdige Signatur installieren + signierte Releases erzwingen
-- ci: optionale Code-Signierung f++r Auto-Releases
-- fix(update): Installer-Start pr++fen, nur bei laufendem Prozess App schlie+�en
-- fix(update): ZIP-Entpacken ohne Dateisperre
-- feat(ui): app beim Start maximiert +�ffnen
-- ci: automatische GitHub Releases bei +�nderungen auf main
-- chore: hybrid backup strategy (incremental + daily full)
+- Fehlerkorrektur(update): Option 2 - Signaturwarnung mit Fortfahren + optionale Signierung
+- USB-Build: USB_Installation vollst├ñndig aktualisiert
+- USB-Build: USB_Installation\MaterialManager aktualisiert
+- Sicherheitsupdate: nur vertraünsw├╝rdige Signatur installieren + signierte Releases erzwingen
+- Automatisierung: optionale Code-Signierung f├╝r Auto-Releases
+- Fehlerkorrektur(update): Installer-Start pr├╝fen, nur bei laufendem Prozeß App schlie├ƒen
+- Fehlerkorrektur(update): ZIP-Entpacken ohne Dateisperre
+- UI-Funktion: app beim Start maximiert ├Âffnen
+- Automatisierung: automatische GitHub Releases bei ├änderungen auf main
+- Wartung: hybrid backup strategy (incremental + daily full)
 
 Datum: 2026-03-17 (9 Eintraege)
-- fix(update): korrektes Quoting f++r Admin-Neustart des UpdateInstaller
-- fix(update): UpdateInstaller fordert bei Program Files automatisch Admin-Rechte an
-- fix(update): UpdateInstaller findet Zielpfad auch ohne Argumente
-- fix(update): echter Update-Installer statt Vollinstallation
-- build(usb): App-Inhalt im bestehenden USB-Installer aktualisiert
-- fix(usb): GUI-Installer nicht mehr versteckt starten
-- fix(usb): Installations- und Starter-Pfade repariert
-- restore(usb): USB_Installation vollst+�ndig aus Backup wiederhergestellt
-- fix(update): Thumbprint-Allowlist f++r lokales Signaturzertifikat
+- Fehlerkorrektur(update): korrektes Quoting f├╝r Admin-Neustart des UpdateInstaller
+- Fehlerkorrektur(update): UpdateInstaller fordert bei Program Files automatisch Admin-Rechte an
+- Fehlerkorrektur(update): UpdateInstaller findet Zielpfad auch ohne Argumente
+- Fehlerkorrektur(update): echter Update-Installer statt Vollinstallation
+- USB-Build: App-Inhalt im bestehenden USB-Installer aktualisiert
+- Fehlerkorrektur(usb): GUI-Installer nicht mehr versteckt starten
+- Fehlerkorrektur(usb): Installations- und Starter-Pfade repariert
+- USB-Wiederherstellung: USB_Installation vollst├ñndig aus Backup wiederhergestellt
+- Fehlerkorrektur(update): Thumbprint-Allowlist f├╝r lokales Signaturzertifikat
 
 Datum: 2026-03-18 (2 Eintraege)
-- fix(update): Zielpfad-Argument robust ++bergeben und bereinigen
-- fix(update): Installationspfad aus laufender App automatisch erkennen
+- Fehlerkorrektur(update): Zielpfad-Argument robust ├╝bergeben und bereinigen
+- Fehlerkorrektur(update): Installationspfad aus laufender App automatisch erkennen
 
 Datum: 2026-03-19 (7 Eintraege)
-- fix(ui): Fenster an kleinere Aufl+�sungen anpassen
-- fix(ui): Fenster und Installer an kleinere Monitore anpassen
-- docs(instructions): Regeln zusammenfassen und bereinigen
-- docs(instructions): Workspace- und IDE-Kontext dauerhaft ber++cksichtigen
-- chore(version): App- und Installer-Paket auf 1.0.23 anheben
-- feat(installer): Online-Version im GUI-Installer anzeigen
-- fix(build): Installer_Source-Artefakte ausschlie+�en und Brush eindeutig typisieren
+- Fehlerkorrektur(ui): Fenster an kleinere Aufl├Âsungen anpaßen
+- Fehlerkorrektur(ui): Fenster und Installer an kleinere Monitore anpaßen
+- Dokumentation(instructions): Regeln zusammenfaßen und bereinigen
+- Dokumentation(instructions): Workspace- und IDE-Kontext daürhaft ber├╝cksichtigen
+- Wartung(version): App- und Installer-Paket auf 1.0.23 anheben
+- Neü Funktion(installer): Online-Version im GUI-Installer anzeigen
+- Fehlerkorrektur(build): Installer_Source-Artefakte außchlie├ƒen und Brush eindeutig typisieren
 
 Datum: 2026-03-20 (13 Eintraege)
-- feat(demo): Laser-Start und reduzierte Restmaterial-Demo hinzuf++gen
-- fix(ui): Dashboard-Karten ohne Seitw+�rts-Scroll umbrechen
-- fix(ui): Bildschirmf++llende Anpassung f++r PCs und Tablets korrigieren
-- fix(ui): Titelleisten-Logo per Pack-URI laden
-- fix(ui): Titelleisten-Logo als PNG aus App-Icon laden
-- fix(ui): App-Icon als WPF-Ressource einbinden
-- fix(ui): App-Logo in Titelleiste sichtbar machen
-- feat(ui): Men++ in echte obere Titelleiste verschieben
-- feat(ui): Men++ in dunkle Kopfzeile verschieben
-- fix(ui): Textfehler bei niedrigen Best+�nden korrigieren
-- fix(ui): Textfehler bei Online-Benutzern korrigieren
-- fix(encoding): Mojibake in Migrationsskript bereinigen
-- fix(ui): Text f++r niedrige Best+�nde korrigieren
+- Neü Funktion(demo): Laser-Start und reduzierte Restmaterial-Demo hinzuf├╝gen
+- Fehlerkorrektur(ui): Dashboard-Karten ohne Seitw├ñrts-Scroll umbrechen
+- Fehlerkorrektur(ui): Bildschirmf├╝llende Anpaßung f├╝r PCs und Tablets korrigieren
+- Fehlerkorrektur(ui): Titelleisten-Logo per Pack-URI laden
+- Fehlerkorrektur(ui): Titelleisten-Logo als PNG aus App-Icon laden
+- Fehlerkorrektur(ui): App-Icon als WPF-Reßource einbinden
+- Fehlerkorrektur(ui): App-Logo in Titelleiste sichtbar machen
+- UI-Funktion: Men├╝ in echte obere Titelleiste verschieben
+- UI-Funktion: Men├╝ in dunkle Kopfzeile verschieben
+- Fehlerkorrektur(ui): Textfehler bei niedrigen Best├ñnden korrigieren
+- Fehlerkorrektur(ui): Textfehler bei Online-Benutzern korrigieren
+- Fehlerkorrektur(encoding): Mojibake in Migrationßkript bereinigen
+- Fehlerkorrektur(ui): Text f├╝r niedrige Best├ñnde korrigieren
 
 Datum: 2026-03-21 (12 Eintraege)
-- fix(search): passende groessere Restmaterialien finden
-- feat(ui): eigene Sicht fuer Tafelplanung ergaenzen
-- feat(ui): Materialien in Lager und Laser markierbar machen
-- fix(ui): Benutzer-Spalten in Lager und Laser sichtbar platzieren
-- feat(ui): Lager-Sicht sch+�rfen und Demo-Texte entfernen
-- feat(login): einfaches Namens-Login f++r Modi und Materialhistorie
-- fix(demo): Laser-Benutzerauswahl auf direkte User-Objekte umstellen
-- fix(demo): Laser-Bediener dauerhaft speichern und korrekt anzeigen
-- feat(demo): Laser-Bediener ausw+�hlbar und l+�schbar machen
-- fix(ui): ComboBox-Dropdowns in Demo-Fenstern vollst+�ndig abdunkeln
-- fix(ui): Demo-Fenster vollst+�ndig dunkel gestalten
-- feat(demo): eigene Lager-Sicht zur Startauswahl hinzuf++gen
+- Fehlerkorrektur(search): paßende größere Restmaterialien finden
+- UI-Funktion: eigene Sicht für Tafelplanung ergänzen
+- UI-Funktion: Materialien in Lager und Laser markierbar machen
+- Fehlerkorrektur(ui): Benutzer-Spalten in Lager und Laser sichtbar platzieren
+- UI-Funktion: Lager-Sicht sch├ñrfen und Demo-Texte entfernen
+- Neü Funktion(login): einfaches Namens-Login f├╝r Modi und Materialhistorie
+- Fehlerkorrektur(demo): Laser-Benutzerauswahl auf direkte User-Objekte umstellen
+- Fehlerkorrektur(demo): Laser-Bediener daürhaft speichern und korrekt anzeigen
+- Neü Funktion(demo): Laser-Bediener ausw├ñhlbar und l├Âschbar machen
+- Fehlerkorrektur(ui): ComboBox-Dropdowns in Demo-Fenstern vollst├ñndig abdunkeln
+- Fehlerkorrektur(ui): Demo-Fenster vollst├ñndig dunkel gestalten
+- Neü Funktion(demo): eigene Lager-Sicht zur Startauswahl hinzuf├╝gen
 
 Datum: 2026-03-22 (20 Eintraege)
 - USB-Installer aktualisiert: Tablet-Modus + PDF-Funktion (Version 1.2.0)
-- PDF-Funktion: Tafelbelegung kann PDF anh+�ngen, Laser kann PDF +�ffnen
-- Tablet-Modus: StartModeWindow maximiert, Touch-optimierte Buttons und DataGrid-Zeilenh+�he
-- fix(dialog): ComboBox-Template Trigger f++r IsEditable - Texteingabe und Auswahl jetzt m+�glich
-- fix(dialog): Rohr/Profil Felder - Text-Binding statt SelectedItem, string-Properties zum Eingeben und Ausw+�hlen
-- feat(stufe2): Rohre und Profile - separate Kategorien, Multi-Sheet Excel, erweiterter Dialog
-- fix(update): Versions-Mismatch beheben - EXE bekommt 4-stellige Version (1.2.0.83)
-- fix(workflow): Version aus csproj korrekt lesen (SelectSingleNode statt PropertyGroup-Array)
+- PDF-Funktion: Tafelbelegung kann PDF anh├ñngen, Laser kann PDF ├Âffnen
+- Tablet-Modus: StartModeWindow maximiert, Touch-optimierte Buttons und DataGrid-Zeilenh├Âhe
+- Fehlerkorrektur(dialog): ComboBox-Template Trigger f├╝r IsEditable - Texteingabe und Auswahl jetzt m├Âglich
+- Fehlerkorrektur(dialog): Rohr/Profil Felder - Text-Binding statt SelectedItem, string-Properties zum Eingeben und Ausw├ñhlen
+- Neü Funktion(stufe2): Rohre und Profile - separate Kategorien, Multi-Sheet Excel, erweiterter Dialog
+- Fehlerkorrektur(update): Versions-Mismatch beheben - EXE bekommt 4-stellige Version (1.2.0.83)
+- Fehlerkorrektur(workflow): Version aus csproj korrekt lesen (SelectSingleNode statt PropertyGroup-Array)
 - Update: USB_Installation auf v1.2.0 publiziert (UI-Freeze Bugfix)
-- Fix: UI-Freeze durch async LoadMaterials und GC-Cleanup entfernt
-- Fix: CheckBox Single-Click im DataGrid (PreviewMouseLeftButtonDown)
-- Fix: CheckBox-Auswahl im DataGrid (IsReadOnly auf TextColumns verschoben)
-- fix(ui): TafelplanungWindow ComboBox-Dropdown dunkel machen (ControlTemplate ergaenzt)
-- fix(update): Signaturwarnung entfernen (kein Code-Signing-Zertifikat fuer internes Tool)
-- fix(workflow): Leerzeichen im Tag-Namen durch .Trim() auf Version beheben
-- fix(workflow): softprops-Action durch gh CLI ersetzen (kein 'Too many retries')
-- fix: Version auf 1.2.0, Workflow-Fehler behoben (Code-Signing entfernt, Pfade korrigiert)
-- feat: Laser-Reservierungslogik, Tafelplanung-Buchung, Rollenansichten und Namenslogin vollstaendig
-- feat(tafelplanung): material fuer auftraege buchen und abschliessen
-- feat(login): gespeicherte Namen im Anmeldefenster loeschbar machen
+- Fehlerkorrektur: UI-Freeze durch async LoadMaterials und GC-Cleanup entfernt
+- Fehlerkorrektur: CheckBox Single-Click im DataGrid (PreviewMouseLeftButtonDown)
+- Fehlerkorrektur: CheckBox-Auswahl im DataGrid (IsReadOnly auf TextColumns verschoben)
+- Fehlerkorrektur(ui): TafelplanungWindow ComboBox-Dropdown dunkel machen (ControlTemplate ergänzt)
+- Fehlerkorrektur(update): Signaturwarnung entfernen (kein Code-Signing-Zertifikat für internes Tool)
+- Fehlerkorrektur(workflow): Leerzeichen im Tag-Namen durch .Trim() auf Version beheben
+- Fehlerkorrektur(workflow): softprops-Action durch gh CLI ersetzen (kein 'Too many retries')
+- Fehlerkorrektur: Version auf 1.2.0, Workflow-Fehler behoben (Code-Signing entfernt, Pfade korrigiert)
+- Neü Funktion: Laser-Reservierungslogik, Tafelplanung-Buchung, Rollenansichten und Namenslogin vollständig
+- Neü Funktion(tafelplanung): material für aufträge buchen und abschließen
+- Neü Funktion(login): gespeicherte Namen im Anmeldefenster löschbar machen
 
 Datum: 2026-03-23 (5 Eintraege)
 - ComboBox-Fix: dunkles und klickbares Filter-Dropdown in allen Bereichen
 - Laser: Filter-ComboBox auf dunkles Theme vereinheitlicht
-- Filterfix: robuste Auswahl in Lager/Tafelplanung und neuer Filter in Laser
+- Filterfix: robuste Auswahl in Lager/Tafelplanung und neür Filter in Laser
 - Filter erweitert: Kategorie+Form in Lager und Tafelplanung
-- Lager: Rohr/Profil UI-Fix, Auswahlfelder und Regalauslastung inkl. L+�ngen erweitert
+- Lager: Rohr/Profil UI-Fix, Auswahlfelder und Regalauslastung inkl. L├ñngen erweitert
 
 Datum: 2026-03-24 (3 Eintraege)
 - Hauptprogramm: Filterfunktion repariert (Kategorie/Form + Suche)
-- Hilfsskript: Backups aufr+�umen, Build-Artefakte l+�schen und Build starten
-- AuftragBuchungDialog: adaptive H+�he, damit Buttons bei kleiner Ansicht sichtbar bleiben
+- Hilfßkript: Backups aufr├ñumen, Build-Artefakte l├Âschen und Build starten
+- AuftragBuchungDialog: adaptive H├Âhe, damit Buttons bei kleiner Ansicht sichtbar bleiben
 
 Datum: 2026-03-25 (12 Eintraege)
-- Version bump auf 1.2.1 f++r neues In-App-Update
-- Reservierte Reste: PDF per einfachem Klick via Button zuverl+�ssig +�ffnen
-- Reservierte Reste: PDF per einfachem Klick +�ffnen
-- Fix: Reservierte Markierung stabil ++ber AuftragNr in allen Bereichen
-- Reservierte Materialien global gr++n markieren (Main/Lager/Tafel/Laser/Reservierte)
-- Reservierte Reste: Doppelklick +�ffnet hinterlegte PDF
+- Version bump auf 1.2.1 f├╝r neüs In-App-Update
+- Reservierte Reste: PDF per einfachem Klick via Button zuverl├ñßig ├Âffnen
+- Reservierte Reste: PDF per einfachem Klick ├Âffnen
+- Fehlerkorrektur: Reservierte Markierung stabil ├╝ber AuftragNr in allen Bereichen
+- Reservierte Materialien global gr├╝n markieren (Main/Lager/Tafel/Laser/Reservierte)
+- Reservierte Reste: Doppelklick ├Âffnet hinterlegte PDF
 - Reservierte Reste: PDF-Spalte anzeigen
-- Programmhilfe: Button 'Als PDF' erg+�nzt und PDF-Ausgabe implementiert
-- Hilfe-Dialog: Druckfunktion erg+�nzt und Projektverkn++pfung stabilisiert
-- Hilfe: Programm- und Netzwerkanleitung inkl. Mehr-PC-Setup erg+�nzt
-- Tafelplanung: Button 'Niedrige Best+�nde' erg+�nzt
-- Lagerverwaltung: Button 'Niedrige Best+�nde' hinzugef++gt
+- Programmhilfe: Button 'Als PDF' erg├ñnzt und PDF-Ausgabe implementiert
+- Hilfe-Dialog: Druckfunktion erg├ñnzt und Projektverkn├╝pfung stabilisiert
+- Hilfe: Programm- und Netzwerkanleitung inkl. Mehr-PC-Setup erg├ñnzt
+- Tafelplanung: Button 'Niedrige Best├ñnde' erg├ñnzt
+- Lagerverwaltung: Button 'Niedrige Best├ñnde' hinzugef├╝gt
 
 Datum: 2026-03-26 (10 Eintraege)
-- Backup-Regel: max. 3 Ordner, korrekte Ausschl++sse dokumentiert
-- Fix: OnEditRestClick in TafelplanungWindow hinzugef++gt (Doppelklick-Bearbeitung)
-- Unterprogramme: wei+�en Rand durch WindowChrome entfernt, dunkler Rahmen vereinheitlicht
-- Unterprogramme: wei+�en OS-Rahmen entfernt (ResizeMode CanMinimize)
-- Unterprogramme: wei+�en Rand entfernt und Schriftgr+�+�en an Hauptprogramm angepasst
+- Backup-Regel: max. 3 Ordner, korrekte Außchl├╝ße dokumentiert
+- Fehlerkorrektur: OnEditRestClick in TafelplanungWindow hinzugef├╝gt (Doppelklick-Bearbeitung)
+- Unterprogramme: wei├ƒen Rand durch WindowChrome entfernt, dunkler Rahmen vereinheitlicht
+- Unterprogramme: wei├ƒen OS-Rahmen entfernt (ResizeMode CanMinimize)
+- Unterprogramme: wei├ƒen Rand entfernt und Schriftgr├Â├ƒen an Hauptprogramm angepaßt
 - Fenster auf WorkArea begrenzt damit Windows-Taskleiste sichtbar bleibt
-- Startfenster: obere Men++leiste wie Hauptprogramm erg+�nzt
-- Fix: Untermen++s in oberer Leiste dunkel/lesbar in Lager, Tafelplanung und Laser
-- Reste-Suche Toleranz korrigiert und obere Men++leiste in Lager/Tafel/Laser erg+�nzt
-- Tafelplanung: Button 'Reste suchen' wie im Hauptprogramm erg+�nzt
+- Startfenster: obere Men├╝leiste wie Hauptprogramm erg├ñnzt
+- Fehlerkorrektur: Untermen├╝s in oberer Leiste dunkel/lesbar in Lager, Tafelplanung und Laser
+- Reste-Suche Toleranz korrigiert und obere Men├╝leiste in Lager/Tafel/Laser erg├ñnzt
+- Tafelplanung: Button 'Reste suchen' wie im Hauptprogramm erg├ñnzt
 
 Datum: 2026-03-28 (13 Eintraege)
 - Copilot-Anweisungen aktualisiert
 - Netzwerk-Setup beim Start nicht mehr erzwingen
-- Signier-Workflow f++r Release-EXEs erg+�nzt
-- Multi-PC Startpr++fung und One-Click Netzwerk-Installer erg+�nzt
+- Signier-Workflow f├╝r Release-EXEs erg├ñnzt
+- Multi-PC Startpr├╝fung und One-Click Netzwerk-Installer erg├ñnzt
 - Preismodell marktgerecht kalibriert (C10 unter 30k)
 - Lizenzsystem, Pricing-Modell und USB-Ordner aktualisiert
-- CLEANUP: 37 alte Dateien vom 03.03.2026 + Docs/ gel+�scht - nur noch aktuelle Dateien
-- MAJOR CLEANUP: Projektordner komplett aufger+�umt - alte Dateien, Logs, Backups gel+�scht
-- FINAL CLEANUP: D:\ vollst+�ndig aufger+�umt - ~100GB freigegeben, nur noch Projekt + Windows Backups
-- PDF-Vorschau ++berall: PdfPreviewDialog f++r Doppelklick auf PDFs in Lager und Laser
-- UI-Fix: ProduktionVerfolgungDialog Fenstergr+�+�en angepasst - Buttons jetzt sichtbar
-- Datenbank-Migration: ProduktionStartDatum und ProduktionEndDatum Spalten hinzuf++gen
-- Produktionsverfolgung f++r Laser: Auftragsansicht mit Start/End-Buttons zur Zeitmessung
+- CLEANUP: 37 alte Dateien vom 03.03.2026 + Docs/ gel├Âscht - nur noch aktülle Dateien
+- MAJOR CLEANUP: Projektordner komplett aufger├ñumt - alte Dateien, Logs, Backups gel├Âscht
+- FINAL CLEANUP: D:\ vollst├ñndig aufger├ñumt - ~100GB freigegeben, nur noch Projekt + Windows Backups
+- PDF-Vorschau ├╝berall: PdfPreviewDialog f├╝r Doppelklick auf PDFs in Lager und Laser
+- UI-Fix: ProduktionVerfolgungDialog Fenstergr├Â├ƒen angepaßt - Buttons jetzt sichtbar
+- Datenbank-Migration: ProduktionStartDatum und ProduktionEndDatum Spalten hinzuf├╝gen
+- Produktionsverfolgung f├╝r Laser: Auftragsansicht mit Start/End-Buttons zur Zeitmeßung
 
 Datum: 2026-03-29 (31 Eintraege)
 - Instruktionen und USB-Versionsdatei aktualisiert
 - Kunden Material: PDF-Ordnerwahl und PDF-Suche per Zeichnungsnummer mit Vorschau
-- Kunden Material optisch an Unterprogramme angepasst inkl. Herko-Logo-Hintergrund
-- Neuer Arbeitsplatz Kunden Material mit Zeichnungsnummer/Stueckzahl und Persistenz
+- Kunden Material optisch an Unterprogramme angepaßt inkl. Herko-Logo-Hintergrund
+- Neür Arbeitsplatz Kunden Material mit Zeichnungsnummer/Stückzahl und Persistenz
 - Herko-Logo in Start- und Unterprogrammen zentriert und deutlich sichtbar
 - Logo-Hintergrund stabilisiert: Overlay statt ImageBrush in Haupt- und Unterprogrammen
-- XAML-Startfehler beheben: Icon-URIs auf stabile app-icon Pfade zur++ckgesetzt
+- XAML-Startfehler beheben: Icon-URIs auf stabile app-icon Pfade zur├╝ckgesetzt
 - Start-/Unterprogramm-Fehler beheben: logo.png als Resource + stabile ICO-Icons
 - Startfenster: XAML-Startfehler durch Background-ImageBrush behoben
-- Herko-Logo: Pack-URIs fuer stabile Hintergrundanzeige in allen Fenstern
+- Herko-Logo: Pack-URIs für stabile Hintergrundanzeige in allen Fenstern
 - Herko-Logo als Hintergrund in Haupt- und Unterprogrammen
-- Update-Pruefung: GitHub-403 Fallback ueber Releases-Seite
-- Startfenster: Absturzschutz f++r Hauptprogramm-Start und Update-Pr++fung
+- Update-Prüfung: GitHub-403 Fallback über Releases-Seite
+- Startfenster: Absturzschutz f├╝r Hauptprogramm-Start und Update-Pr├╝fung
 - Herko-Logo im Startprogramm eingebunden
-- Testversionsanzeige mit Resttagen und Ablaufdatum in Hauptleiste
+- Testsversionsanzeige mit Resttagen und Ablaufdatum in Hauptleiste
 - Schnellzugriff-Kacheln: Textabschneidung bei DPI behoben
-- Auto-Release: Checkout mit voller Historie/Tags f++r korrekte +�nderungslisten
-- Release-Workflow: echte +�nderungslisten in GitHub Release Notes
-- Installer-Preisberechnung gefixt (kulturunabh+�ngiges Parsing) und USB-Preismodell synchronisiert
-- Installer-Stand immer aktuell anzeigen und VERSION.txt automatisch aktualisieren
+- Auto-Release: Checkout mit voller Historie/Tags f├╝r korrekte ├änderungslisten
+- Release-Workflow: echte ├änderungslisten in GitHub Release Notes
+- Installer-Preisberechnung gefixt (kulturunabh├ñngiges Parsing) und USB-Preismodell synchronisiert
+- Installer-Stand immer aktüll anzeigen und VERSION.txt automatisch aktualisieren
 - Installer-Preise auf dynamisches Pricing-Modell umgestellt
-- Update-Dialog l+�dt Changelog immer aktiv nach und normalisiert Anzeige
+- Update-Dialog l├ñdt Changelog immer aktiv nach und normalisiert Anzeige
 - Changelog-Anzeige: keine nackten Linktexte mehr, immer beschreibend
-- Update-Dialog: echte +�nderungslisten mit robustem Commit-Fallback
+- Update-Dialog: echte ├änderungslisten mit robustem Commit-Fallback
 - Update-Changelog: Compare-Tags mit Versionspunkten korrekt parsen
-- Update-Changelog mit echten +�nderungen + globale dunkle Titelleisten
+- Update-Changelog mit echten ├änderungen + globale dunkle Titelleisten
 - Dialoge auf durchgehend dunkle Titelleiste umgestellt
-- Niedrige-Best+�nde-Dialog auf dunkle Titelleiste umgestellt
-- Binding-Tippfehler f++r Niedrige-Best+�nde-Farbe korrigiert
-- Niedrige-Best+�nde-Farbe als Brush fixiert (kein schwarzer Text)
-- PDF-Vorschau im Hauptprogramm wie Tafelplanung + Netzwerkdialog UI angepasst
+- Niedrige-Best├ñnde-Dialog auf dunkle Titelleiste umgestellt
+- Binding-Tippfehler f├╝r Niedrige-Best├ñnde-Farbe korrigiert
+- Niedrige-Best├ñnde-Farbe als Brush fixiert (kein schwarzer Text)
+- PDF-Vorschau im Hauptprogramm wie Tafelplanung + Netzwerkdialog UI angepaßt
 
+Datum: 2026-03-30 (13 Eintraege)
 - Netzwerkdaten absichern: Shared-Load, DB-Spiegel und automatische Excel-Backups
 - Update: DNS/Netzwerkfehler beim Download robust behandeln
-- Rollback: Installer/Update-Pfade auf Stand f597440 zur++ckgesetzt
+- Rollback: Installer/Update-Pfade auf Stand f597440 zur├╝ckgesetzt
 - Install/Update-Pfade wieder install-PC-basiert statt D-Hardcoding
 - Install/Update auf D-Laufwerk vereinheitlicht
 - Install_LocalPC: Installationspfad auf MaterialManager_V01 vereinheitlicht und Legacy-Ordner entfernt
 - Installer: UNINSTALL_GUI.ps1 in Installationsordner mitkopieren und per UNINSTALL.bat starten
 - UpdateInstaller: gesperrte Dateien beim Neustart automatisch ersetzen
 - UpdateInstaller: Zielordner vor Update automatisch bereinigen (keine Altdateien)
-- UpdateInstaller: Datei-Lock-Fehler beim Update durch Retry und Prozessbeendigung abgefangen
-- Hauptprogramm: Kachel 'Kunden Lager' hinzugef++gt
-- Kunden Material: Men++ vollst+�ndig dunkel + Start in voller Arbeitsfl+�che
-- Kunden Material: Schlie+�en-Button erg+�nzt, R++ckkehr zur Startseite
+- UpdateInstaller: Datei-Lock-Fehler beim Update durch Retry und Prozeßbeendigung abgefangen
+- Hauptprogramm: Kachel 'Kunden Lager' hinzugef├╝gt
+- Kunden Material: Men├╝ vollst├ñndig dunkel + Start in voller Arbeitsfl├ñche
+- Kunden Material: Schlie├ƒen-Button erg├ñnzt, R├╝ckkehr zur Startseite
 
 Datum: 2026-03-31 (9 Eintraege)
-- Auto-Sync: Excel-+�nderungen vollst+�ndig und sofort ++bernehmen
-- MainWindow: obere Leiste f++r zweizeiligen Status erh+�ht
+- Auto-Sync: Excel-├änderungen vollst├ñndig und sofort ├╝bernehmen
+- MainWindow: obere Leiste f├╝r zweizeiligen Status erh├Âht
 - MainWindow: Netzwerkstatus oben rechts wieder eingeblendet
-- Update-Dialog: doppelte Popups per prozess++bergreifendem Mutex verhindern
-- CI: Trigger Release nach neuem Code-Signing Zertifikat
-- CI: Release-Artefakte verpflichtend signieren
-- Hauptfenster: sichtbaren Netzwerkstatus in Titelleiste erg+�nzt
+- Update-Dialog: doppelte Popups per prozeß├╝bergreifendem Mutex verhindern
+- Automatisierung: Trigger Release nach neüm Code-Signing Zertifikat
+- Automatisierung: Trigger signierten Auto-Release Lauf
+- MainWindow: doppelten Lizenz-TextBlock in der Titelleiste entfernt
+- Automatisierung: Release-Artefakte verpflichtend signieren
+- Hauptfenster: sichtbaren Netzwerkstatus in Titelleiste erg├ñnzt
 
 Datum: 2026-04-01 (14 Eintraege)
-- Kunden Material: Warnhinweis bei fehlender PDF oder PDF au+�erhalb Freigabe
-- Kunden Material: kundenbezogene PDF-Suche mit Freigabe-Struktur und Kundenordnern erg+�nzt
-- Archivdialog: alle Standard-Controls konsequent auf Dark-Theme umgestellt
-- KW-Auswahl: Archivfenster nach KW-Klick +�ffnen und fehlenden Filtertyp wiederherstellen
-- KW-Button: Archivfenster direkt +�ffnen f++r sichtbare KW-Auswahl
+- Kunden Material: Warnhinweis bei fehlender PDF oder PDF au├ƒerhalb Freigabe
+- Kunden Material: kundenbezogene PDF-Suche mit Freigabe-Struktur und Kundenordnern erg├ñnzt
+- Archivdialog: alle Standard-Controls konseqünt auf Dark-Theme umgestellt
+- KW-Auswahl: Archivfenster nach KW-Klick ├Âffnen und fehlenden Filtertyp wiederherstellen
+- KW-Button: Archivfenster direkt ├Âffnen f├╝r sichtbare KW-Auswahl
 - Archivdialog: fehlende Auswahl-Hilfsmethode wiederhergestellt
 - Archivdialog: leere KW sichtbar anzeigen statt leer zu wirken
-- Archiv-Workflow: Archivpfad robust, KW-Archivliste und Tafelplanung-Zugriff erg+�nzt
-- Netzwerk-Einstellungen: Fenstergr+�+�e verdoppelt und Schrift/Pfadfelder lesbarer gemacht
+- Archiv-Workflow: Archivpfad robust, KW-Archivliste und Tafelplanung-Zugriff erg├ñnzt
+- Netzwerk-Einstellungen: Fenstergr├Â├ƒe verdoppelt und Schrift/Pfadfelder lesbarer gemacht
 - Statusanzeige: lokalen vs. Server-Betrieb klar ausweisen
 - MainWindow: Statuszeile oben rechts entklemmt und lokalen Datenpfad korrekt anzeigen
 - MainWindow: fehlende Event-Handler und Status/Update-Methoden wiederhergestellt
-- Datei-Men++s: Netzwerkordner +�ffnen in allen Hauptfenstern erg+�nzt
+- Datei-Men├╝s: Netzwerkordner ├Âffnen in allen Hauptfenstern erg├ñnzt
 - Netzwerkpfad validieren: Datei-Eingaben automatisch auf Ordner korrigieren
 
 Datum: 2026-04-02 (14 Eintraege)
-- Startfenster: Men++punkt zum Bereinigen h+�ngender Update-Prozesse erg+�nzt
+- Startfenster: Men├╝punkt zum Bereinigen h├ñngender Update-Prozeße erg├ñnzt
 - Single-Instance-Schutz: doppelte App-/Updater-Instanzen verhindern
-- Update-Popup-Schutz: automatische Update-Checks deaktiviert, nur manuelle Pr++fung
-- Update-Popup-Fix: keine Desktop-Meldungen ohne sichtbares Fenster, Update-Timer beim Schlie+�en sauber stoppen
-- MaterialDialog: ComboBox im Feld vollfl+�chig klickbar machen (nicht nur Pfeil)
-- Update-Fix: App-Start nach Update robuster und Update-Popup direkt nach --updated unterdr++cken
-- MainWindow: sichtbaren Excel-Sync-Status mit aktivem Speicherpfad erg+�nzen
-- Sync-Loop behoben: AutoSync nur bei echten externen +�nderungen, lokale Saves korrekt markieren
-- Produktion: fehlende PDF mit Ja/Nein-Aktion abfangen und Dialoggr+�+�e f++r Aktionen vergr+�+�ern
-- Produktion: Auftrag ohne PDF bearbeitbar machen (PDF nachtragen, Auftrag l+�schen)
-- Produktion: Auftragsnummer normalisieren f++r zuverl+�ssigen Statuswechsel und Archivtreffer
-- Auftragsstatus stabilisiert: Sync erh+�lt Start/Ende/Status, Produktionsdialog speichert per Auftragsnummer
-- Materialladen stabilisiert: DB priorisieren, damit gel+�schte Eintr+�ge nicht aus Excel zur++ckkehren
-- MainWindow: Material+�nderungen sofort synchron speichern statt asynchron
+- Update-Popup-Schutz: automatische Update-Checks deaktiviert, nur manülle Pr├╝fung
+- Update-Popup-Fix: keine Desktop-Meldungen ohne sichtbares Fenster, Update-Timer beim Schlie├ƒen sauber stoppen
+- MaterialDialog: ComboBox im Feld vollfl├ñchig klickbar machen (nicht nur Pfeil)
+- Update-Fix: App-Start nach Update robuster und Update-Popup direkt nach --updated unterdr├╝cken
+- MainWindow: sichtbaren Excel-Sync-Status mit aktivem Speicherpfad erg├ñnzen
+- Sync-Loop behoben: AutoSync nur bei echten externen ├änderungen, lokale Saves korrekt markieren
+- Produktion: fehlende PDF mit Ja/Nein-Aktion abfangen und Dialoggr├Â├ƒe f├╝r Aktionen vergr├Â├ƒern
+- Produktion: Auftrag ohne PDF bearbeitbar machen (PDF nachtragen, Auftrag l├Âschen)
+- Produktion: Auftragsnummer normalisieren f├╝r zuverl├ñßigen Statuswechsel und Archivtreffer
+- Auftragßtatus stabilisiert: Sync erh├ñlt Start/Ende/Status, Produktionsdialog speichert per Auftragsnummer
+- Materialladen stabilisiert: DB priorisieren, damit gel├Âschte Eintr├ñge nicht aus Excel zur├╝ckkehren
+- MainWindow: Material├ñnderungen sofort synchron speichern statt asynchron
 
 Datum: 2026-04-03 (23 Eintraege)
 - Lizenzdialog: SLA-Reaktionszeiten je Lizenzstufe konkretisiert
-- Lizenzdialog Angebotsmodus erg+�nzt: Leistungs- und Supporthinweise je Lizenzstufe
-- Lizenzaktivierung: professionelle Preisdarstellung und klare Jahreslizenz-Texte
+- Lizenzdialog Angebotsmodus erg├ñnzt: Leistungs- und Supporthinweise je Lizenzstufe
+- Lizenzaktivierung: profeßionelle Preisdarstellung und klare Jahreslizenz-Texte
 - Preismodell auf industrietaugliches Niveau angehoben (unter 30k Firmenlizenz)
-- Automatische Update-Pr++fung wieder aktiviert (Startup + periodisch)
-- Kundenmaterial Dark-Theme erg+�nzt: ComboBox/Dropdown vollst+�ndig dunkel
+- Automatische Update-Pr├╝fung wieder aktiviert (Startup + periodisch)
+- Kundenmaterial Dark-Theme erg├ñnzt: ComboBox/Dropdown vollst├ñndig dunkel
 - Kundenmaterial UI-Texte repariert: Encoding-Fehler/Mojibake entfernt
-- Laser: KW-Auswahl +�ffnet separates Archiv-Auftragsfenster
-- Auftrags++bersicht repariert: fehlende Auftr+�ge bei Bedarf aus reservierten Materialien rekonstruieren
-- Auftrags-KW-Filter korrigiert: reservierte Auftr+�ge ++ber GeaendertAm sofort in Laser/Tafelplanung anzeigen
-- Tafelplanung-Suche verbessert: robuste Ma+�erkennung und toleranter Material-/Legierungsabgleich
+- Laser: KW-Auswahl ├Âffnet separates Archiv-Auftragsfenster
+- Auftrags├╝bersicht repariert: fehlende Auftr├ñge bei Bedarf aus reservierten Materialien rekonstruieren
+- Auftrags-KW-Filter korrigiert: reservierte Auftr├ñge ├╝ber GeändertAm sofort in Laser/Tafelplanung anzeigen
+- Tafelplanung-Suche verbeßert: robuste Ma├ƒerkennung und toleranter Material-/Legierungsabgleich
 - EU-Palette-Anzeige synchronisiert: robuste Lagerort-Erkennung in Kachel und Dialog
 - Excel-Konvertierung beim Laden: Firmenformat automatisch in App-Format mit Gewicht umschreiben
-- Excel-Export: Spalte 'GewichtKg' in materialbestand.xlsx erg+�nzen
-- Herko-Import eingeschr+�nkt: nur Zeilen mit g++ltigen Ma+�en/St+�rken ++bernehmen
-- Excel-+�nderungen ++bernehmen: beim Start neuere Firmendatei vor DB priorisieren
-- Firmen-Excel-Import erweitert: Herko-Blattformat + robuste Material-/Ma+�-/St++ckzahl-Erkennung
-- Excel vereinheitlicht: Export auf ein Blatt 'Materialien', Import unterst++tzt ein Blatt + Altformat
-- Gewicht f++r manuelle Excel-Zeilen korrigiert: Dichte-Fallback ++ber Legierung + Ma+�-Parsing aus Freitext
-- Gewichtsberechnung robust: Materialart/Ma+� tolerant parsen (x/X/+�, Komma/Punkt)
-- UI: Testversionsanzeige in der oberen Leiste zentriert und gr+�+�er dargestellt
+- Excel-Export: Spalte 'GewichtKg' in materialbestand.xlsx erg├ñnzen
+- Herko-Import eingeschr├ñnkt: nur Zeilen mit g├╝ltigen Ma├ƒen/St├ñrken ├╝bernehmen
+- Excel-├änderungen ├╝bernehmen: beim Start neüre Firmendatei vor DB priorisieren
+- Firmen-Excel-Import erweitert: Herko-Blattformat + robuste Material-/Ma├ƒ-/St├╝ckzahl-Erkennung
+- Excel vereinheitlicht: Export auf ein Blatt 'Materialien', Import unterst├╝tzt ein Blatt + Altformat
+- Gewicht f├╝r manülle Excel-Zeilen korrigiert: Dichte-Fallback ├╝ber Legierung + Ma├ƒ-Parsing aus Freitext
+- Gewichtsberechnung robust: Materialart/Ma├ƒ tolerant parsen (x/X/├ù, Komma/Punkt)
+- UI: Testversionsanzeige in der oberen Leiste zentriert und gr├Â├ƒer dargestellt
 - Excel-Import: Dezimalwerte mit Komma korrekt parsen (0,5 bleibt 0,5 statt 5,0)
-- Excel-Sync transparenter: Sync-Fehlerstatus erfassen und im Hauptfenster anzeigen
+- Excel-Sync transparenter: Sync-Fehlerstatus erfaßen und im Hauptfenster anzeigen
 
 Datum: 2026-04-04 (25 Eintraege)
-- Auftragssteuerung: Kant-PDF und Kant-Status erg+�nzt inkl. Direkt+�ffnung
-- Laser/Kantbank-Auftragsliste: Kant-PDF-Status (Gefunden/Fehlt) farblich erg+�nzt
-- Kant-PDF-Erkennung verbessert: zuerst kundenmaterial.json, danach robuste Token-Suche in Kundenordnern
+- Auftragßteürung: Kant-PDF und Kant-Status erg├ñnzt inkl. Direkt├Âffnung
+- Laser/Kantbank-Auftragsliste: Kant-PDF-Status (Gefunden/Fehlt) farblich erg├ñnzt
+- Kant-PDF-Erkennung verbeßert: zürst kundenmaterial.json, danach robuste Token-Suche in Kundenordnern
 - Kantbank: zweite PDF (Kantzeichnung) automatisch per Zeichnungsnummer aus Kundenordner ermitteln und anzeigen
-- Fenstersteuerung vereinheitlicht: Pressed-Feedback f++r Titlebar-Buttons in Haupt- und Unterprogrammen
+- Fenstersteürung vereinheitlicht: Preßed-Feedback f├╝r Titlebar-Buttons in Haupt- und Unterprogrammen
 - UI-Konsistenz: Undo/Redo-Pfeile in Haupt- und Unterprogrammen pixelgenau vereinheitlicht
-- Undo/Redo einheitlich: Pfeil-Buttons oben neben Men++ in Hauptprogramm, Lager und Laser
-- Auftragssteuerung: Zur++ck/Vorw+�rts oben neben Men++ platziert und aus linker Leiste entfernt
-- Auftragssteuerung: Freigabe 'Beides' entfernt und Layout auf zentrale Auftragsliste mit linker Seitenleiste umgestellt
-- Auftragssteuerung: linke Aktionsliste kompakter gestaltet (kleinere Buttons/Abst+�nde)
-- Auftragssteuerung: linke Buttonliste in klare Gruppen mit +�berschriften strukturiert
-- Auftragssteuerung: alle Aktionsbuttons links vertikal untereinander angeordnet
-- Auftragssteuerung: normales Fenster aktiviert und vollst+�ndige Lagerlistenansicht ausgeblendet
-- Bereich-Spalte farblich hervorgehoben in Auftragssteuerung und Auftragsliste
-- Auftragssteuerung: Button und Funktion f++r Freigabe an beide Bereiche erg+�nzt
-- Auftragssteuerung: Freigabe f++r Laser erg+�nzt und Bereich-Spalte in Auftragslisten eingebaut
-- Arbeitsplatz-Trennung eingef++hrt: Auftr+�ge f++r Laser/Kantbank filterbar und Kantbank-Freigabe in Auftragssteuerung
-- Hauptprogramm: Kantbank-Kachel erg+�nzt und Direkt+�ffnung implementiert
-- Hauptprogramm: Tafelplanung-Kachel in Auftragssteuerung umbenannt
-- UI-Umbenennung: Tafelplanung als Auftragssteuerung in allen sichtbaren Texten
-- Startseite visuell beruhigt: Herko-Gr++n nur dezent als Akzent statt gro+�fl+�chig
-- Startseite: Herko-Gr++n mit schmalen gestrichelten Linienakzenten erg+�nzt
-- Startseite: Herko-Gr++n als sichtbarer Hauptakzent im Dark-Theme
-- Startseite: neues Kantbank-Arbeitsfeld erg+�nzt; Kantbank-Ansicht analog Laser hinzugef++gt
-- Lizenzdialog: dunkles Design vereinheitlicht und Herko-Gr++n als Hauptakzent gesetzt
+- Undo/Redo einheitlich: Pfeil-Buttons oben neben Men├╝ in Hauptprogramm, Lager und Laser
+- Auftragßteürung: Zur├╝ck/Vorw├ñrts oben neben Men├╝ platziert und aus linker Leiste entfernt
+- Auftragßteürung: Freigabe 'Beides' entfernt und Layout auf zentrale Auftragsliste mit linker Seitenleiste umgestellt
+- Auftragßteürung: linke Aktionsliste kompakter gestaltet (kleinere Buttons/Abst├ñnde)
+- Auftragßteürung: linke Buttonliste in klare Gruppen mit ├£berschriften strukturiert
+- Auftragßteürung: alle Aktionsbuttons links vertikal untereinander angeordnet
+- Auftragßteürung: normales Fenster aktiviert und vollst├ñndige Lagerlistenansicht ausgeblendet
+- Bereich-Spalte farblich hervorgehoben in Auftragßteürung und Auftragsliste
+- Auftragßteürung: Button und Funktion f├╝r Freigabe an beide Bereiche erg├ñnzt
+- Auftragßteürung: Freigabe f├╝r Laser erg├ñnzt und Bereich-Spalte in Auftragslisten eingebaut
+- Arbeitsplatz-Trennung eingef├╝hrt: Auftr├ñge f├╝r Laser/Kantbank filterbar und Kantbank-Freigabe in Auftragßteürung
+- Hauptprogramm: Kantbank-Kachel erg├ñnzt und Direkt├Âffnung implementiert
+- Hauptprogramm: Tafelplanung-Kachel in Auftragßteürung umbenannt
+- UI-Umbenennung: Tafelplanung als Auftragßteürung in allen sichtbaren Texten
+- Startseite visüll beruhigt: Herko-Gr├╝n nur dezent als Akzent statt gro├ƒfl├ñchig
+- Startseite: Herko-Gr├╝n mit schmalen gestrichelten Linienakzenten erg├ñnzt
+- Startseite: Herko-Gr├╝n als sichtbarer Hauptakzent im Dark-Theme
+- Startseite: neüs Kantbank-Arbeitsfeld erg├ñnzt; Kantbank-Ansicht analog Laser hinzugef├╝gt
+- Lizenzdialog: dunkles Design vereinheitlicht und Herko-Gr├╝n als Hauptakzent gesetzt
 
 Datum: 2026-04-05 (19 Eintraege)
 - Kunden Material: PDF- und Excel-Auswahl direkt unter Datei sichtbar gemacht
-- Kunden Material: Datei>Einstellungen mit direkten Auswahlpunkten f++r PDF-Root und Excel-Datei erg+�nzt
+- Kunden Material: Datei>Einstellungen mit direkten Auswahlpunkten f├╝r PDF-Root und Excel-Datei erg├ñnzt
 - Kunden Material: Pfadfelder aus Hauptansicht entfernt und in Datei>Einstellungen als Dialog verschoben
 - Kunden Material: Kunden-Combo Textausrichtung im editierbaren Feld korrigiert (Text nicht mehr verdeckt)
-- Kunden Material: Doppelklick +�ffnet jetzt St++ckzahl-+�nderung oder L+�schen statt nur PDF-Vorschau
+- Kunden Material: Doppelklick ├Âffnet jetzt St├╝ckzahl-├änderung oder L├Âschen statt nur PDF-Vorschau
 - Kunden Material: editierbare Kunden-Combo zeigt Auswahltext wieder korrekt an
-- Kunden Material: Kundenauswahl filtert jetzt die Eintragsliste zuverl+�ssig
-- Kunden Material: feste Excel-Dateiauswahl mit Pfadspeicherung und Import ++ber ausgew+�hlte Datei
-- Kunden Material: Excel-Import aufgebaut (Kunde/Zeichnungsnummer/Anzahl einlesen und Eintr+�ge automatisch ++bernehmen)
-- Kantbank-Excel: relevante Spalten nach Header-Promotion erzwingen und Zeichnungs-/Anzahl-Heuristik f++r leere Zielspalten
-- Kantbank-Excel: irrelevante Zeilen filtern und Merged-Cell-+�bernahme begrenzen (nur relevante Spaltenwerte)
-- Kantbank-Excel: manuelle Blattauswahl + Erkennungsinfo erg+�nzt, um fehlende Zeichnungsspalten sicher zu laden
-- Kantbank-Excel: Fallback-Header aus erster Datenzeile ++bernehmen (Spalte1-Fix) f++r Zeichnungsnummer/Status/Datum
-- Kantbank-Excel-Erkennung verbessert: Header/Blatt tiefer analysieren und Datumszellen robust lesen
-- Kantbank-Excel-Import korrigiert: Blatt/Header robust erkennen, Merged Cells lesen, Datum/Kunde-Filter stabil und ausgew+�hlte Excel +�ffnen
-- Kantbank-Excel: korrektes Blatt/Header erkennen, Kunde/Datum-Filter stabilisieren und ausgew+�hlte Excel +�ffnen
-- Kantbank: eigene Server-Excel ausw+�hlbar, zentral anzeigen und nach Kunde/Datum filtern + speichern
-- Kantbank-Layout fokussiert: Materialbereich ausblenden, Auftr+�ge zentral, Excel-Auftragsdatei-Button erg+�nzen
+- Kunden Material: Kundenauswahl filtert jetzt die Eintragsliste zuverl├ñßig
+- Kunden Material: feste Excel-Dateiauswahl mit Pfadspeicherung und Import ├╝ber ausgew├ñhlte Datei
+- Kunden Material: Excel-Import aufgebaut (Kunde/Zeichnungsnummer/Anzahl einlesen und Eintr├ñge automatisch ├╝bernehmen)
+- Kantbank-Excel: relevante Spalten nach Header-Promotion erzwingen und Zeichnungs-/Anzahl-Heuristik f├╝r leere Zielspalten
+- Kantbank-Excel: irrelevante Zeilen filtern und Merged-Cell-├£bernahme begrenzen (nur relevante Spaltenwerte)
+- Kantbank-Excel: manülle Blattauswahl + Erkennungsinfo erg├ñnzt, um fehlende Zeichnungßpalten sicher zu laden
+- Kantbank-Excel: Fallback-Header aus erster Datenzeile ├╝bernehmen (Spalte1-Fix) f├╝r Zeichnungsnummer/Status/Datum
+- Kantbank-Excel-Erkennung verbeßert: Header/Blatt tiefer analysieren und Datumszellen robust lesen
+- Kantbank-Excel-Import korrigiert: Blatt/Header robust erkennen, Merged Cells lesen, Datum/Kunde-Filter stabil und ausgew├ñhlte Excel ├Âffnen
+- Kantbank-Excel: korrektes Blatt/Header erkennen, Kunde/Datum-Filter stabilisieren und ausgew├ñhlte Excel ├Âffnen
+- Kantbank: eigene Server-Excel ausw├ñhlbar, zentral anzeigen und nach Kunde/Datum filtern + speichern
+- Kantbank-Layout fokußiert: Materialbereich ausblenden, Auftr├ñge zentral, Excel-Auftragsdatei-Button erg├ñnzen
 - Kantbank-Suche vereinfacht: Kantzeichnung nur noch in konfigurierten Kundenordnern suchen
 
 Datum: 2026-04-06 (12 Eintraege)
-- Auftragssteuerung: doppelte Titelleiste entfernt (WindowStyle None) f++r einheitliche Unterprogramm-Ansicht
-- Unterprogramme vereinheitlicht: Hauptprogramm-Button in Lager/Laser/Kantbank/Auftragssteuerung/KundenMaterial erg+�nzt
-- Geo Suche: feste Navigationsleiste im Inhalt erg+�nzt (Startprogramm/Hauptprogramm immer sichtbar)
-- Geo Suche UI: Startprogramm/Hauptprogramm dauerhaft sichtbar in eigener Kopfzeilen-Reihe
-- Geo Suche: Vollbild-Start und direkte Buttons zu Startprogramm/Hauptprogramm erg+�nzt
-- Startfenster: Geo Suche einheitlich wie andere Programme starten (Bedienerauswahl, MainWindow-Wechsel, Startfenster schlie+�en)
-- Geo Speicherung: autonome Zielordnerlogik nach Materialhauptordner und St+�rke (z.B. V2a/1mm, V2a/25mm)
-- Geo Suche: Alle ausw+�hlen/abw+�hlen in Ordnerdialog erg+�nzt
-- Geo Suche: Mehrfachauswahl f++r Ordner aktiviert und Suche ++ber alle ausgew+�hlten Pfade umgesetzt
-- Geo Suche fest integriert: vollst+�ndiges Modul (Views/ViewModels/Services/Dialogs) in MaterialManager eingebunden
-- Geo Suche: bestehende Arbeitsvorbereitung-App direkt ++ber bekannte Pfade integrieren und automatisch starten
-- Startfenster: Geo Suche als Men++punkt und Kachel erg+�nzt, externe EXE ausw+�hlbar und startbar
+- Auftragßteürung: doppelte Titelleiste entfernt (WindowStyle None) f├╝r einheitliche Unterprogramm-Ansicht
+- Unterprogramme vereinheitlicht: Hauptprogramm-Button in Lager/Laser/Kantbank/Auftragßteürung/KundenMaterial erg├ñnzt
+- Geo Suche: feste Navigationsleiste im Inhalt erg├ñnzt (Startprogramm/Hauptprogramm immer sichtbar)
+- Geo Suche UI: Startprogramm/Hauptprogramm daürhaft sichtbar in eigener Kopfzeilen-Reihe
+- Geo Suche: Vollbild-Start und direkte Buttons zu Startprogramm/Hauptprogramm erg├ñnzt
+- Startfenster: Geo Suche einheitlich wie andere Programme starten (Bedienerauswahl, MainWindow-Wechsel, Startfenster schlie├ƒen)
+- Geo Speicherung: autonome Zielordnerlogik nach Materialhauptordner und St├ñrke (z.B. V2a/1mm, V2a/25mm)
+- Geo Suche: Alle ausw├ñhlen/abw├ñhlen in Ordnerdialog erg├ñnzt
+- Geo Suche: Mehrfachauswahl f├╝r Ordner aktiviert und Suche ├╝ber alle ausgew├ñhlten Pfade umgesetzt
+- Geo Suche fest integriert: vollst├ñndiges Modul (Views/ViewModels/Services/Dialogs) in MaterialManager eingebunden
+- Geo Suche: bestehende Arbeitsvorbereitung-App direkt ├╝ber bekannte Pfade integrieren und automatisch starten
+- Startfenster: Geo Suche als Men├╝punkt und Kachel erg├ñnzt, externe EXE ausw├ñhlbar und startbar
 
 Datum: 2026-04-07 (5 Eintraege)
-- Lager: Spalten f++r Anlagedatum und +�nderungsdatum erg+�nzt
-- Lager: sichtbaren Laser-Button im Kopfbereich erg+�nzt
-- Lager: Schnellwechsel zu Laser erg+�nzt (Men++ + sichtbarer Button), ohne erneute Anmeldung
-- Laser: Schnellbuttons und Men++eintr+�ge f++r Startprogramm und Lager erg+�nzt (ohne erneute Anmeldung)
-- UI: Navigationsbuttons mit App-Logo erg+�nzt und Geo-Titelleiste mit dezentem Herko-Akzent angepasst
+- Lager: Spalten f├╝r Anlagedatum und ├änderungsdatum erg├ñnzt
+- Lager: sichtbaren Laser-Button im Kopfbereich erg├ñnzt
+- Lager: Schnellwechsel zu Laser erg├ñnzt (Men├╝ + sichtbarer Button), ohne erneute Anmeldung
+- Laser: Schnellbuttons und Men├╝eintr├ñge f├╝r Startprogramm und Lager erg├ñnzt (ohne erneute Anmeldung)
+- UI: Navigationsbuttons mit App-Logo erg├ñnzt und Geo-Titelleiste mit dezentem Herko-Akzent angepaßt
 
 Datum: 2026-04-08 (7 Eintraege)
 - Geo: doppelte Start/Hauptprogramm-Buttons entfernt (nur Kopfzeile bleibt)
 - Material-Suchdialog: Form/Typ vor Material angeordnet
-- Auftragssteuerung: Material-Suche um Rohrtypen erweitert und Trefferliste um Kategorie erg+�nzt
-- Auftragssteuerung UI: Reste-Suche sichtbar in Material-Suche umbenannt
-- Auftragssteuerung: Reservierung auf alle verf++gbaren Lager-Materialien erweitert (inkl. Rohr/Profil)
-- MaterialDialog Rohr: Standardma+�e f++r Vierkant/Rechteck als Dropdown erg+�nzt
+- Auftragßteürung: Material-Suche um Rohrtypen erweitert und Trefferliste um Kategorie erg├ñnzt
+- Auftragßteürung UI: Reste-Suche sichtbar in Material-Suche umbenannt
+- Auftragßteürung: Reservierung auf alle verf├╝gbaren Lager-Materialien erweitert (inkl. Rohr/Profil)
+- MaterialDialog Rohr: Standardma├ƒe f├╝r Vierkant/Rechteck als Dropdown erg├ñnzt
 - Material neu: Rohrformen erweitert (Rund/Vierkant/Rechteck) inkl. Dialogfelder und Gewichtsberechnung
 
 Datum: 2026-04-09 (11 Eintraege)
@@ -381,20 +385,20 @@ Datum: 2026-04-09 (11 Eintraege)
 - Ignore certificate and temporary WPF project artifacts
 - Update copilot instructions and sync latest software package
 - Update USB package docs and add PDF drag-and-drop in booking dialog
-- Laser-Auftragsliste: EILT-Hinweis und rote Markierung erg+�nzt
-- Auftragssteuerung: Drag & Drop-Sortierung in Auftragsliste erg+�nzt
-- Auftragssteuerung: Priorisierung (hoch/runter), EILT-Markierung und Start/Ende-Zeiten erg+�nzt
-- MaterialDialog: Lagerort als eigene sichtbare Zeile; Laser respektiert manuellen Lagerort
-- MaterialDialog: Restnummer und Lagerort als manuell bearbeitbare Felder sichtbar gemacht
-- Material bearbeiten: Restnummer und Lagerort manuell editierbar, Lagerort-Auswahl erg+�nzt
+- Laser-Auftragsliste: EILT-Hinweis und rote Markierung erg├ñnzt
+- Auftragßteürung: Drag & Drop-Sortierung in Auftragsliste erg├ñnzt
+- Auftragßteürung: Priorisierung (hoch/runter), EILT-Markierung und Start/Ende-Zeiten erg├ñnzt
+- MaterialDialog: Lagerort als eigene sichtbare Zeile; Laser respektiert manüllen Lagerort
+- MaterialDialog: Restnummer und Lagerort als manüll bearbeitbare Felder sichtbar gemacht
+- Material bearbeiten: Restnummer und Lagerort manüll editierbar, Lagerort-Auswahl erg├ñnzt
 
 Datum: 2026-04-10 (12 Eintraege)
 - Show pilot/license banner in Start window and Geo subprogram
 - Show pilot/license status banner in all subprogram title bars
 - Add global startup and periodic update checks for all app modules
 - Add reservation workflow in warehouse with optional entry deletion
-- Improve Ma+� filter with segment-based matching
-- Use exact numeric matching for material thickness filter
+- Improve Ma├ƒ filter with segment-based matching
+- Use exact numeric matching for material thickneß filter
 - Reduce warehouse column filters to required fields only
 - Keep update changelog output fully German in UI
 - Rename trial label to Pilotbetrieb and persist branding rule
@@ -407,192 +411,192 @@ Datum: 2026-04-11 (18 Eintraege)
 - Remove remaining Kantbank controls and logic from Laser window
 - Temporarily remove remaining Kantbank module files and hooks
 - Temporarily disable Kantbank module and remove related UI entries
-- Add unified server and excel status banners across subprogram windows
-- Fix duplicate network status controls and restore title bars in subwindows
+- Add unified server and excel status banners acroß subprogram windows
+- Fehlerkorrektur duplicate network status controls and restore title bars in subwindows
 - Refine German fallback wording for update changelog
 - Filter English changelog lines from update dialog output
 - Add nachproduktion and delete checkbox options in reserve dialog
 - Store online presence folder beside order archive root
 - Make online status compact and keep full user list in popup
-- Fix online users list across PCs with shared heartbeat presence
+- Fehlerkorrektur online users list acroß PCs with shared heartbeat presence
 - Add startup network checking notice and delayed retry before warning
 - Harden network startup health check with retry to avoid false offline warning
-- Improve Ma+� filter fallback sorting for query dimensions
-- Validate thickness input range and prevent 0 mm in material dialog
-- Adjust thickness filter for input 0 and add 0.2 mm standard thickness
-- Allow robust 0.3/0,3 thickness selection in material dialog
+- Improve Ma├ƒ filter fallback sorting for qüry dimensions
+- Validate thickneß input range and prevent 0 mm in material dialog
+- Adjust thickneß filter for input 0 and add 0.2 mm standard thickneß
+- Allow robust 0.3/0,3 thickneß selection in material dialog
 
 Datum: 2026-04-12 (8 Eintraege)
-- UI: Auswahlfelder ohne Pfeil in Lager und Auftragssteuerung
-- Lager und Auftragssteuerung: Material- und St+�rke-Filter als Auswahl
+- UI: Auswahlfelder ohne Pfeil in Lager und Auftragßteürung
+- Lager und Auftragßteürung: Material- und St├ñrke-Filter als Auswahl
 - Copilot-Anweisungen aktualisiert
-- Auftragssteuerung: Materialbestand mit manuellen Spaltenfiltern wieder eingeblendet
-- Fix: Startprogramm + Lager Buttons aus Laser-Men++ entfernt + Aktualisieren nach links verschoben
-- Feature: Navigation-Buttons zum Laser-Fenster hinzugef++gt (Lager + Auftragssteuerung)
-- Feature: PDF-Zwang entfernt + Navigation Buttons zu Laser/Lager hinzugef++gt
-- Add button in Lager header to open Auftragssteuerung
+- Auftragßteürung: Materialbestand mit manüllen Spaltenfiltern wieder eingeblendet
+- Fehlerkorrektur: Startprogramm + Lager Buttons aus Laser-Men├╝ entfernt + Aktualisieren nach links verschoben
+- Neü Funktionure: Navigation-Buttons zum Laser-Fenster hinzugef├╝gt (Lager + Auftragßteürung)
+- Neü Funktionure: PDF-Zwang entfernt + Navigation Buttons zu Laser/Lager hinzugef├╝gt
+- Add button in Lager header to open Auftragßteürung
 
 Datum: 2026-04-13 (12 Eintraege)
-- UI: Auftragsende-Dialog vergr+�+�ern und Aktionen sichtbar machen
+- UI: Auftragsende-Dialog vergr├Â├ƒern und Aktionen sichtbar machen
 - UI: Auftragsende-Auswahl als Dialogfenster umsetzen
-- Produktion: Materialfluss nach Auftragsende korrigieren
+- Produktion: Materialfluß nach Auftragsende korrigieren
 - Laser: Reservierung nach Materialbearbeitung korrekt entfernen
 - Netzwerk: automatischen Refresh per Timer stabilisieren
-- Auto-Sync: Concurrency-Fehler beim Laden der Auftr+�ge beheben
-- Netzwerk: automatische Aktualisierung ohne manuellen Refresh
-- Auto-Sync: Watcher gegen Abst++rze absichern
-- UI: Statusmeldung f++r automatische Aktualisierung anzeigen
-- Netzwerk: Ansichten bei gemeinsamen +�nderungen automatisch aktualisieren
-- Netzwerk: Auftragsstatus zwischen PCs synchronisieren
-- Lager: globale Reservierung aufheben mit Auswahl Bearbeiten oder L+�schen
+- Auto-Sync: Concurrency-Fehler beim Laden der Auftr├ñge beheben
+- Netzwerk: automatische Aktualisierung ohne manüllen Refresh
+- Auto-Sync: Watcher gegen Abst├╝rze absichern
+- UI: Statusmeldung f├╝r automatische Aktualisierung anzeigen
+- Netzwerk: Ansichten bei gemeinsamen ├änderungen automatisch aktualisieren
+- Netzwerk: Auftragßtatus zwischen PCs synchronisieren
+- Lager: globale Reservierung aufheben mit Auswahl Bearbeiten oder L├Âschen
 
 Datum: 2026-04-14 (12 Eintraege)
-- Fix: fehlende Assets fuer Build wiederherstellen
-- Fix: EF-Konflikt beim Speichern von Materialbuchungen vermeiden
+- Fehlerkorrektur: fehlende Aßets für Build wiederherstellen
+- Fehlerkorrektur: EF-Konflikt beim Speichern von Materialbuchungen vermeiden
 - PDF: Auftrags-PDFs per Archivpfad und LST-bereinigter Suche vereinheitlichen
-- UI: BestaetigungsDialog f++r Release-Build einchecken
-- Trigger Auto Release f++r aktuelles Update
-- Excel: separate Datum- und Uhrzeitspalten f++r erstellt und ge+�ndert
-- Material: Legacy-00Uhr +�nderungszeit beim Bearbeiten reparieren
-- Excel: Uhrzeit f++r +�nderungsdatum korrekt speichern
+- UI: BestätigungsDialog f├╝r Release-Build einchecken
+- Trigger Auto Release f├╝r aktülles Update
+- Excel: separate Datum- und Uhrzeitspalten f├╝r erstellt und ge├ñndert
+- Material: Legacy-00Uhr ├änderungszeit beim Bearbeiten reparieren
+- Excel: Uhrzeit f├╝r ├änderungsdatum korrekt speichern
 - UI: Reservierung-Aufheben im Lager als dunklen Dialog umsetzen
-- Update: kumulative Vollupdates f++r alle PCs klar unterst++tzen
+- Update: kumulative Vollupdates f├╝r alle PCs klar unterst├╝tzen
 - UI: Auto-Refresh in allen Ansichten ohne Springen stabilisieren
 - Laser: Auto-Refresh ohne Layout-Sprung und Auswahlverlust
 
 Datum: 2026-04-15 (16 Eintraege)
 - Update: einheitliches Elevation-Verhalten und Update-Rechte bei Installation
 - Laser: Nachproduktion stabilisiert und fehlende Handler repariert
-- Laser: 5-Wochen-Liste ber++cksichtigt auch archivierte Auftr+�ge
+- Laser: 5-Wochen-Liste ber├╝cksichtigt auch archivierte Auftr├ñge
 - Laser: Auftragsverfolgung als 5-Wochen-Fenster pro KW
-- Auftragssteuerung: unn+�tige Sidebar-Buttons entfernt
-- Fix: Hintergrundlogo in Auftragssteuerung wieder sichtbar
-- Fix: Herko-Hintergrundlogo auf vorherigen Stand zur++cksetzen
-- Auftragsliste: Doppelklick +�ffnet PDF statt Auftrag ++bernehmen
-- Auftragsliste: aktuelle KW als Standard statt Alle
-- Auftragsliste: PDF-Spalte und +�ffnen aus Archiv erg+�nzen
+- Auftragßteürung: unn├Âtige Sidebar-Buttons entfernt
+- Fehlerkorrektur: Hintergrundlogo in Auftragßteürung wieder sichtbar
+- Fehlerkorrektur: Herko-Hintergrundlogo auf vorherigen Stand zur├╝cksetzen
+- Auftragsliste: Doppelklick ├Âffnet PDF statt Auftrag ├╝bernehmen
+- Auftragsliste: aktülle KW als Standard statt Alle
+- Auftragsliste: PDF-Spalte und ├ûffnen aus Archiv erg├ñnzen
 - UI: ComboBox ohne Pfeil-Icon, Auswahl per Klick aufs Feld
-- Auftragsliste: Jahr- und KW-Auswahl f++r archivierte Auftr+�ge
-- Archiv: alte Auftrags-Metadaten automatisch nachfuellen
-- Auftragsliste verbreitert und Archiv-Metadaten fuer Auftragdetails erg+�nzt
-- Auftragsliste: Standard auf Archiviert und Quelle-Dropdown dunkel
-- Auftragsliste: Archivierte Auftraege inkl. Produktionsdauer anzeigen
+- Auftragsliste: Jahr- und KW-Auswahl f├╝r archivierte Auftr├ñge
+- Archiv: alte Auftrags-Metadaten automatisch nachfüllen
+- Auftragsliste verbreitert und Archiv-Metadaten für Auftragdetails erg├ñnzt
+- Auftragsliste: Standard auf Archiviert und Qülle-Dropdown dunkel
+- Auftragsliste: Archivierte Aufträge inkl. Produktionsdaür anzeigen
 
 Datum: 2026-04-16 (10 Eintraege)
-- PDF: robuster +�ffner mit Mehrfachstart-Schutz und Edge-Fallback
-- Laser: +�berschrift-Encoding korrigiert und Aktionsbuttons reduziert
+- PDF: robuster ├ûffner mit Mehrfachstart-Schutz und Edge-Fallback
+- Laser: ├£berschrift-Encoding korrigiert und Aktionsbuttons reduziert
 - Planer-Auftragsliste: Produktionskommentar anzeigen
-- Fix: EF-Trackingkonflikt bei Materialien mit doppelter ID vermeiden
-- Produktion: Begr++ndungsdialog bei Abschluss + Archivansicht mit klickbarer Begr++ndung
-- Archiv: Metadaten-Auftr+�ge ohne PDF im Jahresarchiv anzeigen
-- Laser: Auftragsverfolgung um Ersteller/+�nderer und Zeitstempel erweitert
-- Archiv: Materialart-St+�rke global auch f++r archivierte Auftr+�ge anzeigen
-- Auftr+�ge: globale Materialanzeige als Materialart-St+�rke statt Positionszahl
-- UI: ResteAuswahlDialog breiter f++r vollst+�ndige Spaltenanzeige
+- Fehlerkorrektur: EF-Trackingkonflikt bei Materialien mit doppelter ID vermeiden
+- Produktion: Begr├╝ndungsdialog bei Abschluß + Archivansicht mit klickbarer Begr├╝ndung
+- Archiv: Metadaten-Auftr├ñge ohne PDF im Jahresarchiv anzeigen
+- Laser: Auftragsverfolgung um Ersteller/├änderer und Zeitstempel erweitert
+- Archiv: Materialart-St├ñrke global auch f├╝r archivierte Auftr├ñge anzeigen
+- Auftr├ñge: globale Materialanzeige als Materialart-St├ñrke statt Positionszahl
+- UI: ResteAuswahlDialog breiter f├╝r vollst├ñndige Spaltenanzeige
 
 Datum: 2026-04-17 (30 Eintraege)
-- Theme: globaler ComboBox-Hellmodus-Fix f++r dunkle Dropdown-Schrift
-- Lager: System-Highlightfarben f++r Filter-Combos auf dunklen Text fixiert
-- Lager: Dropdown-Eintr+�ge im Filter explizit mit dunkler Textfarbe
-- Lager: Filter-Combos auf String-Items umgestellt f++r dunkle Dropdown-Schrift
-- Lager: Filter-Combo Eintr+�ge inkl. Auswahl/Highlight dauerhaft dunkel
+- Theme: globaler ComboBox-Hellmodus-Fix f├╝r dunkle Dropdown-Schrift
+- Lager: System-Highlightfarben f├╝r Filter-Combos auf dunklen Text fixiert
+- Lager: Dropdown-Eintr├ñge im Filter explizit mit dunkler Textfarbe
+- Lager: Filter-Combos auf String-Items umgestellt f├╝r dunkle Dropdown-Schrift
+- Lager: Filter-Combo Eintr├ñge inkl. Auswahl/Highlight daürhaft dunkel
 - Lager: Combo-Filtertext in Hell final dunkel fixiert
-- Lager: Filter-Combobox-Eintr+�ge mit explizit dunkler Schrift erzeugen
+- Lager: Filter-Combobox-Eintr├ñge mit explizit dunkler Schrift erzeugen
 - Lager: Combo-Auswahltext in Hell explizit dunkel erzwungen
 - Lager: Filtertext in Hell explizit dunkel gesetzt
 - Lager: ComboBox-Textkontrast in Hell auf Themefarben umgestellt
-- Theme: Lesbarkeit im Hell-Modus deutlich erh+�ht
-- Lager: Filterbereich-Kontrast f++r Hell/Dunkel ++ber Theme-Ressourcen korrigiert
+- Theme: Lesbarkeit im Hell-Modus deutlich erh├Âht
+- Lager: Filterbereich-Kontrast f├╝r Hell/Dunkel ├╝ber Theme-Reßourcen korrigiert
 - UI: Hintergrundlogos in allen Unterprogrammen entfernt
 - Theme: Hell-Hintergrund auf Herko_Logo_hell-Farbton abgestimmt
-- Start: vorl+�ufig logo-freies Layout ohne Hintergrundlogos
+- Start: vorl├ñufig logo-freies Layout ohne Hintergrundlogos
 - Start: Hell-Hintergrundlogo deutlich sichtbar gemacht
-- Fix: Herko Hell/Dunkel Logos als WPF-Ressourcen eingebunden
+- Fehlerkorrektur: Herko Hell/Dunkel Logos als WPF-Reßourcen eingebunden
 - Start: Hintergrundlogos auf Herko_Logo_hell und Herko_Logo_Dunkel benannt
-- Start: Herko_Logo_hell als vollfl+�chiges Hell-Hintergrundlogo, Frontlogo entfernt
-- Start: Hellmodus-Logo auf Assets/Herko_Logo_hell.png umgestellt
-- Start: separates Hell-Logo im Light-Theme erg+�nzt
+- Start: Herko_Logo_hell als vollfl├ñchiges Hell-Hintergrundlogo, Frontlogo entfernt
+- Start: Hellmodus-Logo auf Aßets/Herko_Logo_hell.png umgestellt
+- Start: separates Hell-Logo im Light-Theme erg├ñnzt
 - Start: Hintergrundlogo-Overlay aufgehellt
-- Start: Herko-Logo als vollfl+�chigen Hintergrund mit dunklem Overlay
+- Start: Herko-Logo als vollfl├ñchigen Hintergrund mit dunklem Overlay
 - UI: Kachel-Icons ohne Emoji-Kasten und Hell-Modus-DataGrid-Kontrast gefixt
-- Theme: Kachel-Icon-Hintergr++nde fix und Kontrast in hellen DataGrids verbessert
+- Theme: Kachel-Icon-Hintergr├╝nde fix und Kontrast in hellen DataGrids verbeßert
 - Theme: Hell Pro mit dezentem Herko-Akzent finalisiert
-- Theme: Hell Pro Farbprofil und bessere Sichtbarkeit f++r Men++/Slider
-- Theme: helles Design optisch verbessert und Slider deutlicher gemacht
-- Start: sichtbaren Theme-Slider im Hauptbereich erg+�nzt
+- Theme: Hell Pro Farbprofil und beßere Sichtbarkeit f├╝r Men├╝/Slider
+- Theme: helles Design optisch verbeßert und Slider deutlicher gemacht
+- Start: sichtbaren Theme-Slider im Hauptbereich erg├ñnzt
 - Start: globaler Theme-Umschalter (Dunkel/Hell) mit Persistenz
 
 Datum: 2026-04-19 (6 Eintraege)
-- USB-Installation aktualisiert: Excel-Import-Button, Restnummer-Fix, DB-fuehrend
-- Auftragssteuerung: Materialien aus Excel importieren - Men++eintrag in Datei-Men++ hinzugef++gt
-- Lager: Manueller Excel-Import-Button - Materialien aus Excel importieren mit Gewichtsberechnung
-- Import-Fix: Keine auto-Restnummer beim Excel-Import, DB ist fuehrend - kein automatischer Re-Import aus Excel
-- Projektdateien aktualisiert: copilot-instructions.md und Herko_Logo_hell.png hinzugefuegt
-- Auftragssteuerung: Spaltenfilter-Text im Hellmodus dunkel - ItemTemplate mit ThemeForegroundBrush, ThemeService BasedOn-Fix, ComboBoxItem-Template TextElement.Foreground-Binding
+- USB-Installation aktualisiert: Excel-Import-Button, Restnummer-Fix, DB-führend
+- Auftragßteürung: Materialien aus Excel importieren - Men├╝eintrag in Datei-Men├╝ hinzugef├╝gt
+- Lager: Manüller Excel-Import-Button - Materialien aus Excel importieren mit Gewichtsberechnung
+- Import-Fix: Keine auto-Restnummer beim Excel-Import, DB ist führend - kein automatischer Re-Import aus Excel
+- Projektdateien aktualisiert: copilot-instructions.md und Herko_Logo_hell.png hinzugefügt
+- Auftragßteürung: Spaltenfilter-Text im Hellmodus dunkel - ItemTemplate mit ThemeForegroundBrush, ThemeService BasedOn-Fix, ComboBoxItem-Template TextElement.Foreground-Binding
 
 Datum: 2026-04-20 (19 Eintraege)
 - Lager Filter: im Hellmodus nur Textfarbe dunkel setzen
-- Lager: Filter-ComboBoxen immer dunkel - passt zum hardcodierten dunklen Filterbereich
+- Lager: Filter-ComboBoxen immer dunkel - paßt zum hardcodierten dunklen Filterbereich
 - Lager: PopulateFilterComboBox setzt Style direkt je nach Theme - kein Timing-Problem mehr
 - Lager: PopulateFilterComboBox mit Strings - ItemContainerStyle von ThemeService greift in beiden Modi korrekt
-- Lager: PopulateFilterComboBox wie TafelplanungWindow - ComboBoxItem-Objekte, keine manuellen Farben mehr
-- App.xaml.cs: PopupRoot von ApplyThemeToWindow ausschliessen - war Ursache fuer helle ComboBox-Items
+- Lager: PopulateFilterComboBox wie TafelplanungWindow - ComboBoxItem-Objekte, keine manüllen Farben mehr
+- App.xaml.cs: PopupRoot von ApplyThemeToWindow außchließen - war Ursache für helle ComboBox-Items
 - ThemeService: Dunkel=DarkComboBoxItemStyle explizit setzen; Hell=BasedOn dunkel damit ControlTemplate erhalten bleibt
-- ThemeService: Dunkelmodus setzt alle Hellmodus-ComboBox-Overrides zurueck - ItemContainerStyle, Background, etc.
+- ThemeService: Dunkelmodus setzt alle Hellmodus-ComboBox-Overrides zurück - ItemContainerStyle, Background, etc.
 - Lager: Filterbereich und ComboBox-Styles identisch zu TafelplanungWindow - hardcodiert dunkel
-- StartModeWindow: Nur kleinen ThemeSlider aus Titelleiste entfernt - grosser ThemeSliderMain bleibt
+- StartModeWindow: Nur kleinen ThemeSlider aus Titelleiste entfernt - großer ThemeSliderMain bleibt
 - StartModeWindow: Theme-Umschalter entfernt; ThemeService: Dark als fester Standard
-- Fix: ThemeService.ApplyThemeToWindow beim Laden in Lager+Laser - war die eigentliche Ursache fuer helle ComboBox
-- Lager: ComboBox+ComboBoxItem Styles aus Auftragssteuerung kopiert - dunkles Dropdown, DynamicResource ThemeSurfaceBrush
-- ThemeService: ComboBox im Dunkelmodus nicht anfassen - DynamicResource-Bindungen aus XAML greifen korrekt
-- Lager: Filterbereich durch funktionierende Kopie aus Auftragssteuerung ersetzt - dunkles Dropdown jetzt korrekt
-- DarkMode: Popup-Template auf TemplateBinding, ItemContainerStyle setzen statt loeschen
-- DarkMode-Fix: ComboBox explizit dunkle Werte setzen statt ClearValue, StackPanel.Resources DynamicResource
+- Fehlerkorrektur: ThemeService.ApplyThemeToWindow beim Laden in Lager+Laser - war die eigentliche Ursache für helle ComboBox
+- Lager: ComboBox+ComboBoxItem Styles aus Auftragßteürung kopiert - dunkles Dropdown, DynamicResource ThemeSurfaceBrush
+- ThemeService: ComboBox im Dunkelmodus nicht anfaßen - DynamicResource-Bindungen aus XAML greifen korrekt
+- Lager: Filterbereich durch funktionierende Kopie aus Auftragßteürung ersetzt - dunkles Dropdown jetzt korrekt
+- DarkMode: Popup-Template auf TemplateBinding, ItemContainerStyle setzen statt löschen
+- DarkMode-Fix: ComboBox explizit dunkle Werte setzen statt ClearValü, StackPanel.Resources DynamicResource
 - Lager: Filterbereich DarkMode-Fix - hardcodierte Hellmodus-Farben durch DynamicResource ersetzt
-- ThemeService: Dunkelmodus-Fix - ComboBox Hellmodus-Overrides beim Themewechsel zuruecksetzen, Akzente und Filtertext wieder sichtbar
+- ThemeService: Dunkelmodus-Fix - ComboBox Hellmodus-Overrides beim Themewechsel zurücksetzen, Akzente und Filtertext wieder sichtbar
 
 Datum: 2026-04-21 (25 Eintraege)
-- Fix: Theme-Umschaltung stabilisiert, kein R++ckfall auf Dunkel
-- Fix: Theme-Slider springt nach Umschalten nicht mehr auf Dunkel zur++ck
+- Fehlerkorrektur: Theme-Umschaltung stabilisiert, kein R├╝ckfall auf Dunkel
+- Fehlerkorrektur: Theme-Slider springt nach Umschalten nicht mehr auf Dunkel zur├╝ck
 - UI: Hellmodus global softwareartiger und Akzent-Design zentral wiederhergestellt
 - UI: Globales Dark-Accent-Design in allen Hauptfenstern wiederhergestellt
-- UI: Laser-Ansicht Akzente und abgestufte Dark-Fl+�chen wiederhergestellt
-- UI: Materialsuche Dropdown-Text f++r alle Comboboxen pro Theme erzwingen
+- UI: Laser-Ansicht Akzente und abgestufte Dark-Fl├ñchen wiederhergestellt
+- UI: Materialsuche Dropdown-Text f├╝r alle Comboboxen pro Theme erzwingen
 - UI: Materialsuche Combobox-Textfarbe nach Hintergrundkontrast erzwingen
-- UI: Materialsuche Combo-Textfarben pro Theme hart nachf+�rben
+- UI: Materialsuche Combo-Textfarben pro Theme hart nachf├ñrben
 - UI: Materialsuche alle Combo-Itemtexte pro Theme hart setzen
-- UI: Materialsuche alle ComboBox-Eintr+�ge auf Theme-Textfarbe erzwingen
-- UI: Globale Textfarbenregel Hell=Schwarz, Dunkel=Wei+� umgesetzt
+- UI: Materialsuche alle ComboBox-Eintr├ñge auf Theme-Textfarbe erzwingen
+- UI: Globale Textfarbenregel Hell=Schwarz, Dunkel=Wei├ƒ umgesetzt
 - UI: Materialsuche Dropdown-Text im Hellmodus klar lesbar erzwingen
 - UI: Materialsuche ComboBox-Auswahlverhalten repariert
 - UI: Materialsuche Auswahl wieder aktiv und stabilisiert
 - UI: Materialsuche ComboBox-Layout und Textausrichtung korrigiert
-- UI: Auftragssteuerung Materialsuche Item-Text kontraststark erzwingen
+- UI: Auftragßteürung Materialsuche Item-Text kontraststark erzwingen
 - UI: Layout-Verschiebung durch Akzentzeilen in Dialogen korrigiert
 - UI: ResteSuche Auswahltext in ComboBox explizit sichtbar setzen
 - UI: ResteSuche ComboBox-Text im Hellmodus explizit erzwingen
 - UI: ResteSuche Hellmodus-Textkontrast in ComboBox korrigiert
-- UI: Akzentlinie in weiteren Dialogen und Fenstern erg+�nzt
-- UI: Dezente Akzentlinie in Dialog-Arbeitsbereichen erg+�nzt
+- UI: Akzentlinie in weiteren Dialogen und Fenstern erg├ñnzt
+- UI: Dezente Akzentlinie in Dialog-Arbeitsbereichen erg├ñnzt
 - UI: Dezente Akzentlinie in den Haupt-Arbeitsbereichen
 - UI: Dunkelmodus global mit dezenten Akzentabstufungen
-- UI: Lesbarkeit im Hellmodus f++r ComboBox-Filter verbessert
+- UI: Lesbarkeit im Hellmodus f├╝r ComboBox-Filter verbeßert
 
 Datum: 2026-04-22 (14 Eintraege)
-- Feature: E-Mail Startup-Benachrichtigung via Gmail SMTP
-- Feature: GitHub Gist Lizenzpr++fung + ntfy.sh Startup-Ping
-- Fix: Checkbox sichtbar + Stueckzahl bei Reservierung mit automatischer Materialteilung
-- Fix: Jede Reservierung bekommt eindeutige Nr - Nachproduktion-1, Nachproduktion-2 etc.
-- Fix: LaserDemoWindow Timer async + alle Auftraege sofort sichtbar
-- Fix: Timer-Sync Netzwerkzugriff im Hintergrund - UI nie mehr blockiert
-- Fix: Reservierung und alle Aktionen sofort ohne Wartezeit - UI nie blockiert
-- Fix: Reservierung sofort verf++gbar - alle Netzwerkops im Hintergrund
-- Fix: Reservierung sofort m+�glich - Excel-Netzwerksync l+�uft im Hintergrund
-- Fix: Dropdown-Eintr+�ge im MaterialDialog jetzt schwarz auf wei+� lesbar
-- Fix: MaterialDialog Text immer schwarz auf hellem Hintergrund, klar lesbar
-- Fix: MaterialDialog Text sichtbar + Staerke-Dropdown +�ffnet beim Klick
-- Fix: MaterialDialog alle Felder in Hell+Dunkel korrekt sichtbar
-- Fix: MaterialDialog im Hellmodus lesbar - alle Farben auf DynamicResource umgestellt
+- Neü Funktionure: E-Mail Startup-Benachrichtigung via Gmail SMTP
+- Neü Funktionure: GitHub Gist Lizenzpr├╝fung + ntfy.sh Startup-Ping
+- Fehlerkorrektur: Checkbox sichtbar + Stückzahl bei Reservierung mit automatischer Materialteilung
+- Fehlerkorrektur: Jede Reservierung bekommt eindeutige Nr - Nachproduktion-1, Nachproduktion-2 etc.
+- Fehlerkorrektur: LaserDemoWindow Timer async + alle Aufträge sofort sichtbar
+- Fehlerkorrektur: Timer-Sync Netzwerkzugriff im Hintergrund - UI nie mehr blockiert
+- Fehlerkorrektur: Reservierung und alle Aktionen sofort ohne Wartezeit - UI nie blockiert
+- Fehlerkorrektur: Reservierung sofort verf├╝gbar - alle Netzwerkops im Hintergrund
+- Fehlerkorrektur: Reservierung sofort m├Âglich - Excel-Netzwerksync l├ñuft im Hintergrund
+- Fehlerkorrektur: Dropdown-Eintr├ñge im MaterialDialog jetzt schwarz auf wei├ƒ lesbar
+- Fehlerkorrektur: MaterialDialog Text immer schwarz auf hellem Hintergrund, klar lesbar
+- Fehlerkorrektur: MaterialDialog Text sichtbar + Stärke-Dropdown ├Âffnet beim Klick
+- Fehlerkorrektur: MaterialDialog alle Felder in Hell+Dunkel korrekt sichtbar
+- Fehlerkorrektur: MaterialDialog im Hellmodus lesbar - alle Farben auf DynamicResource umgestellt
 
 Datum: 2026-04-23 (1 Eintraege)
 - Revert: E-Mail/Gist Tracking entfernt - jeder PC bekommt eigene Lizenznummer
@@ -600,16 +604,16 @@ Datum: 2026-04-23 (1 Eintraege)
 Datum: 2026-06-07 (3 Eintraege)
 - Include bundled license in updates
 - Add bundled license distribution
-- Fix license fallback handling
+- Fehlerkorrektur license fallback handling
 
 Datum: 2026-06-08 (10 Eintraege)
-- Rebuild uninstall GUI flow to fix immediate close and syntax issues
+- Rebuild uninstall GUI flow to fix immediate close and syntax ißüs
 - Keep uninstall GUI alive by launching script directly
 - Run USB uninstall purely via detached GUI launcher
-- Fix USB uninstall launcher path detection and quoting
+- Fehlerkorrektur USB uninstall launcher path detection and quoting
 - Reduce USB root to 2 visible starters and harden GUI script fallback
-- Fix broken uninstall launchers and enforce single GUI uninstall flow
+- Fehlerkorrektur broken uninstall launchers and enforce single GUI uninstall flow
 - Harden uninstall with retrying background cleanup task
-- Fix uninstall reliability across PCs and avoid self-delete lock
-- Aktualisiere USB_Installation auf aktuellen Stand
-- Fix uninstall cleanup for reinstall and license/trial residue
+- Fehlerkorrektur uninstall reliability acroß PCs and avoid self-delete lock
+- Aktualisiere USB_Installation auf aktüllen Stand
+- Fehlerkorrektur uninstall cleanup for reinstall and license/trial residü
