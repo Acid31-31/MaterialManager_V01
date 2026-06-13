@@ -16,6 +16,11 @@ namespace MaterialManager_V01.Services
                 if (!File.Exists(bundledLicensePath))
                     return;
 
+                var bundledJson = File.ReadAllText(bundledLicensePath);
+                using var bundledDoc = System.Text.Json.JsonDocument.Parse(bundledJson);
+                if (bundledDoc.RootElement.TryGetProperty("IsFullLicense", out var isFull) && isFull.GetBoolean())
+                    return;
+
                 var dir = Path.GetDirectoryName(LicenseFile);
                 if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
