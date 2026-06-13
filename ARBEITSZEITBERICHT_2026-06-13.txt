@@ -639,22 +639,22 @@ Zeitfenster: 19:30 bis 19:30 Uhr
 
 Datum: 2026-06-07 (3 Einträge)
 Zeitfenster: 08:49 bis 09:01 Uhr
-- Technische Änderung im allgemeinen Bereich: Fix license fallback handling.
-- Technische Änderung im allgemeinen Bereich: Add bundled license distribution.
-- Technische Änderung im allgemeinen Bereich: Include bundled license in updates.
+- Technische Änderung im allgemeinen Bereich: Lizenz-Fallback-Behandlung korrigiert.
+- Technische Änderung im allgemeinen Bereich: Verteilung einer eingebetteten Lizenzdatei ergänzt.
+- Technische Änderung im allgemeinen Bereich: Eingebettete Lizenzdatei in Update-Paket integriert.
 
 Datum: 2026-06-08 (10 Einträge)
 Zeitfenster: 18:26 bis 19:33 Uhr
-- Technische Änderung im allgemeinen Bereich: Fix uninstall cleanup for reinstall and license/trial residue.
+- Technische Änderung im allgemeinen Bereich: Deinstallationsbereinigung für Neuinstallation sowie Lizenz-/Testmodus-Reste korrigiert.
 - Technische Änderung im allgemeinen Bereich: Aktualisiere USB_Installation auf aktuellen Stand.
-- Technische Änderung im allgemeinen Bereich: Fix uninstall reliability across PCs and avoid self-delete lock.
-- Technische Änderung im allgemeinen Bereich: Harden uninstall with retrying background cleanup task.
-- Technische Änderung im allgemeinen Bereich: Fix broken uninstall launchers and enforce single GUI uninstall flow.
-- Technische Änderung im allgemeinen Bereich: Reduce USB root to 2 visible starters and harden GUI script fallback.
-- Technische Änderung im allgemeinen Bereich: Fix USB uninstall launcher path detection and Anführungszeichen-Behandlung.
-- Technische Änderung im allgemeinen Bereich: Run USB uninstall purely via detached GUI launcher.
-- Technische Änderung im allgemeinen Bereich: Keep uninstall GUI alive by launching script directly.
-- Technische Änderung im allgemeinen Bereich: Rebuild uninstall GUI flow to fix immediate close and syntax issues.
+- Technische Änderung im allgemeinen Bereich: Zuverlässigkeit der Deinstallation auf mehreren PCs verbessert und Selbstlösch-Sperre vermieden.
+- Technische Änderung im allgemeinen Bereich: Deinstallation durch wiederholende Hintergrund-Bereinigung robuster gemacht.
+- Technische Änderung im allgemeinen Bereich: Defekte Deinstallationsstarter repariert und einheitlichen GUI-Deinstallationsablauf erzwungen.
+- Technische Änderung im allgemeinen Bereich: USB-Hauptordner auf zwei sichtbare Starter reduziert und GUI-Skript-Fallback stabilisiert.
+- Technische Änderung im allgemeinen Bereich: Pfaderkennung und Anführungszeichen-Behandlung im USB-Deinstallationsstarter korrigiert.
+- Technische Änderung im allgemeinen Bereich: USB-Deinstallation ausschließlich über entkoppelten GUI-Starter ausgeführt.
+- Technische Änderung im allgemeinen Bereich: Deinstallations-GUI durch direktes Starten des Skripts stabil offen gehalten.
+- Technische Änderung im allgemeinen Bereich: Deinstallations-GUI-Ablauf neu aufgebaut, um sofortiges Schließen und Syntaxprobleme zu beheben.
 
 Datum: 2026-06-13 (6 Einträge)
 Zeitfenster: 08:32 bis 09:04 Uhr
@@ -664,3 +664,4 @@ Zeitfenster: 08:32 bis 09:04 Uhr
 - Technische Änderung im allgemeinen Bereich: Arbeitszeitbericht vollständig deutsch formuliert.
 - Technische Änderung im allgemeinen Bereich: Tagesprotokoll vollständig deutsch zusammengefasst.
 - Technische Änderung im allgemeinen Bereich: Tageszeitfenster von-bis ergänzt.
+
