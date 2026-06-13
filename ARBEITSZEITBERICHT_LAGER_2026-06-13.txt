@@ -1,0 +1,267 @@
+﻿ARBEITSZEITNACHWEIS - LAGER-PROGRAMMIERUNG (MATERIALMANAGER V01)
+
+Projekt: MaterialManager V01
+Bereich: Lager-Programmierung (Lager, Material, Reservierung, Bestand, Tafelplanung)
+Bearbeiter: Alexander Hoelzer
+E-Mail: hoelzer_alex@yahoo.de
+Stichtag: 13.06.2026
+
+1) Datengrundlage
+- Auswertung der Versionshistorie ab 03.03.2026
+- Berücksichtigt wurden nur lagerbezogene Dateien in Views/Services/Models
+
+2) Nachweisbare Lager-Aktivität
+- Lagerbezogene Commits: 190
+
+3) Detailliertes Tagesprotokoll mit Zeitangaben pro Anpassung
+Hinweis: Die Uhrzeiten stammen aus den dokumentierten Commit-Zeitstempeln.
+
+Datum: 2026-03-19 | Tageszeitfenster: 20:20 bis 21:36 Uhr
+- 20:20 Uhr: Fehlerkorrektur (ui): Fenster und Installer an kleinere Monitore anpassen
+- 21:36 Uhr: Fehlerkorrektur (ui): Fenster an kleinere Auflösungen anpassen
+
+Datum: 2026-03-21 | Tageszeitfenster: 06:42 bis 13:00 Uhr
+- 06:42 Uhr: Neue Funktion (demo): eigene Lager-Sicht zur Startauswahl hinzufügen
+- 06:52 Uhr: Fehlerkorrektur (ui): Demo-Fenster vollständig dunkel gestalten
+- 07:02 Uhr: Fehlerkorrektur (ui): ComboBox-Dropdowns in Demo-Fenstern vollständig abdunkeln
+- 10:03 Uhr: Neue Funktion (login): einfaches Namens-Login für Modi und Materialhistorie
+- 11:04 Uhr: Neue Funktion (ui): Lager-Sicht schärfen und Demo-Texte entfernen
+- 11:12 Uhr: Fehlerkorrektur (ui): Benutzer-Spalten in Lager und Laser sichtbar platzieren
+- 11:23 Uhr: Neue Funktion (ui): Materialien in Lager und Laser markierbar machen
+- 12:42 Uhr: Neue Funktion (ui): eigene Sicht fuer Tafelplanung ergaenzen
+- 13:00 Uhr: Fehlerkorrektur (search): passende groessere Restmaterialien finden
+
+Datum: 2026-03-22 | Tageszeitfenster: 08:37 bis 14:21 Uhr
+- 08:37 Uhr: Neue Funktion (tafelplanung): material fuer auftraege buchen und abschliessen
+- 09:22 Uhr: feat: Laser-Reservierungslogik, Tafelplanung-Buchung, Rollenansichten und Namenslogin vollstaendig
+- 10:13 Uhr: Fehlerkorrektur (ui): TafelplanungWindow ComboBox-Dropdown dunkel machen (ControlTemplate ergaenzt)
+- 10:49 Uhr: Fix: CheckBox-Auswahl im DataGrid (IsReadOnly auf TextColumns verschoben)
+- 11:09 Uhr: Fix: CheckBox Single-Click im DataGrid (PreviewMouseLeftButtonDown)
+- 11:23 Uhr: Fix: UI-Freeze durch async LoadMaterials und GC-Cleanup entfernt
+- 12:45 Uhr: Neue Funktion (stufe2): Rohre und Profile - separate Kategorien, Multi-Sheet Excel, erweiterter Dialog
+- 13:27 Uhr: Fehlerkorrektur (dialog): Rohr/Profil Felder - Text-Binding statt SelectedItem, string-Properties zum Eingeben und Auswählen
+- 13:31 Uhr: Fehlerkorrektur (dialog): ComboBox-Template Trigger für IsEditable - Texteingabe und Auswahl jetzt möglich
+- 14:21 Uhr: PDF-Funktion: Tafelbelegung kann PDF anhängen, Laser kann PDF öffnen
+
+Datum: 2026-03-23 | Tageszeitfenster: 17:09 bis 18:20 Uhr
+- 17:09 Uhr: Lager: Rohr/Profil UI-Fix, Auswahlfelder und Regalauslastung inkl. Längen erweitert
+- 17:30 Uhr: Filter erweitert: Kategorie+Form in Lager und Tafelplanung
+- 17:39 Uhr: Filterfix: robuste Auswahl in Lager/Tafelplanung und neuer Filter in Laser
+- 18:20 Uhr: ComboBox-Fix: dunkles und klickbares Filter-Dropdown in allen Bereichen
+
+Datum: 2026-03-25 | Tageszeitfenster: 17:05 bis 20:36 Uhr
+- 17:05 Uhr: Lagerverwaltung: Button 'Niedrige Bestände' hinzugefügt
+- 17:18 Uhr: Tafelplanung: Button 'Niedrige Bestände' ergänzt
+- 20:28 Uhr: Reservierte Materialien global grün markieren (Main/Lager/Tafel/Laser/Reservierte)
+- 20:36 Uhr: Fix: Reservierte Markierung stabil über AuftragNr in allen Bereichen
+
+Datum: 2026-03-26 | Tageszeitfenster: 17:11 bis 21:35 Uhr
+- 17:11 Uhr: Tafelplanung: Button 'Reste suchen' wie im Hauptprogramm ergänzt
+- 17:34 Uhr: Reste-Suche Toleranz korrigiert und obere Menüleiste in Lager/Tafel/Laser ergänzt
+- 17:42 Uhr: Fix: Untermenüs in oberer Leiste dunkel/lesbar in Lager, Tafelplanung und Laser
+- 18:03 Uhr: Fenster auf WorkArea begrenzt damit Windows-Taskleiste sichtbar bleibt
+- 18:14 Uhr: Unterprogramme: weißen Rand entfernt und Schriftgrößen an Hauptprogramm angepasst
+- 18:21 Uhr: Unterprogramme: weißen OS-Rahmen entfernt (ResizeMode CanMinimize)
+- 18:34 Uhr: Unterprogramme: weißen Rand durch WindowChrome entfernt, dunkler Rahmen vereinheitlicht
+- 21:35 Uhr: Fix: OnEditRestClick in TafelplanungWindow hinzugefügt (Doppelklick-Bearbeitung)
+
+Datum: 2026-03-28 | Tageszeitfenster: 10:24 bis 16:04 Uhr
+- 10:24 Uhr: Produktionsverfolgung für Laser: Auftragsansicht mit Start/End-Buttons zur Zeitmessung
+- 10:47 Uhr: PDF-Vorschau überall: PdfPreviewDialog für Doppelklick auf PDFs in Lager und Laser
+- 16:04 Uhr: Lizenzsystem, Pricing-Modell und USB-Ordner aktualisiert
+
+Datum: 2026-03-29 | Tageszeitfenster: 14:17 bis 16:08 Uhr
+- 14:17 Uhr: Herko-Logo als Hintergrund in Haupt- und Unterprogrammen
+- 14:26 Uhr: Herko-Logo: Pack-URIs fuer stabile Hintergrundanzeige in allen Fenstern
+- 14:37 Uhr: Start-/Unterprogramm-Fehler beheben: logo.png als Resource + stabile ICO-Icons
+- 14:48 Uhr: XAML-Startfehler beheben: Icon-URIs auf stabile app-icon Pfade zurückgesetzt
+- 14:55 Uhr: Logo-Hintergrund stabilisiert: Overlay statt ImageBrush in Haupt- und Unterprogrammen
+- 15:10 Uhr: Herko-Logo in Start- und Unterprogrammen zentriert und deutlich sichtbar
+- 15:21 Uhr: Neuer Arbeitsplatz Kunden Material mit Zeichnungsnummer/Stueckzahl und Persistenz
+- 15:45 Uhr: Kunden Material optisch an Unterprogramme angepasst inkl. Herko-Logo-Hintergrund
+- 16:08 Uhr: Kunden Material: PDF-Ordnerwahl und PDF-Suche per Zeichnungsnummer mit Vorschau
+
+Datum: 2026-03-30 | Tageszeitfenster: 16:55 bis 20:52 Uhr
+- 16:55 Uhr: Kunden Material: Schließen-Button ergänzt, Rückkehr zur Startseite
+- 17:10 Uhr: Kunden Material: Menü vollständig dunkel + Start in voller Arbeitsfläche
+- 20:52 Uhr: Netzwerkdaten absichern: Shared-Load, DB-Spiegel und automatische Excel-Backups
+
+Datum: 2026-04-01 | Tageszeitfenster: 18:18 bis 22:31 Uhr
+- 18:18 Uhr: Datei-Menüs: Netzwerkordner öffnen in allen Hauptfenstern ergänzt
+- 19:32 Uhr: Archiv-Workflow: Archivpfad robust, KW-Archivliste und Tafelplanung-Zugriff ergänzt
+- 20:21 Uhr: KW-Auswahl: Archivfenster nach KW-Klick öffnen und fehlenden Filtertyp wiederherstellen
+- 22:12 Uhr: Kunden Material: kundenbezogene PDF-Suche mit Freigabe-Struktur und Kundenordnern ergänzt
+- 22:31 Uhr: Kunden Material: Warnhinweis bei fehlender PDF oder PDF außerhalb Freigabe
+
+Datum: 2026-04-02 | Tageszeitfenster: 07:04 bis 10:37 Uhr
+- 07:04 Uhr: Materialladen stabilisiert: DB priorisieren, damit gelöschte Einträge nicht aus Excel zurückkehren
+- 07:25 Uhr: Auftragsstatus stabilisiert: Sync erhält Start/Ende/Status, Produktionsdialog speichert per Auftragsnummer
+- 10:37 Uhr: MaterialDialog: ComboBox im Feld vollflächig klickbar machen (nicht nur Pfeil)
+
+Datum: 2026-04-03 | Tageszeitfenster: 08:31 bis 22:57 Uhr
+- 08:31 Uhr: Excel-Sync transparenter: Sync-Fehlerstatus erfassen und im Hauptfenster anzeigen
+- 10:11 Uhr: Gewichtsberechnung robust: Materialart/Maß tolerant parsen (x/X/├ù, Komma/Punkt)
+- 10:21 Uhr: Gewicht für manuelle Excel-Zeilen korrigiert: Dichte-Fallback über Legierung + Maß-Parsing aus Freitext
+- 20:13 Uhr: Excel-Änderungen übernehmen: beim Start neuere Firmendatei vor DB priorisieren
+- 21:02 Uhr: Excel-Konvertierung beim Laden: Firmenformat automatisch in App-Format mit Gewicht umschreiben
+- 21:51 Uhr: Tafelplanung-Suche verbessert: robuste Maßerkennung und toleranter Material-/Legierungsabgleich
+- 22:44 Uhr: Kundenmaterial UI-Texte repariert: Encoding-Fehler/Mojibake entfernt
+- 22:57 Uhr: Kundenmaterial Dark-Theme ergänzt: ComboBox/Dropdown vollständig dunkel
+
+Datum: 2026-04-04 | Tageszeitfenster: 12:08 bis 19:01 Uhr
+- 12:08 Uhr: UI-Umbenennung: Tafelplanung als Auftragssteuerung in allen sichtbaren Texten
+- 12:45 Uhr: Arbeitsplatz-Trennung eingeführt: Aufträge für Laser/Kantbank filterbar und Kantbank-Freigabe in Auftragssteuerung
+- 12:48 Uhr: Auftragssteuerung: Freigabe für Laser ergänzt und Bereich-Spalte in Auftragslisten eingebaut
+- 12:52 Uhr: Auftragssteuerung: Button und Funktion für Freigabe an beide Bereiche ergänzt
+- 13:41 Uhr: Bereich-Spalte farblich hervorgehoben in Auftragssteuerung und Auftragsliste
+- 13:47 Uhr: Auftragssteuerung: normales Fenster aktiviert und vollständige Lagerlistenansicht ausgeblendet
+- 14:31 Uhr: Auftragssteuerung: alle Aktionsbuttons links vertikal untereinander angeordnet
+- 14:37 Uhr: Auftragssteuerung: linke Buttonliste in klare Gruppen mit Überschriften strukturiert
+- 14:58 Uhr: Auftragssteuerung: linke Aktionsliste kompakter gestaltet (kleinere Buttons/Abstände)
+- 15:09 Uhr: Auftragssteuerung: Freigabe 'Beides' entfernt und Layout auf zentrale Auftragsliste mit linker Seitenleiste umgestellt
+- 15:17 Uhr: Auftragssteuerung: Zurück/Vorwärts oben neben Menü platziert und aus linker Leiste entfernt
+- 15:24 Uhr: Undo/Redo einheitlich: Pfeil-Buttons oben neben Menü in Hauptprogramm, Lager und Laser
+- 15:43 Uhr: UI-Konsistenz: Undo/Redo-Pfeile in Haupt- und Unterprogrammen pixelgenau vereinheitlicht
+- 15:52 Uhr: Fenstersteuerung vereinheitlicht: Pressed-Feedback für Titlebar-Buttons in Haupt- und Unterprogrammen
+- 19:01 Uhr: Auftragssteuerung: Kant-PDF und Kant-Status ergänzt inkl. Direktöffnung
+
+Datum: 2026-04-05 | Tageszeitfenster: 11:53 bis 19:42 Uhr
+- 11:53 Uhr: Kunden Material: Excel-Import aufgebaut (Kunde/Zeichnungsnummer/Anzahl einlesen und Einträge automatisch übernehmen)
+- 12:08 Uhr: Kunden Material: feste Excel-Dateiauswahl mit Pfadspeicherung und Import über ausgewählte Datei
+- 12:28 Uhr: Kunden Material: Kundenauswahl filtert jetzt die Eintragsliste zuverlässig
+- 12:34 Uhr: Kunden Material: editierbare Kunden-Combo zeigt Auswahltext wieder korrekt an
+- 12:55 Uhr: Kunden Material: Doppelklick öffnet jetzt Stückzahl-Änderung oder Löschen statt nur PDF-Vorschau
+- 13:00 Uhr: Kunden Material: Kunden-Combo Textausrichtung im editierbaren Feld korrigiert (Text nicht mehr verdeckt)
+- 13:24 Uhr: Kunden Material: Pfadfelder aus Hauptansicht entfernt und in Datei>Einstellungen als Dialog verschoben
+- 13:42 Uhr: Kunden Material: Datei>Einstellungen mit direkten Auswahlpunkten für PDF-Root und Excel-Datei ergänzt
+- 19:42 Uhr: Kunden Material: PDF- und Excel-Auswahl direkt unter Datei sichtbar gemacht
+
+Datum: 2026-04-06 | Tageszeitfenster: 15:27 bis 15:40 Uhr
+- 15:27 Uhr: Unterprogramme vereinheitlicht: Hauptprogramm-Button in Lager/Laser/Kantbank/Auftragssteuerung/KundenMaterial ergänzt
+- 15:40 Uhr: Auftragssteuerung: doppelte Titelleiste entfernt (WindowStyle None) für einheitliche Unterprogramm-Ansicht
+
+Datum: 2026-04-07 | Tageszeitfenster: 16:51 bis 18:31 Uhr
+- 16:51 Uhr: UI: Navigationsbuttons mit App-Logo ergänzt und Geo-Titelleiste mit dezentem Herko-Akzent angepasst
+- 17:58 Uhr: Lager: Schnellwechsel zu Laser ergänzt (Menü + sichtbarer Button), ohne erneute Anmeldung
+- 18:14 Uhr: Lager: sichtbaren Laser-Button im Kopfbereich ergänzt
+- 18:31 Uhr: Lager: Spalten für Anlagedatum und Änderungsdatum ergänzt
+
+Datum: 2026-04-08 | Tageszeitfenster: 17:06 bis 19:17 Uhr
+- 17:06 Uhr: Material neu: Rohrformen erweitert (Rund/Vierkant/Rechteck) inkl. Dialogfelder und Gewichtsberechnung
+- 18:12 Uhr: MaterialDialog Rohr: Standardmaße für Vierkant/Rechteck als Dropdown ergänzt
+- 18:59 Uhr: Auftragssteuerung: Reservierung auf alle verfügbaren Lager-Materialien erweitert (inkl. Rohr/Profil)
+- 19:07 Uhr: Auftragssteuerung UI: Reste-Suche sichtbar in Material-Suche umbenannt
+- 19:17 Uhr: Auftragssteuerung: Material-Suche um Rohrtypen erweitert und Trefferliste um Kategorie ergänzt
+
+Datum: 2026-04-09 | Tageszeitfenster: 17:05 bis 19:01 Uhr
+- 17:05 Uhr: Material bearbeiten: Restnummer und Lagerort manuell editierbar, Lagerort-Auswahl ergänzt
+- 17:32 Uhr: MaterialDialog: Restnummer und Lagerort als manuell bearbeitbare Felder sichtbar gemacht
+- 18:00 Uhr: MaterialDialog: Lagerort als eigene sichtbare Zeile; Laser respektiert manuellen Lagerort
+- 18:40 Uhr: Auftragssteuerung: Priorisierung (hoch/runter), EILT-Markierung und Start/Ende-Zeiten ergänzt
+- 19:01 Uhr: Auftragssteuerung: Drag & Drop-Sortierung in Auftragsliste ergänzt
+
+Datum: 2026-04-10 | Tageszeitfenster: 19:36 bis 23:35 Uhr
+- 19:36 Uhr: Replace generic warehouse search with per-column manual filters
+- 20:36 Uhr: Reduce warehouse column filters to required fields only
+- 20:55 Uhr: Use exact numeric matching for material thickness filter
+- 21:28 Uhr: Improve Maß filter with segment-based matching
+- 22:15 Uhr: Add reservation workflow in warehouse with optional entry deletion
+- 23:35 Uhr: Show pilot/license status banner in all subprogram title bars
+
+Datum: 2026-04-11 | Tageszeitfenster: 00:06 bis 12:08 Uhr
+- 00:06 Uhr: Allow robust 0.3/0,3 thickness selection in material dialog
+- 00:19 Uhr: Adjust thickness filter for input 0 and add 0.2 mm standard thickness
+- 00:26 Uhr: Validate thickness input range and prevent 0 mm in material dialog
+- 00:44 Uhr: Improve Maß filter fallback sorting for query dimensions
+- 09:03 Uhr: Add nachproduktion and delete checkbox options in reserve dialog
+- 10:48 Uhr: Fix duplicate network status controls and restore title bars in subwindows
+- 11:33 Uhr: Add unified server and excel status banners across subprogram windows
+- 11:55 Uhr: Temporarily disable Kantbank module and remove related UI entries
+- 12:08 Uhr: Temporarily remove remaining Kantbank module files and hooks
+
+Datum: 2026-04-12 | Tageszeitfenster: 07:42 bis 11:54 Uhr
+- 07:42 Uhr: Add button in Lager header to open Auftragssteuerung
+- 09:39 Uhr: Feature: PDF-Zwang entfernt + Navigation Buttons zu Laser/Lager hinzugefügt
+- 10:58 Uhr: Auftragssteuerung: Materialbestand mit manuellen Spaltenfiltern wieder eingeblendet
+- 11:30 Uhr: Lager und Auftragssteuerung: Material- und Stärke-Filter als Auswahl
+- 11:54 Uhr: UI: Auswahlfelder ohne Pfeil in Lager und Auftragssteuerung
+
+Datum: 2026-04-13 | Tageszeitfenster: 16:56 bis 19:30 Uhr
+- 16:56 Uhr: Lager: globale Reservierung aufheben mit Auswahl Bearbeiten oder Löschen
+- 17:20 Uhr: Netzwerk: Auftragsstatus zwischen PCs synchronisieren
+- 17:32 Uhr: Netzwerk: Ansichten bei gemeinsamen Änderungen automatisch aktualisieren
+- 17:40 Uhr: UI: Statusmeldung für automatische Aktualisierung anzeigen
+- 18:04 Uhr: Auto-Sync: Watcher gegen Abstürze absichern
+- 18:28 Uhr: Netzwerk: automatische Aktualisierung ohne manuellen Refresh
+- 19:04 Uhr: Netzwerk: automatischen Refresh per Timer stabilisieren
+- 19:30 Uhr: Laser: Reservierung nach Materialbearbeitung korrekt entfernen
+
+Datum: 2026-04-14 | Tageszeitfenster: 17:20 bis 20:11 Uhr
+- 17:20 Uhr: UI: Auto-Refresh in allen Ansichten ohne Springen stabilisieren
+- 18:13 Uhr: UI: Reservierung-Aufheben im Lager als dunklen Dialog umsetzen
+- 18:43 Uhr: Excel: Uhrzeit für Änderungsdatum korrekt speichern
+- 18:51 Uhr: Material: Legacy-00Uhr Änderungszeit beim Bearbeiten reparieren
+- 19:57 Uhr: PDF: Auftrags-PDFs per Archivpfad und LST-bereinigter Suche vereinheitlichen
+- 20:11 Uhr: Fix: EF-Konflikt beim Speichern von Materialbuchungen vermeiden
+
+Datum: 2026-04-15 | Tageszeitfenster: 19:43 bis 19:52 Uhr
+- 19:43 Uhr: Fix: Hintergrundlogo in Auftragssteuerung wieder sichtbar
+- 19:52 Uhr: Auftragssteuerung: unnötige Sidebar-Buttons entfernt
+
+Datum: 2026-04-16 | Tageszeitfenster: 17:11 bis 18:28 Uhr
+- 17:11 Uhr: Aufträge: globale Materialanzeige als Materialart-Stärke statt Positionszahl
+- 18:28 Uhr: Fix: EF-Trackingkonflikt bei Materialien mit doppelter ID vermeiden
+
+Datum: 2026-04-17 | Tageszeitfenster: 19:30 bis 21:17 Uhr
+- 19:30 Uhr: UI: Hintergrundlogos in allen Unterprogrammen entfernt
+- 19:36 Uhr: Lager: Filterbereich-Kontrast für Hell/Dunkel über Theme-Ressourcen korrigiert
+- 19:59 Uhr: Lager: ComboBox-Textkontrast in Hell auf Themefarben umgestellt
+- 20:10 Uhr: Lager: Filtertext in Hell explizit dunkel gesetzt
+- 20:33 Uhr: Lager: Combo-Auswahltext in Hell explizit dunkel erzwungen
+- 20:38 Uhr: Lager: Filter-Combobox-Einträge mit explizit dunkler Schrift erzeugen
+- 20:45 Uhr: Lager: Combo-Filtertext in Hell final dunkel fixiert
+- 20:51 Uhr: Lager: Filter-Combo Einträge inkl. Auswahl/Highlight dauerhaft dunkel
+- 21:03 Uhr: Lager: Filter-Combos auf String-Items umgestellt für dunkle Dropdown-Schrift
+- 21:08 Uhr: Lager: Dropdown-Einträge im Filter explizit mit dunkler Textfarbe
+- 21:17 Uhr: Lager: System-Highlightfarben für Filter-Combos auf dunklen Text fixiert
+
+Datum: 2026-04-19 | Tageszeitfenster: 10:54 bis 19:44 Uhr
+- 10:54 Uhr: Auftragssteuerung: Spaltenfilter-Text im Hellmodus dunkel - ItemTemplate mit ThemeForegroundBrush, ThemeService BasedOn-Fix, ComboBoxItem-Template TextElement.Foreground-Binding
+- 11:46 Uhr: Import-Fix: Keine auto-Restnummer beim Excel-Import, DB ist fuehrend - kein automatischer Re-Import aus Excel
+- 19:27 Uhr: Lager: Manueller Excel-Import-Button - Materialien aus Excel importieren mit Gewichtsberechnung
+- 19:44 Uhr: Auftragssteuerung: Materialien aus Excel importieren - Menüeintrag in Datei-Menü hinzugefügt
+
+Datum: 2026-04-20 | Tageszeitfenster: 08:51 bis 12:17 Uhr
+- 08:51 Uhr: Lager: Filterbereich DarkMode-Fix - hardcodierte Hellmodus-Farben durch DynamicResource ersetzt
+- 08:58 Uhr: DarkMode-Fix: ComboBox explizit dunkle Werte setzen statt ClearValue, StackPanel.Resources DynamicResource
+- 09:04 Uhr: DarkMode: Popup-Template auf TemplateBinding, ItemContainerStyle setzen statt loeschen
+- 09:11 Uhr: Lager: Filterbereich durch funktionierende Kopie aus Auftragssteuerung ersetzt - dunkles Dropdown jetzt korrekt
+- 09:24 Uhr: Lager: ComboBox+ComboBoxItem Styles aus Auftragssteuerung kopiert - dunkles Dropdown, DynamicResource ThemeSurfaceBrush
+- 09:33 Uhr: Fix: ThemeService.ApplyThemeToWindow beim Laden in Lager+Laser - war die eigentliche Ursache fuer helle ComboBox
+- 10:18 Uhr: StartModeWindow: Nur kleinen ThemeSlider aus Titelleiste entfernt - grosser ThemeSliderMain bleibt
+- 10:25 Uhr: Lager: Filterbereich und ComboBox-Styles identisch zu TafelplanungWindow - hardcodiert dunkel
+- 10:53 Uhr: ThemeService: Dunkelmodus setzt alle Hellmodus-ComboBox-Overrides zurueck - ItemContainerStyle, Background, etc.
+- 11:20 Uhr: Lager: PopulateFilterComboBox wie TafelplanungWindow - ComboBoxItem-Objekte, keine manuellen Farben mehr
+- 11:40 Uhr: Lager: PopulateFilterComboBox mit Strings - ItemContainerStyle von ThemeService greift in beiden Modi korrekt
+- 11:55 Uhr: Lager: PopulateFilterComboBox setzt Style direkt je nach Theme - kein Timing-Problem mehr
+- 12:01 Uhr: Lager: Filter-ComboBoxen immer dunkel - passt zum hardcodierten dunklen Filterbereich
+- 12:17 Uhr: Lager Filter: im Hellmodus nur Textfarbe dunkel setzen
+
+Datum: 2026-04-21 | Tageszeitfenster: 08:33 bis 12:56 Uhr
+- 08:33 Uhr: UI: Lesbarkeit im Hellmodus für ComboBox-Filter verbessert
+- 09:18 Uhr: UI: Dezente Akzentlinie in den Haupt-Arbeitsbereichen
+- 09:35 Uhr: UI: Akzentlinie in weiteren Dialogen und Fenstern ergänzt
+- 12:56 Uhr: UI: Globales Dark-Accent-Design in allen Hauptfenstern wiederhergestellt
+
+Datum: 2026-04-22 | Tageszeitfenster: 08:32 bis 11:26 Uhr
+- 08:32 Uhr: Fix: MaterialDialog im Hellmodus lesbar - alle Farben auf DynamicResource umgestellt
+- 08:39 Uhr: Fix: MaterialDialog alle Felder in Hell+Dunkel korrekt sichtbar
+- 08:53 Uhr: Fix: MaterialDialog Text sichtbar + Staerke-Dropdown öffnet beim Klick
+- 09:12 Uhr: Fix: MaterialDialog Text immer schwarz auf hellem Hintergrund, klar lesbar
+- 09:19 Uhr: Fix: Dropdown-Einträge im MaterialDialog jetzt schwarz auf weiß lesbar
+- 09:52 Uhr: Fix: Reservierung sofort möglich - Excel-Netzwerksync läuft im Hintergrund
+- 10:01 Uhr: Fix: Reservierung sofort verfügbar - alle Netzwerkops im Hintergrund
+- 10:11 Uhr: Fix: Reservierung und alle Aktionen sofort ohne Wartezeit - UI nie blockiert
+- 10:18 Uhr: Fix: Timer-Sync Netzwerkzugriff im Hintergrund - UI nie mehr blockiert
+- 10:52 Uhr: Fix: Jede Reservierung bekommt eindeutige Nr - Nachproduktion-1, Nachproduktion-2 etc.
+- 11:26 Uhr: Fix: Checkbox sichtbar + Stueckzahl bei Reservierung mit automatischer Materialteilung
