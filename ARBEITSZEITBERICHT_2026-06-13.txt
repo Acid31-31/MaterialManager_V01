@@ -42,26 +42,30 @@ Unterschrift: _________________________
 Name: Alexander Hoelzer
 
 6) Tagesprotokoll der Entwicklungsaktivitäten (vollständig in Deutsch)
-Hinweis: Die Tagespunkte sind aus den Commits abgeleitet und in deutschsprachige Aktivitätsgruppen zusammengefasst.
+Hinweis: Zeitfenster je Tag entspricht erstem bis letztem dokumentierten Commit an diesem Datum.
 
 Datum: 2026-03-14 (10 Einträge)
+Zeitfenster: 09:30 bis 18:37 Uhr
 - 3 x Fehlerkorrektur im Bereich Update.
-- 2 x Automatisierung im Bereich allgemeiner Bereich.
 - 2 x Build-Aktualisierung im Bereich USB-Installation.
+- 2 x Automatisierung im Bereich allgemeiner Bereich.
 - 1 x Wartung im Bereich allgemeiner Bereich.
-- 1 x Neue Funktion im Bereich Benutzeroberfläche.
 - 1 x Sicherheitsanpassung im Bereich Update.
+- 1 x Neue Funktion im Bereich Benutzeroberfläche.
 
 Datum: 2026-03-17 (9 Einträge)
+Zeitfenster: 19:28 bis 22:01 Uhr
 - 5 x Fehlerkorrektur im Bereich Update.
 - 2 x Fehlerkorrektur im Bereich USB-Installation.
-- 1 x Wiederherstellung im Bereich USB-Installation.
 - 1 x Build-Aktualisierung im Bereich USB-Installation.
+- 1 x Wiederherstellung im Bereich USB-Installation.
 
 Datum: 2026-03-18 (2 Einträge)
+Zeitfenster: 17:39 bis 20:14 Uhr
 - 2 x Fehlerkorrektur im Bereich Update.
 
 Datum: 2026-03-19 (7 Einträge)
+Zeitfenster: 16:43 bis 21:36 Uhr
 - 2 x Dokumentation im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich Benutzeroberfläche.
 - 1 x Fehlerkorrektur im Bereich Build-Prozess.
@@ -69,52 +73,59 @@ Datum: 2026-03-19 (7 Einträge)
 - 1 x Wartung im Bereich Versionierung.
 
 Datum: 2026-03-20 (13 Einträge)
+Zeitfenster: 14:02 bis 19:50 Uhr
 - 9 x Fehlerkorrektur im Bereich Benutzeroberfläche.
 - 2 x Neue Funktion im Bereich Benutzeroberfläche.
-- 1 x Fehlerkorrektur im Bereich Zeichenkodierung.
 - 1 x Neue Funktion im Bereich Demo-Funktionen.
+- 1 x Fehlerkorrektur im Bereich Zeichenkodierung.
 
 Datum: 2026-03-21 (12 Einträge)
-- 3 x Neue Funktion im Bereich Benutzeroberfläche.
+Zeitfenster: 06:42 bis 13:00 Uhr
 - 3 x Fehlerkorrektur im Bereich Benutzeroberfläche.
+- 3 x Neue Funktion im Bereich Benutzeroberfläche.
 - 2 x Fehlerkorrektur im Bereich Demo-Funktionen.
 - 2 x Neue Funktion im Bereich Demo-Funktionen.
 - 1 x Fehlerkorrektur im Bereich Suche.
 - 1 x Neue Funktion im Bereich Anmeldung.
 
 Datum: 2026-03-22 (20 Einträge)
+Zeitfenster: 08:13 bis 17:54 Uhr
 - 4 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 - 3 x Fehlerkorrektur im Bereich Ablauf.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich Update.
 - 2 x Fehlerkorrektur im Bereich Dialoge.
+- 1 x Neue Funktion im Bereich Erweiterungsstufe 2.
 - 1 x Neue Funktion im Bereich allgemeiner Bereich.
 - 1 x Neue Funktion im Bereich Anmeldung.
 - 1 x Neue Funktion im Bereich allgemeiner Bereich.
-- 1 x Neue Funktion im Bereich Erweiterungsstufe 2.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Fehlerkorrektur im Bereich Benutzeroberfläche.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-23 (5 Einträge)
+Zeitfenster: 17:09 bis 18:20 Uhr
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-24 (3 Einträge)
+Zeitfenster: 18:41 bis 20:04 Uhr
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-25 (12 Einträge)
+Zeitfenster: 17:05 bis 21:05 Uhr
 - 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-26 (10 Einträge)
+Zeitfenster: 17:11 bis 21:35 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
@@ -122,14 +133,17 @@ Datum: 2026-03-26 (10 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-28 (13 Einträge)
+Zeitfenster: 10:24 bis 22:23 Uhr
 - 12 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-29 (31 Einträge)
+Zeitfenster: 10:08 bis 16:45 Uhr
 - 29 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-30 (13 Einträge)
+Zeitfenster: 16:55 bis 20:52 Uhr
 - 6 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -138,18 +152,21 @@ Datum: 2026-03-30 (13 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-03-31 (9 Einträge)
-- 3 x Automatisierung im Bereich allgemeiner Bereich.
+Zeitfenster: 17:06 bis 20:11 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 3 x Automatisierung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-01 (14 Einträge)
+Zeitfenster: 17:48 bis 22:31 Uhr
 - 8 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-02 (14 Einträge)
+Zeitfenster: 06:53 bis 11:45 Uhr
 - 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -157,6 +174,7 @@ Datum: 2026-04-02 (14 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-03 (23 Einträge)
+Zeitfenster: 08:31 bis 23:47 Uhr
 - 19 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -164,6 +182,7 @@ Datum: 2026-04-03 (23 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-04 (25 Einträge)
+Zeitfenster: 11:13 bis 19:01 Uhr
 - 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -172,43 +191,52 @@ Datum: 2026-04-04 (25 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-05 (19 Einträge)
+Zeitfenster: 09:29 bis 19:42 Uhr
 - 18 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-06 (12 Einträge)
+Zeitfenster: 11:39 bis 15:40 Uhr
 - 9 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-07 (5 Einträge)
+Zeitfenster: 16:51 bis 18:31 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-08 (7 Einträge)
+Zeitfenster: 17:06 bis 20:00 Uhr
 - 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-09 (11 Einträge)
+Zeitfenster: 17:05 bis 20:37 Uhr
 - 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-10 (12 Einträge)
+Zeitfenster: 17:18 bis 23:50 Uhr
 - 12 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-11 (18 Einträge)
+Zeitfenster: 00:06 bis 12:49 Uhr
 - 18 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-12 (8 Einträge)
+Zeitfenster: 07:42 bis 11:54 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-13 (12 Einträge)
+Zeitfenster: 16:56 bis 20:19 Uhr
 - 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -217,9 +245,10 @@ Datum: 2026-04-13 (12 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-14 (12 Einträge)
+Zeitfenster: 17:00 bis 20:17 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -227,6 +256,7 @@ Datum: 2026-04-14 (12 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-15 (16 Einträge)
+Zeitfenster: 17:20 bis 21:12 Uhr
 - 6 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
@@ -237,15 +267,17 @@ Datum: 2026-04-15 (16 Einträge)
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-16 (10 Einträge)
+Zeitfenster: 16:48 bis 20:29 Uhr
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-17 (30 Einträge)
+Zeitfenster: 16:26 bis 21:29 Uhr
 - 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 7 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -253,11 +285,13 @@ Datum: 2026-04-17 (30 Einträge)
 - 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-19 (6 Einträge)
+Zeitfenster: 10:54 bis 19:50 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-20 (19 Einträge)
+Zeitfenster: 08:44 bis 12:17 Uhr
 - 8 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 4 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
@@ -266,22 +300,28 @@ Datum: 2026-04-20 (19 Einträge)
 - 1 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-21 (25 Einträge)
+Zeitfenster: 08:33 bis 13:25 Uhr
 - 23 x Technische Umsetzung im Bereich allgemeiner Bereich.
 - 2 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-22 (14 Einträge)
+Zeitfenster: 08:32 bis 12:31 Uhr
 - 12 x Fehlerkorrektur im Bereich allgemeiner Bereich.
 - 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-04-23 (1 Einträge)
+Zeitfenster: 19:30 bis 19:30 Uhr
 - 1 x Rücknahme im Bereich allgemeiner Bereich.
 
 Datum: 2026-06-07 (3 Einträge)
+Zeitfenster: 08:49 bis 09:01 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
 Datum: 2026-06-08 (10 Einträge)
+Zeitfenster: 18:26 bis 19:33 Uhr
 - 10 x Technische Umsetzung im Bereich allgemeiner Bereich.
 
-Datum: 2026-06-13 (4 Einträge)
+Datum: 2026-06-13 (5 Einträge)
+Zeitfenster: 08:32 bis 09:02 Uhr
 - 3 x Technische Umsetzung im Bereich allgemeiner Bereich.
-- 1 x Technische Umsetzung im Bereich allgemeiner Bereich.
+- 2 x Technische Umsetzung im Bereich allgemeiner Bereich.
