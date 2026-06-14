@@ -344,6 +344,17 @@ namespace MaterialManager_V01.Views
             Close();
         }
 
+        private void OnRohrZuschnittClick(object sender, RoutedEventArgs e)
+        {
+            if (!PromptForOperatorName())
+                return;
+
+            var fenster = new RohrZuschnittDialog(MaterialDataService.LoadAllMaterials());
+            Application.Current.MainWindow = fenster;
+            fenster.Show();
+            Close();
+        }
+
         private void OnThemeSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e) { }
 
         private void OnThemeSliderChangedMain(object sender, RoutedPropertyChangedEventArgs<double> e)

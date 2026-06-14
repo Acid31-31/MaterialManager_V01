@@ -1,11 +1,11 @@
 {
-  "BasePriceFactor": 2.0,
-  "RoundingStep": 50,
+  "BasePriceFactor": 0.85,
+  "RoundingStep": 10,
   "Multipliers": {
     "Single": 1.0,
-    "Multi3": 2.2,
-    "Company10": 4.0,
-    "Enterprise": 5.0
+    "Multi3": 1.9,
+    "Company10": 5.5,
+    "Enterprise": 8.0
   },
   "Modules": [
     {

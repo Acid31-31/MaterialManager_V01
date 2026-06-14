@@ -808,6 +808,12 @@ namespace MaterialManager_V01
         private void OnInventur(object sender, RoutedEventArgs e) { new InventurDialog(Materialien) { Owner = this }.ShowDialog(); }
         private void OnStatistik(object sender, RoutedEventArgs e) { new StatistikDialog(Materialien) { Owner = this }.ShowDialog(); }
 
+        private void OnRohrZuschnitt(object sender, RoutedEventArgs e)
+        {
+            var fenster = new RohrZuschnittDialog(Materialien);
+            fenster.Show();
+        }
+
         private void OnExport(object sender, RoutedEventArgs e)
         {
             var dlg = new SaveFileDialog { Filter = "Excel (*.xlsx)|*.xlsx" };

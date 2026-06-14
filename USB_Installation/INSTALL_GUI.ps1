@@ -163,6 +163,11 @@ function Format-Euro([double]$value) {
     return ($value.ToString('N2', $culture) + ' EUR/Jahr')
 }
 
+function Format-Euro-Once([double]$value) {
+    $culture = [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')
+    return ($value.ToString('N2', $culture) + ' EUR einmalig')
+}
+
 $Script:Pricing = Get-InstallerPricing
 
 function Get-LatestOnlineVersion {
@@ -402,12 +407,22 @@ function Show-PricingScreen {
     Clear-Content
     Update-Progress 2
 
-    $singlePriceText = Format-Euro([double]$Script:Pricing.Single)
-    $multiPriceText = Format-Euro([double]$Script:Pricing.Multi3)
-    $companyPriceText = Format-Euro([double]$Script:Pricing.Company10)
+    $singleYear = [double]$Script:Pricing.Single
+    $multiYear = [double]$Script:Pricing.Multi3
+    $companyYear = [double]$Script:Pricing.Company10
+
+    $singlePriceText = Format-Euro($singleYear)
+    $multiPriceText = Format-Euro($multiYear)
+    $companyPriceText = Format-Euro($companyYear)
+
+    # Marktnahes Einmalkauf-Modell: 3x Jahrespreis
+    $singleOnceText = Format-Euro-Once([Math]::Round($singleYear * 3.0, 2))
+    $multiOnceText = Format-Euro-Once([Math]::Round($multiYear * 3.0, 2))
+    $companyOnceText = Format-Euro-Once([Math]::Round($companyYear * 3.0, 2))
+
     $multiPerSeat = 0.0
-    if ([double]$Script:Pricing.Multi3 -gt 0) {
-        $multiPerSeat = [Math]::Round(([double]$Script:Pricing.Multi3 / 3.0), 2)
+    if ($multiYear -gt 0) {
+        $multiPerSeat = [Math]::Round(($multiYear / 3.0), 2)
     }
     $multiPerSeatText = ($multiPerSeat.ToString('N2', [System.Globalization.CultureInfo]::GetCultureInfo('de-DE')) + ' EUR/PC')
 
@@ -445,56 +460,67 @@ function Show-PricingScreen {
     $demoInfo.Size = New-Object System.Drawing.Size(900, 25)  # ✅ 1000-100=900
     $contentPanel.Controls.Add($demoInfo)
     
-    # RADIO BUTTON 2: EINZELPLATZ
-    $Script:radioSINGLE = New-Object System.Windows.Forms.RadioButton
-    $Script:radioSINGLE.Text = "EINZELPLATZ-LIZENZ - $singlePriceText"
-    $Script:radioSINGLE.ForeColor = [System.Drawing.Color]::White
-    $Script:radioSINGLE.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
-    $Script:radioSINGLE.Location = New-Object System.Drawing.Point(50, 190)
-    $Script:radioSINGLE.Size = New-Object System.Drawing.Size(900, 30)  # ✅ Volle Breite
-    $contentPanel.Controls.Add($Script:radioSINGLE)
-    
-    $singleInfo = New-Object System.Windows.Forms.Label
-    $singleInfo.Text = '   1 PC | 12 Monate Support | Updates (1 Jahr) | Hardware-gebunden'
-    $singleInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-    $singleInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
-    $singleInfo.Location = New-Object System.Drawing.Point(50, 220)
-    $singleInfo.Size = New-Object System.Drawing.Size(900, 25)  # ✅ 1000-100=900
-    $contentPanel.Controls.Add($singleInfo)
-    
-    # RADIO BUTTON 3: MEHRPLATZ
-    $Script:radioMULTI = New-Object System.Windows.Forms.RadioButton
-    $Script:radioMULTI.Text = "MEHRPLATZ-LIZENZ (3 PCs) - $multiPriceText"
-    $Script:radioMULTI.ForeColor = [System.Drawing.Color]::White
-    $Script:radioMULTI.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
-    $Script:radioMULTI.Location = New-Object System.Drawing.Point(50, 260)
-    $Script:radioMULTI.Size = New-Object System.Drawing.Size(900, 30)  # ✅ Volle Breite
-    $contentPanel.Controls.Add($Script:radioMULTI)
-    
-    $multiInfo = New-Object System.Windows.Forms.Label
-    $multiInfo.Text = "   3 Lizenzen (je $multiPerSeatText) | 12 Monate Support | Netzwerk-Modus"
-    $multiInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-    $multiInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
-    $multiInfo.Location = New-Object System.Drawing.Point(50, 290)
-    $multiInfo.Size = New-Object System.Drawing.Size(900, 25)  # ✅ 1000-100=900
-    $contentPanel.Controls.Add($multiInfo)
-    
-    # RADIO BUTTON 4: UNTERNEHMEN
-    $Script:radioENT = New-Object System.Windows.Forms.RadioButton
-    $Script:radioENT.Text = "UNTERNEHMENSLIZENZ (10+ PCs) - $companyPriceText"
-    $Script:radioENT.ForeColor = [System.Drawing.Color]::White
-    $Script:radioENT.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
-    $Script:radioENT.Location = New-Object System.Drawing.Point(50, 330)
-    $Script:radioENT.Size = New-Object System.Drawing.Size(900, 30)  # ✅ Volle Breite
-    $contentPanel.Controls.Add($Script:radioENT)
-    
-    $entInfo = New-Object System.Windows.Forms.Label
-    $entInfo.Text = '   Individuelles Angebot | Prioritaets-Support | Schulungen'
-    $entInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
-    $entInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
-    $entInfo.Location = New-Object System.Drawing.Point(50, 360)
-    $entInfo.Size = New-Object System.Drawing.Size(900, 25)  # ✅ 1000-100=900
-    $contentPanel.Controls.Add($entInfo)
+    # RADIO BUTTON 2: EINZELPLATZ Abo
+    $Script:radioSINGLE_ABO = New-Object System.Windows.Forms.RadioButton
+    $Script:radioSINGLE_ABO.Text = "EINZELPLATZ-LIZENZ (ABO) - $singlePriceText"
+    $Script:radioSINGLE_ABO.ForeColor = [System.Drawing.Color]::White
+    $Script:radioSINGLE_ABO.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioSINGLE_ABO.Location = New-Object System.Drawing.Point(50, 190)
+    $Script:radioSINGLE_ABO.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioSINGLE_ABO)
+
+    # RADIO BUTTON 3: EINZELPLATZ Einmalkauf
+    $Script:radioSINGLE_ONCE = New-Object System.Windows.Forms.RadioButton
+    $Script:radioSINGLE_ONCE.Text = "EINZELPLATZ-LIZENZ (EINMALKAUF) - $singleOnceText"
+    $Script:radioSINGLE_ONCE.ForeColor = [System.Drawing.Color]::White
+    $Script:radioSINGLE_ONCE.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioSINGLE_ONCE.Location = New-Object System.Drawing.Point(50, 220)
+    $Script:radioSINGLE_ONCE.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioSINGLE_ONCE)
+
+    # RADIO BUTTON 4: MEHRPLATZ Abo
+    $Script:radioMULTI_ABO = New-Object System.Windows.Forms.RadioButton
+    $Script:radioMULTI_ABO.Text = "MEHRPLATZ-LIZENZ (3 PCs) (ABO) - $multiPriceText"
+    $Script:radioMULTI_ABO.ForeColor = [System.Drawing.Color]::White
+    $Script:radioMULTI_ABO.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioMULTI_ABO.Location = New-Object System.Drawing.Point(50, 260)
+    $Script:radioMULTI_ABO.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioMULTI_ABO)
+
+    # RADIO BUTTON 5: MEHRPLATZ Einmalkauf
+    $Script:radioMULTI_ONCE = New-Object System.Windows.Forms.RadioButton
+    $Script:radioMULTI_ONCE.Text = "MEHRPLATZ-LIZENZ (3 PCs) (EINMALKAUF) - $multiOnceText"
+    $Script:radioMULTI_ONCE.ForeColor = [System.Drawing.Color]::White
+    $Script:radioMULTI_ONCE.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioMULTI_ONCE.Location = New-Object System.Drawing.Point(50, 290)
+    $Script:radioMULTI_ONCE.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioMULTI_ONCE)
+
+    # RADIO BUTTON 6: UNTERNEHMEN Abo
+    $Script:radioENT_ABO = New-Object System.Windows.Forms.RadioButton
+    $Script:radioENT_ABO.Text = "UNTERNEHMENSLIZENZ (10+ PCs) (ABO) - $companyPriceText"
+    $Script:radioENT_ABO.ForeColor = [System.Drawing.Color]::White
+    $Script:radioENT_ABO.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioENT_ABO.Location = New-Object System.Drawing.Point(50, 330)
+    $Script:radioENT_ABO.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioENT_ABO)
+
+    # RADIO BUTTON 7: UNTERNEHMEN Einmalkauf
+    $Script:radioENT_ONCE = New-Object System.Windows.Forms.RadioButton
+    $Script:radioENT_ONCE.Text = "UNTERNEHMENSLIZENZ (10+ PCs) (EINMALKAUF) - $companyOnceText"
+    $Script:radioENT_ONCE.ForeColor = [System.Drawing.Color]::White
+    $Script:radioENT_ONCE.Font = New-Object System.Drawing.Font('Segoe UI', 13, [System.Drawing.FontStyle]::Bold)
+    $Script:radioENT_ONCE.Location = New-Object System.Drawing.Point(50, 360)
+    $Script:radioENT_ONCE.Size = New-Object System.Drawing.Size(900, 30)
+    $contentPanel.Controls.Add($Script:radioENT_ONCE)
+
+    $pricingInfo = New-Object System.Windows.Forms.Label
+    $pricingInfo.Text = "   Mehrplatz Einzelpreis je PC: $multiPerSeatText | Upgrade jederzeit moeglich"
+    $pricingInfo.Font = New-Object System.Drawing.Font('Segoe UI', 10)
+    $pricingInfo.ForeColor = [System.Drawing.Color]::FromArgb(150, 150, 150)
+    $pricingInfo.Location = New-Object System.Drawing.Point(50, 390)
+    $pricingInfo.Size = New-Object System.Drawing.Size(900, 20)
+    $contentPanel.Controls.Add($pricingInfo)
     
     # HINWEIS BOX - UNTEN
     $hinweisLabel = New-Object System.Windows.Forms.Label
@@ -508,8 +534,8 @@ RABATT: 10% bei Bestellung innerhalb 7 Tagen! (Code: DEMO2026)
     $hinweisLabel.Font = New-Object System.Drawing.Font('Consolas', 9)
     $hinweisLabel.ForeColor = [System.Drawing.Color]::FromArgb(255, 215, 0)
     $hinweisLabel.BackColor = [System.Drawing.Color]::FromArgb(40, 40, 40)
-    $hinweisLabel.Location = New-Object System.Drawing.Point(40, 400)  # ✅ 480-80=400
-    $hinweisLabel.Size = New-Object System.Drawing.Size(920, 80)  # ✅ 1000-80=920
+    $hinweisLabel.Location = New-Object System.Drawing.Point(40, 410)
+    $hinweisLabel.Size = New-Object System.Drawing.Size(920, 70)
     $hinweisLabel.BorderStyle = 'FixedSingle'
     $contentPanel.Controls.Add($hinweisLabel)
     

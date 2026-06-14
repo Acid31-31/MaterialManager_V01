@@ -33,6 +33,9 @@
 - Der Markenname 'MaterialManager V01' darf nicht geändert werden; nur die Bezeichnung der Test-/Statusanzeige soll angepasst werden.
 - Update-Beschreibungen/Changelogs müssen vollständig auf Deutsch sein; englische Commit-Texte dürfen im UI nicht erscheinen.
 - Bei UI-Änderungen zuerst einen konkreten Vorschlag zeigen und erst nach Freigabe umsetzen; im Dunkelmodus sollen klare, aber dezente Akzente statt flächig schwarzer Optik verwendet werden.
+- Bei Berichtsaktualisierungen soll bestehende Datei überschrieben werden statt zusätzliche neue Textdateien anzulegen.
+- Abo und Einmalkauf im Installer sollen als getrennte, separat auswählbare Lizenzoptionen dargestellt werden.
+- Die Rohrezuschnitt-Funktion soll direkt im Hauptprogramm als eigenes Fenster geöffnet werden können und nicht über einen anderen Bereich/Abschnitt versteckt aufgerufen werden. **Der Rohrzuschnitt soll als eigenständiges Vollbild-Fenster geöffnet werden.** Alle Rohre sollen manuell mit Winkel erfasst oder per Dropdown ausgewählt werden, und alle Zeichnungen/PDFs sollen einzeln hinzugefügt werden, damit daraus die Berechnung erfolgt.
 
 ## Auftragsanforderungen
 - Archivierung über Netzwerkpfad implementieren.
