@@ -6,6 +6,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/AppButton3DResources.xaml"/>
+                <ResourceDictionary Source="Resources/WindowChromeResources.xaml"/>
                 <ResourceDictionary Source="Resources/StartPageInsetResources.xaml"/>
                 <ResourceDictionary Source="Resources/ModuleNavigationResources.xaml"/>
                 <ResourceDictionary Source="GeoSuche/GeoResources.xaml"/>

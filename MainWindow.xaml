@@ -10,9 +10,9 @@
         WindowState="Maximized"
         WindowStyle="None"
         ResizeMode="CanResize"
-        BorderBrush="#2A2A2A"
+        BorderBrush="{DynamicResource ThemeBorderBrush}"
         BorderThickness="1"
-        Background="#0B0B0B">
+        Background="{DynamicResource ThemeWindowBackgroundBrush}">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="46"
                             ResizeBorderThickness="6"
@@ -28,7 +28,7 @@
         
         <!-- MENU & MENUITEM COMPLETE DARK THEME -->
         <Style TargetType="Menu">
-            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         
@@ -54,7 +54,7 @@
                                 <Path Grid.Column="3" x:Name="ArrowPath" Margin="4,0,0,0" VerticalAlignment="Center" Fill="White" Data="M 0 0 L 4 4 L 0 8 Z" Visibility="Collapsed"/>
                                 
                                 <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsSubmenuOpen}" Placement="Right" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade" VerticalOffset="-3">
-                                    <Border Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" Padding="2">
+                                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Padding="2">
                                         <ScrollViewer CanContentScroll="True" MaxHeight="400">
                                             <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
                                         </ScrollViewer>
@@ -74,7 +74,7 @@
                                 <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Foreground" Value="#666"/>
@@ -121,14 +121,14 @@
                                           Focusable="False"
                                           ClickMode="Press"
                                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                          Background="#1A1A1A"
-                                          BorderBrush="#444"
+                                          Background="{DynamicResource ThemeAltSurfaceBrush}"
+                                          BorderBrush="{DynamicResource ThemeBorderBrush}"
                                           BorderThickness="1,0,0,0">
                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,4,0"/>
                             </ToggleButton>
 
                             <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
-                                <Border Background="#1A1A1A" BorderBrush="#444" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -152,7 +152,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#1976D2"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -207,7 +207,7 @@
     
     <Grid>
         <DockPanel>
-            <Border DockPanel.Dock="Top" Background="#111111" Height="46" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeSurfaceBrush}" Height="46" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -275,10 +275,10 @@
                                 HorizontalAlignment="Right"
                                 Margin="0,0,10,0"
                                 shell:WindowChrome.IsHitTestVisibleInChrome="True">
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Margin="0,0,4,0" Click="OnUndo" ToolTip="Rückgängig (Ctrl+Z)">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" MinHeight="26" Margin="0,0,4,0" Click="OnUndo" ToolTip="Rückgängig (Ctrl+Z)">
                             <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </Button>
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Margin="0,0,8,0" Click="OnRedo" ToolTip="Wiederherstellen (Ctrl+Y)">
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" MinHeight="26" Margin="0,0,8,0" Click="OnRedo" ToolTip="Wiederherstellen (Ctrl+Y)">
                             <TextBlock Text="&#xE7A6;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </Button>
                         <StackPanel Orientation="Vertical" Margin="10,0,0,0">
@@ -324,7 +324,7 @@
                 </Grid>
             </Border>
 
-            <Border DockPanel.Dock="Top" Background="#1F1F1F" Height="58">
+            <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeSurfaceBrush}" Height="58">
                 <Grid Margin="8,6,8,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -363,7 +363,7 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
-                        <TextBox x:Name="SearchBox" Background="#222" Foreground="White" Padding="6,4" TextChanged="OnMainSearchChanged" VerticalContentAlignment="Center" Height="28" FontSize="13" Margin="0,0,10,0" Width="320"/>
+                        <TextBox x:Name="SearchBox" Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" Padding="6,4" TextChanged="OnMainSearchChanged" VerticalContentAlignment="Center" Height="28" FontSize="13" Margin="0,0,10,0" Width="320"/>
                     </DockPanel>
                 </Grid>
             </Border>
@@ -373,48 +373,48 @@
                     <Button Click="OnMaterialNeu" Style="{StaticResource AppButton3DSuccessStyle}" Width="140" Height="80" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#C8E6C9" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Material neu" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="11"/>
+                            <TextBlock Text="Material neu" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="11"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="OnOpenLagerView" Style="{StaticResource AppButton3DPurpleStyle}" Width="150" Height="80" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#E1BEE7" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Lager" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                            <TextBlock Text="Lager" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="OnOpenTafelplanungView" Style="{StaticResource AppButton3DTealStyle}" Width="170" Height="80" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#B2DFDB" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Auftragssteuerung" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBlock Text="Auftragssteuerung" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="OnOpenLaserView" Style="{StaticResource AppButton3DSuccessStyle}" Width="140" Height="80" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#C8E6C9" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Laser" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                            <TextBlock Text="Laser" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="OnOpenKundenMaterialView" Style="{StaticResource AppButton3DPrimaryStyle}" Width="170" Height="80" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#BBDEFB" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Kunden Lager" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                            <TextBlock Text="Kunden Lager" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
                         </StackPanel>
                     </Button>
                     
-                    <Border Background="#1E1E1E" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75">
+                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" CornerRadius="5" Padding="12" Margin="0,0,8,8" Width="200" Height="75">
                         <StackPanel>
-                            <TextBlock Text="Gesamtgewicht" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="Gesamtgewicht" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             <TextBlock Text="{Binding GesamtGewichtText}" Foreground="#4CAF50" FontSize="20" FontWeight="Bold" Margin="0,4,0,0"/>
                         </StackPanel>
                     </Border>
                     
                     <Button Click="OnRegalauslastungClick" Style="{StaticResource AppButton3DInfoPanelStyle}" Width="200">
                         <StackPanel>
-                            <TextBlock Text="Regalauslastung" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="Regalauslastung" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             <ProgressBar Value="{Binding DurchschnittAuslastung}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#00A651"/>
                             <TextBlock Text="{Binding AuslastungText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
                         </StackPanel>
@@ -422,7 +422,7 @@
 
                     <Button Click="OnEuPaletteClick" Style="{StaticResource AppButton3DInfoPanelStyle}" Width="230">
                         <StackPanel>
-                            <TextBlock Text="EU Palette (Rest Material)" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="EU Palette (Rest Material)" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             <ProgressBar Value="{Binding EuPalettePct}" Minimum="0" Maximum="100" Height="10" Margin="0,4,0,3" Background="#2A2A2A" Foreground="#FF9800"/>
                             <TextBlock Text="{Binding EuPaletteDisplayText}" Foreground="#AAA" FontSize="10" HorizontalAlignment="Right"/>
                         </StackPanel>
@@ -432,7 +432,7 @@
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#FFE0B2" Margin="0,0,6,0"/>
-                                <TextBlock Text="Niedrige Bestände" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="Niedrige Bestände" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             </StackPanel>
                             <TextBlock Text="{Binding NiedrigeBestaendeText}" Foreground="{Binding NiedrigeBastaendeFarbe}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
                         </StackPanel>
@@ -442,7 +442,7 @@
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE735;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#C8E6C9" Margin="0,0,6,0"/>
-                                <TextBlock Text="Reservierte Reste" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="Reservierte Reste" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             </StackPanel>
                             <TextBlock Text="{Binding ReservierteResteCount}" Foreground="#C8E6C9" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
                         </StackPanel>
@@ -451,14 +451,14 @@
                     <Button Click="OnResteSuchen" Style="{StaticResource AppButton3DSuccessStyle}" Width="160" Height="85" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#C8E6C9" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Reste suchen" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                            <TextBlock Text="Reste suchen" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
                         </StackPanel>
                     </Button>
 
                     <Button Click="OnRohrZuschnitt" Style="{StaticResource AppButton3DTealStyle}" Width="180" Height="85" Margin="0,0,8,8" Padding="10,8">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="&#xE9A6;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#B2DFDB" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Rohrzuschnitt" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                            <TextBlock Text="Rohrzuschnitt" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
                         </StackPanel>
                     </Button>
 
@@ -466,7 +466,7 @@
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#BBDEFB" Margin="0,0,6,0"/>
-                                <TextBlock Text="Online Jetzt" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Text="Online Jetzt" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="11"/>
                             </StackPanel>
                             <TextBlock x:Name="OnlineUsersDisplay" Text="● hoelz" Foreground="#4CAF50" FontSize="13" FontWeight="Bold" Margin="0,8,0,0" TextWrapping="Wrap" MaxHeight="60"/>
                         </StackPanel>
@@ -526,11 +526,11 @@
             
             <!-- ✅ EXPANDABLES ONLINE-USERS POPUP -->
             <Popup x:Name="OnlineUsersPopup" IsOpen="False" Placement="Mouse" AllowsTransparency="True" PopupAnimation="Fade">
-                <Border Background="#1E1E1E" BorderBrush="#4CAF50" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
+                <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="#4CAF50" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
                     <StackPanel>
-                        <TextBlock Text="👥 Online Benutzer" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,0,12"/>
+                        <TextBlock Text="👥 Online Benutzer" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="Bold" FontSize="14" Margin="0,0,0,12"/>
                         <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
-                            <ListBox x:Name="OnlineUsersList" Background="Transparent" BorderThickness="0" Foreground="White">
+                            <ListBox x:Name="OnlineUsersList" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource ThemeForegroundBrush}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding}" Foreground="#4CAF50" FontSize="12" Margin="0,5,0,5"/>

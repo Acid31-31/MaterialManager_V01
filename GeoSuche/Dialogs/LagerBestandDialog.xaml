@@ -1,11 +1,11 @@
-<Window x:Class="GeoArbeitsvorbereitung.Dialogs.LagerBestandDialog"
+﻿<Window x:Class="GeoArbeitsvorbereitung.Dialogs.LagerBestandDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Lagerbestand"
         Width="900" Height="560"
         MinWidth="760" MinHeight="420"
         WindowStartupLocation="CenterOwner"
-        Background="#1E1E1E"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
         Foreground="#CCCCCC"
         FontFamily="Segoe UI"
         FontSize="13">

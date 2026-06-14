@@ -1,4 +1,4 @@
-<Window x:Class="MaterialManager_V01.Views.ProduktionVerfolgungDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.ProduktionVerfolgungDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Produktionsverfolgung"
@@ -6,8 +6,8 @@
         Width="760"
         MinHeight="560"
         MinWidth="700"
-        Background="#0B0B0B"
-        Foreground="White"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
         FontSize="13">
@@ -65,7 +65,7 @@
                     Padding="14,8"/>
         </StackPanel>
 
-        <Border Grid.Row="2" Background="#1E1E1E" Padding="16" CornerRadius="4" Margin="0,0,0,16">
+        <Border Grid.Row="2" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="16" CornerRadius="4" Margin="0,0,0,16">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -79,7 +79,7 @@
                         x:Name="KwAuswahlButton"
                         Content="KW --"
                         Width="150"
-                        Height="36"
+                        MinHeight="36"
                         Padding="12,6"
                         FontSize="13"
                         FontWeight="SemiBold"
@@ -90,17 +90,17 @@
         </Border>
 
         <TextBlock Grid.Row="3" Text="Produktionsbeginn:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
-        <Border Grid.Row="4" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
-            <TextBlock x:Name="StartZeitTextBlock" FontSize="16" Text="Nicht gestartet" Foreground="White"/>
+        <Border Grid.Row="4" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+            <TextBlock x:Name="StartZeitTextBlock" FontSize="16" Text="Nicht gestartet" Foreground="{DynamicResource ThemeForegroundBrush}"/>
         </Border>
 
         <TextBlock Grid.Row="5" Text="Produktionsende:" Foreground="#AAAAAA" Margin="0,0,0,8"/>
-        <Border Grid.Row="6" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,16">
-            <TextBlock x:Name="EndZeitTextBlock" FontSize="16" Text="Nicht beendet" Foreground="White"/>
+        <Border Grid.Row="6" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12" CornerRadius="4" Margin="0,0,0,16">
+            <TextBlock x:Name="EndZeitTextBlock" FontSize="16" Text="Nicht beendet" Foreground="{DynamicResource ThemeForegroundBrush}"/>
         </Border>
 
         <Border Grid.Row="7" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,20">
-            <TextBlock x:Name="DauerTextBlock" FontSize="14" Text="Dauer: –" Foreground="White"/>
+            <TextBlock x:Name="DauerTextBlock" FontSize="14" Text="Dauer: –" Foreground="{DynamicResource ThemeForegroundBrush}"/>
         </Border>
 
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -110,8 +110,8 @@
         </StackPanel>
 
         <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
-            <Button Content="PDF nachtragen" Style="{StaticResource AppButton3DPrimaryStyle}" Click="OnAttachOrderPdfClick" MinWidth="170" Height="40" Padding="14,8"/>
-            <Button Content="Auftrag löschen" Style="{StaticResource AppButton3DDangerStyle}" Click="OnDeleteOrderClick" MinWidth="170" Height="40" Padding="14,8" Margin="12,0,0,0"/>
+            <Button Content="PDF nachtragen" Style="{StaticResource AppButton3DPrimaryStyle}" Click="OnAttachOrderPdfClick" MinWidth="170" MinHeight="40" Padding="14,8"/>
+            <Button Content="Auftrag löschen" Style="{StaticResource AppButton3DDangerStyle}" Click="OnDeleteOrderClick" MinWidth="170" MinHeight="40" Padding="14,8" Margin="12,0,0,0"/>
         </StackPanel>
     </Grid>
 </Window>

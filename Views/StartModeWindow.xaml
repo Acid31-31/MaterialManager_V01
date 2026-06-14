@@ -1,4 +1,4 @@
-<Window x:Class="MaterialManager_V01.Views.StartModeWindow"
+﻿<Window x:Class="MaterialManager_V01.Views.StartModeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:services="clr-namespace:MaterialManager_V01.Services"
@@ -16,7 +16,7 @@
         <SolidColorBrush x:Key="HerkoGreenSoft" Color="#66BB6A"/>
         <SolidColorBrush x:Key="HerkoGreenDark" Color="#1F8E4A"/>
 <Style TargetType="Menu">
-            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
@@ -42,7 +42,7 @@
                                 <Path Grid.Column="3" x:Name="ArrowPath" Margin="4,0,0,0" VerticalAlignment="Center" Fill="White" Data="M 0 0 L 4 4 L 0 8 Z" Visibility="Collapsed"/>
 
                                 <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsSubmenuOpen}" Placement="Right" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade" VerticalOffset="-3">
-                                    <Border Background="#1A1A1A" BorderBrush="#333" BorderThickness="1" Padding="2">
+                                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Padding="2">
                                         <ScrollViewer CanContentScroll="True" MaxHeight="400">
                                             <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
                                         </ScrollViewer>
@@ -328,7 +328,7 @@
                                                    FontFamily="Segoe UI"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
-                                                   Foreground="White"/>
+                                                   Foreground="{DynamicResource ThemeForegroundBrush}"/>
                                     </Grid>
                                         <Grid.Triggers>
                                             <EventTrigger RoutedEvent="FrameworkElement.Loaded">

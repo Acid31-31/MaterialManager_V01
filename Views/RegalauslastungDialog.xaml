@@ -1,44 +1,16 @@
-<Window x:Class="MaterialManager_V01.Views.RegalauslastungDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.RegalauslastungDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="📦 Regalauslastung im Detail" 
         Height="650" Width="800" 
-        Background="#0B0B0B"
-        Foreground="White"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize">
     
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-        
-        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="38"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#2E2E2E"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
+        <Style TargetType="TextBlock" BasedOn="{StaticResource AppDialogTextBlockStyle}"/>
         <Style TargetType="ProgressBar">
             <Setter Property="Height" Value="22"/>
             <Setter Property="Background" Value="#2A2A2A"/>
@@ -47,14 +19,14 @@
         </Style>
     </Window.Resources>
 
-    <Border BorderBrush="#2A2A2A" BorderThickness="1" Background="#0B0B0B">
+    <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="{DynamicResource ThemeWindowBackgroundBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#1F1F1F" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border Grid.Row="0" Background="{DynamicResource ThemeSurfaceBrush}" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -65,17 +37,17 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1" Background="#1A1A1A" Padding="25" CornerRadius="8">
+            <Border Grid.Row="1" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="25" CornerRadius="8">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="📦 Regalauslastung - Übersicht" 
-                               FontSize="22" FontWeight="Bold" Foreground="White" 
+                               FontSize="22" FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundBrush}" 
                                Margin="0,0,0,20" HorizontalAlignment="Center"/>
                     
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                        <Button Content="Aktualisieren" Click="OnRefresh" Width="120" Height="35" 
+                        <Button Content="Aktualisieren" Click="OnRefresh" Width="120" MinHeight="35" 
                                 Style="{StaticResource AppButton3DPrimaryStyle}" FontSize="14" Cursor="Hand" Margin="0,0,10,0"/>
-                        <Button Content="Schließen" Click="OnClose" Width="120" Height="35" 
-                                Background="#333" Foreground="White" FontSize="14" Cursor="Hand"/>
+                        <Button Content="Schließen" Click="OnClose" Width="120" MinHeight="35" 
+                                Style="{StaticResource AppButton3DSecondaryStyle}" FontSize="14" Cursor="Hand"/>
                     </StackPanel>
                     
                     <ScrollViewer VerticalScrollBarVisibility="Auto">

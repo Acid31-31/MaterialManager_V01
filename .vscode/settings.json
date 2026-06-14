@@ -1,0 +1,14 @@
+{
+  "dotnet.defaultSolution": "MaterialManager_V01.sln",
+  "workbench.statusBar.visible": true,
+  "VsCodeTaskButtons.showCounter": false,
+  "VsCodeTaskButtons.tasks": [
+    {
+      "label": "App starten",
+      "task": "App starten",
+      "tooltip": "MaterialManager bauen und als Fenster starten",
+      "alignment": "left",
+      "color": "default"
+    }
+  ]
+}

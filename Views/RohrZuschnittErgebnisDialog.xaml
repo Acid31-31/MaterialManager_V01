@@ -4,8 +4,8 @@
         Title="Rohrzuschnitt â€“ Ergebnis &amp; Schneidreihenfolge"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Background="#0A0A0A"
-        Foreground="White">
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}">
 
     <Window.Resources>
         <Style TargetType="TextBlock">
@@ -48,7 +48,7 @@
         </Grid.RowDefinitions>
 
         <!-- â•â•â• TITELLEISTE â•â•â• -->
-        <Border Grid.Row="0" Background="#111111" Padding="20,14">
+        <Border Grid.Row="0" Background="{DynamicResource ThemeSurfaceBrush}" Padding="20,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -61,7 +61,7 @@
                 </StackPanel>
                 <Button Grid.Column="1"
                         Content="PDF-Vorschau öffnen"
-                        Height="36" Padding="16,0"
+                        MinHeight="36" Padding="16,0"
                         Style="{StaticResource AppButton3DTealStyle}"
                         Click="OnExportieren"/>
             </Grid>
@@ -115,7 +115,7 @@
         </ScrollViewer>
 
         <!-- â•â•â• BUTTONS â•â•â• -->
-        <Border Grid.Row="3" Background="#111111" BorderBrush="#2C2C2C" BorderThickness="0,1,0,0" Padding="20,12">
+        <Border Grid.Row="3" Background="{DynamicResource ThemeSurfaceBrush}" BorderBrush="#2C2C2C" BorderThickness="0,1,0,0" Padding="20,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -126,7 +126,7 @@
                            Foreground="#555" FontSize="11" VerticalAlignment="Center"/>
                 <Button Grid.Column="1"
                         Content="Schließen"
-                        Width="130" Height="36"
+                        Width="130" MinHeight="36"
                         Style="{StaticResource AppButton3DSecondaryStyle}"
                         Padding="0"
                         Click="OnSchliessen"/>

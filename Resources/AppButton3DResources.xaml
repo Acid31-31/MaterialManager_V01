@@ -96,6 +96,277 @@
         <GradientStop Color="#D32F2F" Offset="0"/><GradientStop Color="#A62216" Offset="0.45"/><GradientStop Color="#7A1810" Offset="1"/>
     </LinearGradientBrush>
 
+    <!-- Einbau-Taster: Gehäuse-Rand -->
+    <LinearGradientBrush x:Key="BtnInsetOuterBezel" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#484848" Offset="0"/>
+        <GradientStop Color="#2A2A2A" Offset="0.45"/>
+        <GradientStop Color="#161616" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="BtnInsetOuterBezelBorder" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#666666" Offset="0"/>
+        <GradientStop Color="#222222" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Einbau-Taster: radiale Hintergrundbeleuchtung -->
+    <RadialGradientBrush x:Key="BtnInsetPrimaryNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FF64B5F6" Offset="0"/><GradientStop Color="#D01565C0" Offset="0.45"/><GradientStop Color="#880D47A1" Offset="0.78"/><GradientStop Color="#44081830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetPrimaryHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FF90CAF9" Offset="0"/><GradientStop Color="#E01976D2" Offset="0.42"/><GradientStop Color="#991565C0" Offset="0.75"/><GradientStop Color="#55081830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetPrimaryPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA1976D2" Offset="0"/><GradientStop Color="#770F4C9A" Offset="0.5"/><GradientStop Color="#44081830" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetSecondaryNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FF9EACB6" Offset="0"/><GradientStop Color="#D05A6570" Offset="0.45"/><GradientStop Color="#88454F57" Offset="0.78"/><GradientStop Color="#44101818" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetSecondaryHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFB0BEC5" Offset="0"/><GradientStop Color="#E06B7884" Offset="0.42"/><GradientStop Color="#995A6570" Offset="0.75"/><GradientStop Color="#55101818" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetSecondaryPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA546E7A" Offset="0"/><GradientStop Color="#774A5560" Offset="0.5"/><GradientStop Color="#44101818" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetSuccessNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFA5D6A7" Offset="0"/><GradientStop Color="#D0388E3C" Offset="0.45"/><GradientStop Color="#881B5E20" Offset="0.78"/><GradientStop Color="#44102008" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetSuccessHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFC8E6C9" Offset="0"/><GradientStop Color="#E043A047" Offset="0.42"/><GradientStop Color="#992E7D32" Offset="0.75"/><GradientStop Color="#55102008" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetSuccessPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA2E7D32" Offset="0"/><GradientStop Color="#77256628" Offset="0.5"/><GradientStop Color="#44102008" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetTealNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FF80CBC4" Offset="0"/><GradientStop Color="#D000897B" Offset="0.45"/><GradientStop Color="#8800695C" Offset="0.78"/><GradientStop Color="#44083028" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetTealHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFB2DFDB" Offset="0"/><GradientStop Color="#E0009688" Offset="0.42"/><GradientStop Color="#9900796B" Offset="0.75"/><GradientStop Color="#55083028" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetTealPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA00796B" Offset="0"/><GradientStop Color="#7700695C" Offset="0.5"/><GradientStop Color="#44083028" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetDangerNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFEF9A9A" Offset="0"/><GradientStop Color="#D0C62828" Offset="0.45"/><GradientStop Color="#888B1E1E" Offset="0.78"/><GradientStop Color="#44101810" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetDangerHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFFFCDD2" Offset="0"/><GradientStop Color="#E0D32F2F" Offset="0.42"/><GradientStop Color="#99A32222" Offset="0.75"/><GradientStop Color="#55101810" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetDangerPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AAB71C1C" Offset="0"/><GradientStop Color="#778B1E1E" Offset="0.5"/><GradientStop Color="#44101810" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetWarningNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFFFCC80" Offset="0"/><GradientStop Color="#D0EF6C00" Offset="0.45"/><GradientStop Color="#88BF5600" Offset="0.78"/><GradientStop Color="#44181808" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetWarningHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFFFE0B2" Offset="0"/><GradientStop Color="#E0F57C00" Offset="0.42"/><GradientStop Color="#99CF6500" Offset="0.75"/><GradientStop Color="#55181808" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetWarningPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AAE65100" Offset="0"/><GradientStop Color="#77BF5600" Offset="0.5"/><GradientStop Color="#44181808" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetInfoNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFB0BEC5" Offset="0"/><GradientStop Color="#D0546E7A" Offset="0.45"/><GradientStop Color="#8837474F" Offset="0.78"/><GradientStop Color="#44101820" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetInfoHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFCFD8DC" Offset="0"/><GradientStop Color="#E0607580" Offset="0.42"/><GradientStop Color="#99455A64" Offset="0.75"/><GradientStop Color="#55101820" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetInfoPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA546E7A" Offset="0"/><GradientStop Color="#77455A64" Offset="0.5"/><GradientStop Color="#44101820" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetPurpleNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFCE93D8" Offset="0"/><GradientStop Color="#D07B1FA2" Offset="0.45"/><GradientStop Color="#884A148C" Offset="0.78"/><GradientStop Color="#44140830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetPurpleHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFE1BEE7" Offset="0"/><GradientStop Color="#E08E24AA" Offset="0.42"/><GradientStop Color="#996A1B9A" Offset="0.75"/><GradientStop Color="#55140830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetPurplePressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA7B1FA2" Offset="0"/><GradientStop Color="#776A1B9A" Offset="0.5"/><GradientStop Color="#44140830" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="BtnInsetIndigoNormal" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FF9FA8DA" Offset="0"/><GradientStop Color="#D03F51B5" Offset="0.45"/><GradientStop Color="#88283593" Offset="0.78"/><GradientStop Color="#44101830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetIndigoHover" GradientOrigin="0.5,0.88" Center="0.5,0.88" RadiusX="0.95" RadiusY="0.95">
+        <GradientStop Color="#FFC5CAE9" Offset="0"/><GradientStop Color="#E0485BC4" Offset="0.42"/><GradientStop Color="#993949AB" Offset="0.75"/><GradientStop Color="#55101830" Offset="1"/>
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="BtnInsetIndigoPressed" GradientOrigin="0.5,0.92" Center="0.5,0.92" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Color="#AA3949AB" Offset="0"/><GradientStop Color="#77303F9F" Offset="0.5"/><GradientStop Color="#44101830" Offset="1"/>
+    </RadialGradientBrush>
+
+    <ControlTemplate x:Key="AppButton3DInsetTemplate" TargetType="Button">
+        <Grid SnapsToDevicePixels="True">
+            <Border x:Name="OuterBezel"
+                    CornerRadius="7"
+                    Padding="2,2,2,2"
+                    Background="{StaticResource BtnInsetOuterBezel}"
+                    BorderBrush="{StaticResource BtnInsetOuterBezelBorder}"
+                    BorderThickness="1">
+                <Border x:Name="InnerRecess" CornerRadius="5" Background="#030405">
+                    <Border x:Name="RecessWall"
+                            CornerRadius="4"
+                            Background="#06080A"
+                            BorderThickness="1"
+                            BorderBrush="#000000">
+                        <Border x:Name="BacklightPanel"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                ClipToBounds="True">
+                            <Grid>
+                                <Border x:Name="InnerGlow" CornerRadius="3" VerticalAlignment="Bottom" Height="12" IsHitTestVisible="False" Opacity="0.55">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                            <GradientStop Color="#55FFFFFF" Offset="0"/><GradientStop Color="#00FFFFFF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <Border x:Name="TopVignette" CornerRadius="3,3,0,0" VerticalAlignment="Top" Height="6" IsHitTestVisible="False" Opacity="0.35">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#66000000" Offset="0"/><GradientStop Color="#00000000" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Border>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Opacity" Value="1"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.78"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Margin" Value="0,1,0,-1"/>
+                <Setter TargetName="RecessWall" Property="BorderThickness" Value="2,2,2,1"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.32"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="OuterBezel" Property="Opacity" Value="0.42"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="AppButton3DInsetCompactTemplate" TargetType="Button">
+        <Grid SnapsToDevicePixels="True">
+            <Border x:Name="OuterBezel"
+                    CornerRadius="5"
+                    Padding="1"
+                    Background="{StaticResource BtnInsetOuterBezel}"
+                    BorderBrush="{StaticResource BtnInsetOuterBezelBorder}"
+                    BorderThickness="1">
+                <Border x:Name="InnerRecess" CornerRadius="4" Background="#030405">
+                    <Border x:Name="RecessWall"
+                            CornerRadius="3"
+                            Background="#06080A"
+                            BorderThickness="1"
+                            BorderBrush="#000000">
+                        <Border x:Name="BacklightPanel"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                ClipToBounds="True">
+                            <Grid>
+                                <Border x:Name="InnerGlow" CornerRadius="2" VerticalAlignment="Bottom" Height="8" IsHitTestVisible="False" Opacity="0.5">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                            <GradientStop Color="#44FFFFFF" Offset="0"/><GradientStop Color="#00FFFFFF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Border>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Opacity" Value="1"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.72"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Margin" Value="0,1,0,-1"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.28"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="OuterBezel" Property="Opacity" Value="0.42"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="AppButton3DInsetTileTemplate" TargetType="Button">
+        <Grid SnapsToDevicePixels="True">
+            <Border x:Name="OuterBezel"
+                    CornerRadius="10"
+                    Padding="5,5,5,6"
+                    Background="{StaticResource BtnInsetOuterBezel}"
+                    BorderBrush="{StaticResource BtnInsetOuterBezelBorder}"
+                    BorderThickness="2,2,2,3">
+                <Border x:Name="InnerRecess" CornerRadius="6" Background="#030405" Padding="2">
+                    <Border x:Name="RecessWall"
+                            CornerRadius="5"
+                            Background="#06080A"
+                            BorderThickness="2,2,2,3"
+                            BorderBrush="#000000">
+                        <Border x:Name="BacklightPanel"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                ClipToBounds="True">
+                            <Grid>
+                                <Border x:Name="InnerGlow" CornerRadius="4" VerticalAlignment="Bottom" Height="72" IsHitTestVisible="False" Opacity="0.55">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                            <GradientStop Color="#55FFFFFF" Offset="0"/><GradientStop Color="#00FFFFFF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <Border x:Name="TopVignette" CornerRadius="4,4,0,0" VerticalAlignment="Top" Height="28" IsHitTestVisible="False" Opacity="0.35">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#66000000" Offset="0"/><GradientStop Color="#00000000" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  RecognizesAccessKey="True"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Border>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Opacity" Value="1"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.78"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="BacklightPanel" Property="Margin" Value="0,1,0,-1"/>
+                <Setter TargetName="RecessWall" Property="BorderThickness" Value="3,3,3,2"/>
+                <Setter TargetName="InnerGlow" Property="Opacity" Value="0.32"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="OuterBezel" Property="Opacity" Value="0.42"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <ControlTemplate x:Key="AppButton3DTemplate" TargetType="Button">
         <Grid SnapsToDevicePixels="True">
             <Border x:Name="DropShadow" Margin="0,2,0,0" CornerRadius="6" Background="#050505" Opacity="0.5"/>
@@ -154,90 +425,125 @@
     </ControlTemplate>
 
     <Style x:Key="AppButton3DBaseStyle" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource Btn3DSecondaryNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetSecondaryNormal}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Padding" Value="14,6"/>
-        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Padding" Value="12,5"/>
+        <Setter Property="MinHeight" Value="44"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Template" Value="{StaticResource AppButton3DTemplate}"/>
+        <Setter Property="Template" Value="{StaticResource AppButton3DInsetTemplate}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Btn3DSecondaryHover}"/>
+                <Setter Property="Background" Value="{StaticResource BtnInsetSecondaryHover}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource Btn3DSecondaryPressed}"/>
+                <Setter Property="Background" Value="{StaticResource BtnInsetSecondaryPressed}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style x:Key="AppButton3DPrimaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DPrimaryNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetPrimaryNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DPrimaryHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DPrimaryPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DSuccessStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DSuccessNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetSuccessNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DSuccessHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DSuccessPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DTealStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DTealNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetTealNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DTealHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DTealPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DDangerStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DDangerNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetDangerNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DDangerHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DDangerPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetDangerHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetDangerPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DWarningStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DWarningNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetWarningNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DWarningHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DWarningPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetWarningHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetWarningPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DInfoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DInfoNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetInfoNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DInfoHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DInfoPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
     <Style x:Key="AppButton3DSecondaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}"/>
 
-    <Style x:Key="AppButton3DCompactPrimaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DPrimaryStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactBaseStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
+        <Setter Property="Template" Value="{StaticResource AppButton3DInsetCompactTemplate}"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="MinHeight" Value="30"/>
     </Style>
-    <Style x:Key="AppButton3DCompactSuccessStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DSuccessStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+
+    <Style x:Key="AppButton3DCompactPrimaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetPrimaryNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
-    <Style x:Key="AppButton3DCompactTealStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DTealStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactSuccessStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetSuccessNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
-    <Style x:Key="AppButton3DCompactDangerStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DDangerStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactTealStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetTealNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
-    <Style x:Key="AppButton3DCompactWarningStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DWarningStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactDangerStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetDangerNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetDangerHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetDangerPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
-    <Style x:Key="AppButton3DCompactInfoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInfoStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactWarningStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetWarningNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetWarningHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetWarningPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
-    <Style x:Key="AppButton3DCompactSecondaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DSecondaryStyle}">
-        <Setter Property="Padding" Value="10,5"/><Setter Property="FontSize" Value="12"/><Setter Property="MinHeight" Value="28"/>
+    <Style x:Key="AppButton3DCompactInfoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetInfoNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoPressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="AppButton3DCompactSecondaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetSecondaryNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSecondaryHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSecondaryPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="AppButton3DTitleBarStyle" TargetType="Button">
@@ -294,30 +600,82 @@
     </LinearGradientBrush>
 
     <Style x:Key="AppButton3DPurpleStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DPurpleNormal}"/>
+        <Setter Property="Background" Value="{StaticResource BtnInsetPurpleNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DPurpleHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DPurplePressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPurpleHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPurplePressed}"/></Trigger>
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="AppButton3DLargePurpleStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DPurpleStyle}">
-        <Setter Property="Height" Value="150"/>
-        <Setter Property="MinWidth" Value="120"/>
-        <Setter Property="Padding" Value="16"/>
+    <Style x:Key="AppButton3DIndigoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetIndigoNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetIndigoHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetIndigoPressed}"/></Trigger>
+        </Style.Triggers>
     </Style>
 
-    <Style x:Key="AppButton3DLargeIndigoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
-        <Setter Property="Background" Value="{StaticResource Btn3DIndigoNormal}"/>
-        <Setter Property="Height" Value="150"/>
+    <Style x:Key="AppButton3DInsetTileBaseStyle" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource BtnInsetPrimaryNormal}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Height" Value="158"/>
         <Setter Property="MinWidth" Value="120"/>
-        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Padding" Value="12,10"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template" Value="{StaticResource AppButton3DInsetTileTemplate}"/>
+    </Style>
+
+    <Style x:Key="AppButton3DInsetTilePrimaryStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetPrimaryNormal}"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DIndigoHover}"/></Trigger>
-            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource Btn3DIndigoPressed}"/></Trigger>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPrimaryPressed}"/></Trigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="AppButton3DInsetTilePurpleStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetPurpleNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPurpleHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetPurplePressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="AppButton3DInsetTileTealStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetTealNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetTealPressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="AppButton3DInsetTileSuccessStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetSuccessNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetSuccessPressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="AppButton3DInsetTileInfoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetInfoNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetInfoPressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="AppButton3DInsetTileIndigoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileBaseStyle}">
+        <Setter Property="Background" Value="{StaticResource BtnInsetIndigoNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetIndigoHover}"/></Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{StaticResource BtnInsetIndigoPressed}"/></Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="AppButton3DLargePurpleStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTilePurpleStyle}"/>
+    <Style x:Key="AppButton3DLargeIndigoStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInsetTileIndigoStyle}"/>
 
     <Style x:Key="AppButton3DModuleTileStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DSecondaryStyle}">
         <Setter Property="Width" Value="150"/>

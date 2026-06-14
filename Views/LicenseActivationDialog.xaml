@@ -4,7 +4,7 @@
         Title="Lizenz aktivieren - MaterialManager V01" 
         Height="1050" Width="1330" 
         WindowStartupLocation="CenterScreen"
-        Background="#0B0B0B"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
         ResizeMode="NoResize">
 
     <Window.Resources>
@@ -47,13 +47,13 @@
                     <TextBlock Grid.Column="1" Text="{Binding HeadlinePriceText}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource HerkoGreen}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
                 
-                <Border Background="#1E1E1E" 
+                <Border Background="{DynamicResource ThemeAltSurfaceBrush}" 
                         CornerRadius="5" 
                         Padding="15" 
                         Margin="0,15,0,0">
                     <StackPanel>
                         <TextBlock Text="© 2025 Alexander Hölzer - Alle Rechte vorbehalten" 
-                                   Foreground="White" 
+                                   Foreground="{DynamicResource ThemeForegroundBrush}" 
                                    FontWeight="Bold"
                                    TextAlignment="Center"/>
                         <TextBlock Text="Urheberrechtlich geschützt gemäß §§ 69a ff. UrhG" 
@@ -69,7 +69,7 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Hardware-ID Anzeige -->
-                    <Border Background="#1E1E1E" 
+                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" 
                             CornerRadius="5" 
                             Padding="15" 
                             Margin="0,0,0,15">
@@ -77,14 +77,14 @@
                             <TextBlock Text="1️⃣ Ihre Hardware-ID" 
                                        FontSize="16" 
                                        FontWeight="Bold" 
-                                       Foreground="White"
+                                       Foreground="{DynamicResource ThemeForegroundBrush}"
                                        Margin="0,0,0,10"/>
                             <TextBlock Text="Geben Sie diese ID beim Lizenzkauf an:" 
                                        Foreground="#AAA" 
                                        FontSize="12"
                                        Margin="0,0,0,8"/>
                             <Border Background="#0F0F0F" 
-                                    BorderBrush="#333" 
+                                    BorderBrush="{DynamicResource ThemeBorderBrush}" 
                                     BorderThickness="1"
                                     CornerRadius="3"
                                     Padding="10">
@@ -102,7 +102,7 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             Background="#333"
-                                            Foreground="White"
+                                            Foreground="{DynamicResource ThemeForegroundBrush}"
                                             Padding="10,5"
                                             BorderThickness="0"
                                             Cursor="Hand"
@@ -113,7 +113,7 @@
                     </Border>
 
                     <!-- Lizenzschlüssel Eingabe -->
-                    <Border Background="#1E1E1E" 
+                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" 
                             CornerRadius="5" 
                             Padding="15" 
                             Margin="0,0,0,15">
@@ -121,7 +121,7 @@
                             <TextBlock Text="2️⃣ Lizenzschlüssel eingeben" 
                                        FontSize="16" 
                                        FontWeight="Bold" 
-                                       Foreground="White"
+                                       Foreground="{DynamicResource ThemeForegroundBrush}"
                                        Margin="0,0,0,10"/>
                             <TextBlock Text="Format: MM-XXXX-XXXX-XXXX-XXXX" 
                                        Foreground="#AAA" 
@@ -129,11 +129,11 @@
                                        Margin="0,0,0,8"/>
                             <TextBox x:Name="LicenseKeyTextBox"
                                      Background="#0F0F0F"
-                                     Foreground="White"
+                                     Foreground="{DynamicResource ThemeForegroundBrush}"
                                      Padding="10"
                                      FontFamily="Consolas"
                                      FontSize="14"
-                                     BorderBrush="#333"
+                                     BorderBrush="{DynamicResource ThemeBorderBrush}"
                                      BorderThickness="1"
                                      MaxLength="22"
                                      TextChanged="OnLicenseKeyChanged"/>
@@ -141,7 +141,7 @@
                     </Border>
 
                     <!-- Registrierung -->
-                    <Border Background="#1E1E1E" 
+                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" 
                             CornerRadius="5" 
                             Padding="15" 
                             Margin="0,0,0,15">
@@ -149,7 +149,7 @@
                             <TextBlock Text="3️⃣ Registrierungsinformationen" 
                                        FontSize="16" 
                                        FontWeight="Bold" 
-                                       Foreground="White"
+                                       Foreground="{DynamicResource ThemeForegroundBrush}"
                                        Margin="0,0,0,10"/>
                             <TextBlock Text="Firma / Name:" 
                                        Foreground="#AAA" 
@@ -157,10 +157,10 @@
                                        Margin="0,0,0,5"/>
                             <TextBox x:Name="RegisteredToTextBox"
                                      Background="#0F0F0F"
-                                     Foreground="White"
+                                     Foreground="{DynamicResource ThemeForegroundBrush}"
                                      Padding="10"
                                      FontSize="13"
-                                     BorderBrush="#333"
+                                     BorderBrush="{DynamicResource ThemeBorderBrush}"
                                      BorderThickness="1"
                                      MaxLength="100"
                                      TextChanged="OnRegisteredToChanged"/>
@@ -168,7 +168,7 @@
                     </Border>
 
                     <!-- Lizenztyp-Info mit PREISEN -->
-                    <Border Background="#1F1F1F" 
+                    <Border Background="{DynamicResource ThemeSurfaceBrush}" 
                             BorderBrush="{StaticResource HerkoGreen}" 
                             BorderThickness="2"
                             CornerRadius="5" 
@@ -188,7 +188,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Single (S1)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Single (S1)" FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="12"/>
                                         <TextBlock Text="1 Arbeitsplatz" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                         <TextBlock Text="Leistungsumfang: Basisbetrieb, Standard-Updates, E-Mail-Support (werktags, Reaktionszeit bis 48h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
@@ -206,7 +206,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Mehrplatz (M3)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Mehrplatz (M3)" FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="12"/>
                                         <TextBlock Text="3 Arbeitsplätze" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                         <TextBlock Text="Leistungsumfang: Teamlizenz, priorisierte Fehlerbehebung, Remote-Support nach Termin (Reaktionszeit bis 24h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
@@ -224,7 +224,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Firmenlizenz (C10)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Firmenlizenz (C10)" FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="12"/>
                                         <TextBlock Text="10 Arbeitsplätze inkl. Standard-Support" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                         <TextBlock Text="Leistungsumfang: Mehrstandortfähig, SLA-orientierte Reaktionszeit (bis 8h), regelmäßige Versionspflege" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
@@ -242,7 +242,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Enterprise (ENT)" FontWeight="Bold" Foreground="White" FontSize="12"/>
+                                        <TextBlock Text="Enterprise (ENT)" FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundBrush}" FontSize="12"/>
                                         <TextBlock Text="Erweiterbar, priorisierter Support, individuelle Vereinbarung" Foreground="#AAA" FontSize="11" Margin="0,3,0,0"/>
                                         <TextBlock Text="Leistungsumfang: individuelle Betreuung, erweiterte Servicefenster, projektspezifische Anpassungen (Reaktionszeit bis 4h)" Foreground="{StaticResource HerkoGreenLight}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                     </StackPanel>
@@ -264,7 +264,7 @@
                     </Border>
                     
                     <!-- Kontakt & Support -->
-                    <Border Background="#1E1E1E" 
+                    <Border Background="{DynamicResource ThemeAltSurfaceBrush}" 
                             BorderBrush="{StaticResource HerkoGreen}"
                             BorderThickness="1"
                             CornerRadius="5" 
@@ -304,7 +304,7 @@
                 <Button Content="Abbrechen" 
                         Click="OnCancel"
                         Background="#444" 
-                        Foreground="White"
+                        Foreground="{DynamicResource ThemeForegroundBrush}"
                         Padding="20,10"
                         Margin="0,0,10,0"
                         BorderThickness="0"
@@ -339,7 +339,7 @@
                         Content="✓ Lizenz aktivieren" 
                         Click="OnActivate"
                         Background="{StaticResource HerkoGreen}" 
-                        Foreground="White"
+                        Foreground="{DynamicResource ThemeForegroundBrush}"
                         Padding="20,10"
                         BorderThickness="0"
                         Cursor="Hand"

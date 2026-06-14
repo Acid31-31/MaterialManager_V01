@@ -30,7 +30,11 @@ bld/
 .vs/
 
 # Visual Studio Code
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # ReSharper
 _ReSharper*/
@@ -116,3 +120,6 @@ USB_Installation/**/startup_*.txt
 *.msi
 Installer_Source/**/Release/*.msi
 Installer_Source/**/Debug/*.msi
+
+# Cursor hook temp flag
+.cursor/.app-restart-pending

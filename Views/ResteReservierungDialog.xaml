@@ -1,7 +1,7 @@
-<Window x:Class="MaterialManager_V01.Views.ResteReservierungDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.ResteReservierungDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Rest reservieren" Height="420" Width="520" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
+        Title="Rest reservieren" Height="420" Width="520" Background="{DynamicResource ThemeWindowBackgroundBrush}" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
@@ -85,7 +85,7 @@
                         <TextBlock x:Name="VerfuegbarText" Text="Verfügbar: 0 Stück" Foreground="#4CAF50" FontWeight="Bold"/>
                         <TextBlock Text="Benötigte Stückzahl:" Foreground="#CCC" Margin="0,6,0,0"/>
                         <TextBox x:Name="StueckzahlBox" Width="100" HorizontalAlignment="Left"
-                                 Background="#222" Foreground="White" BorderBrush="#4CAF50"
+                                 Background="{DynamicResource ThemeSurfaceBrush}" Foreground="{DynamicResource ThemeForegroundBrush}" BorderBrush="#4CAF50"
                                  Height="32" Padding="8,4" Margin="0,4,0,0"
                                  PreviewTextInput="OnStueckzahlPreviewInput"/>
                     </StackPanel>

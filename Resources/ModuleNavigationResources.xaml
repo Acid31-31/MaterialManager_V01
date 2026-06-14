@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="ModuleNavButtonBaseStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
@@ -7,15 +7,15 @@
         <Setter Property="Margin" Value="0,0,10,0"/>
     </Style>
 
-    <Style x:Key="ModuleNavStartButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DInfoStyle}">
-        <Setter Property="Height" Value="36"/>
+    <Style x:Key="ModuleNavStartButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactInfoStyle}">
+        <Setter Property="MinHeight" Value="36"/>
         <Setter Property="MinWidth" Value="148"/>
         <Setter Property="Margin" Value="0,0,10,0"/>
         <Setter Property="ToolTip" Value="Zurück zur Modus-Auswahl"/>
     </Style>
 
-    <Style x:Key="ModuleNavMainButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DPrimaryStyle}">
-        <Setter Property="Height" Value="36"/>
+    <Style x:Key="ModuleNavMainButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DCompactPrimaryStyle}">
+        <Setter Property="MinHeight" Value="36"/>
         <Setter Property="MinWidth" Value="148"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="ToolTip" Value="Zur Materialverwaltung"/>
@@ -46,7 +46,7 @@
                 </Border.Background>
                 <TextBlock Text="🏠" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
-            <TextBlock Text="Startseite" VerticalAlignment="Center" Foreground="White" FontWeight="SemiBold"/>
+            <TextBlock Text="Startseite" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="SemiBold"/>
         </StackPanel>
     </DataTemplate>
 
@@ -61,7 +61,7 @@
                 </Border.Background>
                 <Image Source="/Assets/app-icon.png" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
-            <TextBlock Text="Hauptprogramm" VerticalAlignment="Center" Foreground="White" FontWeight="SemiBold"/>
+            <TextBlock Text="Hauptprogramm" VerticalAlignment="Center" Foreground="{DynamicResource ThemeForegroundBrush}" FontWeight="SemiBold"/>
         </StackPanel>
     </DataTemplate>
 

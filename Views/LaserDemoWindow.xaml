@@ -1,4 +1,4 @@
-<Window x:Class="MaterialManager_V01.Views.LaserDemoWindow"
+﻿<Window x:Class="MaterialManager_V01.Views.LaserDemoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MaterialManager_V01.Views.Controls"
@@ -282,8 +282,8 @@
                     </Menu>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,8,0">
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Margin="0,0,4,0" Content="↶" Click="OnUndoClick" ToolTip="Zurück"/>
-                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" Height="26" Content="↷" Click="OnRedoClick" ToolTip="Vorwärts"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" MinHeight="26" Margin="0,0,4,0" Content="↶" Click="OnUndoClick" ToolTip="Zurück"/>
+                        <Button Style="{StaticResource TitleBarButtonStyle}" Width="36" MinHeight="26" Content="↷" Click="OnRedoClick" ToolTip="Vorwärts"/>
                     </StackPanel>
 
                     <TextBlock x:Name="LicenseBannerTextBlock"
@@ -386,14 +386,14 @@
                                 Click="OnToggleNachproduktionClick"
                                 Style="{StaticResource AppButton3DInfoStyle}"
                                 Padding="12,6"
-                                Height="30"
+                                MinHeight="30"
                                 MinWidth="140"
                                 Margin="0,0,8,8"/>
                         <Button Content="{Binding AuftragsKwText}"
                                 Click="OnAuftragKwAuswahlClick"
                                 Style="{StaticResource AppButton3DInfoStyle}"
                                 Padding="12,6"
-                                Height="30"
+                                MinHeight="30"
                                 MinWidth="180"
                                 Margin="0,0,0,8"/>
                     </StackPanel>

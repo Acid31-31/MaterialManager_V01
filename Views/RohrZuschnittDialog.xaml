@@ -5,8 +5,8 @@
 		Title="Rohrezuschnitt optimieren"
 		WindowStartupLocation="CenterScreen"
 		WindowState="Maximized"
-		Background="#0F0F0F"
-		Foreground="White">
+		Background="{DynamicResource ThemeWindowBackgroundBrush}"
+		Foreground="{DynamicResource ThemeForegroundBrush}">
 	<Window.Resources>
 		<Style TargetType="TextBlock">
 			<Setter Property="Foreground" Value="White"/>
@@ -208,7 +208,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
+			<RowDefinition Height="*" MinHeight="120"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
@@ -311,7 +311,7 @@
 					<!-- PDF Drop-Zone -->
 					<Border x:Name="PdfDropBorder"
 							Grid.Column="0"
-							Background="#111111"
+							Background="{DynamicResource ThemeSurfaceBrush}"
 							BorderBrush="#3A3A3A"
 							BorderThickness="2"
 							CornerRadius="6"
@@ -342,10 +342,11 @@
 					<!-- Rohr hinzufügen -->
 					<Button Grid.Column="2"
 							Content="✚  Rohr hinzufügen"
-							Height="46"
+							MinHeight="44"
 							Width="160"
 							Style="{StaticResource AppButton3DTealStyle}"
 							FontSize="13"
+							VerticalAlignment="Center"
 							Click="OnRohrHinzufuegen"/>
 				</Grid>
 			</StackPanel>
@@ -367,7 +368,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<Border Grid.Row="0" Background="#1A1A1A" BorderBrush="#2C2C2C" BorderThickness="0,0,0,1" Padding="12,8" CornerRadius="8,8,0,0">
+				<Border Grid.Row="0" Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="#2C2C2C" BorderThickness="0,0,0,1" Padding="12,8" CornerRadius="8,8,0,0">
 					<TextBlock Text="Erfasste Rohre" FontWeight="SemiBold" Foreground="#CCCCCC" FontSize="13"/>
 				</Border>
 				<DataGrid Grid.Row="1"
@@ -386,7 +387,7 @@
 						<DataGridTemplateColumn Header="PDF (Drop)" Width="110">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<Border Background="#1A1A1A"
+									<Border Background="{DynamicResource ThemeAltSurfaceBrush}"
 											BorderBrush="#3A3A3A"
 											BorderThickness="1"
 											CornerRadius="3"
@@ -408,8 +409,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
 									<Button Content="✖"
-											Width="38"
-											Height="26"
+											MinWidth="38"
+											MinHeight="30"
 											Style="{StaticResource AppButton3DCompactDangerStyle}"
 											Padding="4,2"
 											Tag="{Binding}"
@@ -435,7 +436,7 @@
 			<Button Grid.Column="1"
 					Content="⚙  Berechnen"
 					Width="140"
-					Height="36"
+					MinHeight="44"
 					Style="{StaticResource AppButton3DSuccessStyle}"
 					FontSize="13"
 					Click="OnBerechnen"/>

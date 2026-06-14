@@ -5,21 +5,19 @@
         Title="Material"
         Height="680" Width="440" MinWidth="360" MinHeight="460"
         WindowStartupLocation="CenterOwner"
-        Background="#F5F5F5"
-        Foreground="Black"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
         KeyDown="OnKeyDown">
 
     <Window.Resources>
         <conv:StaerkeFormatConverter x:Key="StaerkeFormat"/>
 
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="Black" />
-        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource AppDialogTextBlockStyle}"/>
 
         <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="Foreground" Value="Black" />
-            <Setter Property="BorderBrush" Value="#AAAAAA" />
+            <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">

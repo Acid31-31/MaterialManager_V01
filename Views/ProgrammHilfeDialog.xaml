@@ -1,4 +1,4 @@
-<Window x:Class="MaterialManager_V01.Views.ProgrammHilfeDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.ProgrammHilfeDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Programm- &amp; Netzwerkanleitung"
@@ -6,30 +6,30 @@
         Height="760"
         MinWidth="760"
         MinHeight="560"
-        Background="#1E1E1E"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
         WindowStartupLocation="CenterOwner">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="#111111" Padding="14">
+        <Border DockPanel.Dock="Top" Background="{DynamicResource ThemeSurfaceBrush}" Padding="14">
             <TextBlock Text="📘 MaterialManager V01 – Programmbeschreibung und Mehr-PC-Netzwerkbetrieb"
-                       Foreground="White"
+                       Foreground="{DynamicResource ThemeForegroundBrush}"
                        FontWeight="Bold"
                        FontSize="16"/>
         </Border>
 
-        <Border DockPanel.Dock="Bottom" Background="#111111" Padding="12">
+        <Border DockPanel.Dock="Bottom" Background="{DynamicResource ThemeSurfaceBrush}" Padding="12">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Als PDF"
                         Width="110"
-                        Height="34"
+                        MinHeight="34"
                         Click="OnSavePdf"
                         Background="#6A1B9A"
-                        Foreground="White"
+                        Foreground="{DynamicResource ThemeForegroundBrush}"
                         BorderThickness="0"
                         Cursor="Hand"
                         Margin="0,0,8,0"/>
                 <Button Content="Drucken"
                         Width="110"
-                        Height="34"
+                        MinHeight="34"
                         Click="OnPrint"
                         Style="{StaticResource AppButton3DInfoStyle}"
                         BorderThickness="0"
@@ -37,7 +37,7 @@
                         Margin="0,0,8,0"/>
                 <Button Content="Schließen"
                         Width="110"
-                        Height="34"
+                        MinHeight="34"
                         Click="OnClose"
                         Style="{StaticResource AppButton3DPrimaryStyle}"
                         BorderThickness="0"
@@ -51,8 +51,8 @@
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
                      BorderThickness="0"
-                     Background="#1E1E1E"
-                     Foreground="White"
+                     Background="{DynamicResource ThemeAltSurfaceBrush}"
+                     Foreground="{DynamicResource ThemeForegroundBrush}"
                      FontSize="13"
                      VerticalScrollBarVisibility="Disabled"/>
         </ScrollViewer>

@@ -87,7 +87,22 @@ namespace MaterialManager_V01.Services
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"));
 
+            SyncGeoResourceBrushes(resources, palette);
+
             ApplyStartPageResources(theme, resources);
+        }
+
+        private static void SyncGeoResourceBrushes(ResourceDictionary resources, ThemePalette palette)
+        {
+            resources["WindowBg"] = palette.WindowBackground;
+            resources["PanelBg"] = palette.Surface;
+            resources["SectionBg"] = palette.AltSurface;
+            resources["InputBg"] = palette.Button;
+            resources["SectionHeader"] = palette.AltSurface;
+            resources["TextPrimary"] = palette.Foreground;
+            resources["TextSecondary"] = palette.MutedForeground;
+            resources["BorderBrush"] = palette.Border;
+            resources["AccentBrush"] = resources["ThemeAccentBrush"];
         }
 
         private static void ApplyStartPageResources(AppTheme theme, ResourceDictionary resources)

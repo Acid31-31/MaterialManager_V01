@@ -1,11 +1,11 @@
-<Window x:Class="MaterialManager_V01.Views.PdfPreviewDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.PdfPreviewDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PDF-Vorschau"
         Height="430"
         Width="700"
-        Background="#0B0B0B"
-        Foreground="White"
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="None"
@@ -24,14 +24,14 @@
         </Style>
 </Window.Resources>
 
-    <Border BorderBrush="#2A2A2A" BorderThickness="1" Background="#0B0B0B">
+    <Border BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Background="{DynamicResource ThemeWindowBackgroundBrush}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#1F1F1F" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
+            <Border Grid.Row="0" Background="{DynamicResource ThemeSurfaceBrush}" MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -56,7 +56,7 @@
 
                 <TextBlock Text="PDF-Vorschau" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
 
-                <Border Grid.Row="1" Background="#1E1E1E" Padding="12" CornerRadius="4" Margin="0,0,0,12">
+                <Border Grid.Row="1" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12" CornerRadius="4" Margin="0,0,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -68,7 +68,7 @@
                     </Grid>
                 </Border>
 
-                <Border Grid.Row="2" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,12">
+                <Border Grid.Row="2" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12" CornerRadius="4" Margin="0,0,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -96,10 +96,10 @@
                 </Grid>
 
                 <Border Grid.Row="4" Background="#1B5E20" Padding="12" CornerRadius="4" Margin="0,0,0,16">
-                    <TextBlock x:Name="StatusTextBlock" Text="PDF ist bereit zum Öffnen" Foreground="White"/>
+                    <TextBlock x:Name="StatusTextBlock" Text="PDF ist bereit zum Öffnen" Foreground="{DynamicResource ThemeForegroundBrush}"/>
                 </Border>
 
-                <Border Grid.Row="6" Background="#1A1A1A" Padding="12" CornerRadius="4" Margin="0,0,0,12">
+                <Border Grid.Row="6" Background="{DynamicResource ThemeAltSurfaceBrush}" Padding="12" CornerRadius="4" Margin="0,0,0,12">
                     <TextBlock x:Name="InfoTextBlock" Text="Diese PDF wird in der Standard-Anwendung Ihres Systems geöffnet." Foreground="#AAAAAA" TextWrapping="Wrap"/>
                 </Border>
 

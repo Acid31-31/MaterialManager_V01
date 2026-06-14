@@ -1,0 +1,123 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Einheitliche Fenster-Basis -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{DynamicResource ThemeWindowBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style x:Key="AppModuleWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="{DynamicResource ThemeWindowBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style x:Key="AppDialogWindowStyle" TargetType="Window" BasedOn="{StaticResource AppModuleWindowStyle}">
+        <Setter Property="ResizeMode" Value="NoResize"/>
+        <Setter Property="WindowStartupLocation" Value="CenterOwner"/>
+    </Style>
+
+    <Style x:Key="AppDialogShellBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource ThemeWindowBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style x:Key="AppTitleBarBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+
+    <Style x:Key="AppPanelBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+
+    <Style x:Key="AppDialogTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="AppDialogTextBoxStyle" TargetType="TextBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource ThemeForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="AppDarkMenuStyle" TargetType="Menu">
+        <Setter Property="Background" Value="{DynamicResource ThemeSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+    </Style>
+
+    <Style x:Key="AppDarkMenuItemStyle" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="6,2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderThickness="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter Grid.Column="0" ContentSource="Icon" Margin="4,0,6,0" VerticalAlignment="Center"/>
+                            <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="{TemplateBinding InputGestureText}" Margin="20,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource ThemeMutedForegroundBrush}"/>
+                            <Path Grid.Column="3" x:Name="ArrowPath" Margin="4,0,0,0" VerticalAlignment="Center" Fill="{DynamicResource ThemeForegroundBrush}" Data="M 0 0 L 4 4 L 0 8 Z" Visibility="Collapsed"/>
+                            <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsSubmenuOpen}" Placement="Right" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade" VerticalOffset="-3">
+                                <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Padding="2">
+                                    <ScrollViewer CanContentScroll="True" MaxHeight="400">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
+                            <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="TopLevelItem">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAltSurfaceBrush}"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuHeader">
+                            <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ThemeMutedForegroundBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppDarkSeparatorStyle" TargetType="Separator">
+        <Setter Property="Background" Value="{DynamicResource ThemeBorderBrush}"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="4,2"/>
+    </Style>
+
+</ResourceDictionary>

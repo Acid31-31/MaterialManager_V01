@@ -1,0 +1,37 @@
+---
+description: App vor Programmierung beenden, nach Code-Aenderungen automatisch starten
+alwaysApply: true
+---
+
+# MaterialManager – App-Vorschau-Workflow (Pflicht)
+
+Dieser Workflow gilt **immer**, wenn Code geaendert wird.
+
+## Vor Programmierung (Start jeder Aufgabe)
+
+1. **Zuerst** laufende MaterialManager-Instanz beenden.
+2. Befehl: `Get-Process -Name MaterialManager_V01 -ErrorAction SilentlyContinue | Stop-Process -Force`
+3. Erst danach Dateien aendern oder `dotnet build` ausfuehren (sonst Build-Lock).
+
+Cursor-Hook `beforeSubmitPrompt` macht das automatisch bei jeder neuen Nachricht.
+
+## Nach abgeschlossener Programmierung
+
+Wenn Aenderungen an `.cs`, `.xaml` oder Projektdateien **fertig** und Build **erfolgreich**:
+
+1. **App automatisch starten** zur Vorschau.
+2. Befehl (Hintergrund): `Start-Process bin\Debug\net8.0-windows\MaterialManager_V01.exe` nach `dotnet build`.
+3. Alternativ: `dotnet run --project MaterialManager_V01.csproj` im Hintergrund.
+
+Cursor-Hook `stop` + `afterFileEdit` starten die App automatisch nach Code-Aenderungen.
+
+## Agent-Pflicht (Fallback wenn Hooks nicht greifen)
+
+- **Aufgabe beginnt** → App beenden (erster Schritt bei Code-Aenderungen).
+- **Aufgabe fertig + Build OK** → App starten (letzter Schritt, Hintergrund).
+- **Nur Fragen ohne Code** → App nicht neu starten.
+
+## Kurzregel
+
+- **Programmieren → App schliessen**
+- **Fertig + Build OK → App oeffnen**

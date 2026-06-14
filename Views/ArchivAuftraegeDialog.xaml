@@ -1,12 +1,12 @@
-<Window x:Class="MaterialManager_V01.Views.ArchivAuftraegeDialog"
+﻿<Window x:Class="MaterialManager_V01.Views.ArchivAuftraegeDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Archiv-Aufträge"
         Height="620"
         Width="960"
         WindowStartupLocation="CenterOwner"
-        Background="#0B0B0B"
-        Foreground="White">
+        Background="{DynamicResource ThemeWindowBackgroundBrush}"
+        Foreground="{DynamicResource ThemeForegroundBrush}">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Background" Value="#2A2A2A"/>
@@ -61,12 +61,12 @@
                                           ClickMode="Press"
                                           IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                           Background="#111"
-                                          BorderBrush="#444"
+                                          BorderBrush="{DynamicResource ThemeBorderBrush}"
                                           BorderThickness="1,0,0,0">
                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </ToggleButton>
                             <Popup x:Name="PART_Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
-                                <Border Background="#1A1A1A" BorderBrush="#444" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
+                                <Border Background="{DynamicResource ThemeAltSurfaceBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -142,8 +142,8 @@
                       IsReadOnly="True"
                       RowHeight="30"
                       Background="#111"
-                      Foreground="White"
-                      BorderBrush="#333">
+                      Foreground="{DynamicResource ThemeForegroundBrush}"
+                      BorderBrush="{DynamicResource ThemeBorderBrush}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Auftrag" Binding="{Binding Auftragsnummer}" Width="160"/>
                     <DataGridTextColumn Header="Start" Binding="{Binding ProduktionStartText}" Width="130"/>
@@ -166,7 +166,7 @@
 
             <Border x:Name="EmptyStatePanel"
                     Background="#AA0B0B0B"
-                    BorderBrush="#333"
+                    BorderBrush="{DynamicResource ThemeBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="6"
                     Padding="20"
