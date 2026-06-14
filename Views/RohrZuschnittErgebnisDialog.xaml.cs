@@ -417,7 +417,7 @@ namespace MaterialManager_V01.Views
             }
 
             var contentStream = BauePdfContentStream(zeilen);
-            var contentBytes = Encoding.GetEncoding(1252).GetBytes(contentStream);
+            var contentBytes = Encoding.Latin1.GetBytes(contentStream);
             using var fs = new FileStream(pfad, FileMode.Create, FileAccess.Write, FileShare.Read);
             using var writer = new StreamWriter(fs, Encoding.ASCII, leaveOpen: true);
 
@@ -470,10 +470,17 @@ namespace MaterialManager_V01.Views
         }
 
         private static string EscapePdfText(string text) =>
-            (text ?? string.Empty)
+            NormalisierePdfText(text)
                 .Replace("\\", "\\\\")
                 .Replace("(", "\\(")
                 .Replace(")", "\\)");
+
+        private static string NormalisierePdfText(string? text) =>
+            (text ?? string.Empty)
+                .Replace("…", "...")
+                .Replace("–", "-")
+                .Replace("—", "-")
+                .Replace("°", " Grad");
 
         private static string KuerzePdfText(string text, int maxLaenge)
         {
