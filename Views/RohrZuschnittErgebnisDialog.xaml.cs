@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using MaterialManager_V01.Services;
 
@@ -310,11 +311,9 @@ namespace MaterialManager_V01.Views
             Grid.SetColumn(laenge, 2);
             grid.Children.Add(laenge);
 
-            // Winkel ° immer links (Rohr drehbar), ganzzahlig
-            int wl = (int)teil.WinkelLinksGrad, wr = (int)teil.WinkelRechtsGrad;
-            if (wr > wl) { var tmp = wl; wl = wr; wr = tmp; }  // grö[char]0x00DFer zuerst
-            var winkelText = wl == wr ? $"{wl}°" : $"{wl}° / {wr}°";
-            var winkelFarbe = (wl < 90 || wr < 90) ? Color.FromRgb(0xFF, 0xA7, 0x26) : Color.FromRgb(0x77, 0x77, 0x77);
+            // Winkel exakt wie eingegeben – kein Drehen, immer XX° / XX°
+            var winkelText = $"{(int)teil.WinkelLinksGrad}° / {(int)teil.WinkelRechtsGrad}°";
+            var winkelFarbe = (teil.WinkelLinksGrad < 90 || teil.WinkelRechtsGrad < 90) ? Color.FromRgb(0xFF, 0xA7, 0x26) : Color.FromRgb(0x77, 0x77, 0x77);
             var winkel = MacheWertBlock(winkelText, winkelFarbe);
             Grid.SetColumn(winkel, 3);
             grid.Children.Add(winkel);
@@ -353,17 +352,134 @@ namespace MaterialManager_V01.Views
 
         private void OnExportieren(object sender, RoutedEventArgs e)
         {
-            var dlg = new Microsoft.Win32.SaveFileDialog
-            {
-                Title            = "Schnittplan exportieren",
-                Filter           = "Textdatei (*.txt)|*.txt",
-                FileName         = $"Schnittplan_{DateTime.Now:yyyyMMdd_HHmm}.txt",
-                DefaultExt       = ".txt",
-            };
-            if (dlg.ShowDialog() != true) return;
+            var printDlg = new System.Windows.Controls.PrintDialog();
+            if (printDlg.ShowDialog() != true) return;
 
-            File.WriteAllText(dlg.FileName, ErstelleTextExport(), Encoding.UTF8);
-            MessageBox.Show($"Exportiert: {dlg.FileName}", "Rohrzuschnitt", MessageBoxButton.OK, MessageBoxImage.Information);
+            var doc = ErstelleFlowDocument(
+                printDlg.PrintableAreaWidth,
+                printDlg.PrintableAreaHeight);
+
+            var docPaginator = ((IDocumentPaginatorSource)doc).DocumentPaginator;
+            docPaginator.PageSize = new System.Windows.Size(
+                printDlg.PrintableAreaWidth,
+                printDlg.PrintableAreaHeight);
+
+            printDlg.PrintDocument(docPaginator,
+                $"Rohrzuschnitt-Schnittplan {DateTime.Now:dd.MM.yyyy}");
+        }
+
+        private FlowDocument ErstelleFlowDocument(double pageW, double pageH)
+        {
+            const double margin = 40;
+            var doc = new FlowDocument
+            {
+                PageWidth       = pageW,
+                PageHeight      = pageH,
+                PagePadding     = new Thickness(margin),
+                ColumnWidth     = pageW - margin * 2,
+                Background      = Brushes.White,
+                Foreground      = Brushes.Black,
+                FontFamily      = new System.Windows.Media.FontFamily("Segoe UI"),
+                FontSize        = 10,
+            };
+
+            // ── Titel ─────────────────────────────────────────────────────────
+            doc.Blocks.Add(new Paragraph(new Run("ROHRZUSCHNITT – SCHNITTPLAN"))
+            {
+                FontSize   = 16,
+                FontWeight = FontWeights.Bold,
+                Margin     = new Thickness(0, 0, 0, 2),
+            });
+            doc.Blocks.Add(new Paragraph(new Run(
+                $"Erstellt: {DateTime.Now:dd.MM.yyyy HH:mm}  |  " +
+                $"Stangen: {_ergebnis.Stangen.Count}  |  " +
+                $"Stangenlänge: {(int)_ergebnis.StandardStangenLaengeMm} mm  |  " +
+                $"Teile: {_ergebnis.TeilAnzahl}  |  " +
+                $"Rest: {(int)_ergebnis.GesamtRestMm} mm"))
+            {
+                FontSize   = 9,
+                Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x44, 0x44, 0x44)),
+                Margin     = new Thickness(0, 0, 0, 12),
+            });
+
+            // ── Stangen ───────────────────────────────────────────────────────
+            foreach (var stange in _ergebnis.Stangen)
+            {
+                var nutzung = _ergebnis.StandardStangenLaengeMm > 0
+                    ? Math.Min(100, stange.VerbrauchtMm / _ergebnis.StandardStangenLaengeMm * 100)
+                    : 0;
+
+                // Stangen-Überschrift
+                doc.Blocks.Add(new Paragraph(new Run(
+                    $"STANGE #{stange.Nummer}   –   " +
+                    $"Verbraucht: {(int)stange.VerbrauchtMm} mm   |   " +
+                    $"Rest: {(int)stange.RestMm} mm   |   " +
+                    $"Auslastung: {nutzung:N1} %"))
+                {
+                    FontSize        = 11,
+                    FontWeight      = FontWeights.Bold,
+                    Background      = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE0, 0xF2, 0xEE)),
+                    Padding         = new Thickness(4, 3, 4, 3),
+                    Margin          = new Thickness(0, 8, 0, 0),
+                });
+
+                // Tabelle
+                var table = new Table { FontSize = 9, CellSpacing = 0 };
+                table.Columns.Add(new TableColumn { Width = new GridLength(28) });
+                table.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
+                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
+                table.Columns.Add(new TableColumn { Width = new GridLength(90) });
+                table.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
+
+                var rowGroup = new TableRowGroup();
+                table.RowGroups.Add(rowGroup);
+
+                // Header
+                TableCell Hdr(string t) => new TableCell(new Paragraph(new Run(t))
+                {
+                    FontWeight = FontWeights.Bold,
+                    Padding    = new Thickness(4, 2, 4, 2),
+                })
+                { Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xCC, 0xCC, 0xCC)) };
+
+                var hdrRow = new TableRow();
+                hdrRow.Cells.Add(Hdr("#"));
+                hdrRow.Cells.Add(Hdr("Bezeichnung"));
+                hdrRow.Cells.Add(Hdr("Länge"));
+                hdrRow.Cells.Add(Hdr("Winkel L/R"));
+                hdrRow.Cells.Add(Hdr("PDF"));
+                rowGroup.Rows.Add(hdrRow);
+
+                // Datenzeilen
+                int nr = 1;
+                foreach (var teil in stange.Teile)
+                {
+                    var wStr = $"{(int)teil.WinkelLinksGrad}° / {(int)teil.WinkelRechtsGrad}°";
+                    var pdfName = string.IsNullOrWhiteSpace(teil.PdfPfad) ? "–" : Path.GetFileName(teil.PdfPfad);
+                    var bg = (nr % 2 == 0)
+                        ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xF5, 0xF5, 0xF5))
+                        : Brushes.White;
+
+                    TableCell Cell(string t) => new TableCell(new Paragraph(new Run(t))
+                    {
+                        Padding = new Thickness(4, 2, 4, 2),
+                    })
+                    { Background = bg };
+
+                    var row = new TableRow();
+                    row.Cells.Add(Cell(nr.ToString()));
+                    row.Cells.Add(Cell(teil.Bezeichnung));
+                    row.Cells.Add(Cell($"{(int)teil.NennLaengeMm} mm"));
+                    row.Cells.Add(Cell(wStr));
+                    row.Cells.Add(Cell(pdfName));
+                    rowGroup.Rows.Add(row);
+                    nr++;
+                }
+
+                doc.Blocks.Add(table);
+            }
+
+            return doc;
         }
 
         private string ErstelleTextExport()
@@ -388,9 +504,7 @@ namespace MaterialManager_V01.Views
                 int nr = 1;
                 foreach (var teil in stange.Teile)
                 {
-                    int el = (int)teil.WinkelLinksGrad, er = (int)teil.WinkelRechtsGrad;
-                    if (el > er) { var tmp = el; el = er; er = tmp; }
-                    var wStr = el == er ? $"{el}°" : $"{el}° / {er}°";
+                    var wStr = $"{(int)teil.WinkelLinksGrad}° / {(int)teil.WinkelRechtsGrad}°";
                     var pdf = string.IsNullOrWhiteSpace(teil.PdfPfad) ? "" : $"  PDF: {Path.GetFileName(teil.PdfPfad)}";
                     sb.AppendLine($"  [{nr++,2}]  {teil.Bezeichnung,-30}  {(int)teil.NennLaengeMm,5} mm  |  Winkel: {wStr}{pdf}");
                 }

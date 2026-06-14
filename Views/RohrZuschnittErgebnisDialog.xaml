@@ -1,0 +1,136 @@
+﻿<Window x:Class="MaterialManager_V01.Views.RohrZuschnittErgebnisDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rohrzuschnitt â€“ Ergebnis &amp; Schneidreihenfolge"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Background="#0A0A0A"
+        Foreground="White">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- â•â•â• TITELLEISTE â•â•â• -->
+        <Border Grid.Row="0" Background="#111111" Padding="20,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="âš™  Rohrzuschnitt â€“ Ergebnis &amp; Schneidreihenfolge"
+                               FontSize="20" FontWeight="Bold" Foreground="#00BFA5"/>
+                    <TextBlock x:Name="UntertitelBlock" Text="" FontSize="12" Foreground="#777" Margin="0,3,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        Content="&#x1F5A8;  Als PDF drucken"
+                        Height="36" Padding="16,0"
+                        Background="#1E3A3A" BorderBrush="#00897B" BorderThickness="1"
+                        Click="OnExportieren"/>
+            </Grid>
+        </Border>
+
+        <!-- â•â•â• ZUSAMMENFASSUNG â•â•â• -->
+        <Border Grid.Row="1" Background="#141414" BorderBrush="#2C2C2C" BorderThickness="0,0,0,1" Padding="20,14">
+            <WrapPanel Orientation="Horizontal">
+                <Border Margin="0,0,30,0">
+                    <StackPanel>
+                        <TextBlock Text="Stangen benÃ¶tigt" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="AnzahlStangenBlock" Text="â€“" FontSize="26" FontWeight="Bold" Foreground="#00BFA5"/>
+                    </StackPanel>
+                </Border>
+                <Border Margin="0,0,30,0">
+                    <StackPanel>
+                        <TextBlock Text="Teile gesamt" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="AnzahlTeileBlock" Text="â€“" FontSize="26" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Margin="0,0,30,0">
+                    <StackPanel>
+                        <TextBlock Text="StangenlÃ¤nge" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="StangenlaengeBlock" Text="â€“" FontSize="26" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Margin="0,0,30,0">
+                    <StackPanel>
+                        <TextBlock Text="Gesamtmaterial" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="GesamtVerbrauchBlock" Text="â€“" FontSize="26" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Margin="0,0,30,0">
+                    <StackPanel>
+                        <TextBlock Text="Gesamtrest" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="GesamtRestBlock" Text="â€“" FontSize="26" FontWeight="Bold" Foreground="#FFA726"/>
+                    </StackPanel>
+                </Border>
+                <Border>
+                    <StackPanel>
+                        <TextBlock Text="Verschnitt" FontSize="11" Foreground="#777"/>
+                        <TextBlock x:Name="VerschnittBlock" Text="â€“" FontSize="26" FontWeight="Bold" Foreground="#EF5350"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+        </Border>
+
+        <!-- â•â•â• STANGEN-KARTEN SCROLLBEREICH â•â•â• -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="StangenPanel" Margin="16,12"/>
+        </ScrollViewer>
+
+        <!-- â•â•â• BUTTONS â•â•â• -->
+        <Border Grid.Row="3" Background="#111111" BorderBrush="#2C2C2C" BorderThickness="0,1,0,0" Padding="20,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="Schnitte in der angezeigten Reihenfolge ausführen: 90°/90° zuerst, dann gemischte Winkel, dann Doppelgehrung."
+                           Foreground="#555" FontSize="11" VerticalAlignment="Center"/>
+                <Button Grid.Column="1"
+                        Content="SchlieÃŸen"
+                        Width="130" Height="36"
+                        Background="#2A2A2A" BorderBrush="#444" BorderThickness="1"
+                        Padding="0"
+                        Click="OnSchliessen"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

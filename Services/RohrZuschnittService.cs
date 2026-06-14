@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -53,7 +53,7 @@ namespace MaterialManager_V01.Services
         public RohrSchnittWinkel Winkel { get; set; }
         public string PdfPfad { get; set; } = string.Empty;
 
-        public string WinkelAnzeige => $"{WinkelLinksGrad:0.#}° / {WinkelRechtsGrad:0.#}°";
+        public string WinkelAnzeige => $"{(int)WinkelLinksGrad}° / {(int)WinkelRechtsGrad}°";
 
         public string Anzeige
         {
