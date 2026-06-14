@@ -60,7 +60,7 @@
                     <TextBlock x:Name="UntertitelBlock" Text="" FontSize="12" Foreground="#777" Margin="0,3,0,0"/>
                 </StackPanel>
                 <Button Grid.Column="1"
-                        Content="&#x1F5A8;  Als PDF drucken"
+                        Content="PDF-Vorschau öffnen"
                         Height="36" Padding="16,0"
                         Background="#1E3A3A" BorderBrush="#00897B" BorderThickness="1"
                         Click="OnExportieren"/>

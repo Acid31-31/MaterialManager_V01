@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Threading;
 using MaterialManager_V01.Services;
 
 namespace MaterialManager_V01.Views
@@ -14,6 +16,7 @@ namespace MaterialManager_V01.Views
     public partial class RohrZuschnittErgebnisDialog : Window
     {
         private readonly RohrZuschnittErgebnis _ergebnis;
+        private string? _pdfVorschauPfad;
         private static readonly CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
 
         public RohrZuschnittErgebnisDialog(RohrZuschnittErgebnis ergebnis, double schnittverlustMm)
@@ -22,6 +25,7 @@ namespace MaterialManager_V01.Views
             _ergebnis = ergebnis;
             BefuelleZusammenfassung(schnittverlustMm);
             BaueStangenKarten();
+            Dispatcher.BeginInvoke(new Action(OeffnePdfVorschau), DispatcherPriority.Background);
         }
 
         // ─── Zusammenfassung ─────────────────────────────────────────────────
@@ -352,134 +356,129 @@ namespace MaterialManager_V01.Views
 
         private void OnExportieren(object sender, RoutedEventArgs e)
         {
-            var printDlg = new System.Windows.Controls.PrintDialog();
-            if (printDlg.ShowDialog() != true) return;
-
-            var doc = ErstelleFlowDocument(
-                printDlg.PrintableAreaWidth,
-                printDlg.PrintableAreaHeight);
-
-            var docPaginator = ((IDocumentPaginatorSource)doc).DocumentPaginator;
-            docPaginator.PageSize = new System.Windows.Size(
-                printDlg.PrintableAreaWidth,
-                printDlg.PrintableAreaHeight);
-
-            printDlg.PrintDocument(docPaginator,
-                $"Rohrzuschnitt-Schnittplan {DateTime.Now:dd.MM.yyyy}");
+            OeffnePdfVorschau();
         }
 
-        private FlowDocument ErstelleFlowDocument(double pageW, double pageH)
+        private void OeffnePdfVorschau()
         {
-            const double margin = 40;
-            var doc = new FlowDocument
+            try
             {
-                PageWidth       = pageW,
-                PageHeight      = pageH,
-                PagePadding     = new Thickness(margin),
-                ColumnWidth     = pageW - margin * 2,
-                Background      = Brushes.White,
-                Foreground      = Brushes.Black,
-                FontFamily      = new System.Windows.Media.FontFamily("Segoe UI"),
-                FontSize        = 10,
+                if (string.IsNullOrWhiteSpace(_pdfVorschauPfad) || !File.Exists(_pdfVorschauPfad))
+                {
+                    _pdfVorschauPfad = Path.Combine(
+                        Path.GetTempPath(),
+                        $"Rohrzuschnitt_Schnittplan_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
+                    SchreibePdfVorschau(_pdfVorschauPfad);
+                }
+
+                Process.Start(new ProcessStartInfo(_pdfVorschauPfad) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Die PDF-Vorschau konnte nicht geöffnet werden:\n{ex.Message}",
+                    "Rohrzuschnitt",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
+
+        private void SchreibePdfVorschau(string pfad)
+        {
+            var zeilen = new List<string>
+            {
+                "ROHRZUSCHNITT - SCHNITTPLAN",
+                $"Erstellt: {DateTime.Now:dd.MM.yyyy HH:mm}",
+                $"Stangen: {_ergebnis.Stangen.Count} | Stangenlaenge: {(int)_ergebnis.StandardStangenLaengeMm} mm | Teile: {_ergebnis.TeilAnzahl} | Gesamtrest: {(int)_ergebnis.GesamtRestMm} mm",
+                string.Empty
             };
 
-            // ── Titel ─────────────────────────────────────────────────────────
-            doc.Blocks.Add(new Paragraph(new Run("ROHRZUSCHNITT – SCHNITTPLAN"))
-            {
-                FontSize   = 16,
-                FontWeight = FontWeights.Bold,
-                Margin     = new Thickness(0, 0, 0, 2),
-            });
-            doc.Blocks.Add(new Paragraph(new Run(
-                $"Erstellt: {DateTime.Now:dd.MM.yyyy HH:mm}  |  " +
-                $"Stangen: {_ergebnis.Stangen.Count}  |  " +
-                $"Stangenlänge: {(int)_ergebnis.StandardStangenLaengeMm} mm  |  " +
-                $"Teile: {_ergebnis.TeilAnzahl}  |  " +
-                $"Rest: {(int)_ergebnis.GesamtRestMm} mm"))
-            {
-                FontSize   = 9,
-                Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x44, 0x44, 0x44)),
-                Margin     = new Thickness(0, 0, 0, 12),
-            });
-
-            // ── Stangen ───────────────────────────────────────────────────────
             foreach (var stange in _ergebnis.Stangen)
             {
                 var nutzung = _ergebnis.StandardStangenLaengeMm > 0
-                    ? Math.Min(100, stange.VerbrauchtMm / _ergebnis.StandardStangenLaengeMm * 100)
+                    ? stange.VerbrauchtMm / _ergebnis.StandardStangenLaengeMm * 100
                     : 0;
 
-                // Stangen-Überschrift
-                doc.Blocks.Add(new Paragraph(new Run(
-                    $"STANGE #{stange.Nummer}   –   " +
-                    $"Verbraucht: {(int)stange.VerbrauchtMm} mm   |   " +
-                    $"Rest: {(int)stange.RestMm} mm   |   " +
-                    $"Auslastung: {nutzung:N1} %"))
-                {
-                    FontSize        = 11,
-                    FontWeight      = FontWeights.Bold,
-                    Background      = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xE0, 0xF2, 0xEE)),
-                    Padding         = new Thickness(4, 3, 4, 3),
-                    Margin          = new Thickness(0, 8, 0, 0),
-                });
+                zeilen.Add($"STANGE #{stange.Nummer} | Verbraucht: {(int)stange.VerbrauchtMm} mm | Rest: {(int)stange.RestMm} mm | Auslastung: {nutzung:N1} %");
+                zeilen.Add("Nr.  Bezeichnung                       Laenge     Winkel L/R     PDF");
+                zeilen.Add("--------------------------------------------------------------------------");
 
-                // Tabelle
-                var table = new Table { FontSize = 9, CellSpacing = 0 };
-                table.Columns.Add(new TableColumn { Width = new GridLength(28) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(90) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(1, GridUnitType.Star) });
-
-                var rowGroup = new TableRowGroup();
-                table.RowGroups.Add(rowGroup);
-
-                // Header
-                TableCell Hdr(string t) => new TableCell(new Paragraph(new Run(t))
-                {
-                    FontWeight = FontWeights.Bold,
-                    Padding    = new Thickness(4, 2, 4, 2),
-                })
-                { Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xCC, 0xCC, 0xCC)) };
-
-                var hdrRow = new TableRow();
-                hdrRow.Cells.Add(Hdr("#"));
-                hdrRow.Cells.Add(Hdr("Bezeichnung"));
-                hdrRow.Cells.Add(Hdr("Länge"));
-                hdrRow.Cells.Add(Hdr("Winkel L/R"));
-                hdrRow.Cells.Add(Hdr("PDF"));
-                rowGroup.Rows.Add(hdrRow);
-
-                // Datenzeilen
                 int nr = 1;
                 foreach (var teil in stange.Teile)
                 {
-                    var wStr = $"{(int)teil.WinkelLinksGrad}° / {(int)teil.WinkelRechtsGrad}°";
-                    var pdfName = string.IsNullOrWhiteSpace(teil.PdfPfad) ? "–" : Path.GetFileName(teil.PdfPfad);
-                    var bg = (nr % 2 == 0)
-                        ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xF5, 0xF5, 0xF5))
-                        : Brushes.White;
-
-                    TableCell Cell(string t) => new TableCell(new Paragraph(new Run(t))
-                    {
-                        Padding = new Thickness(4, 2, 4, 2),
-                    })
-                    { Background = bg };
-
-                    var row = new TableRow();
-                    row.Cells.Add(Cell(nr.ToString()));
-                    row.Cells.Add(Cell(teil.Bezeichnung));
-                    row.Cells.Add(Cell($"{(int)teil.NennLaengeMm} mm"));
-                    row.Cells.Add(Cell(wStr));
-                    row.Cells.Add(Cell(pdfName));
-                    rowGroup.Rows.Add(row);
+                    var bezeichnung = KuerzePdfText(teil.Bezeichnung, 32).PadRight(32);
+                    var pdfName = string.IsNullOrWhiteSpace(teil.PdfPfad) ? "-" : Path.GetFileName(teil.PdfPfad);
+                    var winkel = $"{(int)teil.WinkelLinksGrad}° / {(int)teil.WinkelRechtsGrad}°";
+                    zeilen.Add($"{nr,2}.  {bezeichnung}  {(int)teil.NennLaengeMm,5} mm   {winkel,-13} {KuerzePdfText(pdfName, 22)}");
                     nr++;
                 }
 
-                doc.Blocks.Add(table);
+                zeilen.Add(string.Empty);
             }
 
-            return doc;
+            var contentStream = BauePdfContentStream(zeilen);
+            var contentBytes = Encoding.GetEncoding(1252).GetBytes(contentStream);
+            using var fs = new FileStream(pfad, FileMode.Create, FileAccess.Write, FileShare.Read);
+            using var writer = new StreamWriter(fs, Encoding.ASCII, leaveOpen: true);
+
+            var offsets = new List<long>();
+            void Obj(int nr, string text)
+            {
+                offsets.Add(fs.Position);
+                writer.Write($"{nr} 0 obj\n{text}\nendobj\n");
+                writer.Flush();
+            }
+
+            writer.Write("%PDF-1.4\n% Rohrzuschnitt Vorschau\n");
+            writer.Flush();
+            Obj(1, "<< /Type /Catalog /Pages 2 0 R >>");
+            Obj(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+            Obj(3, "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>");
+            Obj(4, "<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>");
+
+            offsets.Add(fs.Position);
+            writer.Write($"5 0 obj\n<< /Length {contentBytes.Length} >>\nstream\n");
+            writer.Flush();
+            fs.Write(contentBytes, 0, contentBytes.Length);
+            writer.Write("\nendstream\nendobj\n");
+            writer.Flush();
+
+            var xrefStart = fs.Position;
+            writer.Write($"xref\n0 6\n0000000000 65535 f \n");
+            foreach (var offset in offsets)
+                writer.Write($"{offset:0000000000} 00000 n \n");
+            writer.Write($"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n{xrefStart}\n%%EOF");
+            writer.Flush();
+        }
+
+        private static string BauePdfContentStream(List<string> zeilen)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("BT");
+            sb.AppendLine("/F1 9 Tf");
+            sb.AppendLine("36 806 Td");
+            var erste = true;
+            foreach (var zeile in zeilen.Take(62))
+            {
+                if (!erste)
+                    sb.AppendLine("0 -12 Td");
+                sb.AppendLine($"({EscapePdfText(zeile)}) Tj");
+                erste = false;
+            }
+            sb.AppendLine("ET");
+            return sb.ToString();
+        }
+
+        private static string EscapePdfText(string text) =>
+            (text ?? string.Empty)
+                .Replace("\\", "\\\\")
+                .Replace("(", "\\(")
+                .Replace(")", "\\)");
+
+        private static string KuerzePdfText(string text, int maxLaenge)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+            return text.Length <= maxLaenge ? text : text.Substring(0, Math.Max(0, maxLaenge - 1)) + "…";
         }
 
         private string ErstelleTextExport()
