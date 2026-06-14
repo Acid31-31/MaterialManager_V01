@@ -78,6 +78,36 @@
             <Setter Property="Height" Value="1"/>
             <Setter Property="Margin" Value="4,2"/>
         </Style>
+
+        <Storyboard x:Key="TitleNeonColorCycle" RepeatBehavior="Forever">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlowOuter" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlowInner" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonDepth1" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonDepth2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonDepth3" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonDepth4" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonEdgeLeft" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonEdgeRight" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonShadow" Storyboard.TargetProperty="Color" Duration="0:0:16">
+                <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/><LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/><LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/><LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/><LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/><LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
 
     <DockPanel>
@@ -161,7 +191,7 @@
                     HorizontalAlignment="Center"
                     Margin="28,12"
                     Padding="3"
-                    MaxWidth="1180">
+                    MaxWidth="1280">
                 <Border CornerRadius="14"
                         Background="{DynamicResource StartFrameOuterBezel}"
                         BorderBrush="{DynamicResource StartFrameOuterBezelBorder}"
@@ -179,15 +209,15 @@
                                 Padding="24,22">
                             <StackPanel>
 
-                                <!-- Edge-Lit Laser-Ausschnitt (wie Acryl-Schild: nur Raender leuchten) -->
+                                <!-- 3D-Titel: schwarze Front, Seiten reflektieren Hintergrundbeleuchtung -->
                                 <Grid HorizontalAlignment="Center"
                                       Margin="0,4,0,8"
-                                      Width="560"
-                                      Height="72">
+                                      MaxWidth="1200"
+                                      Height="184">
                                     <Grid x:Name="TitleSwayGrid"
                                           services:ThemeService.IsThemeExempt="True"
-                                          Width="540"
-                                          Height="60"
+                                          MaxWidth="1180"
+                                          Height="160"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           RenderTransformOrigin="0.5,0.5">
@@ -197,217 +227,83 @@
                                                 <TranslateTransform x:Name="TitleSwayShift" X="0"/>
                                             </TransformGroup>
                                         </Grid.RenderTransform>
-                                    <!-- Leuchten durch die Buchstaben (breiter Rand) -->
-                                    <TextBlock x:Name="TitleNeonGlow1"
-                                               Text="MaterialManager V01"
-                                               FontSize="37"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#FF00E5FF"
-                                               Opacity="0.56"
-                                               IsHitTestVisible="False">
+
+                                    <TextBlock x:Name="TitleNeonGlowOuter"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.88" IsHitTestVisible="False">
+                                        <TextBlock.Effect><BlurEffect Radius="56"/></TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock x:Name="TitleNeonGlowInner"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.94" IsHitTestVisible="False">
+                                        <TextBlock.Effect><BlurEffect Radius="20"/></TextBlock.Effect>
+                                    </TextBlock>
+
+                                    <!-- 3D-Tiefe (Extrusion) -->
+                                    <TextBlock x:Name="TitleNeonDepth4"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.24" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="9.6" Y="12.4"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock x:Name="TitleNeonDepth3"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.34" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="7.2" Y="9.2"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock x:Name="TitleNeonDepth2"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.48" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="4.8" Y="6.0"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock x:Name="TitleNeonDepth1"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.64" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="2.4" Y="3.0"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+
+                                    <!-- Seitliche Reflexion -->
+                                    <TextBlock x:Name="TitleNeonEdgeLeft"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.92" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="-4.8" Y="0.6"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock x:Name="TitleNeonEdgeRight"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#FF00E5FF" Opacity="0.92" IsHitTestVisible="False">
+                                        <TextBlock.RenderTransform><TranslateTransform X="4.8" Y="0.6"/></TextBlock.RenderTransform>
+                                    </TextBlock>
+
+                                    <!-- Schwarze 3D-Front -->
+                                    <TextBlock x:Name="TitleNeonText"
+                                               Text="MaterialManager V01" FontSize="82" FontWeight="Bold" FontFamily="Segoe UI"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="#080C12" IsHitTestVisible="False">
                                         <TextBlock.Effect>
-                                            <BlurEffect Radius="16"/>
+                                            <DropShadowEffect x:Name="TitleNeonShadow" Color="#FF00E5FF" BlurRadius="14" ShadowDepth="0" Opacity="0.78"/>
                                         </TextBlock.Effect>
                                     </TextBlock>
-                                    <TextBlock x:Name="TitleNeonGlow2"
-                                               Text="MaterialManager V01"
-                                               FontSize="36.5"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#FF00E5FF"
-                                               Opacity="0.56"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.Effect>
-                                            <BlurEffect Radius="9"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock x:Name="TitleNeonGlow3"
-                                               Text="MaterialManager V01"
-                                               FontSize="36"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#FF00E5FF"
-                                               Opacity="0.56"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.Effect>
-                                            <BlurEffect Radius="4"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock x:Name="TitleNeonGlow4"
-                                               Text="MaterialManager V01"
-                                               FontSize="36"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#FFB2EBF2"
-                                               Opacity="0.53"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.Effect>
-                                            <BlurEffect Radius="1.5"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <!-- Dunkler Kern: nur die Raender bleiben hell (Edge-Lit) -->
-                                    <TextBlock Text="MaterialManager V01"
-                                               FontSize="34.6"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#0A0E14"
-                                               IsHitTestVisible="False"/>
-                                    <TextBlock Text="MaterialManager V01"
-                                               FontSize="33.4"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#06080C"
-                                               IsHitTestVisible="False"/>
-                                    <!-- Dunkles Blech darueber: Buchstaben = Laser-Ausschnitt (immer dunkel) -->
-                                    <Border Background="{DynamicResource StartTitleCutoutPanelBrush}">
-                                        <Border.OpacityMask>
-                                            <VisualBrush Visual="{Binding ElementName=TitleLaserCutMask}"
-                                                         Stretch="None"
-                                                         AlignmentX="Center"
-                                                         AlignmentY="Center"/>
-                                        </Border.OpacityMask>
-                                    </Border>
-                                    <!-- Helle Schnittkante an den Buchstaben -->
-                                    <TextBlock x:Name="TitleNeonEdge"
-                                               Text="MaterialManager V01"
-                                               FontSize="36.1"
-                                               FontWeight="Bold"
-                                               FontFamily="Segoe UI"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Foreground="#71FFFFFF"
-                                               Margin="0,-0.6,0,0.6"
-                                               Opacity="0.56"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.OpacityMask>
-                                            <VisualBrush Visual="{Binding ElementName=TitleEdgeMask}"
-                                                         Stretch="None"
-                                                         AlignmentX="Center"
-                                                         AlignmentY="Center"/>
-                                        </TextBlock.OpacityMask>
-                                        <TextBlock.Effect>
-                                            <BlurEffect Radius="0.6"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <Grid x:Name="TitleLaserCutMask"
-                                          Width="540"
-                                          Height="60"
-                                          Visibility="Hidden"
-                                          IsHitTestVisible="False">
-                                        <Rectangle Fill="White"/>
-                                        <TextBlock Text="MaterialManager V01"
-                                                   FontSize="36"
-                                                   FontWeight="Bold"
-                                                   FontFamily="Segoe UI"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="Black"/>
-                                    </Grid>
-                                    <Grid x:Name="TitleEdgeMask"
-                                          Width="540"
-                                          Height="60"
-                                          Visibility="Hidden"
-                                          IsHitTestVisible="False">
-                                        <Rectangle Fill="Black"/>
-                                        <TextBlock Text="MaterialManager V01"
-                                                   FontSize="36"
-                                                   FontWeight="Bold"
-                                                   FontFamily="Segoe UI"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="{DynamicResource ThemeForegroundBrush}"/>
-                                    </Grid>
+
                                         <Grid.Triggers>
                                             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                                                 <BeginStoryboard>
                                                     <Storyboard RepeatBehavior="Forever" AutoReverse="True">
-                                                        <DoubleAnimation Storyboard.TargetName="TitleSwayRotate"
-                                                                         Storyboard.TargetProperty="Angle"
-                                                                         From="-1.2"
-                                                                         To="1.2"
-                                                                         Duration="0:0:4.2">
-                                                            <DoubleAnimation.EasingFunction>
-                                                                <SineEase EasingMode="EaseInOut"/>
-                                                            </DoubleAnimation.EasingFunction>
+                                                        <DoubleAnimation Storyboard.TargetName="TitleSwayRotate" Storyboard.TargetProperty="Angle" From="-1.2" To="1.2" Duration="0:0:4.2">
+                                                            <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
                                                         </DoubleAnimation>
-                                                        <DoubleAnimation Storyboard.TargetName="TitleSwayShift"
-                                                                         Storyboard.TargetProperty="X"
-                                                                         From="-4"
-                                                                         To="4"
-                                                                         Duration="0:0:4.2">
-                                                            <DoubleAnimation.EasingFunction>
-                                                                <SineEase EasingMode="EaseInOut"/>
-                                                            </DoubleAnimation.EasingFunction>
+                                                        <DoubleAnimation Storyboard.TargetName="TitleSwayShift" Storyboard.TargetProperty="X" From="-8" To="8" Duration="0:0:4.2">
+                                                            <DoubleAnimation.EasingFunction><SineEase EasingMode="EaseInOut"/></DoubleAnimation.EasingFunction>
                                                         </DoubleAnimation>
                                                     </Storyboard>
                                                 </BeginStoryboard>
-                                                <BeginStoryboard>
-                                                    <Storyboard RepeatBehavior="Forever">
-                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlow1"
-                                                                                      Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
-                                                                                      Duration="0:0:16">
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/>
-                                                            <LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/>
-                                                            <LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/>
-                                                            <LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/>
-                                                            <LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/>
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
-                                                        </ColorAnimationUsingKeyFrames>
-                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlow2"
-                                                                                      Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
-                                                                                      Duration="0:0:16">
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/>
-                                                            <LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/>
-                                                            <LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/>
-                                                            <LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/>
-                                                            <LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/>
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
-                                                        </ColorAnimationUsingKeyFrames>
-                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlow3"
-                                                                                      Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
-                                                                                      Duration="0:0:16">
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:0"/>
-                                                            <LinearColorKeyFrame Value="#76FF03" KeyTime="0:0:3.2"/>
-                                                            <LinearColorKeyFrame Value="#E040FB" KeyTime="0:0:6.4"/>
-                                                            <LinearColorKeyFrame Value="#FF4081" KeyTime="0:0:9.6"/>
-                                                            <LinearColorKeyFrame Value="#FFAB00" KeyTime="0:0:12.8"/>
-                                                            <LinearColorKeyFrame Value="#00E5FF" KeyTime="0:0:16"/>
-                                                        </ColorAnimationUsingKeyFrames>
-                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonGlow4"
-                                                                                      Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
-                                                                                      Duration="0:0:16">
-                                                            <LinearColorKeyFrame Value="#B2EBF2" KeyTime="0:0:0"/>
-                                                            <LinearColorKeyFrame Value="#CCFF90" KeyTime="0:0:3.2"/>
-                                                            <LinearColorKeyFrame Value="#F3E5F5" KeyTime="0:0:6.4"/>
-                                                            <LinearColorKeyFrame Value="#FCE4EC" KeyTime="0:0:9.6"/>
-                                                            <LinearColorKeyFrame Value="#FFF8E1" KeyTime="0:0:12.8"/>
-                                                            <LinearColorKeyFrame Value="#B2EBF2" KeyTime="0:0:16"/>
-                                                        </ColorAnimationUsingKeyFrames>
-                                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TitleNeonEdge"
-                                                                                      Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
-                                                                                      Duration="0:0:16">
-                                                            <LinearColorKeyFrame Value="#E0F7FA" KeyTime="0:0:0"/>
-                                                            <LinearColorKeyFrame Value="#F1F8E9" KeyTime="0:0:3.2"/>
-                                                            <LinearColorKeyFrame Value="#F3E5F5" KeyTime="0:0:6.4"/>
-                                                            <LinearColorKeyFrame Value="#FCE4EC" KeyTime="0:0:9.6"/>
-                                                            <LinearColorKeyFrame Value="#FFF8E1" KeyTime="0:0:12.8"/>
-                                                            <LinearColorKeyFrame Value="#E0F7FA" KeyTime="0:0:16"/>
-                                                        </ColorAnimationUsingKeyFrames>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
+                                                <BeginStoryboard Storyboard="{StaticResource TitleNeonColorCycle}"/>
                                             </EventTrigger>
                                         </Grid.Triggers>
                                     </Grid>
