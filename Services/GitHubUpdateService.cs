@@ -223,6 +223,7 @@ namespace MaterialManager_V01.Services
                     continue;
 
                 cleaned = cleaned.TrimStart('-', '*', '•').Trim();
+                cleaned = NormalizeVisibleUpdateLine(cleaned);
                 if (string.IsNullOrWhiteSpace(cleaned))
                     continue;
 
@@ -239,6 +240,33 @@ namespace MaterialManager_V01.Services
             }
 
             return result;
+        }
+
+        private static string NormalizeVisibleUpdateLine(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return string.Empty;
+
+            if (line.Contains("90 Grad immer links", StringComparison.OrdinalIgnoreCase) ||
+                line.Contains("90° immer links", StringComparison.OrdinalIgnoreCase) ||
+                line.Contains("Winkel symmetrisch", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Empty;
+            }
+
+            if (line.Contains("Winkel as-entered", StringComparison.OrdinalIgnoreCase) ||
+                line.Contains("as-entered anzeigen", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Rohrzuschnitt: Winkel links/rechts exakt wie eingegeben anzeigen";
+            }
+
+            if (line.Contains("PDF-Druck via FlowDocument", StringComparison.OrdinalIgnoreCase) ||
+                line.Contains("PDF-Vorschau statt Druckdialog", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Rohrzuschnitt: PDF-Vorschau nach der Berechnung anzeigen";
+            }
+
+            return line;
         }
 
         private static bool LooksLikeEnglishChangelogLine(string text)
