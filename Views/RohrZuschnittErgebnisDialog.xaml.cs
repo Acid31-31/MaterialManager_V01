@@ -306,15 +306,16 @@ namespace MaterialManager_V01.Views
             grid.Children.Add(bez);
 
             // Länge
-            var laenge = MacheWertBlock($"{teil.NennLaengeMm:N0} mm", Color.FromRgb(0x00, 0xBF, 0xA5));
+            var laenge = MacheWertBlock($"{(int)teil.NennLaengeMm} mm", Color.FromRgb(0x00, 0xBF, 0xA5));
             Grid.SetColumn(laenge, 2);
             grid.Children.Add(laenge);
 
-            // Winkel
-            var winkelFarbe = (teil.WinkelLinksGrad < 90 || teil.WinkelRechtsGrad < 90)
-                ? Color.FromRgb(0xFF, 0xA7, 0x26)
-                : Color.FromRgb(0x77, 0x77, 0x77);
-            var winkel = MacheWertBlock($"{teil.WinkelLinksGrad:0.#}° / {teil.WinkelRechtsGrad:0.#}°", winkelFarbe);
+            // Winkel ° immer links (Rohr drehbar), ganzzahlig
+            int wl = (int)teil.WinkelLinksGrad, wr = (int)teil.WinkelRechtsGrad;
+            if (wr > wl) { var tmp = wl; wl = wr; wr = tmp; }  // grö[char]0x00DFer zuerst
+            var winkelText = wl == wr ? $"{wl}°" : $"{wl}° / {wr}°";
+            var winkelFarbe = (wl < 90 || wr < 90) ? Color.FromRgb(0xFF, 0xA7, 0x26) : Color.FromRgb(0x77, 0x77, 0x77);
+            var winkel = MacheWertBlock(winkelText, winkelFarbe);
             Grid.SetColumn(winkel, 3);
             grid.Children.Add(winkel);
 

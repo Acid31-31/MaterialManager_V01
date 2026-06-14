@@ -159,23 +159,25 @@ namespace MaterialManager_V01.Services
             }
 
             // ── Phase 2: Schneidreihenfolge pro Stange optimieren ────────────
-            // Winkelgruppen-Blöcke (minimale Säge-Umrüstungen), darin Länge absteigend.
-            // Symmetrisch: 90°/45° == 45°/90° (Rohr umdrehen).
-            static string WinkelKey(RohrZuschnittTeil t)
+            // Logisch: zuerst alle geraden Schnitte (90/90), dann Mischwinkel (z.B. 90/45),
+            // zuletzt doppelte Gehrungen (45/45). Innerhalb Gruppe absteigend nach Länge.
+            // Symmetrisch: 45°/90° == 90°/45° (Rohr umdrehen).
+            static int WinkelPrio(RohrZuschnittTeil t)
             {
-                double Rnd(double g) => Math.Round(g * 2) / 2.0;
-                var a = Rnd(t.WinkelLinksGrad);
-                var b = Rnd(t.WinkelRechtsGrad);
-                return a <= b ? $"{a}_{b}" : $"{b}_{a}";
+                var l = t.WinkelLinksGrad;
+                var r = t.WinkelRechtsGrad;
+                bool linksSt = Math.Abs(l - 90) < 0.5;
+                bool rechtsSt = Math.Abs(r - 90) < 0.5;
+                if (linksSt && rechtsSt) return 0;   // 90/90  – gerade
+                if (linksSt || rechtsSt) return 1;   // 90/xx  – ein Ende Gehrung
+                return 2;                             // xx/xx  – beide Enden Gehrung
             }
 
             foreach (var stange in stangen)
             {
                 stange.Teile = stange.Teile
-                    .GroupBy(WinkelKey)
-                    .OrderByDescending(g => g.Key == "90_90" ? int.MaxValue : g.Count())
-                    .ThenBy(g => g.Key)
-                    .SelectMany(g => g.OrderByDescending(t => t.NennLaengeMm))
+                    .OrderBy(WinkelPrio)
+                    .ThenByDescending(t => t.NennLaengeMm)
                     .ToList();
             }
 
