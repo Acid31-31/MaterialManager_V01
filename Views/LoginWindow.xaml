@@ -1,4 +1,4 @@
-﻿<Window x:Class="MaterialManager_V01.Views.LoginWindow"
+<Window x:Class="MaterialManager_V01.Views.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MaterialManager V01 - Login" 
@@ -56,10 +56,9 @@
                        TextWrapping="Wrap"/>
             
             <!-- LOGIN BUTTON -->
-            <Button Content="🔓 Anmelden" 
+            <Button Content="?? Anmelden" 
                     Click="OnLoginClick"
-                    Background="#1976D2" 
-                    Foreground="White" 
+                    Style="{StaticResource AppButton3DPrimaryStyle}" 
                     Padding="10,12" 
                     Height="45"
                     FontSize="14"
@@ -73,13 +72,13 @@
                        Margin="0,20,0,5"/>
             
             <TextBlock Foreground="#555" FontSize="10" Margin="0,0,0,2">
-                👤 admin / admin123  (Admin)
+                ?? admin / admin123  (Admin)
             </TextBlock>
             <TextBlock Foreground="#555" FontSize="10" Margin="0,0,0,2">
-                👤 manager / manager123  (Manager)
+                ?? manager / manager123  (Manager)
             </TextBlock>
             <TextBlock Foreground="#555" FontSize="10">
-                👤 lager / lager123  (Lagerarbeiter)
+                ?? lager / lager123  (Lagerarbeiter)
             </TextBlock>
         </StackPanel>
     </Grid>

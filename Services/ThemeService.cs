@@ -17,6 +17,19 @@ namespace MaterialManager_V01.Services
 
     public static class ThemeService
     {
+        public static readonly DependencyProperty IsThemeExemptProperty =
+            DependencyProperty.RegisterAttached(
+                "IsThemeExempt",
+                typeof(bool),
+                typeof(ThemeService),
+                new PropertyMetadata(false));
+
+        public static bool GetIsThemeExempt(DependencyObject obj) =>
+            (bool)obj.GetValue(IsThemeExemptProperty);
+
+        public static void SetIsThemeExempt(DependencyObject obj, bool value) =>
+            obj.SetValue(IsThemeExemptProperty, value);
+
         private sealed class ThemeSettings
         {
             public string Theme { get; set; } = nameof(AppTheme.Dark);
@@ -73,14 +86,68 @@ namespace MaterialManager_V01.Services
             resources["ThemeAccentBrush"] = theme == AppTheme.Light
                 ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"))
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E7D32"));
+
+            ApplyStartPageResources(theme, resources);
+        }
+
+        private static void ApplyStartPageResources(AppTheme theme, ResourceDictionary resources)
+        {
+            resources["StartTitleCutoutPanelBrush"] = CreateVerticalGradientBrush("#141A22", "#0A0E14", "#06080C");
+
+            if (theme == AppTheme.Light)
+            {
+                resources["StartFrameOuterBezel"] = CreateVerticalGradientBrush("#C8CDD4", "#A8B0BA", "#909AA8");
+                resources["StartFrameOuterBezelBorder"] = CreateVerticalGradientBrush("#E2E8F0", "#94A3B8");
+                resources["StartFrameInnerChamber"] = CreateVerticalGradientBrush("#EEF2F7", "#E2E8F0", "#D5DEEA");
+                resources["StartFrameTileTray"] = CreateVerticalGradientBrush("#D8E0EA", "#CBD5E1");
+                resources["StartFramePanelBorderBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8"));
+            }
+            else
+            {
+                resources["StartFrameOuterBezel"] = CreateVerticalGradientBrush("#484848", "#2A2A2A", "#161616");
+                resources["StartFrameOuterBezelBorder"] = CreateVerticalGradientBrush("#666666", "#222222");
+                resources["StartFrameInnerChamber"] = CreateVerticalGradientBrush("#141A22", "#0A0E14", "#06080C");
+                resources["StartFrameTileTray"] = CreateVerticalGradientBrush("#080A0E", "#040508");
+                resources["StartFramePanelBorderBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#253040"));
+            }
+        }
+
+        private static LinearGradientBrush CreateVerticalGradientBrush(params string[] hexColors)
+        {
+            var brush = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(0, 1) };
+            if (hexColors.Length == 0)
+                return brush;
+
+            if (hexColors.Length == 1)
+            {
+                brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[0]), 0));
+                return brush;
+            }
+
+            if (hexColors.Length == 2)
+            {
+                brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[0]), 0));
+                brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[1]), 1));
+                return brush;
+            }
+
+            brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[0]), 0));
+            brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[1]), 0.55));
+            brush.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(hexColors[2]), 1));
+            return brush;
         }
 
         private static void ApplyToVisualTree(DependencyObject root, ThemePalette palette)
         {
+            if (GetIsThemeExempt(root))
+                return;
+
             var count = VisualTreeHelper.GetChildrenCount(root);
             for (var i = 0; i < count; i++)
             {
                 var child = VisualTreeHelper.GetChild(root, i);
+                if (GetIsThemeExempt(child))
+                    continue;
 
                 switch (child)
                 {
@@ -349,7 +416,7 @@ namespace MaterialManager_V01.Services
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EDF2F8")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CBD5E1")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
-                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000")),
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#64748B")),
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0"))
                 );
             }
@@ -360,7 +427,7 @@ namespace MaterialManager_V01.Services
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1D2630")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2D3A46")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
+                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#24313D"))
             );
         }

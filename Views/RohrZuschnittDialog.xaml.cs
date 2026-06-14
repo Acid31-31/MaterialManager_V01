@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace MaterialManager_V01.Views
 		private readonly ObservableCollection<RohrZuschnittEingabePosition> _positionen = new();
 		private readonly List<string> _drawingOptions = new();
 		private string _selectedPdfPath = string.Empty;
+		private bool _isNavigating;
 
 		public RohrZuschnittDialog(IEnumerable<MaterialItem> materialien)
 		{
@@ -23,6 +25,7 @@ namespace MaterialManager_V01.Views
 			PositionenGrid.ItemsSource = _positionen;
 			LoadDrawingOptions(materialien?.ToList() ?? new List<MaterialItem>());
 			Loaded += OnLoaded;
+			Closing += OnWindowClosing;
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
@@ -289,9 +292,38 @@ namespace MaterialManager_V01.Views
 			return double.TryParse(trimmed.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 		}
 
-		private void OnSchliessen(object sender, RoutedEventArgs e)
+		private void OnWindowClosing(object? sender, CancelEventArgs e)
 		{
-			Close();
+			if (_isNavigating)
+				return;
+
+			if (ReferenceEquals(Application.Current.MainWindow, this))
+			{
+				e.Cancel = true;
+				NavigateToStartMode();
+			}
+		}
+
+		private void OnZurStartseiteClick(object sender, RoutedEventArgs e)
+		{
+			NavigateToStartMode();
+		}
+
+		private void OnZurHauptprogrammClick(object sender, RoutedEventArgs e)
+		{
+			NavigateToMainWindow();
+		}
+
+		private void NavigateToStartMode()
+		{
+			_isNavigating = true;
+			WindowNavigationService.NavigateToStart(this);
+		}
+
+		private void NavigateToMainWindow()
+		{
+			_isNavigating = true;
+			WindowNavigationService.NavigateToMain(this);
 		}
 	}
 }

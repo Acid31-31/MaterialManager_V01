@@ -117,18 +117,17 @@ namespace MaterialManager_V01.Views
 
         private void OnCloseWindow(object sender, RoutedEventArgs e)
         {
-            var startWindow = new StartModeWindow();
-            Application.Current.MainWindow = startWindow;
-            startWindow.Show();
-            Close();
+            OnOpenStartProgramClick(sender, e);
+        }
+
+        private void OnOpenStartProgramClick(object sender, RoutedEventArgs e)
+        {
+            WindowNavigationService.NavigateToStart(this);
         }
 
         private void OnOpenMainProgramClick(object sender, RoutedEventArgs e)
         {
-            var mainWindow = new MainWindow();
-            Application.Current.MainWindow = mainWindow;
-            mainWindow.Show();
-            Close();
+            WindowNavigationService.NavigateToMain(this);
         }
 
         private void OnRefreshClick(object sender, RoutedEventArgs e)

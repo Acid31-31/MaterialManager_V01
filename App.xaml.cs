@@ -44,6 +44,7 @@ namespace MaterialManager_V01
                     {
                         ThemeService.ApplyThemeToWindow(window);
                         ApplyImmersiveTitleBar(window);
+                        TitleBarClockService.AttachToWindow(window);
                     }
                 }));
 

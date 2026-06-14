@@ -35,9 +35,9 @@
                  Padding="10"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Abbrechen" Width="120" Height="38" Margin="0,0,8,0" Click="OnCancelClick" Background="#555"/>
-            <Button Content="Ohne Begründung" Width="150" Height="38" Margin="0,0,8,0" Click="OnSkipClick" Background="#455A64"/>
-            <Button Content="Speichern" Width="120" Height="38" Click="OnSaveClick" Background="#2E7D32"/>
+            <Button Content="Abbrechen" Width="120" Height="38" Margin="0,0,8,0" Click="OnCancelClick" Style="{StaticResource AppButton3DSecondaryStyle}"/>
+            <Button Content="Ohne Begründung" Width="150" Height="38" Margin="0,0,8,0" Click="OnSkipClick" Style="{StaticResource AppButton3DInfoStyle}"/>
+            <Button Content="Speichern" Width="120" Height="38" Click="OnSaveClick" Style="{StaticResource AppButton3DSuccessStyle}"/>
         </StackPanel>
     </Grid>
 </Window>

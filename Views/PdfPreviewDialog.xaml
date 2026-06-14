@@ -22,38 +22,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
         </Style>
-        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="38"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="MinWidth" Value="38"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#2E2E2E"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="CloseTitleBarButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#C42B1C"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+</Window.Resources>
 
     <Border BorderBrush="#2A2A2A" BorderThickness="1" Background="#0B0B0B">
         <Grid>
@@ -135,9 +104,9 @@
                 </Border>
 
                 <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="📄 Extern öffnen" Click="OnOpenExternalClick" Background="#1976D2" Margin="0,0,8,0"/>
-                    <Button Content="Kopieren (Pfad)" Click="OnCopyPathClick" Background="#455A64" Margin="0,0,8,0"/>
-                    <Button Content="Schließen" Click="OnCloseClick" Background="#555"/>
+                    <Button Content="📄 Extern öffnen" Click="OnOpenExternalClick" Style="{StaticResource AppButton3DPrimaryStyle}" Margin="0,0,8,0"/>
+                    <Button Content="Kopieren (Pfad)" Click="OnCopyPathClick" Style="{StaticResource AppButton3DInfoStyle}" Margin="0,0,8,0"/>
+                    <Button Content="Schließen" Click="OnCloseClick" Style="{StaticResource AppButton3DSecondaryStyle}"/>
                 </StackPanel>
             </Grid>
         </Grid>

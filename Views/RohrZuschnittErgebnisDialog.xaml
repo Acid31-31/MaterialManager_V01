@@ -62,7 +62,7 @@
                 <Button Grid.Column="1"
                         Content="PDF-Vorschau öffnen"
                         Height="36" Padding="16,0"
-                        Background="#1E3A3A" BorderBrush="#00897B" BorderThickness="1"
+                        Style="{StaticResource AppButton3DTealStyle}"
                         Click="OnExportieren"/>
             </Grid>
         </Border>
@@ -125,9 +125,9 @@
                            Text="Schnitte in der angezeigten Reihenfolge ausführen: 90°/90° zuerst, dann gemischte Winkel, dann Doppelgehrung."
                            Foreground="#555" FontSize="11" VerticalAlignment="Center"/>
                 <Button Grid.Column="1"
-                        Content="SchlieÃŸen"
+                        Content="Schließen"
                         Width="130" Height="36"
-                        Background="#2A2A2A" BorderBrush="#444" BorderThickness="1"
+                        Style="{StaticResource AppButton3DSecondaryStyle}"
                         Padding="0"
                         Click="OnSchliessen"/>
             </Grid>

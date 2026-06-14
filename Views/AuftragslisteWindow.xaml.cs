@@ -258,5 +258,10 @@ namespace MaterialManager_V01.Views
         {
             Close();
         }
+
+        private void OnOpenStartProgramClick(object sender, RoutedEventArgs e)
+        {
+            WindowNavigationService.NavigateToStart(this);
+        }
     }
 }

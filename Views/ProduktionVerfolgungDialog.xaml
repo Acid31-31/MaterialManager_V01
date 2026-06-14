@@ -12,31 +12,23 @@
         ResizeMode="CanResize"
         FontSize="13">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
+        <Style TargetType="Button" BasedOn="{StaticResource AppButton3DBaseStyle}">
             <Setter Property="Padding" Value="16,12"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="MinWidth" Value="140"/>
             <Setter Property="Height" Value="45"/>
         </Style>
-        <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#2E7D32"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#388E3C"/>
-                </Trigger>
-            </Style.Triggers>
+        <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DSuccessStyle}">
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="MinWidth" Value="140"/>
+            <Setter Property="Height" Value="45"/>
         </Style>
-        <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#C62828"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#D32F2F"/>
-                </Trigger>
-            </Style.Triggers>
+        <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource AppButton3DDangerStyle}">
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="MinWidth" Value="140"/>
+            <Setter Property="Height" Value="45"/>
         </Style>
     </Window.Resources>
 
@@ -59,20 +51,17 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
             <Button Content="Laser"
                     Click="OnOpenLaserProgramClick"
-                    Background="#2E7D32"
-                    Foreground="White"
+                    Style="{StaticResource AppButton3DSuccessStyle}"
                     Padding="14,8"
                     Margin="0,0,8,0"/>
             <Button Content="Lager"
                     Click="OnOpenLagerProgramClick"
-                    Background="#00897B"
-                    Foreground="White"
+                    Style="{StaticResource AppButton3DTealStyle}"
                     Padding="14,8"
                     Margin="0,0,8,0"/>
             <Button Content="Schließen"
                     Click="OnCloseWindow"
-                    Background="#C42B1C"
-                    Foreground="White"
+                    Style="{StaticResource AppButton3DDangerStyle}"
                     Padding="14,8"/>
         </StackPanel>
 
@@ -94,7 +83,7 @@
                         Padding="12,6"
                         FontSize="13"
                         FontWeight="SemiBold"
-                        Background="#455A64"
+                        Style="{StaticResource AppButton3DInfoStyle}"
                         Margin="12,0,0,0"
                         Click="OnKwAuswahlClick"/>
             </Grid>
@@ -117,12 +106,12 @@
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Content="▶ Start" Style="{StaticResource GreenButtonStyle}" Click="OnStartClick" x:Name="StartButton"/>
             <Button Content="⏹ Ende" Style="{StaticResource RedButtonStyle}" Click="OnEndClick" x:Name="EndButton" IsEnabled="False" Margin="12,0,0,0"/>
-            <Button Content="Schließen" Background="#555" Click="OnCloseClick" Margin="24,0,0,0"/>
+            <Button Content="Schließen" Style="{StaticResource AppButton3DSecondaryStyle}" Click="OnCloseClick" Margin="24,0,0,0"/>
         </StackPanel>
 
         <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
-            <Button Content="PDF nachtragen" Background="#1565C0" Click="OnAttachOrderPdfClick" MinWidth="170" Height="40" Padding="14,8"/>
-            <Button Content="Auftrag löschen" Background="#8B1E1E" Click="OnDeleteOrderClick" MinWidth="170" Height="40" Padding="14,8" Margin="12,0,0,0"/>
+            <Button Content="PDF nachtragen" Style="{StaticResource AppButton3DPrimaryStyle}" Click="OnAttachOrderPdfClick" MinWidth="170" Height="40" Padding="14,8"/>
+            <Button Content="Auftrag löschen" Style="{StaticResource AppButton3DDangerStyle}" Click="OnDeleteOrderClick" MinWidth="170" Height="40" Padding="14,8" Margin="12,0,0,0"/>
         </StackPanel>
     </Grid>
 </Window>

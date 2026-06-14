@@ -35,31 +35,7 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Margin" Value="0,6" />
         </Style>
-        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="38"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#2E2E2E"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
+</Window.Resources>
 
     <Border BorderBrush="#2A2A2A" BorderThickness="1" Background="#0B0B0B">
         <Grid>
@@ -129,7 +105,7 @@
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,12,12">
                 <Button Content="Speichern" Click="OnSave" Width="100" />
-                <Button Content="Abbrechen" Click="OnCancel" Width="100" Background="#555" />
+                <Button Content="Abbrechen" Click="OnCancel" Width="100" Style="{StaticResource AppButton3DSecondaryStyle}" />
             </StackPanel>
         </Grid>
     </Border>

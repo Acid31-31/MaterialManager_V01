@@ -56,17 +56,11 @@ public partial class MainWindow : Window
 
     private void OnOpenStartProgrammClick(object sender, RoutedEventArgs e)
     {
-        var window = new StartModeWindow();
-        Application.Current.MainWindow = window;
-        window.Show();
-        Close();
+        WindowNavigationService.NavigateToStart(this);
     }
 
     private void OnOpenHauptProgrammClick(object sender, RoutedEventArgs e)
     {
-        var window = new MaterialManager_V01.MainWindow();
-        Application.Current.MainWindow = window;
-        window.Show();
-        Close();
+        WindowNavigationService.NavigateToMain(this);
     }
 }

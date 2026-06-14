@@ -413,7 +413,7 @@ namespace MaterialManager_V01
         }
 
         // Ô£à CLICK auf Online-Users: Popup anzeigen
-        private void OnOnlineUsersClick(object sender, MouseButtonEventArgs e)
+        private void OnOnlineUsersClick(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -910,7 +910,12 @@ namespace MaterialManager_V01
 
         private void OnCloseWindow(object sender, RoutedEventArgs e)
         {
-            Close();
+            WindowNavigationService.NavigateToStart(this);
+        }
+
+        private void OnOpenStartProgramClick(object sender, RoutedEventArgs e)
+        {
+            WindowNavigationService.NavigateToStart(this);
         }
         
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -1056,17 +1061,13 @@ namespace MaterialManager_V01
             }
         }
 
-        private void OnRegalauslastungClick(object sender, MouseButtonEventArgs e)
+        private void OnRegalauslastungClick(object sender, RoutedEventArgs e)
         {
-            if (e.ClickCount < 2)
-                return;
-
             var dlg = new RegalauslastungDialog(Materialien) { Owner = this };
             dlg.ShowDialog();
-            e.Handled = true;
         }
 
-        private void OnOpenLagerView(object sender, MouseButtonEventArgs e)
+        private void OnOpenLagerView(object sender, RoutedEventArgs e)
         {
             var window = new LagerDemoWindow();
             Application.Current.MainWindow = window;
@@ -1075,7 +1076,7 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
-        private void OnOpenTafelplanungView(object sender, MouseButtonEventArgs e)
+        private void OnOpenTafelplanungView(object sender, RoutedEventArgs e)
         {
             var window = new TafelplanungWindow();
             Application.Current.MainWindow = window;
@@ -1084,7 +1085,7 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
-        private void OnOpenLaserView(object sender, MouseButtonEventArgs e)
+        private void OnOpenLaserView(object sender, RoutedEventArgs e)
         {
             var window = new LaserDemoWindow();
             Application.Current.MainWindow = window;
@@ -1099,7 +1100,7 @@ namespace MaterialManager_V01
             e.Handled = true;
         }
 
-        private void OnOpenKundenMaterialView(object sender, MouseButtonEventArgs e)
+        private void OnOpenKundenMaterialView(object sender, RoutedEventArgs e)
         {
             var window = new KundenMaterialWindow();
             Application.Current.MainWindow = window;

@@ -31,8 +31,7 @@
                         Width="110"
                         Height="34"
                         Click="OnPrint"
-                        Background="#455A64"
-                        Foreground="White"
+                        Style="{StaticResource AppButton3DInfoStyle}"
                         BorderThickness="0"
                         Cursor="Hand"
                         Margin="0,0,8,0"/>
@@ -40,8 +39,7 @@
                         Width="110"
                         Height="34"
                         Click="OnClose"
-                        Background="#1976D2"
-                        Foreground="White"
+                        Style="{StaticResource AppButton3DPrimaryStyle}"
                         BorderThickness="0"
                         Cursor="Hand"/>
             </StackPanel>

@@ -155,12 +155,8 @@
             <Setter Property="Padding" Value="4" />
         </Style>
 
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#1976D2" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderThickness" Value="0" />
+        <Style TargetType="Button" BasedOn="{StaticResource AppButton3DPrimaryStyle}">
             <Setter Property="Padding" Value="8,4" />
-            <Setter Property="Cursor" Value="Hand" />
         </Style>
     </Window.Resources>
 
@@ -488,10 +484,10 @@
             <StackPanel Grid.Row="14" Grid.ColumnSpan="2" Orientation="Horizontal"
                         HorizontalAlignment="Right" Margin="0,15,0,0">
                 <Button Content="🏷️ Etikett" Width="80" Margin="5" Click="OnEtikett"
-                        Visibility="{Binding EtiquetteVisible}" Background="#795548"/>
+                        Visibility="{Binding EtiquetteVisible}" Style="{StaticResource AppButton3DWarningStyle}"/>
                 <Button Content="OK (Enter)" Width="100" Margin="5" Click="OnOk"
-                        IsDefault="True" IsEnabled="{Binding CanSave}"/>
-                <Button Content="Abbrechen" Width="80" Margin="5" Click="OnCancel" IsCancel="True"/>
+                        IsDefault="True" IsEnabled="{Binding CanSave}" Style="{StaticResource AppButton3DSuccessStyle}"/>
+                <Button Content="Abbrechen" Width="80" Margin="5" Click="OnCancel" IsCancel="True" Style="{StaticResource AppButton3DSecondaryStyle}"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

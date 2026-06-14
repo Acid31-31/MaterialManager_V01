@@ -1,4 +1,4 @@
-﻿<Window x:Class="MaterialManager_V01.Views.ResteSucheDialog"
+<Window x:Class="MaterialManager_V01.Views.ResteSucheDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Material suchen" Height="700" Width="1400" Background="#0B0B0B" WindowStartupLocation="CenterOwner">
@@ -196,7 +196,7 @@
 
         <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
             <Button Content="Suchen" Click="OnSuchen" Width="120"/>
-            <Button Content="Abbrechen" Click="OnAbbrechen" Width="120" Background="#555"/>
+            <Button Content="Abbrechen" Click="OnAbbrechen" Width="120" Style="{StaticResource AppButton3DSecondaryStyle}"/>
         </StackPanel>
     </Grid>
 </Window>
